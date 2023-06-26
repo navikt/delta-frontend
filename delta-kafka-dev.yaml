@@ -1,0 +1,23 @@
+apiVersion: kafka.nais.io/v1
+kind: Topic
+metadata:
+  creationTimestamp: null
+  labels:
+    team: delta
+  name: delta
+  namespace: delta
+spec:
+  acl:
+  - access: write
+    application: delta-frontend
+    team: delta
+  config:
+    cleanupPolicy: delete
+    maxMessageBytes: 1048588
+    minimumInSyncReplicas: 2
+    partitions: 1
+    replication: 3
+    retentionBytes: -1
+    retentionHours: 168
+    segmentHours: 168
+  pool: nav-dev 

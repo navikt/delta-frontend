@@ -10,8 +10,3 @@ spec:
   ingresses:
     - https://delta.ekstern.dev.nav.no
   port: 3000
-  kafka:
-    pool: nav-dev 
-  replicas:
-    min: 1
-    max: 1

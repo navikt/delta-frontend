@@ -12,5 +12,6 @@ spec:
   port: 3000
   kafka:
     pool: nav-dev 
-
-
+  replicas:
+    min: 1
+    max: 1

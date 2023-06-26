@@ -1,0 +1,14 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: delta-frontend
+  namespace: delta
+  labels:
+    team: delta
+spec:
+  image: {{image}}
+  ingresses:
+    - https://delta.ekstern.dev.nav.no
+  port: 3000
+
+

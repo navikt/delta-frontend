@@ -1,5 +1,6 @@
+'use client'
+
 import { Button } from '@navikt/ds-react'
-import handler from '@/pages/api/kafka'
 import { useState } from 'react';
 
 export default function Home() {

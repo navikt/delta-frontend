@@ -8,5 +8,5 @@ metadata:
 spec:
   image: {{image}}
   ingresses:
-    - https://delta.ekstern.dev.nav.no
+    - https://delta.intern.dev.nav.no
   port: 3000

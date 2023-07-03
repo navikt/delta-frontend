@@ -10,3 +10,8 @@ spec:
   ingresses:
     - https://delta.intern.dev.nav.no
   port: 3000
+  azure:
+    application:
+      enabled: true
+    sidecar:
+      enabled: true

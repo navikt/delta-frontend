@@ -1,6 +1,6 @@
 'use client'
 
-import { Button, InternalHeader } from '@navikt/ds-react'
+import { Button } from '@navikt/ds-react'
 import { useState } from 'react'
 
 export default function Home() {

@@ -1,12 +1,16 @@
-'use client'
+"use client";
 
-import { InternalHeader } from "@navikt/ds-react"
+import type { User } from "@/auth/token";
+import { InternalHeader } from "@navikt/ds-react";
 
-export default function Header() {
-    return <InternalHeader className='flex justify-between flex-grow-0'>
-        <InternalHeader.Title as="h1" className='whitespace-nowrap'>
-            Delta Δ
-        </InternalHeader.Title>
-        <InternalHeader.User name="Ola Nordmann" />
+type HeaderProps = { user: User };
+export default function Header({ user }: HeaderProps) {
+  return (
+    <InternalHeader className="flex justify-between flex-grow-0">
+      <InternalHeader.Title as="h1" className="whitespace-nowrap">
+        Delta Δ
+      </InternalHeader.Title>
+      <InternalHeader.User name={`${user.firstName} ${user.lastName}`} />
     </InternalHeader>
-} 
+  );
+}

@@ -15,10 +15,38 @@ export async function checkToken() {
     console.log(`Tokenvalidering gikk galt: ${result.message}`);
     redirect("/oauth2/login");
   }
+}
+
+export type User = {
+  firstName: string;
+  lastName: string;
+  email: string;
+};
+
+export function getUser(): User {
+  if (process.env.NODE_ENV === "development") {
+    return {
+      firstName: "Ola",
+      lastName: "Nordmann",
+      email: "ola.nordmann@nav.no",
+    };
+  }
+
+  const authHeader = headers().get("Authorization");
+  if (!authHeader) {
+    redirect("/oauth2/login");
+  }
 
   const token = authHeader.replace("Bearer ", "");
-  const jwtPayload = token.split('.')[1];
-  const payload = JSON.parse(Buffer.from(jwtPayload, 'base64').toString());
+  const jwtPayload = token.split(".")[1];
+  const payload = JSON.parse(Buffer.from(jwtPayload, "base64").toString());
 
-  console.log(payload);
+  const [lastName, firstName] = payload.name.split(", ", 1);
+  const email = payload.preferred_username;
+
+  return {
+    firstName,
+    lastName,
+    email,
+  };
 }

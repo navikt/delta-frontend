@@ -45,9 +45,6 @@ export function getUser(): User {
   const [lastName, firstName] = payload.name.split(", ");
   const email = payload.preferred_username.toLowerCase()
 
-  console.log(payload.name);
-  console.log([lastName, firstName, email])
-
   return {
     firstName,
     lastName,

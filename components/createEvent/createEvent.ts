@@ -1,6 +1,6 @@
 "use server";
 
-type DeltaEvent = {
+export type DeltaEvent = {
   title: string;
   description: string;
   startTime: string;
@@ -14,11 +14,12 @@ export async function createEvent(formData: FormData) {
     {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
+      //TODO:det her er ikke bra nok
       body: JSON.stringify({
-        title: formData.get("title"),
-        description: formData.get("description"),
-        startTime: formData.get("startTime"),
-        endTime: formData.get("endTime"),
+        title: formData.get("title")?.toString() ?? "",
+        description: formData.get("description")?.toString() ?? "",
+        startTime: formData.get("startTime")?.toString() ?? "",
+        endTime: formData.get("endTime")?.toString() ?? "",
       } satisfies DeltaEvent),
     }
   );

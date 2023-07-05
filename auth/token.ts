@@ -41,8 +41,12 @@ export function getUser(): User {
   const jwtPayload = token.split(".")[1];
   const payload = JSON.parse(Buffer.from(jwtPayload, "base64").toString());
 
-  const [lastName, firstName] = payload.name.split(", ", 1);
-  const email = payload.preferred_username;
+
+  const [lastName, firstName] = payload.name.split(", ");
+  const email = payload.preferred_username.toLowerCase()
+
+  console.log(payload.name);
+  console.log([lastName, firstName, email])
 
   return {
     firstName,

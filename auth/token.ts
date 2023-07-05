@@ -1,5 +1,4 @@
 import { validateAzureToken } from "@navikt/next-auth-wonderwall";
-import { decodeJwt } from "jose";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -17,7 +16,9 @@ export async function checkToken() {
     redirect("/oauth2/login");
   }
 
-  const [, token] = authHeader.split(" ", 1);
-  const claims = decodeJwt(token);
-  console.log(claims);
+  const token = authHeader.replace("Bearer ", "");
+  const jwtPayload = token.split('.')[1];
+  const payload = JSON.parse(Buffer.from(jwtPayload, 'base64').toString());
+
+  console.log(payload);
 }

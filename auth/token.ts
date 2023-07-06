@@ -77,3 +77,7 @@ export async function getAccessToken(
 
   return result;
 }
+
+export async function getDeltaBackendAccessToken(): Promise<string | null> {
+  return await getAccessToken("api://dev-gcp.delta.delta-backend/.default")
+} 

@@ -1,4 +1,7 @@
-import { validateAzureToken } from "@navikt/next-auth-wonderwall";
+import {
+  validateAzureToken,
+  grantAzureOboToken,
+} from "@navikt/next-auth-wonderwall";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -49,4 +52,24 @@ export function getUser(): User {
     lastName,
     email,
   };
+}
+
+export async function getAccessToken(scope: string = ""): Promise<string | null> {
+  if (process.env.NODE_ENV === "development") return null;
+
+  const authHeader = headers().get("Authorization");
+  if (!authHeader) {
+    redirect("/oauth2/login");
+  }
+
+  const result = await grantAzureOboToken(
+    authHeader.replace("Bearer ", scope),
+    ""
+  );
+
+  if (typeof result !== "string") {
+    redirect("/oauth2/login");
+  }
+
+  return result;
 }

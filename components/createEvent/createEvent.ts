@@ -1,5 +1,7 @@
 "use server";
 
+import { backendUrl } from "@/toggles/utils";
+
 export type DeltaEvent = {
   title: string;
   description: string;
@@ -9,7 +11,7 @@ export type DeltaEvent = {
 
 export async function createEvent(formData: FormData) {
   console.log(formData);
-  const response = await fetch("http://delta-backend/event", {
+  const response = await fetch(`${backendUrl()}/event`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     //TODO:det her er ikke bra nok

@@ -54,7 +54,9 @@ export function getUser(): User {
   };
 }
 
-export async function getAccessToken(scope: string = ""): Promise<string | null> {
+export async function getAccessToken(
+  scope: string = ""
+): Promise<string | null> {
   if (process.env.NODE_ENV === "development") return null;
 
   const authHeader = headers().get("Authorization");
@@ -62,11 +64,13 @@ export async function getAccessToken(scope: string = ""): Promise<string | null>
     redirect("/oauth2/login");
   }
 
+  console.log("Before obo token");
   const result = await grantAzureOboToken(
     authHeader.replace("Bearer ", scope),
     ""
   );
 
+  console.log("After obo token");
   if (typeof result !== "string") {
     redirect("/oauth2/login");
   }

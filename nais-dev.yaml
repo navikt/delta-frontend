@@ -17,3 +17,7 @@ spec:
       allowAllUsers: true
     sidecar:
       enabled: true
+  accessPolicy:
+    outbound:
+      rules:
+        - application: delta-backend

@@ -6,12 +6,14 @@ export default async function Events() {
     next: { revalidate: 0 },
   });
 
-  const events: (DeltaEvent & { id: number })[] = await response.json();
+  const events: DeltaEvent[] = await response.json();
 
   return (
     <div>
       {events.map((event) => (
-        <div key={event.id}>{event.title}</div>
+        <div key={event.id}>
+          {event.title}, {event.ownerEmail}
+        </div>
       ))}
     </div>
   );

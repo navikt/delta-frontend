@@ -20,7 +20,7 @@ export async function createEvent(formData: FormData) {
     headers.Authorization = `Bearer ${accessToken}`;
   }
 
-  const response = await fetch(`${backendUrl()}/event`, {
+  const response = await fetch(`${backendUrl()}/admin/event`, {
     method: "PUT",
     headers,
     body: JSON.stringify({

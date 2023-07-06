@@ -5,11 +5,7 @@ export default async function Events() {
     next: { revalidate: 0 },
   });
 
-  const response_forReal: any = await response.json();
+  const response_forReal: any = await response.text();
 
-  return (
-    <pre>
-        {JSON.stringify(response_forReal)}
-    </pre>
-  );
+  return <pre>{response_forReal}</pre>;
 }

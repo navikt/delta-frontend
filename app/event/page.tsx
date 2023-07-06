@@ -12,7 +12,7 @@ export default async function Events() {
     <div>
       {events.map((event) => (
         <div key={event.id}>
-          {event.title}, {event.ownerEmail}
+          {event.title}, {event.ownerEmail}, {event.startTime}
         </div>
       ))}
     </div>

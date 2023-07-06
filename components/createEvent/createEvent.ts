@@ -23,14 +23,17 @@ export async function createEvent(formData: FormData) {
   const response = await fetch(`${backendUrl()}/event`, {
     method: "PUT",
     headers,
-    //TODO:det her er ikke bra nok
     body: JSON.stringify({
-      title: formData.get("title")?.toString() ?? "",
-      description: formData.get("description")?.toString() ?? "",
-      startTime: formData.get("startTime")?.toString() ?? "",
-      endTime: formData.get("endTime")?.toString() ?? "",
+      title: getFormDataString(formData, "title"),
+      description: getFormDataString(formData, "description"),
+      startTime: getFormDataString(formData, "startTime"),
+      endTime: getFormDataString(formData, "endTime"),
     } satisfies DeltaEvent),
   });
 
   console.log(response.status);
+}
+
+function getFormDataString(formData: FormData, key: string): string {
+  return formData.get(key)?.toString() ?? "";
 }

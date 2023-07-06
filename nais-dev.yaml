@@ -8,7 +8,7 @@ metadata:
 spec:
   image: {{image}}
   ingresses:
-    - https://delta.intern.dev.nav.no
+    - https://delta.ekstern.dev.nav.no
   port: 3000
   azure:
     application:

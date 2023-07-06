@@ -1,6 +1,6 @@
 "use server";
 
-import { getAccessToken } from "@/auth/token";
+import { getDeltaBackendAccessToken } from "@/auth/token";
 import { backendUrl } from "@/toggles/utils";
 
 export type DeltaEvent = {
@@ -11,7 +11,7 @@ export type DeltaEvent = {
 };
 
 export async function createEvent(formData: FormData) {
-  const accessToken = await getAccessToken();
+  const accessToken = await getDeltaBackendAccessToken();
 
   const headers: HeadersInit = {
     "Content-Type": "application/json",

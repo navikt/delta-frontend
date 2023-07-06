@@ -1,5 +1,6 @@
 "use server";
 
+import { getAccessToken } from "@/auth/token";
 import { backendUrl } from "@/toggles/utils";
 
 export type DeltaEvent = {
@@ -10,10 +11,18 @@ export type DeltaEvent = {
 };
 
 export async function createEvent(formData: FormData) {
-  console.log(formData);
+  const accessToken = await getAccessToken();
+
+  const headers: HeadersInit = {
+    "Content-Type": "application/json",
+  };
+  if (accessToken !== null) {
+    headers.Authorization = `Bearer ${accessToken}`;
+  }
+
   const response = await fetch(`${backendUrl()}/event`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    headers,
     //TODO:det her er ikke bra nok
     body: JSON.stringify({
       title: formData.get("title")?.toString() ?? "",

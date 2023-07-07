@@ -7,7 +7,7 @@ import { Dropdown, InternalHeader } from "@navikt/ds-react";
 type HeaderProps = { user: User };
 export default function Header({ user }: HeaderProps) {
   return (
-    <InternalHeader className="flex justify-between flex-grow-0">
+    <InternalHeader className="flex justify-between">
       <InternalHeader.Title as="a" className="whitespace-nowrap" href="/">
         Delta Δ
       </InternalHeader.Title>

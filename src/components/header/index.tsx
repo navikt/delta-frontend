@@ -1,6 +1,6 @@
 "use client";
 
-import type { User } from "@/auth/token";
+import type { User } from "@/types/user";
 import { MenuGridIcon } from "@navikt/aksel-icons";
 import { Dropdown, InternalHeader } from "@navikt/ds-react";
 

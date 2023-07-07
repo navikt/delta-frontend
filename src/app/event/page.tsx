@@ -1,4 +1,4 @@
-import { DeltaEvent } from "@/components/createEvent/createEvent";
+import type { DeltaEvent } from "@/types/event";
 import { backendUrl } from "@/toggles/utils";
 
 export default async function Events() {

@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@navikt/aksel-icons": "^4.6.1",
     "@navikt/ds-css": "^4.4.0",
     "@navikt/ds-react": "^4.4.0",
     "@navikt/ds-tailwind": "^4.4.1",

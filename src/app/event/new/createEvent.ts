@@ -2,22 +2,7 @@
 
 import { getDeltaBackendAccessToken } from "@/auth/token";
 import { backendUrl } from "@/toggles/utils";
-
-export type CreateDeltaEvent = {
-  title: string;
-  description: string;
-  startTime: string;
-  endTime: string;
-};
-
-export type DeltaEvent = {
-  id: number;
-  ownerEmail: string;
-  title: string;
-  description: string;
-  startTime: string;
-  endTime: string;
-};
+import type { CreateDeltaEvent } from "@/types/event";
 
 export async function createEvent(formData: FormData) {
   const accessToken = await getDeltaBackendAccessToken();

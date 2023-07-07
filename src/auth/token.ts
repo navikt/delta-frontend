@@ -2,6 +2,7 @@ import {
   validateAzureToken,
   grantAzureOboToken,
 } from "@navikt/next-auth-wonderwall";
+import type { User } from "@/types/user";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -19,12 +20,6 @@ export async function checkToken() {
     redirect("/oauth2/login");
   }
 }
-
-export type User = {
-  firstName: string;
-  lastName: string;
-  email: string;
-};
 
 export function getUser(): User {
   if (process.env.NODE_ENV === "development") {
@@ -55,7 +50,7 @@ export function getUser(): User {
 }
 
 export async function getAccessToken(
-  scope: string = ""
+  scope: string = "",
 ): Promise<string | null> {
   if (process.env.NODE_ENV === "development") return null;
 
@@ -67,18 +62,18 @@ export async function getAccessToken(
   console.log("Before obo token");
   const result = await grantAzureOboToken(
     authHeader.replace("Bearer ", ""),
-    scope
+    scope,
   );
 
   console.log("After obo token");
   if (typeof result !== "string") {
     console.log(`Grant azure obo token failed: ${result.message}`);
-    return null
+    return null;
   }
 
   return result;
 }
 
 export async function getDeltaBackendAccessToken(): Promise<string | null> {
-  return await getAccessToken("api://dev-gcp.delta.delta-backend/.default")
-} 
+  return await getAccessToken("api://dev-gcp.delta.delta-backend/.default");
+}

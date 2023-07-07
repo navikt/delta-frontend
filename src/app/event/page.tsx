@@ -5,7 +5,7 @@ export default async function Events() {
   const response = await fetch(`${backendUrl()}/event`, {
     next: { revalidate: 0 },
   });
-// 
+
   const events: DeltaEvent[] = await response.json();
 
   return (

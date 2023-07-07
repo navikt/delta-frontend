@@ -1,22 +1,20 @@
-"use client";
+import EventList from "@/components/eventList";
+import { backendUrl } from "@/toggles/utils";
+import { DeltaEvent } from "@/types/event";
 
-import { Button } from "@navikt/ds-react";
-import { useState } from "react";
+export default async function Home() {
+  
+  const response = await fetch(`${backendUrl()}/event`, {
+    next: { revalidate: 0 },
+  });
 
-export default function Home() {
-  const [clicked, setClicked] = useState(false);
-  const toggleClicked = () => {
-    setClicked(!clicked);
-  };
+  const events: DeltaEvent[] = await response.json();
+
+
   return (
     <main className="flex flex-grow">
       <section className="w-screen flex-grow flex justify-center items-center">
-        <Button
-          variant={clicked ? "danger" : "primary"}
-          onClick={toggleClicked}
-        >
-          trykk her!
-        </Button>
+        <EventList events={events} />
       </section>
     </main>
   );

@@ -11,7 +11,7 @@ export default function Header({ user }: HeaderProps) {
   
   return (
     <InternalHeader className="flex justify-between flex-grow-0">
-      <InternalHeader.Title as="h1" className="whitespace-nowrap">
+      <InternalHeader.Title as="h1" className="whitespace-nowrap cursor-pointer" onClick={() => router.push("/")}>
         Delta Δ
       </InternalHeader.Title>
       <div className="flex">

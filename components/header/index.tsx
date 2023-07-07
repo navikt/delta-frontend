@@ -3,19 +3,12 @@
 import type { User } from "@/auth/token";
 import { MenuGridIcon } from "@navikt/aksel-icons";
 import { Dropdown, InternalHeader } from "@navikt/ds-react";
-import { useRouter } from "next/navigation";
 
 type HeaderProps = { user: User };
 export default function Header({ user }: HeaderProps) {
-  const router = useRouter();
-
   return (
     <InternalHeader className="flex justify-between flex-grow-0">
-      <InternalHeader.Title
-        as="h1"
-        className="whitespace-nowrap cursor-pointer"
-        onClick={() => router.push("/")}
-      >
+      <InternalHeader.Title as="a" className="whitespace-nowrap" href="/">
         Delta Δ
       </InternalHeader.Title>
       <div className="flex">
@@ -28,9 +21,7 @@ export default function Header({ user }: HeaderProps) {
               <Dropdown.Menu.GroupedList.Heading>
                 Arrangementer
               </Dropdown.Menu.GroupedList.Heading>
-              <Dropdown.Menu.GroupedList.Item
-                onClick={() => router.push("/event/new")}
-              >
+              <Dropdown.Menu.GroupedList.Item as="a" href="/event/new">
                 Nytt arrangement
               </Dropdown.Menu.GroupedList.Item>
               <Dropdown.Menu.GroupedList.Item>

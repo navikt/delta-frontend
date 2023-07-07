@@ -3,12 +3,13 @@
 import type { User } from "@/types/user";
 import { MenuGridIcon } from "@navikt/aksel-icons";
 import { Dropdown, InternalHeader } from "@navikt/ds-react";
+import Link from "next/link";
 
 type HeaderProps = { user: User };
 export default function Header({ user }: HeaderProps) {
   return (
     <InternalHeader className="flex justify-between">
-      <InternalHeader.Title as="a" className="whitespace-nowrap" href="/">
+      <InternalHeader.Title as={Link} className="whitespace-nowrap" href="/">
         Delta Δ
       </InternalHeader.Title>
       <div className="flex">
@@ -21,7 +22,7 @@ export default function Header({ user }: HeaderProps) {
               <Dropdown.Menu.GroupedList.Heading>
                 Arrangementer
               </Dropdown.Menu.GroupedList.Heading>
-              <Dropdown.Menu.GroupedList.Item as="a" href="/event/new">
+              <Dropdown.Menu.GroupedList.Item as={Link} href="/event/new">
                 Nytt arrangement
               </Dropdown.Menu.GroupedList.Item>
               <Dropdown.Menu.GroupedList.Item>

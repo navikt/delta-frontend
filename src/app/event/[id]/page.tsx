@@ -1,6 +1,7 @@
 import { backendUrl } from "@/toggles/utils";
 import { DeltaEvent } from "@/types/event";
 import { notFound } from "next/navigation";
+import { Event } from "@/components/event";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const response = await fetch(`${backendUrl()}/event/${params.id}`, {
@@ -26,9 +27,5 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   const event: DeltaEvent = await response.json();
 
-  return (
-    <div>
-      My Post: <pre>{JSON.stringify(event)}</pre>
-    </div>
-  );
+  return <Event event={event}></Event>;
 }

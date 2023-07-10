@@ -47,7 +47,7 @@ export function EventCard({ event }: EventCardProps) {
 
   return (
     <LinkPanel
-      href="#"
+      href={`/event/${event.id}`}
       as={Link}
       key={`event-${event.id}`}
       className="transition-all rounded hover:-translate-y-1 hover:scale-105"

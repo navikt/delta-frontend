@@ -52,7 +52,7 @@ export function EventCard({ event }: EventCardProps) {
       key={`event-${event.id}`}
       className="transition-all rounded hover:-translate-y-1 hover:scale-105"
     >
-      <LinkPanel.Title>{event.title}</LinkPanel.Title>z
+      <LinkPanel.Title>{event.title}</LinkPanel.Title>
       <LinkPanel.Description>
         <Detail className="flex gap-1 items-center">
           <CalendarIcon />

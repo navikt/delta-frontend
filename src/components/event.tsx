@@ -1,26 +1,29 @@
 "use client";
 
 import { DeltaEvent } from "@/types/event";
-import { CalendarIcon } from "@navikt/aksel-icons";
-import { formatEventTimes } from "./format";
-import { BodyLong, Detail, Heading } from "@navikt/ds-react";
-
+import { BodyLong, Detail, Heading } from "@navikt/ds-react/esm/typography";
+import { joinEvent } from "@/app/event/[id]/joinEvent";
+import { Button } from "@navikt/ds-react";
 type EventProps = { event: DeltaEvent };
 
-export function Event({ event }: EventProps) {
+export async function Event({ event }: EventProps) {
+  const join = () => {
+    joinEvent(event.id);
+  };
   return (
-    <main className="flex flex-grow">
-      <section className="w-screen flex justify-center items-center flex-col">
-        <Heading level="1" size="large">
-          {event.title}
-        </Heading>
-        <Detail className="flex gap-1 items-center">
-          <CalendarIcon /> {formatEventTimes(event)}
-        </Detail>
-        <BodyLong className="flex gap-1 items-center">
-          {event.description}
-        </BodyLong>
-      </section>
-    </main>
+    <>
+      <Heading level="1" size="large">
+        {event.title}
+      </Heading>
+      <Detail className="flex gap-1 items-center">
+        {event.startTime} - {event.endTime}
+      </Detail>
+      <BodyLong className="flex gap-1 items-center">
+        {event.description}
+      </BodyLong>
+      <form action={joinEvent(event.id)}>
+        <Button type="submit">Bli med</Button>
+      </form>
+    </>
   );
 }

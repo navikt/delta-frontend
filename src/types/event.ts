@@ -6,7 +6,7 @@ export type CreateDeltaEvent = {
 };
 
 export type DeltaEvent = {
-  id: number;
+  id: string;
   ownerEmail: string;
   title: string;
   description: string;

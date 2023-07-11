@@ -1,10 +1,19 @@
+"use server";
+
 import { getUser } from "@/auth/token";
 import { backendUrl } from "@/toggles/utils";
 
-export async function joinEvent(id: string) {
+export async function joinEvent(formData: FormData) {
   const user = getUser();
-  const response = await fetch(`${backendUrl()}/event/${id}`, {
+  const headers: HeadersInit = {
+    "Content-Type": "application/json",
+  };
+  const response = await fetch(`${backendUrl()}/event/${formData.get("id")}`, {
     method: "POST",
-    body: JSON.stringify({ email: user.email }),
+    headers,
+    body: JSON.stringify({
+      email: user.email,
+    }),
   });
+  console.log(response);
 }

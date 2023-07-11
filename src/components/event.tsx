@@ -6,10 +6,7 @@ import { joinEvent } from "@/app/event/[id]/joinEvent";
 import { Button } from "@navikt/ds-react";
 type EventProps = { event: DeltaEvent };
 
-export async function Event({ event }: EventProps) {
-  const join = () => {
-    joinEvent(event.id);
-  };
+export function Event({ event }: EventProps) {
   return (
     <>
       <Heading level="1" size="large">
@@ -21,7 +18,8 @@ export async function Event({ event }: EventProps) {
       <BodyLong className="flex gap-1 items-center">
         {event.description}
       </BodyLong>
-      <form action={joinEvent(event.id)}>
+      <form action={joinEvent}>
+        <input type="hidden" name="id" value={event.id} />
         <Button type="submit">Bli med</Button>
       </form>
     </>

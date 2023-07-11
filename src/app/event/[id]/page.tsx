@@ -27,5 +27,11 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   const event: DeltaEvent = await response.json();
 
-  return <Event event={event}></Event>;
+  return (
+    <main className="flex flex-grow">
+      <section className="w-screen flex-grow flex justify-center items-center flex-col gap-3">
+        <Event event={event}></Event>
+      </section>
+    </main>
+  );
 }

@@ -1,15 +1,10 @@
+import { getAuthlessApi } from "@/api/instance";
 import EventList from "@/components/eventList";
-import { backendUrl } from "@/toggles/utils";
 import { DeltaEvent } from "@/types/event";
 
 export default async function Home() {
-  var events: DeltaEvent[] = [];
-
-  const response = await fetch(`${backendUrl()}/event`, {
-    next: { revalidate: 0 },
-  });
-
-  events = await response.json();
+  const api = getAuthlessApi();
+  var events: DeltaEvent[] = (await api.get("/event")).data;
 
   return (
     <main className="flex flex-grow">

@@ -9,7 +9,6 @@ import { formatEventDuration, formatEventTimes } from "./format";
 type EventCardProps = { event: DeltaEvent };
 
 export function EventCard({ event }: EventCardProps) {
-
   return (
     <LinkPanel
       href={`/event/${event.id}`}

@@ -1,19 +1,13 @@
 "use server";
 
+import { getAuthlessApi } from "@/api/instance";
 import { getUser } from "@/auth/token";
-import { backendUrl } from "@/toggles/utils";
 
 export async function joinEvent(formData: FormData) {
   const user = getUser();
-  const headers: HeadersInit = {
-    "Content-Type": "application/json",
-  };
-  const response = await fetch(`${backendUrl()}/event/${formData.get("id")}`, {
-    method: "POST",
-    headers,
-    body: JSON.stringify({
-      email: user.email,
-    }),
+  const api = getAuthlessApi();
+  const response = await api.post(`/event/${formData.get("id")}`, {
+    email: user.email,
   });
-  console.log(response);
+  console.log(response.status);
 }

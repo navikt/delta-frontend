@@ -1,12 +1,11 @@
-import { backendUrl } from "@/toggles/utils";
-import { DeltaEvent } from "@/types/event";
+import type { DeltaEventWithParticipant } from "@/types/event";
 import { notFound } from "next/navigation";
 import { Event } from "@/components/event";
+import { getAuthlessApi } from "@/api/instance";
 
 export default async function Page({ params }: { params: { id: string } }) {
-  const response = await fetch(`${backendUrl()}/event/${params.id}`, {
-    next: { revalidate: 0 },
-  });
+  const api = getAuthlessApi();
+  const response = await api.get(`/event/${params.id}`);
 
   // Feilhåndtering
   if (response.status === 404) {
@@ -25,7 +24,7 @@ export default async function Page({ params }: { params: { id: string } }) {
     );
   }
 
-  const {event, participants} = await response.json();
+  const { event, participants }: DeltaEventWithParticipant = response.data;
 
   return (
     <main className="flex flex-grow">

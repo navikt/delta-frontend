@@ -5,6 +5,11 @@ export type CreateDeltaEvent = {
   endTime: string;
 };
 
+export type DeltaEventWithParticipant = {
+  event: DeltaEvent;
+  participants: DeltaParticipant[];
+};
+
 export type DeltaEvent = {
   id: string;
   ownerEmail: string;
@@ -12,4 +17,8 @@ export type DeltaEvent = {
   description: string;
   startTime: string;
   endTime: string;
+};
+
+export type DeltaParticipant = {
+  email: string;
 };

@@ -1,28 +1,14 @@
 "use server";
 
-import { getDeltaBackendAccessToken } from "@/auth/token";
-import { backendUrl } from "@/toggles/utils";
-import type { CreateDeltaEvent } from "@/types/event";
+import { getAuthApi } from "@/api/instance";
 
 export async function createEvent(formData: FormData) {
-  const accessToken = await getDeltaBackendAccessToken();
-
-  const headers: HeadersInit = {
-    "Content-Type": "application/json",
-  };
-  if (accessToken !== null) {
-    headers.Authorization = `Bearer ${accessToken}`;
-  }
-
-  const response = await fetch(`${backendUrl()}/admin/event`, {
-    method: "PUT",
-    headers,
-    body: JSON.stringify({
-      title: getFormDataString(formData, "title"),
-      description: getFormDataString(formData, "description"),
-      startTime: getFormDataString(formData, "startTime"),
-      endTime: getFormDataString(formData, "endTime"),
-    } satisfies CreateDeltaEvent),
+  const api = await getAuthApi();
+  const response = await api.put("/admin/event", {
+    title: getFormDataString(formData, "title"),
+    description: getFormDataString(formData, "description"),
+    startTime: getFormDataString(formData, "startTime"),
+    endTime: getFormDataString(formData, "endTime"),
   });
 
   console.log(response.status);

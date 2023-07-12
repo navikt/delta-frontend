@@ -1,12 +1,9 @@
+import { getAuthlessApi } from "@/api/instance";
 import type { DeltaEvent } from "@/types/event";
-import { backendUrl } from "@/toggles/utils";
 
 export default async function Events() {
-  const response = await fetch(`${backendUrl()}/event`, {
-    next: { revalidate: 0 },
-  });
-
-  const events: DeltaEvent[] = await response.json();
+  const api = getAuthlessApi();
+  const events: DeltaEvent[] = (await api.get("/event")).data;
 
   return (
     <div>

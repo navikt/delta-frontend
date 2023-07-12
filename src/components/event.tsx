@@ -1,12 +1,16 @@
 "use client";
-
-import { DeltaEvent } from "@/types/event";
-import { BodyLong, Detail, Heading } from "@navikt/ds-react/esm/typography";
+import { DeltaEvent, DeltaParticipant } from "@/types/event";
+import { BodyLong, Detail, Heading, Button } from "@navikt/ds-react";
 import { joinEvent } from "@/app/event/[id]/joinEvent";
-import { Button } from "@navikt/ds-react";
-type EventProps = { event: DeltaEvent };
+import { User } from "@/types/user";
+type EventProps = {
+  event: DeltaEvent;
+  participants: DeltaParticipant[];
+  user: User;
+};
 
-export function Event({ event }: EventProps) {
+export function Event({ event, participants, user }: EventProps) {
+  const isParticipant = participants.map((p) => p.email).includes(user.email);
   return (
     <>
       <Heading level="1" size="large">
@@ -22,6 +26,8 @@ export function Event({ event }: EventProps) {
         <input type="hidden" name="id" value={event.id} />
         <Button type="submit">Bli med</Button>
       </form>
+      {console.log(participants, user)}
+      {console.log(isParticipant)}
     </>
   );
 }

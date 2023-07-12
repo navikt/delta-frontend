@@ -25,7 +25,7 @@ export default async function Page({ params }: { params: { id: string } }) {
     );
   }
 
-  const event: DeltaEvent = await response.json();
+  const {event, participants} = await response.json();
 
   return (
     <main className="flex flex-grow">

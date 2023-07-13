@@ -8,6 +8,7 @@ export async function createEvent(formData: FormData) {
   const response = await api.put("/admin/event", {
     title: getFormDataString(formData, "title"),
     description: getFormDataString(formData, "description"),
+    location: getFormDataString(formData, "location"),
     startTime: getFormDataString(formData, "startTime"),
     endTime: getFormDataString(formData, "endTime"),
   });

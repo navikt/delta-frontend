@@ -19,6 +19,7 @@ export default function NewEvent() {
       <form action={createEvent}>
         <TextField label="Tittel" name="title" />
         <TextField label="Beskrivelse" name="description" />
+        <TextField label="Sted" name="location" />
         <DatePicker {...datepickerProps}>
           <div className="flex flex-col justify-center gap-4 pb-0">
             <div className="flex flex-row items-end gap-4">

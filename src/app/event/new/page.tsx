@@ -20,15 +20,31 @@ export default function NewEvent() {
         <TextField label="Tittel" name="title" />
         <TextField label="Beskrivelse" name="description" />
         <DatePicker {...datepickerProps}>
-          <div className="flex flex-wrap justify-center gap-4">
-            <DatePicker.Input
-              {...fromInputProps}
-              label="Fra"
-              name="startTime"
-            />
+          <div className="flex flex-col justify-center gap-4">
+            <div className="flex flex-wrap justify-center gap-4">
+              <DatePicker.Input
+                {...fromInputProps}
+                label="Fra"
+                name="startTime"
+              />
+              <div className="navds-form-field navds-form-field--medium navds-date__field">
+                <label
+                  htmlFor="startClock"
+                  className="navds-form-field__label navds-label flex-shrink"
+                ></label>
+                <div className="navds-date__field-wrapper">
+                  <input
+                    type="time"
+                    name="startClock"
+                    className="navds-date__field-input w-full navds-text-field__input navds-body-short navds-body-medium"
+                  />
+                </div>
+              </div>
+            </div>
             <DatePicker.Input {...toInputProps} label="Til" name="endTime" />
           </div>
         </DatePicker>
+        <input type="time" name="startClock" />
         <Button type="submit">Lag event</Button>
       </form>
     </div>

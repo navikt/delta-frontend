@@ -1,6 +1,7 @@
 "use server";
 
 import { getAuthApi } from "@/api/instance";
+import { redirect } from "next/navigation";
 
 export async function createEvent(formData: FormData) {
   const api = await getAuthApi();
@@ -10,8 +11,7 @@ export async function createEvent(formData: FormData) {
     startTime: getFormDataString(formData, "startTime"),
     endTime: getFormDataString(formData, "endTime"),
   });
-
-  console.log(response.status);
+  redirect(`/event/${response.data.id}`);
 }
 
 function getFormDataString(formData: FormData, key: string): string {

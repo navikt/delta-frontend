@@ -13,10 +13,12 @@ export default async function RootLayout({ children }: RootLayoutProps) {
   await checkToken();
   const user = getUser();
   return (
-    <html lang="no">
-      <body className="min-h-screen flex flex-col">
+    <html lang="no" className="min-h-screen">
+      <body className="flex flex-col min-h-screen">
         <Header user={user} />
-        {children}
+        <main className="bg-gray-200 flex-grow flex justify-center">
+          {children}
+        </main>
       </body>
     </html>
   );

@@ -1,16 +1,22 @@
-import { getAuthlessApi } from "@/api/instance";
-import EventList from "@/components/eventList";
+import { getAuthApi, getAuthlessApi } from "@/api/instance";
+import EventListSwitcher from "@/components/eventListSwitcher";
 import { DeltaEvent } from "@/types/event";
+import { Heading } from "@navikt/ds-react/esm/typography";
 
-export default async function Home() {
+export default async function Home(context: any) {
   const api = getAuthlessApi();
-  var events: DeltaEvent[] = (await api.get("/event")).data;
+  const authApi = await getAuthApi();
+
+  const all: DeltaEvent[] = (await api.get("/event")).data;
+  const my: DeltaEvent[] = (await authApi.get("/admin/event")).data;
+  const joined: DeltaEvent[] = (await authApi.get("/user/event")).data;
 
   return (
-    <main className="flex flex-grow">
-      <section className="w-screen flex-grow flex justify-center items-center">
-        <EventList events={events} />
-      </section>
-    </main>
+    <section className="flex-col justify-center w-11/12 max-w-3xl flex-wrap items-start">
+      <Heading size="large" className="pt-12 pb-3 text-center">
+        Arrangementer
+      </Heading>
+      <EventListSwitcher all={all} my={my} joined={joined} />
+    </section>
   );
 }

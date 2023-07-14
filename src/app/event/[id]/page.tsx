@@ -3,7 +3,11 @@ import { notFound } from "next/navigation";
 import { getAuthlessApi } from "@/api/instance";
 import { getUser } from "@/auth/token";
 import { Heading } from "@navikt/ds-react/esm/typography";
-import { dates } from "@/components/format";
+import {
+  dates,
+  formatEventDuration,
+  formatEventTimes,
+} from "@/components/format";
 import { nb } from "date-fns/locale";
 import { format } from "date-fns";
 import JoinEventButton from "./joinEventButton";
@@ -35,12 +39,10 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   return (
     <div className="w-full flex flex-col align-center items-center">
-      <Heading
-        size="xlarge"
-        className="w-full text-center h-fit bg-blue-200 p-18 pb-24"
-      >
-        {event.title}
-      </Heading>
+      <div className="w-full text-center h-fit bg-blue-200 p-18 pb-24">
+        <Heading size="xlarge">{event.title}</Heading>
+        <p>{formatEventTimes(event)}</p>
+      </div>
       <div className="bg-white drop-shadow-lg border-gray-200 border-2 rounded relative w-5/6 top-[-5rem] z-10 flex flex-col p-4 h-fit max-w-[80rem]">
         <div className="flex flex-row w-full justify-between items-start">
           <div className="flex flex-col w-fit bg-red-100 p-2 rounded">
@@ -55,7 +57,7 @@ export default async function Page({ params }: { params: { id: string } }) {
             participants={participants}
           />
         </div>
-        <div className="flex-row flex justify-between gap-36 pt-4">
+        <div className="flex-row flex justify-between gap-4 pt-4 flex-wrap md:gap-36">
           <EventDescription event={event} participants={participants} />
           <div className="flex-grow flex flex-col gap-2">
             <Heading size="medium">Detaljer:</Heading>

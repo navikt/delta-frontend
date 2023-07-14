@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { getAuthlessApi } from "@/api/instance";
 import { getUser } from "@/auth/token";
 import { Heading } from "@navikt/ds-react/esm/typography";
-import { dates, formatEventTimes } from "@/components/format";
+import { dates } from "@/components/format";
 import { nb } from "date-fns/locale";
 import { format } from "date-fns";
 import JoinEventButton from "./joinEventButton";
@@ -49,7 +49,11 @@ export default async function Page({ params }: { params: { id: string } }) {
             </span>
             <span className="font-semibold text-3xl">{format(start, "d")}</span>
           </div>
-          <JoinEventButton id={event.id} />
+          <JoinEventButton
+            event={event}
+            user={user}
+            participants={participants}
+          />
         </div>
         <div className="flex-row flex justify-between gap-36 pt-4">
           <EventDescription event={event} participants={participants} />
@@ -59,10 +63,6 @@ export default async function Page({ params }: { params: { id: string } }) {
           </div>
         </div>
       </div>
-
-      {/* <section className="w-screen flex-grow flex justify-center items-center flex-col gap-3">
-        <Event event={event} participants={participants} user={user} />
-      </section> */}
     </div>
   );
 }

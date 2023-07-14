@@ -4,6 +4,8 @@ import {
   TextField,
   DatePicker,
   useRangeDatepicker,
+  Textarea,
+  Heading,
 } from "@navikt/ds-react";
 import { createEvent } from "./createEvent";
 
@@ -15,13 +17,27 @@ export default function NewEvent() {
     });
 
   return (
-    <div>
-      <form action={createEvent}>
-        <TextField label="Tittel" name="title" />
-        <TextField label="Beskrivelse" name="description" />
+    <div className="p-20 max-w-[90%] w-[80rem] m-auto gap-7 flex flex-col">
+      <div className="flex flex-col gap-2">
+        <Heading level="1" size="large">
+          Opprett arrrangement
+        </Heading>
+        <p className="italic break-words">
+          Arrangementet vil være synlig for alle som har tilgang til Delta, og
+          vil bli publisert på deltakalenderen.
+        </p>
+      </div>
+      <style>
+        {`.navds-date__wrapper {
+          width: 100% !important;
+        }`}
+      </style>
+      <form action={createEvent} className="flex flex-col gap-5">
+        <TextField label="Tittel" name="title" className="" />
         <TextField label="Sted" name="location" />
-        <DatePicker {...datepickerProps}>
-          <div className="flex flex-col justify-center gap-4 pb-0">
+        <Textarea label="Beskrivelse" name="description" />
+        <DatePicker {...datepickerProps} style={{ width: "100%" }}>
+          <div className="flex flex-row flex-wrap justify-left gap-4 pb-0 items-end">
             <div className="flex flex-row items-end gap-4">
               <DatePicker.Input
                 {...fromInputProps}
@@ -48,7 +64,9 @@ export default function NewEvent() {
             </div>
           </div>
         </DatePicker>
-        <Button type="submit">Lag event</Button>
+        <Button type="submit" className="w-[19rem]">
+          Opprett arrangement
+        </Button>
       </form>
     </div>
   );

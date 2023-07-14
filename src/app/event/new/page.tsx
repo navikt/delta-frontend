@@ -17,7 +17,7 @@ export default function NewEvent() {
     });
 
   return (
-    <div className="p-20 max-w-[90%] w-[80rem] m-auto gap-7 flex flex-col">
+    <div className="p-20 max-w-[95%] w-[80rem] m-auto gap-7 flex flex-col">
       <div className="flex flex-col gap-2">
         <Heading level="1" size="large">
           Opprett arrrangement
@@ -29,7 +29,7 @@ export default function NewEvent() {
       </div>
       <style>
         {`.navds-date__wrapper {
-          width: 100% !important;
+          max-width: 100%;
         }`}
       </style>
       <form action={createEvent} className="flex flex-col gap-5">
@@ -38,7 +38,7 @@ export default function NewEvent() {
         <Textarea label="Beskrivelse" name="description" />
         <DatePicker {...datepickerProps} style={{ width: "100%" }}>
           <div className="flex flex-row flex-wrap justify-left gap-4 pb-0 items-end">
-            <div className="flex flex-row items-end gap-4">
+            <div className="flex flex-row items-end gap-4 flex-wrap">
               <DatePicker.Input
                 {...fromInputProps}
                 label="Fra"
@@ -52,7 +52,7 @@ export default function NewEvent() {
                 />
               </div>
             </div>
-            <div className="flex flex-row items-end gap-4">
+            <div className="flex flex-row items-end gap-4 flex-wrap">
               <DatePicker.Input {...toInputProps} label="Til" name="endDate" />
               <div className="navds-form-field navds-form-field--medium">
                 <input
@@ -64,7 +64,7 @@ export default function NewEvent() {
             </div>
           </div>
         </DatePicker>
-        <Button type="submit" className="w-[19rem]">
+        <Button type="submit" className="w-[19rem] max-w-full">
           Opprett arrangement
         </Button>
       </form>

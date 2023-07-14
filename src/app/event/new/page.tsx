@@ -26,22 +26,22 @@ export default function NewEvent() {
               <DatePicker.Input
                 {...fromInputProps}
                 label="Fra"
-                name="startTime"
+                name="startDate"
               />
               <div className="navds-form-field navds-form-field--medium">
                 <input
                   type="time"
-                  name="startClock"
+                  name="startTime"
                   className="navds-text-field__input"
                 />
               </div>
             </div>
             <div className="flex flex-row items-end gap-4">
-              <DatePicker.Input {...toInputProps} label="Til" name="endTime" />
+              <DatePicker.Input {...toInputProps} label="Til" name="endDate" />
               <div className="navds-form-field navds-form-field--medium">
                 <input
                   type="time"
-                  name="startClock"
+                  name="endTime"
                   className="navds-text-field__input"
                 />
               </div>

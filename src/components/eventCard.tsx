@@ -28,7 +28,6 @@ export function EventCard({ event }: EventCardProps) {
             {formatEventDuration(event)}
           </Detail>
         )}
-        <BodyLong>{event.description}</BodyLong>
       </LinkPanel.Description>
     </LinkPanel>
   );

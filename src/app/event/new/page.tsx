@@ -38,7 +38,7 @@ export default function NewEvent() {
         <Textarea label="Beskrivelse" name="description" required />
         <DatePicker {...datepickerProps} style={{ width: "100%" }}>
           <div className="flex flex-row flex-wrap justify-left gap-4 pb-0 items-end">
-            <div className="flex flex-row items-end gap-4 flex-wrap">
+            <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4 flex-wrap ">
               <DatePicker.Input
                 {...fromInputProps}
                 label="Fra"
@@ -54,7 +54,7 @@ export default function NewEvent() {
                 />
               </div>
             </div>
-            <div className="flex flex-row items-end gap-4 flex-wrap">
+            <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4 flex-wrap ">
               <DatePicker.Input
                 {...toInputProps}
                 label="Til"

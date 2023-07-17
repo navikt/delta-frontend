@@ -1,7 +1,7 @@
 "use client";
 import { DeltaEvent, DeltaParticipant } from "@/types/event";
 import { BodyLong, Detail, Heading, Button } from "@navikt/ds-react";
-import { joinEvent } from "@/app/event/[id]/joinEvent";
+import { joinEvent } from "@/app/event/[id]/eventActions";
 import { User } from "@/types/user";
 type EventProps = {
   event: DeltaEvent;

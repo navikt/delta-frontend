@@ -14,7 +14,7 @@ export function EventCard({ event }: EventCardProps) {
       href={`/event/${event.id}`}
       as={Link}
       key={`event-${event.id}`}
-      className="transition-all rounded hover:-translate-y-1 hover:scale-105"
+      className="transition-all rounded-xl border-gray-300 hover:-translate-y-1 hover:scale-105"
     >
       <LinkPanel.Title>{event.title}</LinkPanel.Title>
       <LinkPanel.Description>

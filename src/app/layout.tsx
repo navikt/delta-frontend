@@ -16,7 +16,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
     <html lang="no" className="min-h-screen">
       <body className="flex flex-col min-h-screen">
         <Header user={user} />
-        <main className="bg-gray-200 flex-grow flex justify-center">
+        <main className="bg-surface-subtle flex-grow flex justify-center">
           {children}
         </main>
       </body>

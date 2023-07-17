@@ -13,7 +13,6 @@ export default function NewEvent() {
   const { datepickerProps, toInputProps, fromInputProps, selectedRange } =
     useRangeDatepicker({
       fromDate: new Date("Aug 23 2019"),
-      onRangeChange: console.log,
     });
 
   return (

@@ -56,7 +56,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           <EventDescription event={event} participants={participants} />
           <div className="flex-grow flex flex-col gap-2">
             <Heading size="medium">Detaljer:</Heading>
-            <p className="italic">{event.description}</p>
+            <p className="italic whitespace-pre-line">{event.description}</p>
           </div>
         </div>
       </div>

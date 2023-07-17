@@ -4,20 +4,22 @@ import { getAuthApi } from "@/api/instance";
 import { redirect } from "next/navigation";
 
 export async function createEvent(formData: FormData) {
+  console.log(`${Date.now()}: createEvent`);
   const api = await getAuthApi();
+  console.log(`${Date.now()}: got auth api`);
 
-  console.log(formData.get("startTime"));
   const response = await api.put("/admin/event", {
     title: getFormDataString(formData, "title"),
     description: getFormDataString(formData, "description"),
     location: getFormDataString(formData, "location"),
     startTime: `${formatDate(
-      getFormDataString(formData, "startDate"),
+      getFormDataString(formData, "startDate")
     )}T${getFormDataString(formData, "startTime")}:00`,
     endTime: `${formatDate(
-      getFormDataString(formData, "endDate"),
+      getFormDataString(formData, "endDate")
     )}T${getFormDataString(formData, "endTime")}:00`,
   });
+  console.log(`${Date.now()}: got response`);
   redirect(`/event/${response.data.id}`);
 }
 

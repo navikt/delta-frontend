@@ -13,15 +13,15 @@ export async function createEvent(formData: FormData): Promise<DeltaEvent> {
     description: getFormDataString(formData, "description"),
     location: getFormDataString(formData, "location"),
     startTime: `${formatDate(
-      getFormDataString(formData, "startDate")
+      getFormDataString(formData, "startDate"),
     )}T${getFormDataString(formData, "startTime")}:00`,
     endTime: `${formatDate(
-      getFormDataString(formData, "endDate")
+      getFormDataString(formData, "endDate"),
     )}T${getFormDataString(formData, "endTime")}:00`,
   });
   console.log(`${Date.now()}: got response`);
 
-  return response.data
+  return response.data;
 }
 
 function getFormDataString(formData: FormData, key: string): string {

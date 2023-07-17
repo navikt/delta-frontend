@@ -1,4 +1,5 @@
 "use client";
+
 import {
   Button,
   TextField,
@@ -8,12 +9,16 @@ import {
   Heading,
 } from "@navikt/ds-react";
 import { createEvent } from "./createEvent";
+import { NextRouter } from "next/router";
+import { redirect } from "next/navigation";
 
 export default function NewEvent() {
-  const { datepickerProps, toInputProps, fromInputProps, selectedRange } =
+  const { datepickerProps, toInputProps, fromInputProps } =
     useRangeDatepicker({
       fromDate: new Date("Aug 23 2019"),
     });
+
+    
 
   return (
     <div className="p-20 max-w-[95%] w-[80rem] m-auto gap-7 flex flex-col">
@@ -31,7 +36,7 @@ export default function NewEvent() {
           max-width: 100%;
         }`}
       </style>
-      <form action={createEvent} className="flex flex-col gap-5">
+      <form action={createAndRedirect} className="flex flex-col gap-5">
         <TextField label="Tittel" name="title" className="" required />
         <TextField label="Sted" name="location" required />
         <Textarea label="Beskrivelse" name="description" required />
@@ -77,4 +82,9 @@ export default function NewEvent() {
       </form>
     </div>
   );
+}
+
+async function createAndRedirect(formData: FormData) {
+  const event = await createEvent(formData);
+  redirect(`/event/${event.id}`)
 }

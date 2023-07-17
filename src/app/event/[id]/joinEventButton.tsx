@@ -3,7 +3,6 @@ import { Button } from "@navikt/ds-react";
 import { joinEvent, leaveEvent } from "./eventActions";
 import { DeltaEventWithParticipant } from "@/types/event";
 import { User } from "@/types/user";
-import { NextRouter, useRouter } from "next/router";
 import { useState } from "react";
 
 export default function JoinEventButton({

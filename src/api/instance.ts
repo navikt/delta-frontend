@@ -15,7 +15,7 @@ export function getAuthlessApi() {
     (error) => {
       console.log(JSON.stringify(error, null, 2));
       return Promise.reject(error);
-    }
+    },
   );
   return client;
 }
@@ -39,7 +39,7 @@ export async function getAuthApi() {
     (error) => {
       console.log(JSON.stringify(error, null, 2));
       return Promise.reject(error);
-    }
+    },
   );
   return client;
 }

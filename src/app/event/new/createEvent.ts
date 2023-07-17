@@ -12,10 +12,10 @@ export async function createEvent(formData: FormData) {
     description: getFormDataString(formData, "description"),
     location: getFormDataString(formData, "location"),
     startTime: `${formatDate(
-      getFormDataString(formData, "startDate")
+      getFormDataString(formData, "startDate"),
     )}T${getFormDataString(formData, "startTime")}:00`,
     endTime: `${formatDate(
-      getFormDataString(formData, "endDate")
+      getFormDataString(formData, "endDate"),
     )}T${getFormDataString(formData, "endTime")}:00`,
   });
   redirect(`/event/${response.data.id}`);

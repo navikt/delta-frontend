@@ -11,10 +11,14 @@ export default function JoinEventButton({
   participants,
   user,
 }: DeltaEventWithParticipant & { user: User }) {
-  const [isParticipant, setParticipant] = useState(participants.map((p) => p.email).includes(user.email));
+  const [isParticipant, setParticipant] = useState(
+    participants.map((p) => p.email).includes(user.email),
+  );
   return (
     <form
-      action={(f: FormData) => setParticipant(toggleEventStatus(f, isParticipant))}
+      action={(f: FormData) =>
+        setParticipant(toggleEventStatus(f, isParticipant))
+      }
       className="w-full max-w-[12rem] h-full"
     >
       <input type="hidden" name="id" value={event.id} />
@@ -30,6 +34,6 @@ export default function JoinEventButton({
 }
 
 function toggleEventStatus(formData: FormData, isParticipant: boolean) {
-  isParticipant ? leaveEvent(formData) : joinEvent(formData)
-  return !isParticipant
+  isParticipant ? leaveEvent(formData) : joinEvent(formData);
+  return !isParticipant;
 }

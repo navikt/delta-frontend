@@ -1,7 +1,6 @@
 "use server";
 
 import { getAuthApi } from "@/api/instance";
-import { useRouter } from "next/router";
 
 export async function joinEvent(formData: FormData) {
   const api = await getAuthApi();

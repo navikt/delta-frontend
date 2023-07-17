@@ -1,9 +1,9 @@
 "use server";
 
 import { getAuthApi } from "@/api/instance";
-import { redirect } from "next/navigation";
+import { DeltaEvent } from "@/types/event";
 
-export async function createEvent(formData: FormData) {
+export async function createEvent(formData: FormData): Promise<DeltaEvent> {
   console.log(`${Date.now()}: createEvent`);
   const api = await getAuthApi();
   console.log(`${Date.now()}: got auth api`);
@@ -20,7 +20,8 @@ export async function createEvent(formData: FormData) {
     )}T${getFormDataString(formData, "endTime")}:00`,
   });
   console.log(`${Date.now()}: got response`);
-  redirect(`/event/${response.data.id}`);
+
+  return response.data
 }
 
 function getFormDataString(formData: FormData, key: string): string {

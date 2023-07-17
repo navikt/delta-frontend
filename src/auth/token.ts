@@ -59,13 +59,11 @@ export async function getAccessToken(
     redirect("/oauth2/login");
   }
 
-  console.log("Before obo token");
   const result = await grantAzureOboToken(
     authHeader.replace("Bearer ", ""),
     scope,
   );
 
-  console.log("After obo token");
   if (typeof result !== "string") {
     console.log(`Grant azure obo token failed: ${result.message}`);
     return null;

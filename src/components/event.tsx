@@ -26,8 +26,6 @@ export function Event({ event, participants, user }: EventProps) {
         <input type="hidden" name="id" value={event.id} />
         <Button type="submit">Bli med</Button>
       </form>
-      {console.log(participants, user)}
-      {console.log(isParticipant)}
     </>
   );
 }

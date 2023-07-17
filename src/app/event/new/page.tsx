@@ -11,14 +11,15 @@ import {
 import { createEvent } from "./createEvent";
 import { NextRouter } from "next/router";
 import { redirect } from "next/navigation";
+import { Dispatch, SetStateAction, useState } from "react";
+import { set } from "date-fns";
 
 export default function NewEvent() {
-  const { datepickerProps, toInputProps, fromInputProps } =
-    useRangeDatepicker({
-      fromDate: new Date("Aug 23 2019"),
-    });
+  const { datepickerProps, toInputProps, fromInputProps } = useRangeDatepicker({
+    fromDate: new Date("Aug 23 2019"),
+  });
 
-    
+  const [loading, setLoading] = useState(false);
 
   return (
     <div className="p-20 max-w-[95%] w-[80rem] m-auto gap-7 flex flex-col">
@@ -36,7 +37,10 @@ export default function NewEvent() {
           max-width: 100%;
         }`}
       </style>
-      <form action={createAndRedirect} className="flex flex-col gap-5">
+      <form
+        action={(f) => createAndRedirect(f, setLoading)}
+        className="flex flex-col gap-5"
+      >
         <TextField label="Tittel" name="title" className="" required />
         <TextField label="Sted" name="location" required />
         <Textarea label="Beskrivelse" name="description" required />
@@ -76,7 +80,11 @@ export default function NewEvent() {
             </div>
           </div>
         </DatePicker>
-        <Button type="submit" className="w-[19rem] max-w-full">
+        <Button
+          type="submit"
+          className="w-[19rem] max-w-full"
+          loading={loading}
+        >
           Opprett arrangement
         </Button>
       </form>
@@ -84,7 +92,12 @@ export default function NewEvent() {
   );
 }
 
-async function createAndRedirect(formData: FormData) {
+async function createAndRedirect(
+  formData: FormData,
+  setIsLoading: Dispatch<SetStateAction<boolean>>
+) {
+  setIsLoading(true);
   const event = await createEvent(formData);
-  redirect(`/event/${event.id}`)
+  setIsLoading;
+  redirect(`/event/${event.id}`);
 }

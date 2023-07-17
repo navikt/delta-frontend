@@ -94,7 +94,7 @@ export default function NewEvent() {
 
 async function createAndRedirect(
   formData: FormData,
-  setIsLoading: Dispatch<SetStateAction<boolean>>
+  setIsLoading: Dispatch<SetStateAction<boolean>>,
 ) {
   setIsLoading(true);
   const event = await createEvent(formData);

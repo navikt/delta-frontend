@@ -8,6 +8,7 @@ import { nb } from "date-fns/locale";
 import { format } from "date-fns";
 import JoinEventButton from "./joinEventButton";
 import EventDescription from "./eventDescription";
+import DeleteEventButton from "./deleteEventButton";
 
 export default async function Page({ params }: { params: { id: string } }) {
   await checkToken(`/event/${params.id}`);
@@ -48,11 +49,19 @@ export default async function Page({ params }: { params: { id: string } }) {
             </span>
             <span className="font-semibold text-3xl">{format(start, "d")}</span>
           </div>
-          <JoinEventButton
-            event={event}
-            user={user}
-            participants={participants}
-          />
+          <div className="flex flex-row gap-4 items-center">
+            <JoinEventButton
+              event={event}
+              user={user}
+              participants={participants}
+            />
+            {
+              // TODO: This looks horrible on mobile. This should ideally be located somewhere else
+              event.ownerEmail == user.email && (
+                <DeleteEventButton event={event} />
+              )
+            }
+          </div>
         </div>
         <div className="flex-col md:flex-row flex justify-between gap-4 md:gap-28 pt-4">
           <EventDescription event={event} participants={participants} />

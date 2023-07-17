@@ -33,9 +33,9 @@ export default function NewEvent() {
         }`}
       </style>
       <form action={createEvent} className="flex flex-col gap-5">
-        <TextField label="Tittel" name="title" className="" />
-        <TextField label="Sted" name="location" />
-        <Textarea label="Beskrivelse" name="description" />
+        <TextField label="Tittel" name="title" className="" required />
+        <TextField label="Sted" name="location" required />
+        <Textarea label="Beskrivelse" name="description" required />
         <DatePicker {...datepickerProps} style={{ width: "100%" }}>
           <div className="flex flex-row flex-wrap justify-left gap-4 pb-0 items-end">
             <div className="flex flex-row items-end gap-4 flex-wrap">
@@ -43,22 +43,30 @@ export default function NewEvent() {
                 {...fromInputProps}
                 label="Fra"
                 name="startDate"
+                required
               />
               <div className="navds-form-field navds-form-field--medium">
                 <input
                   type="time"
                   name="startTime"
                   className="navds-text-field__input"
+                  required
                 />
               </div>
             </div>
             <div className="flex flex-row items-end gap-4 flex-wrap">
-              <DatePicker.Input {...toInputProps} label="Til" name="endDate" />
+              <DatePicker.Input
+                {...toInputProps}
+                label="Til"
+                name="endDate"
+                required
+              />
               <div className="navds-form-field navds-form-field--medium">
                 <input
                   type="time"
                   name="endTime"
                   className="navds-text-field__input"
+                  required
                 />
               </div>
             </div>

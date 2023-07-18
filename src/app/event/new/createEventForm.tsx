@@ -1,6 +1,12 @@
 "use client";
 
-import { Button, DatePicker, TextField, Textarea, useRangeDatepicker } from "@navikt/ds-react";
+import {
+  Button,
+  DatePicker,
+  TextField,
+  Textarea,
+  useRangeDatepicker,
+} from "@navikt/ds-react";
 import { Dispatch, SetStateAction, useState } from "react";
 import { createEvent } from "./createEvent";
 import { redirect } from "next/navigation";
@@ -68,6 +74,5 @@ async function createAndRedirect(
 ) {
   setIsLoading(true);
   const event = await createEvent(formData);
-  setIsLoading;
   redirect(`/event/${event.id}`);
 }

@@ -8,8 +8,8 @@ export const metadata: Metadata = {
   description: "Påmeldingsapp",
 };
 
-type RootLayoutProps = { 
-  children: React.ReactNode,
+type RootLayoutProps = {
+  children: React.ReactNode;
 };
 
 export default async function RootLayout({ children }: RootLayoutProps) {

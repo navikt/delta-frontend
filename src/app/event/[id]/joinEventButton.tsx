@@ -1,30 +1,39 @@
 "use client";
 import { Button } from "@navikt/ds-react";
-import { joinEvent, leaveEvent } from "./eventActions";
-import { DeltaEventWithParticipant } from "@/types/event";
+import { getEvent, joinEvent, leaveEvent } from "./eventActions";
+import { DeltaEventWithParticipant, DeltaParticipant } from "@/types/event";
 import { User } from "@/types/user";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
+type JoinEventButtonParams = DeltaEventWithParticipant & { user: User } & {
+  setParticipants: Dispatch<SetStateAction<DeltaParticipant[]>>;
+};
 export default function JoinEventButton({
   event,
   participants,
   user,
-}: DeltaEventWithParticipant & { user: User }) {
-  const [isParticipant, setParticipant] = useState(
-    participants.map((p) => p.email).includes(user.email),
-  );
+  setParticipants,
+}: JoinEventButtonParams) {
+  const [isLoading, setIsLoading] = useState(false);
+  const isParticipant = participants.map((p) => p.email).includes(user.email);
+
   return (
     <form
-      action={(f: FormData) =>
-        setParticipant(toggleEventStatus(f, isParticipant))
+      action={() =>
+        toggleEventStatus(
+          event.id,
+          isParticipant,
+          setParticipants,
+          setIsLoading,
+        )
       }
       className="w-full max-w-[12rem] h-full"
     >
-      <input type="hidden" name="id" value={event.id} />
       <Button
         type="submit"
         variant={isParticipant ? "danger" : "primary"}
         className="w-full h-fit"
+        loading={isLoading}
       >
         {isParticipant ? "Meld av" : "Bli med"}
       </Button>
@@ -32,7 +41,14 @@ export default function JoinEventButton({
   );
 }
 
-function toggleEventStatus(formData: FormData, isParticipant: boolean) {
-  isParticipant ? leaveEvent(formData) : joinEvent(formData);
-  return !isParticipant;
+async function toggleEventStatus(
+  eventId: string,
+  isParticipant: boolean,
+  setParticipants: Dispatch<SetStateAction<DeltaParticipant[]>>,
+  setIsLoading: Dispatch<SetStateAction<boolean>>,
+) {
+  setIsLoading(true);
+  await (isParticipant ? leaveEvent(eventId) : joinEvent(eventId));
+  setParticipants((await getEvent(eventId)).participants);
+  setIsLoading(false);
 }

@@ -15,7 +15,7 @@ export default async function Home(context: any) {
 
   return (
     <section className="flex-col justify-center w-11/12 max-w-3xl flex-wrap items-start">
-      <Heading size="large" className="pt-12 pb-3 text-center">
+      <Heading size="large" className="pb-3 text-center">
         Arrangementer
       </Heading>
       <EventListSwitcher all={all} my={my} joined={joined} />

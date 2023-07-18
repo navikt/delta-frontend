@@ -3,7 +3,6 @@ import { checkToken } from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
 import EventListSwitcher from "@/components/eventListSwitcher";
 import { DeltaEvent } from "@/types/event";
-import { Heading } from "@navikt/ds-react/esm/typography";
 
 export default async function Home(context: any) {
   await checkToken();
@@ -15,7 +14,7 @@ export default async function Home(context: any) {
   const joined: DeltaEvent[] = (await authApi.get("/user/event")).data;
 
   return (
-    <CardWithBackground color="bg-blue-200" title="Arrangementer">
+    <CardWithBackground color="bg-blue-200" title="Arrangementer" newEvent>
       <EventListSwitcher all={all} my={my} joined={joined} />
     </CardWithBackground>
   );

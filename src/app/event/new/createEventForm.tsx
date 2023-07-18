@@ -22,11 +22,9 @@ const createEventSchema = z
       message: "Verdien må være et gyldig tidspunkt",
     }),
     endDate: z.date({ required_error: "Du må velge en sluttdato" }),
-    endTime: z
-      .string()
-      .regex(/[0-9]{2}:[0-9]{2}/, {
-        message: "Verdien må være et gyldig tidspunkt",
-      }),
+    endTime: z.string().regex(/[0-9]{2}:[0-9]{2}/, {
+      message: "Verdien må være et gyldig tidspunkt",
+    }),
   })
   .required();
 

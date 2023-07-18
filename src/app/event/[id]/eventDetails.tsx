@@ -22,7 +22,7 @@ export default function EventDetails({
   const [start, _] = dates(event);
 
   return (
-  <div>
+    <div>
       <div className="flex flex-row w-full justify-between items-start">
         <div className="flex flex-col w-fit bg-red-100 p-2 rounded">
           <span>

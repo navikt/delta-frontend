@@ -32,7 +32,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   }
   const { event, participants }: DeltaEventWithParticipant = response.data;
   return (
-    <CardWithBackground color="bg-blue-200" title={event.title}>
+    <CardWithBackground color="bg-blue-200" title={event.title} home>
       <EventDetails event={event} participants={participants} user={user} />
     </CardWithBackground>
   );

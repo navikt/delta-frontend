@@ -8,6 +8,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import EventDatepicker from "./eventDatepicker";
+import { WatchFileKind } from "typescript";
 
 const createEventSchema = z
   .object({
@@ -122,5 +123,5 @@ export default function CreateEventForm() {
 
 async function createAndRedirect(formData: CreateEventSchema) {
   const event = await createEvent(formData);
-  redirect(`/event/${event.id}`);
+  window.location.href = `/event/${event.id}`;
 }

@@ -22,7 +22,7 @@ export default function EventDetails({
   const [start, _] = dates(event);
 
   return (
-    <div className="bg-white drop-shadow-lg border-gray-200 border-2 rounded relative w-5/6 top-[-5rem] z-10 flex flex-col p-4 h-fit max-w-[80rem]">
+  <div>
       <div className="flex flex-row w-full justify-between items-start">
         <div className="flex flex-col w-fit bg-red-100 p-2 rounded">
           <span>
@@ -39,7 +39,7 @@ export default function EventDetails({
           />
           {
             // TODO: This looks horrible on mobile. This should ideally be located somewhere else
-            event.ownerEmail == user.email && (
+            event.ownerEmail === user.email && (
               <DeleteEventButton event={event} />
             )
           }

@@ -5,6 +5,7 @@ import { checkToken, getUser } from "@/auth/token";
 import { Heading } from "@navikt/ds-react/esm/typography";
 import EventDetails from "./eventDetails";
 import { EventCard } from "@/components/eventCard";
+import CardWithBackground from "@/components/cardWithBackground";
 
 export default async function Page({ params }: { params: { id: string } }) {
   await checkToken(`/event/${params.id}`);
@@ -31,11 +32,8 @@ export default async function Page({ params }: { params: { id: string } }) {
   }
   const { event, participants }: DeltaEventWithParticipant = response.data;
   return (
-    <div className="w-full flex flex-col align-center items-center">
-      <div className="w-full text-center h-fit bg-blue-200 p-18 pb-24">
-        <Heading size="xlarge">{event.title}</Heading>
-      </div>
+    <CardWithBackground color="bg-blue-200" title={event.title}>
       <EventDetails event={event} participants={participants} user={user} />
-    </div>
+    </CardWithBackground>
   );
 }

@@ -24,16 +24,16 @@ export default function EventListSwitcher({
         </Tabs.List>
         <Tabs.Panel
           value="all"
-          className="w-full bg-gray-50 p-4 bg-transparent"
+          className="w-full p-4"
         >
           <EventList events={all} />
         </Tabs.Panel>
-        <Tabs.Panel value="my" className="w-full bg-gray-50 p-4 bg-transparent">
+        <Tabs.Panel value="my" className="w-full p-4">
           <EventList events={my} />
         </Tabs.Panel>
         <Tabs.Panel
           value="joined"
-          className="w-full bg-gray-50 p-4 bg-transparent"
+          className="w-full p-4"
         >
           <EventList events={joined} />
         </Tabs.Panel>

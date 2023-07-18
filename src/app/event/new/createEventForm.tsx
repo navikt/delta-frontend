@@ -20,9 +20,9 @@ const createEventSchema = z
     startTime: z.string().regex(/[0-9]{2}:[0-9]{2}/, {
       message: "Verdien må være et gyldig tidspunkt",
     }),
-    endDate: z.date(),
+    endDate: z.date({ required_error: "Du må velge en sluttdato" }),
     endTime: z
-      .string({ required_error: "Du må velge en sluttid" })
+      .string()
       .regex(/[0-9]{2}:[0-9]{2}/, {
         message: "Verdien må være et gyldig tidspunkt",
       }),
@@ -81,7 +81,7 @@ export default function CreateEventForm() {
         <div className="navds-form-field navds-form-field--medium">
           <input
             type="time"
-            className="navds-text-field__input w-20"
+            className="navds-text-field__input w-24"
             {...register("startTime")}
           />
           {errors.startTime && (
@@ -103,7 +103,7 @@ export default function CreateEventForm() {
         <div className="navds-form-field navds-form-field--medium">
           <input
             type="time"
-            className="navds-text-field__input w-20"
+            className="navds-text-field__input w-24"
             {...register("endTime")}
           />
           {errors.endTime && (

@@ -54,7 +54,7 @@ export default function EventDatepicker(props: EventDatepickerProps) {
             {...inputProps}
             id={field.name}
             label={props.label}
-            error={props.errors[props.name]?.message}
+            error={props.errors[field.name]?.message}
           />
         </div>
       </div>

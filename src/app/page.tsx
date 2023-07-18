@@ -1,9 +1,11 @@
 import { getAuthApi, getAuthlessApi } from "@/api/instance";
+import { checkToken } from "@/auth/token";
 import EventListSwitcher from "@/components/eventListSwitcher";
 import { DeltaEvent } from "@/types/event";
 import { Heading } from "@navikt/ds-react/esm/typography";
 
 export default async function Home(context: any) {
+  await checkToken();
   const api = getAuthlessApi();
   const authApi = await getAuthApi();
 

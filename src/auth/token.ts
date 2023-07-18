@@ -6,18 +6,23 @@ import type { User } from "@/types/user";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-export async function checkToken() {
+export async function checkToken(redirectTo?: string) {
   if (process.env.NODE_ENV === "development") return;
 
   const authHeader = headers().get("Authorization");
   if (!authHeader) {
-    redirect("/oauth2/login");
+    if (redirectTo) {
+      redirect(`/oauth2/login?redirect=${redirectTo}`)
+    }
+    redirect("/oauth2/login")
   }
 
   const result = await validateAzureToken(authHeader);
   if (result !== "valid") {
     console.log(`Tokenvalidering gikk galt: ${result.message}`);
-    redirect("/oauth2/login");
+    redirectTo 
+      ? redirect(`/oauth2/login?redirect=${redirectTo}`)
+      : redirect("/oauth2/login")
   }
 }
 

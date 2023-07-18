@@ -24,6 +24,7 @@ export default function JoinEventButton({
           event.id,
           isParticipant,
           setParticipants,
+          isLoading,
           setIsLoading,
         )
       }
@@ -45,8 +46,11 @@ async function toggleEventStatus(
   eventId: string,
   isParticipant: boolean,
   setParticipants: Dispatch<SetStateAction<DeltaParticipant[]>>,
+  isLoading: boolean,
   setIsLoading: Dispatch<SetStateAction<boolean>>,
 ) {
+  if (isLoading) return;
+
   setIsLoading(true);
   await (isParticipant ? leaveEvent(eventId) : joinEvent(eventId));
   setParticipants((await getEvent(eventId)).participants);

@@ -55,7 +55,7 @@ export function getUser(): User {
 }
 
 export async function getAccessToken(
-  scope: string = "",
+  scope: string = ""
 ): Promise<string | null> {
   if (process.env.NODE_ENV === "development") return null;
 
@@ -66,7 +66,7 @@ export async function getAccessToken(
 
   const result = await grantAzureOboToken(
     authHeader.replace("Bearer ", ""),
-    scope,
+    scope
   );
 
   if (typeof result !== "string") {

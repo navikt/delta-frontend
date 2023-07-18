@@ -33,7 +33,7 @@ export default function ParticipantList({
           </Heading>
           <div className="flex flex-col gap-2">
             {participants.map((p) => (
-              <Participant {...p} />
+              <Participant {...p} key={p.email} />
             ))}
           </div>
         </Modal.Content>

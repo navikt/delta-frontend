@@ -7,7 +7,7 @@ export default async function NewEvent() {
   await checkToken("/event/new");
 
   return (
-    <CardWithBackground color="bg-green-200" title="Opprett arrangement">
+    <CardWithBackground color="bg-green-200" title="Opprett arrangement" home>
       <p className="italic break-words">
         Arrangementet vil være synlig for alle som har tilgang til Delta, og vil
         bli publisert på deltakalenderen.

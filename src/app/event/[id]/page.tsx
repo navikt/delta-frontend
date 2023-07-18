@@ -1,7 +1,7 @@
 import type { DeltaEventWithParticipant } from "@/types/event";
 import { notFound } from "next/navigation";
 import { getAuthlessApi } from "@/api/instance";
-import { getUser } from "@/auth/token";
+import { checkToken, getUser } from "@/auth/token";
 import { Heading } from "@navikt/ds-react/esm/typography";
 import { dates } from "@/components/format";
 import { nb } from "date-fns/locale";
@@ -10,6 +10,8 @@ import JoinEventButton from "./joinEventButton";
 import EventDescription from "./eventDescription";
 
 export default async function Page({ params }: { params: { id: string } }) {
+  await checkToken(`/event/${params.id}`);
+
   const api = getAuthlessApi();
   const response = await api.get(`/event/${params.id}`);
   const user = getUser();

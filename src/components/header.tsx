@@ -9,8 +9,9 @@ import {
 import { Dropdown, InternalHeader } from "@navikt/ds-react";
 import Link from "next/link";
 
-type HeaderProps = { user: User };
+type HeaderProps = { user?: User };
 export default function Header({ user }: HeaderProps) {
+
   return (
     <InternalHeader className="flex justify-between">
       <InternalHeader.Title as={Link} className="whitespace-nowrap" href="/">

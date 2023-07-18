@@ -1,8 +1,8 @@
 "use client";
 import { DeltaParticipant } from "@/types/event";
 import Participant from "@/app/event/[id]/participant";
-import { BodyLong, Button, Heading, Modal } from "@navikt/ds-react";
-import { useEffect, useState } from "react";
+import { Heading, Modal } from "@navikt/ds-react";
+import { useEffect } from "react";
 
 type ParticipantListProps = {
   participants: DeltaParticipant[];

@@ -1,14 +1,12 @@
 "use client";
 
-import { Button, TextField, Textarea } from "@navikt/ds-react";
+import { Button, Textarea, TextField } from "@navikt/ds-react";
 import { useState } from "react";
 import { createEvent } from "./createEvent";
-import { redirect } from "next/navigation";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import EventDatepicker from "./eventDatepicker";
-import { WatchFileKind } from "typescript";
 
 const createEventSchema = z
   .object({

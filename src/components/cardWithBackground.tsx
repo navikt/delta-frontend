@@ -1,6 +1,6 @@
 "use client";
 import { HouseIcon, PencilWritingIcon } from "@navikt/aksel-icons";
-import { Heading, Button, Link } from "@navikt/ds-react";
+import { Heading, Link } from "@navikt/ds-react";
 
 type CardWithBackgroundProps = {
   title: string;

@@ -11,6 +11,7 @@ import {
 import { format } from "date-fns";
 import { nb } from "date-fns/locale";
 import ParticipantList from "@/app/event/[id]/participantList";
+import ParticipantIcon from "@/app/event/[id]/participantIcon";
 import { useState } from "react";
 
 type EventDescriptionProps = DeltaEventWithParticipant & { className?: string };
@@ -33,19 +34,31 @@ export default function EventDescription({
         <PersonCircleIcon />
         {event.ownerEmail}
       </span>
-      <span
+      <div
         onClick={() => setOpenParticipantList(!openParticipantList)}
-        className="flex flex-row justify-start gap-2 items-center cursor-pointer"
+        className="fle flex-col hover:bg-surface-subtle rounded-md cursor-pointer"
       >
-        <PersonCheckmarkIcon />
-        {participants.length}{" "}
-        {participants.length == 1 ? "deltaker" : "deltakere"}
+        <span className="flex flex-row justify-start gap-2 items-center cursor-pointer">
+          <PersonCheckmarkIcon />
+          {participants.length}{" "}
+          {participants.length == 1 ? "deltaker" : "deltakere"}
+        </span>
+        <div className="flex flex-row">
+          {participants.slice(0, 4).map((p) => (
+            <ParticipantIcon
+              nameList={p.email.split("@")[0].split(".")}
+              key={p.email}
+              type="participantPreview"
+            />
+          ))}
+          <ParticipantIcon />
+        </div>
         <ParticipantList
           participants={participants}
           open={openParticipantList}
           setOpen={setOpenParticipantList}
         />
-      </span>
+      </div>
       {event.location && (
         <span className="flex flex-row justify-start gap-2 items-center">
           <PinIcon />

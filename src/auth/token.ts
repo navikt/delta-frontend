@@ -12,17 +12,17 @@ export async function checkToken(redirectTo?: string) {
   const authHeader = headers().get("Authorization");
   if (!authHeader) {
     if (redirectTo) {
-      redirect(`/oauth2/login?redirect=${redirectTo}`)
+      redirect(`/oauth2/login?redirect=${redirectTo}`);
     }
-    redirect("/oauth2/login")
+    redirect("/oauth2/login");
   }
 
   const result = await validateAzureToken(authHeader);
   if (result !== "valid") {
     console.log(`Tokenvalidering gikk galt: ${result.message}`);
-    redirectTo 
+    redirectTo
       ? redirect(`/oauth2/login?redirect=${redirectTo}`)
-      : redirect("/oauth2/login")
+      : redirect("/oauth2/login");
   }
 }
 

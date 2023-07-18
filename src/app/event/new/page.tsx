@@ -1,6 +1,5 @@
 import { checkToken } from "@/auth/token";
 import CreateEventForm from "./createEventForm";
-import { Heading } from "@navikt/ds-react/esm/typography";
 import CardWithBackground from "@/components/cardWithBackground";
 
 export default async function NewEvent() {

@@ -1,6 +1,6 @@
 import {
-  validateAzureToken,
   grantAzureOboToken,
+  validateAzureToken,
 } from "@navikt/next-auth-wonderwall";
 import type { User } from "@/types/user";
 import { headers } from "next/headers";

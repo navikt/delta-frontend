@@ -2,9 +2,7 @@ import type { DeltaEventWithParticipant } from "@/types/event";
 import { notFound } from "next/navigation";
 import { getAuthlessApi } from "@/api/instance";
 import { checkToken, getUser } from "@/auth/token";
-import { Heading } from "@navikt/ds-react/esm/typography";
 import EventDetails from "./eventDetails";
-import { EventCard } from "@/components/eventCard";
 import CardWithBackground from "@/components/cardWithBackground";
 
 export default async function Page({ params }: { params: { id: string } }) {

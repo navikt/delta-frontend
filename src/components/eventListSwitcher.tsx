@@ -17,7 +17,7 @@ export default function EventListSwitcher({
   return (
     <div className="flex flex-col gap-6 w-full justify-center items-center">
       <Tabs defaultValue="all" className="w-full">
-        <Tabs.List className="flex justify-around w-full">
+        <Tabs.List className="flex w-full">
           <Tabs.Tab value="all" label="Alle" />
           <Tabs.Tab value="my" label="Mine" />
           <Tabs.Tab value="joined" label="Påmeldt" />

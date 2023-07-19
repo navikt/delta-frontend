@@ -51,7 +51,7 @@ export default function EventDescription({
               type="participantPreview"
             />
           ))}
-          <ParticipantIcon />
+          {participants.length > 4 && <ParticipantIcon nameList={[]} />}
         </div>
         <ParticipantList
           participants={participants}

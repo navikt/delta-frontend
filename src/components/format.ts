@@ -4,6 +4,7 @@ import { getTimezoneOffset } from "date-fns-tz";
 import nb from "date-fns/locale/nb";
 
 const fmt = "do MMMM yyyy, HH:mm";
+// TODO: let's do this better!!!
 
 export const formatEventTimes = (event: DeltaEvent): string => {
   const [start, end] = dates(event);

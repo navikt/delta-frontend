@@ -43,7 +43,7 @@ export default function EventDescription({
           {participants.length}{" "}
           {participants.length == 1 ? "deltaker" : "deltakere"}
         </span>
-        <div className="flex flex-row ml-1">
+        <div className="flex flex-row ml-[0.3rem] pl-6">
           {participants.slice(0, 4).map((p) => (
             <ParticipantIcon
               nameList={p.email.split("@")[0].split(".")}

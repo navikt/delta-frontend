@@ -2,11 +2,14 @@
 
 import { Button, Textarea, TextField } from "@navikt/ds-react";
 import { useState } from "react";
-import { createEvent } from "./createEvent";
+import { createEvent, updateEvent } from "./createEvent";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import EventDatepicker from "./eventDatepicker";
+import { DeltaEvent } from "@/types/event";
+import { dates } from "@/components/format";
+import { format } from "date-fns";
 
 const createEventSchema = z
   .object({
@@ -28,8 +31,11 @@ const createEventSchema = z
 
 export type CreateEventSchema = z.infer<typeof createEventSchema>;
 
-export default function CreateEventForm() {
+type CreateEventFormProps = { event?: DeltaEvent };
+export default function CreateEventForm({ event }: CreateEventFormProps) {
   const [loading, setLoading] = useState(false);
+
+  const [start, end] = event ? dates(event) : [undefined, undefined];
 
   const {
     register,
@@ -38,6 +44,15 @@ export default function CreateEventForm() {
     control,
     formState: { errors },
   } = useForm<CreateEventSchema>({
+    defaultValues: !event
+      ? undefined
+      : ({
+          ...event,
+          endDate: end,
+          startDate: start,
+          startTime: format(start!!, "HH:mm"),
+          endTime: format(end!!, "HH:mm"),
+        } as CreateEventSchema),
     resolver: zodResolver(createEventSchema),
   });
 
@@ -45,8 +60,10 @@ export default function CreateEventForm() {
     <form
       action={async () => {
         const valid = await trigger();
+        if (!valid) return;
         setLoading(true);
-        if (valid) createAndRedirect(getValues());
+        if (!event) createAndRedirect(getValues());
+        else updateAndRedirect(getValues(), event.id);
         setLoading(false);
       }}
       className="flex flex-col gap-5"
@@ -111,7 +128,7 @@ export default function CreateEventForm() {
         </div>
       </div>
       <Button type="submit" className="w-[19rem] max-w-full" loading={loading}>
-        Opprett arrangement
+        {event ? "Oppdater arrangement" : "Opprett arrangement"}
       </Button>
     </form>
   );
@@ -119,5 +136,10 @@ export default function CreateEventForm() {
 
 async function createAndRedirect(formData: CreateEventSchema) {
   const event = await createEvent(formData);
+  window.location.href = `/event/${event.id}`;
+}
+
+async function updateAndRedirect(formData: CreateEventSchema, eventId: string) {
+  const event = await updateEvent(formData, eventId);
   window.location.href = `/event/${event.id}`;
 }

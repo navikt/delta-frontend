@@ -3,6 +3,7 @@
 import { getAuthApi } from "@/api/instance";
 import { DeltaEvent } from "@/types/event";
 import { CreateEventSchema } from "./createEventForm";
+import { adjustTimezoneForward } from "@/components/format";
 
 export async function createEvent(
   formData: CreateEventSchema,
@@ -13,10 +14,10 @@ export async function createEvent(
     title: formData.title,
     description: formData.description,
     location: formData.location,
-    startTime: `${formData.startDate.toISOString().substring(0, 10)}T${
+    startTime: `${adjustTimezoneForward(formData.startDate).toISOString().substring(0, 10)}T${
       formData.startTime
     }:00`,
-    endTime: `${formData.endDate.toISOString().substring(0, 10)}T${
+    endTime: `${adjustTimezoneForward(formData.endDate).toISOString().substring(0, 10)}T${
       formData.endTime
     }:00`,
   });

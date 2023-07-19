@@ -36,3 +36,9 @@ export const dates = (event: DeltaEvent): [Date, Date] => {
   end.setTime(end.getTime() - offset);
   return [start, end];
 };
+
+export const adjustTimezoneForward = (date: Date): Date => {
+  const offset = getTimezoneOffset("Europe/Oslo");
+  date.setTime(date.getTime() + offset);
+  return date
+}

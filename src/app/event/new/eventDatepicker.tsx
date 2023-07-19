@@ -38,6 +38,7 @@ export default function EventDatepicker(props: EventDatepickerProps) {
 
   const { datepickerProps, inputProps } = useDatepicker({
     defaultSelected: field.value,
+    fromDate: new Date(),
     onDateChange: (date: Date | undefined) => {
       field.onChange(date);
     },

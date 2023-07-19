@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Textarea, TextField } from "@navikt/ds-react";
+import { Button, Link, Textarea, TextField } from "@navikt/ds-react";
 import { useState } from "react";
 import { createEvent, updateEvent } from "./createEvent";
 import { z } from "zod";
@@ -10,6 +10,7 @@ import EventDatepicker from "./eventDatepicker";
 import { DeltaEvent } from "@/types/event";
 import { dates } from "@/components/format";
 import { format } from "date-fns";
+import { DeleteEventButton } from "../[id]/deleteEventButton";
 
 const createEventSchema = z
   .object({
@@ -57,80 +58,95 @@ export default function CreateEventForm({ event }: CreateEventFormProps) {
   });
 
   return (
-    <form
-      action={async () => {
-        const valid = await trigger();
-        if (!valid) return;
-        setLoading(true);
-        if (!event) createAndRedirect(getValues());
-        else updateAndRedirect(getValues(), event.id);
-        setLoading(false);
-      }}
-      className="flex flex-col gap-5"
-    >
-      <TextField
-        label="Tittel"
-        {...register("title")}
-        error={errors.title?.message}
-      />
-      <TextField
-        label="Sted"
-        {...register("location")}
-        error={errors.location?.message}
-      />
-      <Textarea
-        label="Beskrivelse"
-        {...register("description")}
-        error={errors.description?.message}
-      />
-      <div className="flex flex-row flex-wrap justify-left gap-4 pb-0 items-end">
-        <EventDatepicker
-          name="startDate"
-          label="Fra"
-          invalidMessage="Du må fylle inn en gyldig startdato"
-          requiredMessage="Du må fylle inn en startdato"
-          control={control}
-          errors={errors}
+    <>
+      {event && (
+        <span className="flex justify-end">
+          <DeleteEventButton event={event} />
+        </span>
+      )}
+      <form
+        action={async () => {
+          const valid = await trigger();
+          if (!valid) return;
+          setLoading(true);
+          if (!event) createAndRedirect(getValues());
+          else updateAndRedirect(getValues(), event.id);
+          setLoading(false);
+        }}
+        className="flex flex-col gap-5"
+      >
+        <TextField
+          label="Tittel"
+          {...register("title")}
+          error={errors.title?.message}
         />
-        <div className="navds-form-field navds-form-field--medium">
-          <input
-            type="time"
-            className="navds-text-field__input w-28"
-            {...register("startTime")}
-          />
-          {errors.startTime && (
-            <p className="navds-error-message navds-label">
-              {errors.startTime.message}
-            </p>
-          )}
-        </div>
-      </div>
-      <div className="flex flex-row flex-wrap justify-left gap-4 pb-0 items-end">
-        <EventDatepicker
-          name="endDate"
-          label="Til"
-          invalidMessage="Du må fylle inn en gyldig sluttdato"
-          requiredMessage="Du må fylle inn en sluttdato"
-          control={control}
-          errors={errors}
+        <TextField
+          label="Sted"
+          {...register("location")}
+          error={errors.location?.message}
         />
-        <div className="navds-form-field navds-form-field--medium">
-          <input
-            type="time"
-            className="navds-text-field__input w-28"
-            {...register("endTime")}
+        <Textarea
+          label="Beskrivelse"
+          {...register("description")}
+          error={errors.description?.message}
+        />
+        <div className="flex flex-row flex-wrap justify-left gap-4 pb-0 items-end">
+          <EventDatepicker
+            name="startDate"
+            label="Fra"
+            invalidMessage="Du må fylle inn en gyldig startdato"
+            requiredMessage="Du må fylle inn en startdato"
+            control={control}
+            errors={errors}
           />
-          {errors.endTime && (
-            <p className="navds-error-message navds-label">
-              {errors.endTime.message}
-            </p>
-          )}
+          <div className="navds-form-field navds-form-field--medium">
+            <input
+              type="time"
+              className="navds-text-field__input w-28"
+              {...register("startTime")}
+            />
+            {errors.startTime && (
+              <p className="navds-error-message navds-label">
+                {errors.startTime.message}
+              </p>
+            )}
+          </div>
         </div>
-      </div>
-      <Button type="submit" className="w-[19rem] max-w-full" loading={loading}>
-        {event ? "Oppdater arrangement" : "Opprett arrangement"}
-      </Button>
-    </form>
+        <div className="flex flex-row flex-wrap justify-left gap-4 pb-0 items-end">
+          <EventDatepicker
+            name="endDate"
+            label="Til"
+            invalidMessage="Du må fylle inn en gyldig sluttdato"
+            requiredMessage="Du må fylle inn en sluttdato"
+            control={control}
+            errors={errors}
+          />
+          <div className="navds-form-field navds-form-field--medium">
+            <input
+              type="time"
+              className="navds-text-field__input w-28"
+              {...register("endTime")}
+            />
+            {errors.endTime && (
+              <p className="navds-error-message navds-label">
+                {errors.endTime.message}
+              </p>
+            )}
+          </div>
+        </div>
+        <div className="flex items-center justify-end gap-4">
+          <Link
+            className="w-fit h-fit"
+            href={event ? `/event/${event.id}` : "/"}
+          >
+            Avbryt
+          </Link>
+          <Button type="submit" loading={loading}>
+            {event ? "Oppdater" : "Opprett"}
+          </Button>
+        </div>
+      </form>
+    </>
   );
 }
 

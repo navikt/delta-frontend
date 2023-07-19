@@ -2,23 +2,36 @@
 import { Button } from "@navikt/ds-react";
 import { deleteEvent } from "./eventActions";
 import { DeltaEvent } from "@/types/event";
+import Link from "next/link";
+import { TrashIcon } from "@navikt/aksel-icons";
 
-export default function DeleteEventButton({ event }: { event: DeltaEvent }) {
+export function DeleteEventButton({ event }: { event: DeltaEvent }) {
   return (
-    <form action={deleteAndRedirect} className="w-full h-full">
-      <input type="hidden" name="id" value={event.id} />
-      <Button
-        type="submit"
-        variant="danger"
-        className="w-full h-fit font-bold whitespace-nowrap"
-      >
-        Slett arrangement
-      </Button>
-    </form>
+    <Button
+      type="submit"
+      variant="danger"
+      className="w-fit h-fit font-bold"
+      onClick={async () => deleteAndRedirect(event.id)}
+    >
+      <span className="flex items-center gap-1">
+        <TrashIcon /> Slett
+      </span>
+    </Button>
   );
 }
 
-async function deleteAndRedirect(formData: FormData) {
-  await deleteEvent(formData);
+export function EditEventButton({ event }: { event: DeltaEvent }) {
+  return (
+    <Link
+      className="w-fit h-fit navds-button navds-button--primary navds-label"
+      href={`/event/${event.id}/edit`}
+    >
+      Rediger arrangement
+    </Link>
+  );
+}
+
+async function deleteAndRedirect(eventId: string) {
+  await deleteEvent(eventId);
   window.location.href = "/";
 }

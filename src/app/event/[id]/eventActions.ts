@@ -13,9 +13,9 @@ export async function leaveEvent(eventId: string) {
   const response = await api.delete(`/user/event/${eventId}`);
 }
 
-export async function deleteEvent(formDate: FormData) {
+export async function deleteEvent(eventId: string) {
   const api = await getAuthApi();
-  await api.delete(`/admin/event/${formDate.get("id")}`);
+  await api.delete(`/admin/event/${eventId})`);
 }
 
 export async function getEvent(id: string): Promise<DeltaEventWithParticipant> {

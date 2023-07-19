@@ -41,5 +41,5 @@ export const dates = (event: DeltaEvent): [Date, Date] => {
 export const adjustTimezoneForward = (date: Date): Date => {
   const offset = getTimezoneOffset("Europe/Oslo");
   date.setTime(date.getTime() + offset);
-  return date
-}
+  return date;
+};

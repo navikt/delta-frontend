@@ -19,12 +19,15 @@ export default function EventDescription({
 }: EventDescriptionProps) {
   const [openParticipantList, setOpenParticipantList] = useState(false);
   console.log();
-    
+
   return (
     <div className={className || ""}>
       <span className="flex flex-row justify-start gap-2 items-center">
         <ClockIcon />
-        {`${event.startTime.substring(11,16)} – ${event.endTime.substring(11,16)}`}
+        {`${event.startTime.substring(11, 16)} – ${event.endTime.substring(
+          11,
+          16,
+        )}`}
       </span>
       <span className="flex flex-row justify-start gap-2 items-center">
         <PersonCircleIcon />

@@ -7,7 +7,11 @@ export default function DeleteEventButton({ event }: { event: DeltaEvent }) {
   return (
     <form action={deleteAndRedirect} className="w-full h-full">
       <input type="hidden" name="id" value={event.id} />
-      <Button type="submit" variant="danger" className="w-full h-fit font-bold whitespace-nowrap">
+      <Button
+        type="submit"
+        variant="danger"
+        className="w-full h-fit font-bold whitespace-nowrap"
+      >
         Slett arrangement
       </Button>
     </form>

@@ -22,7 +22,7 @@ export default function EventDetails({
     new Date(event.startTime),
     "Europe/Oslo",
     "MMM",
-    { locale: nb }
+    { locale: nb },
   )
     .substring(0, 3)
     .toUpperCase();

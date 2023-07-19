@@ -1,6 +1,6 @@
 "use client";
 
-type ParticipantIconProps = { nameList?: string[]; type?: string };
+type ParticipantIconProps = { nameList: string[]; type?: string };
 
 export default function ParticipantIcon({
   nameList,

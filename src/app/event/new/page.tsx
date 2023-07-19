@@ -1,5 +1,5 @@
 import { checkToken } from "@/auth/token";
-import CreateEventForm from "./createEventForm";
+import CreateEventForm from "@/components/createEventForm";
 import CardWithBackground from "@/components/cardWithBackground";
 
 export default async function NewEvent() {

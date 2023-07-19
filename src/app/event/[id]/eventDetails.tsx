@@ -1,14 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { User } from "@/types/user";
-import JoinEventButton from "./joinEventButton";
-import { EditEventButton } from "./deleteEventButton";
 import EventDescription from "./eventDescription";
-import { Heading } from "@navikt/ds-react";
+import { Button, Heading } from "@navikt/ds-react";
+import Link from "next/link";
 import { nb } from "date-fns/locale";
-import { DeltaEventWithParticipant } from "@/types/event";
+import { DeltaEventWithParticipant, DeltaParticipant } from "@/types/event";
 import { formatInTimeZone } from "date-fns-tz";
+import { getEvent, joinEvent, leaveEvent } from "@/service/eventActions";
 
 export default function EventDetails({
   event,
@@ -18,6 +18,10 @@ export default function EventDetails({
   user: User;
 }) {
   const [reactiveParticipants, setParticipants] = useState(participants);
+  const isParticipant = reactiveParticipants
+    .map((p) => p.email)
+    .includes(user.email);
+
   const month = formatInTimeZone(
     new Date(event.startTime),
     "Europe/Oslo",
@@ -37,14 +41,22 @@ export default function EventDetails({
         </div>
         <div className="flex flex-col md:flex-row gap-4 items-center">
           {event.ownerEmail === user.email ? (
-            <EditEventButton event={event} />
+            <Link
+              className="w-fit h-fit navds-button navds-button--primary navds-label"
+              href={`/event/${event.id}/edit`}
+            >
+              Rediger arrangement
+            </Link>
           ) : (
-            <JoinEventButton
-              event={event}
-              user={user}
-              participants={reactiveParticipants}
-              setParticipants={setParticipants}
-            />
+            <Button
+              variant={isParticipant ? "danger" : "primary"}
+              className="w-full h-fit"
+              onClick={async () =>
+                toggleEventStatus(event.id, isParticipant, setParticipants)
+              }
+            >
+              {isParticipant ? "Meld av" : "Bli med"}
+            </Button>
           )}
         </div>
       </div>
@@ -57,4 +69,12 @@ export default function EventDetails({
       </div>
     </div>
   );
+}
+async function toggleEventStatus(
+  eventId: string,
+  isParticipant: boolean,
+  setParticipants: Dispatch<SetStateAction<DeltaParticipant[]>>,
+) {
+  await (isParticipant ? leaveEvent(eventId) : joinEvent(eventId));
+  setParticipants((await getEvent(eventId)).participants);
 }

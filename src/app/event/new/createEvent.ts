@@ -4,22 +4,32 @@ import { getAuthApi } from "@/api/instance";
 import { DeltaEvent } from "@/types/event";
 import { CreateEventSchema } from "./createEventForm";
 import { adjustTimezoneForward } from "@/components/format";
+import { formatInTimeZone, zonedTimeToUtc } from "date-fns-tz";
+import { parse } from "date-fns";
 
 export async function createEvent(
-  formData: CreateEventSchema,
+  formData: CreateEventSchema
 ): Promise<DeltaEvent> {
   const api = await getAuthApi();
+
+  const start = `${formatInTimeZone(
+    formData.startDate,
+    "Europe/Oslo",
+    "yyyy-MM-dd"
+  )}T${formData.startTime}:00Z`;
+
+  const end = `${formatInTimeZone(
+    formData.endDate,
+    "Europe/Oslo",
+    "yyyy-MM-dd"
+  )}T${formData.endTime}:00Z`;
 
   const response = await api.put("/admin/event", {
     title: formData.title,
     description: formData.description,
     location: formData.location,
-    startTime: `${adjustTimezoneForward(formData.startDate).toISOString().substring(0, 10)}T${
-      formData.startTime
-    }:00`,
-    endTime: `${adjustTimezoneForward(formData.endDate).toISOString().substring(0, 10)}T${
-      formData.endTime
-    }:00`,
+    startTime: start,
+    endTime: end,
   });
   console.log(`${Date.now()}: got response`);
 

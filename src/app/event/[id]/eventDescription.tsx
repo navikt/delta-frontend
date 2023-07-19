@@ -1,6 +1,5 @@
 "use client";
 
-import { dates } from "@/components/format";
 import { DeltaEventWithParticipant } from "@/types/event";
 import {
   ClockIcon,
@@ -8,8 +7,6 @@ import {
   PersonCircleIcon,
   PinIcon,
 } from "@navikt/aksel-icons";
-import { format } from "date-fns";
-import { nb } from "date-fns/locale";
 import ParticipantList from "@/app/event/[id]/participantList";
 import ParticipantIcon from "@/app/event/[id]/participantIcon";
 import { useState } from "react";
@@ -21,14 +18,13 @@ export default function EventDescription({
   className,
 }: EventDescriptionProps) {
   const [openParticipantList, setOpenParticipantList] = useState(false);
-  const [start, end] = dates(event);
+  console.log();
+    
   return (
     <div className={className || ""}>
       <span className="flex flex-row justify-start gap-2 items-center">
         <ClockIcon />
-        {`${format(start, "HH:mm", { locale: nb })} – ${format(end, "HH:mm", {
-          locale: nb,
-        })}`}
+        {`${event.startTime.substring(11,16)} – ${event.endTime.substring(11,16)}`}
       </span>
       <span className="flex flex-row justify-start gap-2 items-center">
         <PersonCircleIcon />

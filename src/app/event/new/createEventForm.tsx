@@ -78,7 +78,7 @@ export default function CreateEventForm() {
         <div className="navds-form-field navds-form-field--medium">
           <input
             type="time"
-            className="navds-text-field__input w-24"
+            className="navds-text-field__input w-28"
             {...register("startTime")}
           />
           {errors.startTime && (
@@ -100,7 +100,7 @@ export default function CreateEventForm() {
         <div className="navds-form-field navds-form-field--medium">
           <input
             type="time"
-            className="navds-text-field__input w-24"
+            className="navds-text-field__input w-28"
             {...register("endTime")}
           />
           {errors.endTime && (

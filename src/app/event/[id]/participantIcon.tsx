@@ -1,14 +1,19 @@
 "use client";
 
-type ParticipantIconProps = { nameList: string[]; type?: string };
+type ParticipantIconProps = {
+  nameList: string[];
+  type?: string;
+  className?: string;
+};
 
 export default function ParticipantIcon({
   nameList,
   type,
+  className,
 }: ParticipantIconProps) {
   if (type === "participantPreview") {
     return (
-      <div className="flex justify-center w-7 h-7 text-white text-sm bg-border-alt-2 jusitify-center items-center rounded-full">
+      <div className="flex justify-center w-7 h-7 text-white text-sm bg-limegreen-700 items-center rounded-full -ml-1">
         {`${nameList.at(0)?.charAt(0).toUpperCase()}${nameList
           .at(-1)
           ?.charAt(0)
@@ -17,7 +22,7 @@ export default function ParticipantIcon({
     );
   } else if (type === "participantList") {
     return (
-      <div className="flex justify-center w-10 h-10 text-white text-bold bg-border-alt-2 jusitify-center items-center gap-1 rounded-full">
+      <div className="flex justify-center w-10 h-10 text-white text-bold bg-limegreen-700 items-center gap-1 rounded-full">
         {`${nameList.at(0)?.charAt(0).toUpperCase()}${nameList
           .at(-1)
           ?.charAt(0)
@@ -26,7 +31,7 @@ export default function ParticipantIcon({
     );
   } else {
     return (
-      <div className="flex justify-center w-7 h-7 text-white text-sm bg-border-alt-3 jusitify-center items-center rounded-full">
+      <div className="flex justify-center w-7 h-7 text-white text-sm bg-limegreen-800 items-center rounded-full">
         ...
       </div>
     );

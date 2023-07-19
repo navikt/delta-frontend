@@ -1,11 +1,30 @@
 "use server";
 
-import { getAuthApi } from "@/api/instance";
-import { DeltaEvent } from "@/types/event";
-import { CreateEventSchema } from "./createEventForm";
-import { adjustTimezoneForward } from "@/components/format";
-import { formatInTimeZone, zonedTimeToUtc } from "date-fns-tz";
-import { parse } from "date-fns";
+import { getAuthApi, getAuthlessApi } from "@/api/instance";
+import { CreateEventSchema } from "@/components/createEventForm";
+import { DeltaEvent, DeltaEventWithParticipant } from "@/types/event";
+import { formatInTimeZone } from "date-fns-tz";
+
+export async function joinEvent(eventId: string) {
+  const api = await getAuthApi();
+  const response = await api.post(`/user/event/${eventId}`);
+}
+
+export async function leaveEvent(eventId: string) {
+  const api = await getAuthApi();
+  const response = await api.delete(`/user/event/${eventId}`);
+}
+
+export async function deleteEvent(eventId: string) {
+  const api = await getAuthApi();
+  await api.delete(`/admin/event/${eventId})`);
+}
+
+export async function getEvent(id: string): Promise<DeltaEventWithParticipant> {
+  const api = await getAuthlessApi();
+  const response = await api.get(`/event/${id}`);
+  return response.data;
+}
 
 export async function createEvent(
   formData: CreateEventSchema,
@@ -31,7 +50,6 @@ export async function createEvent(
     startTime: start,
     endTime: end,
   });
-  console.log(`${Date.now()}: got response`);
 
   return response.data;
 }
@@ -61,7 +79,6 @@ export async function updateEvent(
     startTime: start,
     endTime: end,
   });
-  console.log(`${Date.now()}: got response`);
 
   return response.data;
 }

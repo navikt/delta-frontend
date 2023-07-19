@@ -1,16 +1,17 @@
 "use client";
 
-import { Button, Link, Textarea, TextField } from "@navikt/ds-react";
+import { Button, Textarea, TextField, Link } from "@navikt/ds-react";
 import { useState } from "react";
-import { createEvent, updateEvent } from "./createEvent";
+import { createEvent, updateEvent } from "@/service/eventActions";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import EventDatepicker from "./eventDatepicker";
+import EventDatepicker from "../app/event/new/eventDatepicker";
 import { DeltaEvent } from "@/types/event";
-import { dates } from "@/components/format";
+import { dates } from "@/service/format";
 import { format } from "date-fns";
-import { DeleteEventButton } from "../[id]/deleteEventButton";
+import { TrashIcon } from "@navikt/aksel-icons";
+import { deleteEvent } from "@/service/eventActions";
 
 const createEventSchema = z
   .object({
@@ -61,7 +62,16 @@ export default function CreateEventForm({ event }: CreateEventFormProps) {
     <>
       {event && (
         <span className="flex justify-end">
-          <DeleteEventButton event={event} />
+          <Button
+            type="submit"
+            variant="danger"
+            className="w-fit h-fit font-bold"
+            onClick={async () => deleteAndRedirect(event.id)}
+          >
+            <span className="flex items-center gap-1">
+              <TrashIcon /> Slett
+            </span>
+          </Button>
         </span>
       )}
       <form
@@ -158,4 +168,9 @@ async function createAndRedirect(formData: CreateEventSchema) {
 async function updateAndRedirect(formData: CreateEventSchema, eventId: string) {
   const event = await updateEvent(formData, eventId);
   window.location.href = `/event/${event.id}`;
+}
+
+async function deleteAndRedirect(eventId: string) {
+  await deleteEvent(eventId);
+  window.location.href = "/";
 }

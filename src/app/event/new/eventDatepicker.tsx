@@ -1,6 +1,6 @@
 "use client";
 
-import { CreateEventSchema } from "./createEventForm";
+import { CreateEventSchema } from "@/components/createEventForm";
 import { DatePicker, DateValidationT, useDatepicker } from "@navikt/ds-react";
 import { useState } from "react";
 import { Control, FieldErrors, useController } from "react-hook-form";

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { User } from "@/types/user";
 import JoinEventButton from "./joinEventButton";
-import DeleteEventButton from "./deleteEventButton";
+import { EditEventButton } from "./deleteEventButton";
 import EventDescription from "./eventDescription";
 import { Heading } from "@navikt/ds-react";
 import { nb } from "date-fns/locale";
@@ -36,18 +36,16 @@ export default function EventDetails({
           <span className="font-semibold text-3xl">{day}</span>
         </div>
         <div className="flex flex-col md:flex-row gap-4 items-center">
-          <JoinEventButton
-            event={event}
-            user={user}
-            participants={reactiveParticipants}
-            setParticipants={setParticipants}
-          />
-          {
-            // TODO: This looks horrible on mobile. This should ideally be located somewhere else
-            event.ownerEmail === user.email && (
-              <DeleteEventButton event={event} />
-            )
-          }
+          {event.ownerEmail === user.email ? (
+            <EditEventButton event={event} />
+          ) : (
+            <JoinEventButton
+              event={event}
+              user={user}
+              participants={reactiveParticipants}
+              setParticipants={setParticipants}
+            />
+          )}
         </div>
       </div>
       <div className="flex-col md:flex-row flex justify-between gap-4 md:gap-28 pt-4">

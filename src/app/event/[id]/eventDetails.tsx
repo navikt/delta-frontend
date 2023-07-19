@@ -23,14 +23,14 @@ export default function EventDetails({
 
   return (
     <div>
-      <div className="flex flex-row w-full justify-between items-start">
+      <div className="flex flex-col md:flex-row w-full justify-between items-start gap-4">
         <div className="flex flex-col w-fit bg-red-100 p-2 rounded">
           <span>
             {format(start, "MMMM", { locale: nb }).slice(0, 3).toUpperCase()}
           </span>
           <span className="font-semibold text-3xl">{format(start, "d")}</span>
         </div>
-        <div className="flex flex-row gap-4 items-center">
+        <div className="flex flex-col md:flex-row gap-4 items-center">
           <JoinEventButton
             event={event}
             user={user}

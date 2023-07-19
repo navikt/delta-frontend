@@ -15,7 +15,7 @@ export default function CardWithBackground(props: CardWithBackgroundProps) {
       <div
         className={`w-full flex flex-col items-center justify-center text-center h-fit ${props.color}`}
       >
-        <div className="grid lg:grid-cols-3 pt-16 pb-24 grid-flow-row auto-rows-auto items-center w-5/6 max-w-[80rem]">
+        <div className="grid lg:grid-cols-3 pt-16 pb-24 grid-flow-row auto-rows-auto items-end gap-4 w-5/6 max-w-[80rem]">
           {props.home && (
             <div className="col-span-1 lg:col-start-1 flex flex-row justify-center lg:justify-start">
               <Link
@@ -29,7 +29,7 @@ export default function CardWithBackground(props: CardWithBackgroundProps) {
             </div>
           )}
           <Heading
-            className="w-full col-span-1 lg:col-start-2 whitespace-nowrap"
+            className="w-full col-span-1 lg:col-start-2"
             level="1"
             size="xlarge"
           >

@@ -26,7 +26,7 @@ export default function EventDetails({
     new Date(event.startTime),
     "Europe/Oslo",
     "MMM",
-    { locale: nb }
+    { locale: nb },
   )
     .substring(0, 3)
     .toUpperCase();
@@ -78,7 +78,7 @@ export default function EventDetails({
 async function toggleEventStatus(
   eventId: string,
   isParticipant: boolean,
-  setParticipants: Dispatch<SetStateAction<DeltaParticipant[]>>
+  setParticipants: Dispatch<SetStateAction<DeltaParticipant[]>>,
 ) {
   await (isParticipant ? leaveEvent(eventId) : joinEvent(eventId));
   setParticipants((await getEvent(eventId)).participants);

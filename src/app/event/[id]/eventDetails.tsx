@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { User } from "@/types/user";
 import EventDescription from "./eventDescription";
 import { Alert, Button, Heading, CopyButton } from "@navikt/ds-react";

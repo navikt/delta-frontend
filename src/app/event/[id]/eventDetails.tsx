@@ -45,12 +45,12 @@ export default function EventDetails({
 
   return (
     <div>
-      <div className="flex flex-col md:flex-row w-full justify-between items-start gap-4">
+      <div className="flex w-full justify-between items-start gap-4">
         <div className="flex flex-col w-fit bg-red-100 p-2 rounded">
           <span>{month}</span>
           <span className="font-semibold text-3xl">{day}</span>
         </div>
-        <div className="flex flex-col md:flex-row gap-4 items-center">
+        <div className="flex flex-col md:flex-row justify-between gap-4 items-end md:items-center">
           <div className="whitespace-nowrap">
             {showRegistration && (
               <Alert variant="success" size="small" className="p-3">
@@ -63,9 +63,9 @@ export default function EventDetails({
               </Alert>
             )}
           </div>
-          {event.ownerEmail === user.email ? (
+          {false ? (
             <Link
-              className="w-fit h-fit navds-button navds-button--primary whitespace-nowrap navds-label"
+              className="w-full h-fit navds-button navds-button--primary whitespace-nowrap navds-label"
               href={`/event/${event.id}/edit`}
             >
               Rediger arrangement
@@ -85,7 +85,7 @@ export default function EventDetails({
             </Button>
           )}
           <CopyButton
-            className="navds-button navds-button--secondary"
+            className="navds-button navds-button--secondary md:whitespace-nowrap w-full"
             copyText={`https://delta.ekstern.dv.nav.no/event/${event.id}`}
             text="Kopier link"
           />

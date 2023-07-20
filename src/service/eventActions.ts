@@ -2,7 +2,11 @@
 
 import { getAuthApi, getAuthlessApi } from "@/api/instance";
 import { CreateEventSchema } from "@/components/createEventForm";
-import { DeltaEvent, DeltaEventWithParticipant } from "@/types/event";
+import {
+  CreateDeltaEvent,
+  DeltaEvent,
+  DeltaEventWithParticipant,
+} from "@/types/event";
 import { formatInTimeZone } from "date-fns-tz";
 
 export async function joinEvent(eventId: string) {
@@ -76,9 +80,10 @@ export async function updateEvent(
     title: formData.title,
     description: formData.description,
     location: formData.location,
+    public: formData.public,
     startTime: start,
     endTime: end,
-  });
+  } satisfies CreateDeltaEvent);
 
   return response.data;
 }

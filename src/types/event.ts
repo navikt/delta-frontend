@@ -3,6 +3,8 @@ export type CreateDeltaEvent = {
   description: string;
   startTime: string;
   endTime: string;
+  location: string;
+  public: boolean;
 };
 
 export type DeltaEventWithParticipant = {
@@ -17,7 +19,8 @@ export type DeltaEvent = {
   description: string;
   startTime: string;
   endTime: string;
-  location: string | null;
+  location: string;
+  public: boolean;
 };
 
 export type DeltaParticipant = {

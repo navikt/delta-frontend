@@ -7,10 +7,6 @@ export default async function NewEvent() {
 
   return (
     <CardWithBackground color="bg-green-200" title="Opprett arrangement" home>
-      <p className="italic break-words">
-        Arrangementet vil være synlig for alle som har tilgang til Delta, og vil
-        bli publisert på deltakalenderen.
-      </p>
       <CreateEventForm />
     </CardWithBackground>
   );

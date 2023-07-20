@@ -1,9 +1,9 @@
 "use client";
 
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { User } from "@/types/user";
 import EventDescription from "./eventDescription";
-import { Button, Heading, CopyButton } from "@navikt/ds-react";
+import { Alert, Button, Heading, CopyButton } from "@navikt/ds-react";
 import Link from "next/link";
 import { nb } from "date-fns/locale";
 import { DeltaEventWithParticipant, DeltaParticipant } from "@/types/event";
@@ -22,6 +22,17 @@ export default function EventDetails({
     .map((p) => p.email)
     .includes(user.email);
 
+  const [showRegistration, setRegistration] = useState(false);
+  const [showUnregistration, setUnregistration] = useState(false);
+
+  const showAlert = () => {
+    const setter = !isParticipant ? setRegistration : setUnregistration;
+    setter(true);
+    setTimeout(() => {
+      setter(false);
+    }, 2000);
+  };
+
   const month = formatInTimeZone(
     new Date(event.startTime),
     "Europe/Oslo",
@@ -39,7 +50,19 @@ export default function EventDetails({
           <span>{month}</span>
           <span className="font-semibold text-3xl">{day}</span>
         </div>
-        <div className="flex flex-col md:flex-row justify-between gap-4 items-center">
+        <div className="flex flex-col md:flex-row gap-4 items-center">
+          <div className="whitespace-nowrap">
+            {showRegistration && (
+              <Alert variant="success" size="small" className="p-3">
+                Påmelding registrert
+              </Alert>
+            )}
+            {showUnregistration && (
+              <Alert variant="success" size="small" className="p-3">
+                Avmelding registrert
+              </Alert>
+            )}
+          </div>
           {event.ownerEmail === user.email ? (
             <Link
               className="w-fit h-fit navds-button navds-button--primary whitespace-nowrap navds-label"
@@ -52,7 +75,10 @@ export default function EventDetails({
               variant={isParticipant ? "danger" : "primary"}
               className="w-full h-fit"
               onClick={async () =>
-                toggleEventStatus(event.id, isParticipant, setParticipants)
+                toggleEventStatus(event.id, isParticipant, (state) => {
+                  showAlert();
+                  setParticipants(state);
+                })
               }
             >
               {isParticipant ? "Meld av" : "Bli med"}
@@ -75,6 +101,7 @@ export default function EventDetails({
     </div>
   );
 }
+
 async function toggleEventStatus(
   eventId: string,
   isParticipant: boolean,

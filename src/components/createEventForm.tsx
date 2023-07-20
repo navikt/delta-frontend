@@ -47,10 +47,10 @@ export default function CreateEventForm({ eventId }: CreateEventFormProps) {
   const [event, setEvent] = useState(undefined as DeltaEvent | undefined);
   useEffect(() => {
     if (!eventId) return;
-      getEvent(eventId)
-        .then((e) => setEvent(e.event))
-        .then(() => setLoading(false));
-    }, [eventId]);
+    getEvent(eventId)
+      .then((e) => setEvent(e.event))
+      .then(() => setLoading(false));
+  }, [eventId]);
 
   return loading ? (
     <>

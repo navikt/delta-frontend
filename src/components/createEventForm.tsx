@@ -1,8 +1,15 @@
 "use client";
 
-import { Button, Textarea, TextField, Link, Checkbox } from "@navikt/ds-react";
-import { useState } from "react";
-import { createEvent, updateEvent } from "@/service/eventActions";
+import {
+  Button,
+  Textarea,
+  TextField,
+  Link,
+  Checkbox,
+  Skeleton,
+} from "@navikt/ds-react";
+import { useEffect, useState } from "react";
+import { createEvent, getEvent, updateEvent } from "@/service/eventActions";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,10 +41,30 @@ const createEventSchema = z
 
 export type CreateEventSchema = z.infer<typeof createEventSchema>;
 
-type CreateEventFormProps = { event?: DeltaEvent };
-export default function CreateEventForm({ event }: CreateEventFormProps) {
-  const [loading, setLoading] = useState(false);
+type CreateEventFormProps = { eventId?: string };
+export default function CreateEventForm({ eventId }: CreateEventFormProps) {
+  const [loading, setLoading] = useState(!!eventId);
+  const [event, setEvent] = useState(undefined as DeltaEvent | undefined);
+  eventId &&
+    useEffect(() => {
+      getEvent(eventId)
+        .then((e) => setEvent(e.event))
+        .then(() => setLoading(false));
+    }, [eventId]);
 
+  return loading ? (
+    <>
+      <Skeleton variant="text" className="w-full" />
+      <Skeleton variant="text" className="w-full" />
+      <Skeleton variant="text" className="w-full" />
+    </>
+  ) : (
+    <InternalCreateEventForm event={event} />
+  );
+}
+
+type InternalCreateEventFormProps = { event?: DeltaEvent };
+function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
   const [start, end] = event ? dates(event) : [undefined, undefined];
 
   const {
@@ -82,10 +109,8 @@ export default function CreateEventForm({ event }: CreateEventFormProps) {
         action={async () => {
           const valid = await trigger();
           if (!valid) return;
-          setLoading(true);
           if (!event) createAndRedirect(getValues());
           else updateAndRedirect(getValues(), event.id);
-          setLoading(false);
         }}
         className="flex flex-col gap-5"
       >
@@ -158,9 +183,7 @@ export default function CreateEventForm({ event }: CreateEventFormProps) {
           >
             Avbryt
           </Link>
-          <Button type="submit" loading={loading}>
-            {event ? "Oppdater" : "Opprett"}
-          </Button>
+          <Button type="submit">{event ? "Oppdater" : "Opprett"}</Button>
         </div>
       </form>
     </>

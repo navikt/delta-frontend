@@ -45,8 +45,8 @@ type CreateEventFormProps = { eventId?: string };
 export default function CreateEventForm({ eventId }: CreateEventFormProps) {
   const [loading, setLoading] = useState(!!eventId);
   const [event, setEvent] = useState(undefined as DeltaEvent | undefined);
-  eventId &&
-    useEffect(() => {
+  useEffect(() => {
+    if (!eventId) return;
       getEvent(eventId)
         .then((e) => setEvent(e.event))
         .then(() => setLoading(false));

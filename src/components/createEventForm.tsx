@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Textarea, TextField, Link } from "@navikt/ds-react";
+import { Button, Textarea, TextField, Link, Checkbox } from "@navikt/ds-react";
 import { useState } from "react";
 import { createEvent, updateEvent } from "@/service/eventActions";
 import { z } from "zod";
@@ -28,6 +28,7 @@ const createEventSchema = z
     endTime: z.string().regex(/[0-9]{2}:[0-9]{2}/, {
       message: "Verdien må være et gyldig tidspunkt",
     }),
+    public: z.boolean(),
   })
   .required();
 
@@ -49,12 +50,15 @@ export default function CreateEventForm({ event }: CreateEventFormProps) {
     defaultValues: !event
       ? undefined
       : ({
-          ...event,
-          endDate: end,
-          startDate: start,
+          title: event.title,
+          description: event.description,
+          location: event.location,
+          public: event.public,
+          endDate: end!!,
+          startDate: start!!,
           startTime: format(start!!, "HH:mm"),
           endTime: format(end!!, "HH:mm"),
-        } as CreateEventSchema),
+        } satisfies CreateEventSchema),
     resolver: zodResolver(createEventSchema),
   });
 
@@ -144,6 +148,9 @@ export default function CreateEventForm({ event }: CreateEventFormProps) {
             )}
           </div>
         </div>
+        <Checkbox {...register("public")}>
+          Gjør arrangementet synlig på forsiden
+        </Checkbox>
         <div className="flex items-center justify-end gap-4">
           <Link
             className="w-fit h-fit"

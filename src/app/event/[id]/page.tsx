@@ -12,22 +12,6 @@ export default async function Page({ params }: { params: { id: string } }) {
   const response = await api.get(`/event/${params.id}`);
   const user = getUser();
 
-  // Feilhåndtering
-  if (response.status === 404) {
-    notFound();
-  } else if (response.status === 400) {
-    return (
-      <section className="w-screen flex-grow flex justify-center items-center">
-        Uventet feil
-      </section>
-    );
-  } else if (response.status >= 300) {
-    return (
-      <section className="w-screen flex-grow flex justify-center items-center">
-        Uventet feil
-      </section>
-    );
-  }
   const { event, participants }: DeltaEventWithParticipant = response.data;
   return (
     <CardWithBackground color="bg-blue-200" title={event.title} home>

@@ -9,7 +9,14 @@ export default async function Home(context: any) {
   const api = getAuthlessApi();
   const authApi = await getAuthApi();
 
-  const all: DeltaEvent[] = (await api.get("/event")).data;
+  const all: DeltaEvent[] = (
+    await api.get("/event", {
+      params: {
+        onlyFuture: true,
+        onlyPublic: true,
+      },
+    })
+  ).data;
   const my: DeltaEvent[] = (await authApi.get("/admin/event")).data;
   const joined: DeltaEvent[] = (await authApi.get("/user/event")).data;
 

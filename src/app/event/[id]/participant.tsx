@@ -1,6 +1,8 @@
 "use client";
 import { DeltaParticipant } from "@/types/event";
 import ParticipantIcon from "@/app/event/[id]/participantIcon";
+import { Button } from "@navikt/ds-react";
+import { TrashIcon } from "@navikt/aksel-icons";
 
 type ParticipantProps = DeltaParticipant;
 
@@ -11,9 +13,20 @@ export default function Participant(participant: ParticipantProps) {
     .join(" ");
 
   return (
-    <div className="flex flex-row items-center w-full gap-2">
-      <ParticipantIcon nameList={nameList} type="participantList" />
-      <span className="text-md">{name}</span>
+    <div className="flex flex-row items-center justify-between w-full gap-2">
+      <div className="flex flex-row items-center gap-2">
+        <ParticipantIcon nameList={nameList} type="participantList" />
+        <span className="text-md">{name}</span>
+      </div>
+      <Button
+        variant="secondary"
+        size="small"
+        onClick={() => {
+          <Button variant="danger">Meld av</Button>;
+        }}
+      >
+        <TrashIcon />
+      </Button>
     </div>
   );
 }

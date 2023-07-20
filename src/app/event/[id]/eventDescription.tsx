@@ -35,7 +35,7 @@ export default function EventDescription({
       </span>
       <div
         onClick={() => setOpenParticipantList(!openParticipantList)}
-        className="fle flex-col hover:bg-surface-subtle rounded-md cursor-pointer"
+        className="flex flex-col hover:bg-surface-subtle rounded-md cursor-pointer"
       >
         <span className="flex flex-row justify-start gap-2 items-center cursor-pointer">
           <PersonCheckmarkIcon />

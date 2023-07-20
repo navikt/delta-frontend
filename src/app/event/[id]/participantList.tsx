@@ -3,6 +3,7 @@ import { DeltaParticipant } from "@/types/event";
 import Participant from "@/app/event/[id]/participant";
 import { Heading, Modal } from "@navikt/ds-react";
 import { useEffect } from "react";
+import { FileExportIcon } from "@navikt/aksel-icons";
 
 type ParticipantListProps = {
   participants: DeltaParticipant[];
@@ -31,10 +32,15 @@ export default function ParticipantList({
           <Heading spacing level="1" size="large" id="modal-heading">
             Deltakere
           </Heading>
-          <div className="flex flex-col gap-2">
-            {participants.map((p) => (
-              <Participant {...p} key={p.email} />
-            ))}
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-2">
+              {participants.map((p) => (
+                <Participant {...p} key={p.email} />
+              ))}
+            </div>
+            <div>
+              <FileExportIcon title="a11y-title" />
+            </div>
           </div>
         </Modal.Content>
       </Modal>
@@ -42,13 +48,3 @@ export default function ParticipantList({
   );
 }
 
-/*
- return (
-    <div className="flex flex-col gap-2">
-      {participants.map((p) => (
-        <Participant {...p} />
-      ))}
-    </div>
-  );
-}
-*/

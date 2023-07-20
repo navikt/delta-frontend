@@ -24,6 +24,11 @@ export async function deleteEvent(eventId: string) {
   await api.delete(`/admin/event/${eventId}`);
 }
 
+export async function deleteParticipant(eventId: string) {
+  const api = await getAuthApi();
+  await api.delete(`/admin/event/${eventId}/participant`);
+}
+
 export async function getEvent(id: string): Promise<DeltaEventWithParticipant> {
   const api = await getAuthlessApi();
   const response = await api.get(`/event/${id}`);
@@ -31,20 +36,20 @@ export async function getEvent(id: string): Promise<DeltaEventWithParticipant> {
 }
 
 export async function createEvent(
-  formData: CreateEventSchema,
+  formData: CreateEventSchema
 ): Promise<DeltaEvent> {
   const api = await getAuthApi();
 
   const start = `${formatInTimeZone(
     formData.startDate,
     "Europe/Oslo",
-    "yyyy-MM-dd",
+    "yyyy-MM-dd"
   )}T${formData.startTime}:00Z`;
 
   const end = `${formatInTimeZone(
     formData.endDate,
     "Europe/Oslo",
-    "yyyy-MM-dd",
+    "yyyy-MM-dd"
   )}T${formData.endTime}:00Z`;
 
   const response = await api.put("/admin/event", {
@@ -60,20 +65,20 @@ export async function createEvent(
 
 export async function updateEvent(
   formData: CreateEventSchema,
-  eventId: string,
+  eventId: string
 ): Promise<DeltaEvent> {
   const api = await getAuthApi();
 
   const start = `${formatInTimeZone(
     formData.startDate,
     "Europe/Oslo",
-    "yyyy-MM-dd",
+    "yyyy-MM-dd"
   )}T${formData.startTime}:00Z`;
 
   const end = `${formatInTimeZone(
     formData.endDate,
     "Europe/Oslo",
-    "yyyy-MM-dd",
+    "yyyy-MM-dd"
   )}T${formData.endTime}:00Z`;
 
   const response = await api.post(`/admin/event/${eventId}`, {

@@ -57,9 +57,10 @@ export async function createEvent(
     description: formData.description,
     location: formData.location,
     public: formData.public,
+    participantLimit: 0,
     startTime: start,
     endTime: end,
-  });
+  } satisfies CreateDeltaEvent);
 
   return response.data;
 }
@@ -87,6 +88,7 @@ export async function updateEvent(
     description: formData.description,
     location: formData.location,
     public: formData.public,
+    participantLimit: 0,
     startTime: start,
     endTime: end,
   } satisfies CreateDeltaEvent);

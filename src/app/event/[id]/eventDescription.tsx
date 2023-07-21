@@ -13,6 +13,7 @@ import { Heading, Modal } from "@navikt/ds-react";
 import Participant from "./participant";
 import { formatDeadline } from "@/service/format";
 import Link from "next/link";
+import ExportParticipants from "./exportParticipants";
 
 type EventDescriptionProps = DeltaEventWithParticipant & { className?: string };
 export default function EventDescription({
@@ -28,7 +29,7 @@ export default function EventDescription({
         <ClockIcon />
         {`${event.startTime.substring(11, 16)} – ${event.endTime.substring(
           11,
-          16,
+          16
         )}`}
       </span>
       <span className="flex flex-row justify-start gap-2 items-center">
@@ -75,6 +76,7 @@ export default function EventDescription({
           <Heading spacing level="1" size="large" id="modal-heading">
             Deltakere
           </Heading>
+          <ExportParticipants participants={participants} />
           <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-2">
               {participants.map((p) => (

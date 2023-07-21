@@ -56,6 +56,7 @@ export async function createEvent(
     title: formData.title,
     description: formData.description,
     location: formData.location,
+    public: formData.public,
     startTime: start,
     endTime: end,
   });

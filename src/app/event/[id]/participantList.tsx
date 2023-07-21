@@ -27,6 +27,8 @@ export default function ParticipantList({
         aria-label="deltakere"
         onClose={() => setOpen(false)}
         aria-labelledby="modal-heading"
+        shouldCloseOnEsc={true}
+        shouldCloseOnOverlayClick={true}
       >
         <Modal.Content>
           <Heading spacing level="1" size="large" id="modal-heading">
@@ -47,4 +49,3 @@ export default function ParticipantList({
     </>
   );
 }
-

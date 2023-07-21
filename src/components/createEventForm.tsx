@@ -7,6 +7,9 @@ import {
   Link,
   Checkbox,
   Skeleton,
+  Modal,
+  Heading,
+  BodyLong,
 } from "@navikt/ds-react";
 import { useEffect, useState } from "react";
 import { createEvent, getEvent, updateEvent } from "@/service/eventActions";
@@ -16,7 +19,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import EventDatepicker from "../app/event/new/eventDatepicker";
 import { DeltaEvent } from "@/types/event";
 import { dates } from "@/service/format";
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 import { TrashIcon } from "@navikt/aksel-icons";
 import { deleteEvent } from "@/service/eventActions";
 import { COOKIE_NAME_PRERENDER_BYPASS } from "next/dist/server/api-utils";
@@ -78,6 +81,7 @@ export default function CreateEventForm({ eventId }: CreateEventFormProps) {
 type InternalCreateEventFormProps = { event?: DeltaEvent };
 function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
   const [start, end] = event ? dates(event) : [undefined, undefined];
+  const [openConfirmation, setOpenConfirmation] = useState(false);
 
   const {
     register,
@@ -109,7 +113,7 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
             type="submit"
             variant="danger"
             className="w-fit h-fit font-bold"
-            onClick={async () => deleteAndRedirect(event.id)}
+            onClick={async () => setOpenConfirmation((x) => !x)}
           >
             <span className="flex items-center gap-1">
               <TrashIcon /> Slett
@@ -117,6 +121,38 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
           </Button>
         </span>
       )}
+      <Modal
+        open={openConfirmation}
+        aria-label="Slett arrangement modal"
+        onClose={() => setOpenConfirmation((x) => !x)}
+        closeButton={false}
+        aria-labelledby="Slett arrangement modal"
+        className="w-4/5 max-w-[30rem] max-h-[50rem]"
+      >
+        <Modal.Content>
+          <Heading spacing level="1" size="large" id="modal-heading">
+            {`Slett ${event?.title}?`}
+          </Heading>
+          <BodyLong spacing>
+            {`Er du sikker på at du vil slette ${event?.title}? Dette kan ikke angres.`}
+          </BodyLong>
+          <div className="flex flex-row justify-end gap-4">
+            <Button
+              variant="secondary"
+              onClick={async () => setOpenConfirmation((x) => !x)}
+            >
+              Avbryt
+            </Button>
+            <Button
+              variant="danger"
+              className="w-fit h-fit font-bold"
+              onClick={() => deleteAndRedirect(event?.id!!)}
+            >
+              Ja, jeg vil slette arrangementet
+            </Button>
+          </div>
+        </Modal.Content>
+      </Modal>
       <form
         action={async () => {
           const valid = await trigger();

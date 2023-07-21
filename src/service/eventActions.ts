@@ -99,7 +99,6 @@ function createDeltaEventFromFormData(
   )}T${formData.signupDeadlineTime}:00Z`;
 
   return {
-
     title: formData.title,
     description: formData.description,
     location: formData.location,
@@ -111,8 +110,4 @@ function createDeltaEventFromFormData(
     endTime: end,
     signupDeadline: deadline,
   };
-    
-
-
-
 }

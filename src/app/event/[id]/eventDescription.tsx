@@ -10,6 +10,7 @@ import {
 import ParticipantList from "@/app/event/[id]/participantList";
 import ParticipantIcon from "@/app/event/[id]/participantIcon";
 import { useState } from "react";
+import { set } from "date-fns";
 
 type EventDescriptionProps = DeltaEventWithParticipant & { className?: string };
 export default function EventDescription({
@@ -18,7 +19,7 @@ export default function EventDescription({
   className,
 }: EventDescriptionProps) {
   const [openParticipantList, setOpenParticipantList] = useState(false);
-  console.log();
+  console.log(open, setOpenParticipantList);
 
   return (
     <div className={className || ""}>
@@ -26,7 +27,7 @@ export default function EventDescription({
         <ClockIcon />
         {`${event.startTime.substring(11, 16)} – ${event.endTime.substring(
           11,
-          16,
+          16
         )}`}
       </span>
       <span className="flex flex-row justify-start gap-2 items-center">

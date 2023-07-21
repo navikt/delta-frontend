@@ -7,10 +7,10 @@ import {
   PersonCircleIcon,
   PinIcon,
 } from "@navikt/aksel-icons";
-import ParticipantList from "@/app/event/[id]/participantList";
 import ParticipantIcon from "@/app/event/[id]/participantIcon";
 import { useState } from "react";
-import { set } from "date-fns";
+import { Heading, Modal } from "@navikt/ds-react";
+import Participant from "./participant";
 
 type EventDescriptionProps = DeltaEventWithParticipant & { className?: string };
 export default function EventDescription({
@@ -53,11 +53,6 @@ export default function EventDescription({
           ))}
           {participants.length > 4 && <ParticipantIcon nameList={[]} />}
         </div>
-        <ParticipantList
-          participants={participants}
-          open={openParticipantList}
-          setOpen={setOpenParticipantList}
-        />
       </div>
       {event.location && (
         <span className="flex flex-row justify-start gap-2 items-center">
@@ -65,6 +60,29 @@ export default function EventDescription({
           {event.location}
         </span>
       )}
+      <Modal
+        className="w-4/5 max-w-[30rem] max-h-[50rem]"
+        open={openParticipantList}
+        aria-label="deltakere"
+        onClose={() => setOpenParticipantList(false)}
+        aria-labelledby="modal-heading"
+        shouldCloseOnEsc={true}
+        shouldCloseOnOverlayClick={true}
+      >
+        <Modal.Content>
+          <Heading spacing level="1" size="large" id="modal-heading">
+            Deltakere
+          </Heading>
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-2">
+              {participants.map((p) => (
+                <Participant {...p} key={p.email} />
+              ))}
+            </div>
+            <div></div>
+          </div>
+        </Modal.Content>
+      </Modal>
     </div>
   );
 }

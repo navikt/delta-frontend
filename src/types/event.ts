@@ -22,6 +22,7 @@ export type DeltaEvent = {
   endTime: string;
   location: string;
   public: boolean;
+  participantLimit: number;
 };
 
 export type DeltaParticipant = {

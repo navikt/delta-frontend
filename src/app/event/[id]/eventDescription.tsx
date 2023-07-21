@@ -11,6 +11,7 @@ import ParticipantIcon from "@/app/event/[id]/participantIcon";
 import { useState } from "react";
 import { Heading, Modal } from "@navikt/ds-react";
 import Participant from "./participant";
+import { formatDeadline } from "@/service/format";
 
 type EventDescriptionProps = DeltaEventWithParticipant & { className?: string };
 export default function EventDescription({
@@ -19,7 +20,6 @@ export default function EventDescription({
   className,
 }: EventDescriptionProps) {
   const [openParticipantList, setOpenParticipantList] = useState(false);
-  console.log(open, setOpenParticipantList);
 
   return (
     <div className={className || ""}>
@@ -60,6 +60,9 @@ export default function EventDescription({
           {event.location}
         </span>
       )}
+      <div>
+        Påmeldingsfrist: {formatDeadline(event)}
+      </div>
       <Modal
         className="w-4/5 max-w-[30rem] max-h-[50rem]"
         open={openParticipantList}

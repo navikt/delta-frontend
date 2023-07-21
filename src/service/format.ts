@@ -7,7 +7,7 @@ const fmt = "do MMMM yyyy, HH:mm";
 // TODO: let's do this better!!!
 
 export const formatEventTimes = (event: DeltaEvent): string => {
-  const [start, end] = dates(event);
+  const [start, end, deadline] = dates(event);
 
   return `${format(start, fmt, { locale: nb })} - ${format(
     end,
@@ -15,6 +15,12 @@ export const formatEventTimes = (event: DeltaEvent): string => {
     { locale: nb },
   )}`;
 };
+
+export const formatDeadline = (event: DeltaEvent): string => {
+  const [start, end, deadline] = dates(event);
+
+  return `${format(deadline, fmt, { locale: nb })}`;
+}
 
 export const isSameDay = (start: Date, end: Date): boolean => {
   return format(start, "do MM yyyy") === format(end, "do MM yyyy");

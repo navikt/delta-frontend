@@ -6,8 +6,8 @@ import { useState } from "react";
 import { Control, FieldErrors, useController } from "react-hook-form";
 
 type EventDatepickerProps = {
-  name: "startDate" | "endDate";
-  label: "Fra" | "Til";
+  name: "startDate" | "endDate" | "signupDeadlineDate";
+  label: "Fra" | "Til" | "Påmeldingsfrist";
   invalidMessage: string;
   requiredMessage: string;
   control: Control<CreateEventSchema>;

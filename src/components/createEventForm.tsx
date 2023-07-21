@@ -10,6 +10,7 @@ import {
   Modal,
   Heading,
   BodyLong,
+  DatePicker,
 } from "@navikt/ds-react";
 import { useEffect, useState } from "react";
 import { createEvent, getEvent, updateEvent } from "@/service/eventActions";
@@ -60,7 +61,13 @@ const createEventSchema = z
     {
       message: "Slutttid må være etter starttid",
       path: ["endTime"],
-    },
+    }
+  )
+  .refine(
+    (data) => data.signupDeadlineDate.getTime() >= data.startDate.getTime(), {
+      message: "Påmeldingsfrist kan ikke være etter startdato",
+      path: ["signupDeadlineDate"],
+    }
   )
   .refine(
     (data) =>
@@ -69,7 +76,7 @@ const createEventSchema = z
     {
       message: "Må være mellom 1 og 9999",
       path: ["participantLimit"],
-    },
+    }
   );
 
 export type CreateEventSchema = z.infer<typeof createEventSchema>;
@@ -98,11 +105,14 @@ export default function CreateEventForm({ eventId }: CreateEventFormProps) {
 
 type InternalCreateEventFormProps = { event?: DeltaEvent };
 function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
-  const [start, end, deadline] = event ? dates(event) : [undefined, undefined, undefined];
+  const [start, end, deadline] = event
+    ? dates(event)
+    : [undefined, undefined, undefined];
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [hasParticipantLimit, setHasParticipantLimit] = useState(
-    (event?.participantLimit || 0) > 0,
+    (event?.participantLimit || 0) > 0
   );
+  const [hasDeadline, setDeadline] = useState(false);
 
   const {
     register,
@@ -249,6 +259,7 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
         </div>
         <Checkbox {...register("public")}>
           Gjør arrangementet synlig på forsiden
+        </Checkbox>
         <div className="flex flex-col max-w-[21rem]">
           <Checkbox
             {...register("hasParticipantLimit")}
@@ -278,10 +289,35 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
             error={errors.participantLimit?.message}
           />
         </div>
-        <Checkbox value="Påmeldingsfrist">
-          Påmeldingsfrist
-        </Checkbox>
-        </Checkbox>
+        <div>
+          <Checkbox value="Påmeldingsfrist" onChange={() => {
+            const x = hasDeadline;
+            setDeadline((x) => !x);
+
+          }}>Spesifiser en påmeldingsfrist</Checkbox>
+          <div className={`flex flex-row flex-wrap justify-left gap-4 pb-0 items-end ${!hasDeadline && "hidden"}`}>
+            <EventDatepicker
+              name="signupDeadlineDate"
+              label="Påmeldingsfrist"
+              invalidMessage="Du må fylle inn en gyldig påmeldingsfrist"
+              requiredMessage="Du må fylle inn en påmeldingsfrist"
+              control={control}
+              errors={errors}
+            />
+            <div className="navds-form-field navds-form-field--medium">
+              <input
+                type="time"
+                className="navds-text-field__input w-28"
+                {...register("signupDeadlineTime")}
+              />
+              {errors.signupDeadlineTime && (
+                <p className="navds-error-message navds-label">
+                  {errors.signupDeadlineTime.message}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
         <div className="flex items-center justify-end gap-4">
           <Link
             className="w-fit h-fit"

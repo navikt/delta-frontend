@@ -5,6 +5,7 @@ export type CreateDeltaEvent = {
   endTime: string;
   location: string;
   public: boolean;
+  participantLimit: number;
 };
 
 export type DeltaEventWithParticipant = {

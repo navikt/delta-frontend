@@ -36,62 +36,52 @@ export async function getEvent(id: string): Promise<DeltaEventWithParticipant> {
 }
 
 export async function createEvent(
-  formData: CreateEventSchema
+  formData: CreateEventSchema,
 ): Promise<DeltaEvent> {
   const api = await getAuthApi();
 
-  const start = `${formatInTimeZone(
-    formData.startDate,
-    "Europe/Oslo",
-    "yyyy-MM-dd"
-  )}T${formData.startTime}:00Z`;
-
-  const end = `${formatInTimeZone(
-    formData.endDate,
-    "Europe/Oslo",
-    "yyyy-MM-dd"
-  )}T${formData.endTime}:00Z`;
-
-  const response = await api.put("/admin/event", {
-    title: formData.title,
-    description: formData.description,
-    location: formData.location,
-    public: formData.public,
-    participantLimit: 0,
-    startTime: start,
-    endTime: end,
-  } satisfies CreateDeltaEvent);
+  const createEvent = createDeltaEventFromFormData(formData);
+  const response = await api.put("/admin/event", createEvent);
 
   return response.data;
 }
 
 export async function updateEvent(
   formData: CreateEventSchema,
-  eventId: string
+  eventId: string,
 ): Promise<DeltaEvent> {
   const api = await getAuthApi();
 
+  const createEvent = createDeltaEventFromFormData(formData);
+  const response = await api.post(`/admin/event/${eventId}`, createEvent);
+
+  return response.data;
+}
+
+function createDeltaEventFromFormData(
+  formData: CreateEventSchema,
+): CreateDeltaEvent {
   const start = `${formatInTimeZone(
     formData.startDate,
     "Europe/Oslo",
-    "yyyy-MM-dd"
+    "yyyy-MM-dd",
   )}T${formData.startTime}:00Z`;
 
   const end = `${formatInTimeZone(
     formData.endDate,
     "Europe/Oslo",
-    "yyyy-MM-dd"
+    "yyyy-MM-dd",
   )}T${formData.endTime}:00Z`;
 
-  const response = await api.post(`/admin/event/${eventId}`, {
+  return {
     title: formData.title,
     description: formData.description,
     location: formData.location,
     public: formData.public,
-    participantLimit: 0,
+    participantLimit: formData.hasParticipantLimit
+      ? parseInt(formData.participantLimit)
+      : 0,
     startTime: start,
     endTime: end,
-  } satisfies CreateDeltaEvent);
-
-  return response.data;
+  };
 }

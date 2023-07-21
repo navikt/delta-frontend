@@ -22,7 +22,6 @@ import { dates } from "@/service/format";
 import { format, set } from "date-fns";
 import { TrashIcon } from "@navikt/aksel-icons";
 import { deleteEvent } from "@/service/eventActions";
-import { COOKIE_NAME_PRERENDER_BYPASS } from "next/dist/server/api-utils";
 
 const createEventSchema = z
   .object({
@@ -40,6 +39,10 @@ const createEventSchema = z
       message: "Verdien må være et gyldig tidspunkt",
     }),
     public: z.boolean(),
+    hasParticipantLimit: z.boolean(),
+    participantLimit: z.string({
+      required_error: "Må velge en antallsbegrensning",
+    }),
   })
   .required()
   .refine((data) => data.endDate >= data.startDate, {
@@ -47,11 +50,22 @@ const createEventSchema = z
     path: ["endDate"],
   })
   .refine(
-    (data) => data.endDate.getTime() !== data.startDate.getTime() || data.endTime > data.startTime,
+    (data) =>
+      data.endDate.getTime() !== data.startDate.getTime() ||
+      data.endTime > data.startTime,
     {
       message: "Slutttid må være etter starttid",
       path: ["endTime"],
-    }
+    },
+  )
+  .refine(
+    (data) =>
+      0 < parseInt(data.participantLimit) &&
+      parseInt(data.participantLimit) < 10000,
+    {
+      message: "Må være mellom 1 og 9999",
+      path: ["participantLimit"],
+    },
   );
 
 export type CreateEventSchema = z.infer<typeof createEventSchema>;
@@ -82,6 +96,9 @@ type InternalCreateEventFormProps = { event?: DeltaEvent };
 function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
   const [start, end] = event ? dates(event) : [undefined, undefined];
   const [openConfirmation, setOpenConfirmation] = useState(false);
+  const [hasParticipantLimit, setHasParticipantLimit] = useState(
+    (event?.participantLimit || 0) > 0,
+  );
 
   const {
     register,
@@ -89,6 +106,7 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
     getValues,
     control,
     formState: { errors },
+    setValue,
   } = useForm<CreateEventSchema>({
     defaultValues: !event
       ? undefined
@@ -101,6 +119,8 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
           startDate: start!!,
           startTime: format(start!!, "HH:mm"),
           endTime: format(end!!, "HH:mm"),
+          hasParticipantLimit,
+          participantLimit: event.participantLimit.toString(),
         } satisfies CreateEventSchema),
     resolver: zodResolver(createEventSchema),
   });
@@ -224,6 +244,35 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
         <Checkbox {...register("public")}>
           Gjør arrangementet synlig på forsiden
         </Checkbox>
+        <div className="flex flex-col max-w-[21rem]">
+          <Checkbox
+            {...register("hasParticipantLimit")}
+            onChange={() => {
+              const x = hasParticipantLimit;
+              const participantLimit = parseInt(getValues().participantLimit);
+              const invalidInput =
+                Number.isNaN(participantLimit) ||
+                participantLimit < 1 ||
+                9999 < participantLimit;
+
+              if (x && invalidInput) setValue("participantLimit", "0"); // Maybe use default instead?
+              setHasParticipantLimit((x) => !x);
+            }}
+          >
+            Begrens maksimalt antall deltagere
+          </Checkbox>
+          <TextField
+            {...register("participantLimit")}
+            className={`${!hasParticipantLimit && "hidden"}`}
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            hideLabel
+            label="Maksimalt antall deltagere"
+            defaultValue="0"
+            error={errors.participantLimit?.message}
+          />
+        </div>
         <div className="flex items-center justify-end gap-4">
           <Link
             className="w-fit h-fit"

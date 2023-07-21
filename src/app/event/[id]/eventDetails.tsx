@@ -63,7 +63,7 @@ export default function EventDetails({
               </Alert>
             )}
           </div>
-          {event.ownerEmail === user.email ? (
+          {false ? (
             <Link
               className="w-full h-fit navds-button navds-button--primary whitespace-nowrap navds-label"
               href={`/event/${event.id}/edit`}

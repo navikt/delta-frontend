@@ -19,6 +19,7 @@ import { dates } from "@/service/format";
 import { format } from "date-fns";
 import { TrashIcon } from "@navikt/aksel-icons";
 import { deleteEvent } from "@/service/eventActions";
+import { COOKIE_NAME_PRERENDER_BYPASS } from "next/dist/server/api-utils";
 
 const createEventSchema = z
   .object({
@@ -37,7 +38,18 @@ const createEventSchema = z
     }),
     public: z.boolean(),
   })
-  .required();
+  .required()
+  .refine((data) => data.endDate >= data.startDate, {
+    message: "Sluttdato må være etter startdato",
+    path: ["endDate"],
+  })
+  .refine(
+    (data) => data.endDate.getTime() !== data.startDate.getTime() || data.endTime > data.startTime,
+    {
+      message: "Slutttid må være etter starttid",
+      path: ["endTime"],
+    }
+  );
 
 export type CreateEventSchema = z.infer<typeof createEventSchema>;
 

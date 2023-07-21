@@ -43,6 +43,10 @@ const createEventSchema = z
     participantLimit: z.string({
       required_error: "Må velge en antallsbegrensning",
     }),
+    signupDeadlineDate: z.date({ required_error: "Du må velge en dato" }),
+    signupDeadlineTime: z.string().regex(/[0-9]{2}:[0-9]{2}/, {
+      message: "Verdien må være et gyldig tidspunkt",
+    }),
   })
   .required()
   .refine((data) => data.endDate >= data.startDate, {
@@ -94,7 +98,7 @@ export default function CreateEventForm({ eventId }: CreateEventFormProps) {
 
 type InternalCreateEventFormProps = { event?: DeltaEvent };
 function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
-  const [start, end] = event ? dates(event) : [undefined, undefined];
+  const [start, end, deadline] = event ? dates(event) : [undefined, undefined, undefined];
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [hasParticipantLimit, setHasParticipantLimit] = useState(
     (event?.participantLimit || 0) > 0,
@@ -118,9 +122,11 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
           endDate: end!!,
           startDate: start!!,
           startTime: format(start!!, "HH:mm"),
-          endTime: format(end!!, "HH:mm"),
           hasParticipantLimit,
           participantLimit: event.participantLimit.toString(),
+          signupDeadlineDate: deadline!!,
+          signupDeadlineTime: format(deadline!!, "HH:mm"),
+          endTime: format(end!!, "HH:mm"),
         } satisfies CreateEventSchema),
     resolver: zodResolver(createEventSchema),
   });
@@ -243,7 +249,6 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
         </div>
         <Checkbox {...register("public")}>
           Gjør arrangementet synlig på forsiden
-        </Checkbox>
         <div className="flex flex-col max-w-[21rem]">
           <Checkbox
             {...register("hasParticipantLimit")}
@@ -273,6 +278,10 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
             error={errors.participantLimit?.message}
           />
         </div>
+        <Checkbox value="Påmeldingsfrist">
+          Påmeldingsfrist
+        </Checkbox>
+        </Checkbox>
         <div className="flex items-center justify-end gap-4">
           <Link
             className="w-fit h-fit"

@@ -41,6 +41,25 @@ export async function createEvent(
   const api = await getAuthApi();
 
   const createEvent = createDeltaEventFromFormData(formData);
+
+  const start = `${formatInTimeZone(
+    formData.startDate,
+    "Europe/Oslo",
+    "yyyy-MM-dd"
+  )}T${formData.startTime}:00Z`;
+
+  const end = `${formatInTimeZone(
+    formData.endDate,
+    "Europe/Oslo",
+    "yyyy-MM-dd"
+  )}T${formData.endTime}:00Z`;
+
+  const deadline = `${formatInTimeZone(
+    formData.signupDeadlineDate,
+    "Europe/Oslo",
+    "yyyy-MM-dd"
+  )}T${formData.signupDeadlineTime}:00Z`;
+
   const response = await api.put("/admin/event", createEvent);
 
   return response.data;
@@ -73,7 +92,14 @@ function createDeltaEventFromFormData(
     "yyyy-MM-dd",
   )}T${formData.endTime}:00Z`;
 
+  const deadline = `${formatInTimeZone(
+    formData.signupDeadlineDate,
+    "Europe/Oslo",
+    "yyyy-MM-dd"
+  )}T${formData.signupDeadlineTime}:00Z`;
+
   return {
+
     title: formData.title,
     description: formData.description,
     location: formData.location,
@@ -83,5 +109,10 @@ function createDeltaEventFromFormData(
       : 0,
     startTime: start,
     endTime: end,
+    signupDeadline: deadline,
   };
+    
+
+
+
 }

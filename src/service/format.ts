@@ -29,13 +29,15 @@ export const formatEventDuration = (event: DeltaEvent): string => {
   });
 };
 
-export const dates = (event: DeltaEvent): [Date, Date] => {
+export const dates = (event: DeltaEvent): [Date, Date, Date] => {
   const offset = getTimezoneOffset("Europe/Oslo");
   var start = parseISO(event.startTime);
   var end = parseISO(event.endTime);
+  var deadline =parseISO(event.signupDeadline);
   start.setTime(start.getTime() - offset);
   end.setTime(end.getTime() - offset);
-  return [start, end];
+  deadline.setTime(deadline.getTime() - offset);
+  return [start, end, deadline];
 };
 
 export const adjustTimezoneForward = (date: Date): Date => {

@@ -10,7 +10,6 @@ import {
   Modal,
   Heading,
   BodyLong,
-  DatePicker,
 } from "@navikt/ds-react";
 import { useEffect, useState } from "react";
 import { createEvent, getEvent, updateEvent } from "@/service/eventActions";
@@ -20,7 +19,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import EventDatepicker from "../app/event/new/eventDatepicker";
 import { DeltaEvent } from "@/types/event";
 import { dates } from "@/service/format";
-import { format, set } from "date-fns";
+import { format } from "date-fns";
 import { TrashIcon } from "@navikt/aksel-icons";
 import { deleteEvent } from "@/service/eventActions";
 
@@ -69,7 +68,8 @@ const createEventSchema = z
     }
   )
   .refine(
-    (data) => data.signupDeadlineDate.getTime() >= data.startDate.getTime(), {
+    (data) => data.signupDeadlineDate.getTime() >= data.startDate.getTime(),
+    {
       message: "Påmeldingsfrist kan ikke være etter startdato",
       path: ["signupDeadlineDate"],
     }
@@ -288,12 +288,20 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
           />
         </div>
         <div>
-          <Checkbox value="Påmeldingsfrist" onChange={() => {
-            const x = hasDeadline;
-            setDeadline((x) => !x);
-
-          }}>Spesifiser en påmeldingsfrist</Checkbox>
-          <div className={`flex flex-row flex-wrap justify-left gap-4 pb-0 items-end ${!hasDeadline && "hidden"}`}>
+          <Checkbox
+            value="Påmeldingsfrist"
+            onChange={() => {
+              const x = hasDeadline;
+              setDeadline((x) => !x);
+            }}
+          >
+            Spesifiser en påmeldingsfrist
+          </Checkbox>
+          <div
+            className={`flex flex-row flex-wrap justify-left gap-4 pb-0 items-end ${
+              !hasDeadline && "hidden"
+            }`}
+          >
             <EventDatepicker
               name="signupDeadlineDate"
               label="Påmeldingsfrist"

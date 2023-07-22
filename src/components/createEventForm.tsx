@@ -24,6 +24,11 @@ import { format, set } from "date-fns";
 import { TrashIcon } from "@navikt/aksel-icons";
 import { deleteEvent } from "@/service/eventActions";
 
+function isValidParticipantLimit(limit: string) {
+  const limit_int = parseInt(limit);
+  return !Number.isNaN(limit_int) && 0 < limit_int && limit_int < 10000;
+}
+
 const createEventSchema = z
   .object({
     title: z.string().nonempty({ message: "Du må fylle inn en tittel" }),
@@ -69,15 +74,10 @@ const createEventSchema = z
       path: ["signupDeadlineDate"],
     }
   )
-  .refine(
-    (data) =>
-      0 < parseInt(data.participantLimit) &&
-      parseInt(data.participantLimit) < 10000,
-    {
-      message: "Må være mellom 1 og 9999",
-      path: ["participantLimit"],
-    }
-  );
+  .refine((data) => isValidParticipantLimit(data.participantLimit), {
+    message: "Må være mellom 1 og 9999",
+    path: ["participantLimit"],
+  });
 
 export type CreateEventSchema = z.infer<typeof createEventSchema>;
 
@@ -265,11 +265,9 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
             {...register("hasParticipantLimit")}
             onChange={() => {
               const x = hasParticipantLimit;
-              const participantLimit = parseInt(getValues().participantLimit);
-              const invalidInput =
-                Number.isNaN(participantLimit) ||
-                participantLimit < 1 ||
-                9999 < participantLimit;
+              const invalidInput = !isValidParticipantLimit(
+                getValues().participantLimit
+              );
 
               if (x && invalidInput) setValue("participantLimit", "0"); // Maybe use default instead?
               setHasParticipantLimit((x) => !x);

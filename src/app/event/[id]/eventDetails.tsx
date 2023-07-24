@@ -3,13 +3,18 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import { User } from "@/types/user";
 import EventDescription from "./eventDescription";
-import { Alert, Button, Heading, CopyButton } from "@navikt/ds-react";
+import { Alert, Button, Heading, CopyButton, Tooltip } from "@navikt/ds-react";
 import Link from "next/link";
 import { nb } from "date-fns/locale";
-import { DeltaEventWithParticipant, DeltaParticipant } from "@/types/event";
+import {
+  DeltaEvent,
+  DeltaEventWithParticipant,
+  DeltaParticipant,
+} from "@/types/event";
 import { formatInTimeZone } from "date-fns-tz";
 import { getEvent, joinEvent, leaveEvent } from "@/service/eventActions";
 import ExportParticipants from "./exportParticipants";
+import { dates } from "@/service/format";
 
 export default function EventDetails({
   event,
@@ -38,12 +43,13 @@ export default function EventDetails({
     new Date(event.startTime),
     "Europe/Oslo",
     "MMM",
-    { locale: nb },
+    { locale: nb }
   )
     .substring(0, 3)
     .toUpperCase();
   const day = formatInTimeZone(new Date(event.startTime), "Europe/Oslo", "d");
 
+  const [start, end, deadline] = dates(event);
   return (
     <div>
       <div className="flex w-full justify-between items-start gap-4">
@@ -54,40 +60,63 @@ export default function EventDetails({
         <div className="flex flex-col md:flex-row justify-between gap-4 items-end md:items-center">
           <div className="whitespace-nowrap">
             {showRegistration && (
-              <Alert variant="success" size="small" className="p-3">
+              <Alert variant="success" size="small">
                 Påmelding registrert
               </Alert>
             )}
             {showUnregistration && (
-              <Alert variant="success" size="small" className="p-3">
+              <Alert variant="success" size="small">
                 Avmelding registrert
               </Alert>
             )}
           </div>
-          {event.ownerEmail === user.email ? (
-            <>
-              <Link
-                className="w-full h-fit navds-button navds-button--primary whitespace-nowrap navds-label"
-                href={`/event/${event.id}/edit`}
+          {(function () {
+            if (user.email === event.ownerEmail) {
+              return (
+                <>
+                  <Link
+                    className="w-full h-fit navds-button navds-button--primary whitespace-nowrap navds-label"
+                    href={`/event/${event.id}/edit`}
+                  >
+                    Rediger arrangement
+                  </Link>
+                  <ExportParticipants participants={participants} />
+                </>
+              );
+            }
+            // If det har vært -> tidlig retur
+            if (end < new Date()) return <></>;
+
+            const isUtløpt =
+              !isParticipant && !!deadline && deadline < new Date()
+                ? true
+                : false;
+            if (isUtløpt) {
+              return (
+                <Alert
+                  variant="warning"
+                  size="small"
+                  className="md:whitespace-nowrap"
+                >
+                  Påmeldingsfristen er utløpt
+                </Alert>
+              );
+            }
+            return (
+              <Button
+                variant={isParticipant ? "danger" : "primary"}
+                className="w-full h-fit"
+                onClick={async () =>
+                  toggleEventStatus(event.id, isParticipant, (state) => {
+                    showAlert();
+                    setParticipants(state);
+                  })
+                }
               >
-                Rediger arrangement
-              </Link>
-              <ExportParticipants participants={participants} />
-            </>
-          ) : (
-            <Button
-              variant={isParticipant ? "danger" : "primary"}
-              className="w-full h-fit"
-              onClick={async () =>
-                toggleEventStatus(event.id, isParticipant, (state) => {
-                  showAlert();
-                  setParticipants(state);
-                })
-              }
-            >
-              {isParticipant ? "Meld av" : "Bli med"}
-            </Button>
-          )}
+                {isParticipant ? "Meld av" : "Bli med"}
+              </Button>
+            );
+          })()}
           <CopyButton
             className="navds-button navds-button--secondary md:whitespace-nowrap w-full"
             copyText={`https://${window.location.hostname}/event/${event.id}`}
@@ -109,7 +138,7 @@ export default function EventDetails({
 async function toggleEventStatus(
   eventId: string,
   isParticipant: boolean,
-  setParticipants: Dispatch<SetStateAction<DeltaParticipant[]>>,
+  setParticipants: Dispatch<SetStateAction<DeltaParticipant[]>>
 ) {
   await (isParticipant ? leaveEvent(eventId) : joinEvent(eventId));
   setParticipants((await getEvent(eventId)).participants);

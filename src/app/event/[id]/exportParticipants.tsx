@@ -1,13 +1,12 @@
 "use client";
 import { DeltaParticipant } from "@/types/event";
 import { ChevronDownIcon, EnvelopeClosedIcon } from "@navikt/aksel-icons";
-import { Button, CopyButton, Dropdown } from "@navikt/ds-react";
-import Link from "next/link";
+import { Button, CopyButton, Dropdown, Link } from "@navikt/ds-react";
 
 type ExportParticipantsProps = { participants: DeltaParticipant[] };
 
 export default function ExportParticipants(
-  participants: ExportParticipantsProps,
+  participants: ExportParticipantsProps
 ) {
   const copyEmails = participants.participants.map((p) => p.email).join(";");
   const sendEmails = participants.participants.map((p) => p.email).join(", ");
@@ -22,10 +21,10 @@ export default function ExportParticipants(
         </Button>
         <Dropdown.Menu>
           <Dropdown.Menu.List>
+            <CopyButton copyText={copyEmails} text="Kopier alle eposter" />
             <Dropdown.Menu.List.Item as={Link} href={`mailto:${sendEmails}`}>
               <EnvelopeClosedIcon /> Send e-post til deltakere
             </Dropdown.Menu.List.Item>
-            <CopyButton copyText={copyEmails} text="Kopier alle eposter" />
           </Dropdown.Menu.List>
         </Dropdown.Menu>
       </Dropdown>

@@ -13,7 +13,7 @@ export default function ParticipantIcon({
 }: ParticipantIconProps) {
   if (type === "participantPreview") {
     return (
-      <div className="flex justify-center w-7 h-7 text-white text-sm bg-limegreen-700 items-center rounded-full -ml-1">
+      <div className="flex justify-center w-7 h-7 text-white text-sm bg-limegreen-700 items-center rounded-full -ml-1 border border-white">
         {`${nameList.at(0)?.charAt(0).toUpperCase()}${nameList
           .at(-1)
           ?.charAt(0)

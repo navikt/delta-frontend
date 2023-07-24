@@ -81,7 +81,7 @@ export default function EventDetails({
             )}
           </div>
           {(function () {
-            if (false) {
+            if (event.ownerEmail === user.email) {
               return (
                 <>
                   <Link

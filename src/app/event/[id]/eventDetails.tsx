@@ -90,7 +90,7 @@ export default function EventDetails({
           )}
           <CopyButton
             className="navds-button navds-button--secondary md:whitespace-nowrap w-full"
-            copyText={`https://delta.ekstern.dev.nav.no/event/${event.id}`}
+            copyText={`https://${window.location.hostname}/event/${event.id}`}
             text="Kopier link"
           />
         </div>

@@ -9,6 +9,7 @@ import { nb } from "date-fns/locale";
 import { DeltaEventWithParticipant, DeltaParticipant } from "@/types/event";
 import { formatInTimeZone } from "date-fns-tz";
 import { getEvent, joinEvent, leaveEvent } from "@/service/eventActions";
+import ExportParticipants from "./exportParticipants";
 
 export default function EventDetails({
   event,
@@ -37,7 +38,7 @@ export default function EventDetails({
     new Date(event.startTime),
     "Europe/Oslo",
     "MMM",
-    { locale: nb },
+    { locale: nb }
   )
     .substring(0, 3)
     .toUpperCase();
@@ -64,12 +65,15 @@ export default function EventDetails({
             )}
           </div>
           {event.ownerEmail === user.email ? (
-            <Link
-              className="w-full h-fit navds-button navds-button--primary whitespace-nowrap navds-label"
-              href={`/event/${event.id}/edit`}
-            >
-              Rediger arrangement
-            </Link>
+            <>
+              <Link
+                className="w-full h-fit navds-button navds-button--primary whitespace-nowrap navds-label"
+                href={`/event/${event.id}/edit`}
+              >
+                Rediger arrangement
+              </Link>
+              <ExportParticipants participants={participants} />
+            </>
           ) : (
             <Button
               variant={isParticipant ? "danger" : "primary"}
@@ -105,7 +109,7 @@ export default function EventDetails({
 async function toggleEventStatus(
   eventId: string,
   isParticipant: boolean,
-  setParticipants: Dispatch<SetStateAction<DeltaParticipant[]>>,
+  setParticipants: Dispatch<SetStateAction<DeltaParticipant[]>>
 ) {
   await (isParticipant ? leaveEvent(eventId) : joinEvent(eventId));
   setParticipants((await getEvent(eventId)).participants);

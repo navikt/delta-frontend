@@ -8,7 +8,7 @@ import {
   PinIcon,
 } from "@navikt/aksel-icons";
 import ParticipantIcon from "@/app/event/[id]/participantIcon";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Heading, Modal } from "@navikt/ds-react";
 import Participant from "./participant";
 import { formatDeadline } from "@/service/format";
@@ -22,6 +22,9 @@ export default function EventDescription({
   className,
 }: EventDescriptionProps) {
   const [openParticipantList, setOpenParticipantList] = useState(false);
+  useEffect(() => {
+    Modal.setAppElement("#main");
+  }, []);
 
   return (
     <div className={className || ""}>
@@ -76,7 +79,6 @@ export default function EventDescription({
           <Heading spacing level="1" size="large" id="modal-heading">
             Deltakere
           </Heading>
-          <ExportParticipants participants={participants} />
           <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-2">
               {participants.map((p) => (

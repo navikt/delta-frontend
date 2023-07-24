@@ -1,0 +1,23 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: delta-frontend
+  namespace: delta
+  labels:
+    team: delta
+spec:
+  image: {{image}}
+  ingresses:
+    - https://delta.nav.no
+  port: 3000
+  azure:
+    application:
+      enabled: true
+      tenant: nav.no
+      allowAllUsers: true
+    sidecar:
+      enabled: true
+  accessPolicy:
+    outbound:
+      rules:
+        - application: delta-backend

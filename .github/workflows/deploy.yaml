@@ -2,8 +2,6 @@ name: Build, push, and deploy
 
 on:
   push:
-    branches:
-      - main
 
 jobs:
   build:
@@ -62,4 +60,11 @@ jobs:
         APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
         CLUSTER: dev-gcp 
         RESOURCE: nais-dev.yaml
+        IMAGE: ${{ needs.build.outputs.image }}
+    - uses: nais/deploy/actions/deploy@v1
+      if: github.ref == 'refs/heads/main'
+      env:
+        APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+        CLUSTER: prod-gcp 
+        RESOURCE: nais-prod.yaml
         IMAGE: ${{ needs.build.outputs.image }}

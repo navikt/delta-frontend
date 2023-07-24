@@ -7,7 +7,7 @@ import Link from "next/link";
 type ExportParticipantsProps = { participants: DeltaParticipant[] };
 
 export default function ExportParticipants(
-  participants: ExportParticipantsProps
+  participants: ExportParticipantsProps,
 ) {
   const copyEmails = participants.participants.map((p) => p.email).join(";");
   const sendEmails = participants.participants.map((p) => p.email).join(", ");

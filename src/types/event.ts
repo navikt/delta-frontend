@@ -6,7 +6,7 @@ export type CreateDeltaEvent = {
   location: string;
   public: boolean;
   participantLimit: number;
-  signupDeadline: string;
+  signupDeadline?: string;
 };
 
 export type DeltaEventWithParticipant = {
@@ -24,7 +24,7 @@ export type DeltaEvent = {
   location: string;
   public: boolean;
   participantLimit: number;
-  signupDeadline: string;
+  signupDeadline?: string;
 };
 
 export type DeltaParticipant = {

@@ -31,7 +31,7 @@ export default function ParticipantIcon({
     );
   } else {
     return (
-      <div className="flex justify-center w-7 h-7 text-white text-sm bg-limegreen-800 items-center rounded-full -ml-1">
+      <div className="flex justify-center w-7 h-7 text-white text-sm bg-limegreen-800 items-center rounded-full -ml-1 border border-white">
         ...
       </div>
     );

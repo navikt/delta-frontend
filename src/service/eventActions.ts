@@ -45,9 +45,9 @@ export async function getEvent(id: string): Promise<DeltaEventWithParticipant> {
   return eventWithParticipant;
 }
 
-export async function getEvents(): Promise<DeltaEvent[]> {
+export async function getFutureAndPublicEvents(): Promise<DeltaEvent[]> {
   const api = await getAuthlessApi();
-  const response = await api.get<DeltaEvent[]>(`/event`);
+  const response = await api.get<DeltaEvent[]>(`/event?onlyFuture=true&onlyPublic=true`);
 
   const events = response.data;
   events.forEach(e => e.id = translator.fromUUID(e.id));

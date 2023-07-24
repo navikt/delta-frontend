@@ -222,7 +222,7 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
             control={control}
             errors={errors}
           />
-          <div className="navds-form-field navds-form-field--medium">
+          <div className={`navds-form-field navds-form-field--medium ${errors.startTime && "navds-text-field--error"}`}>
             <input
               type="time"
               className="navds-text-field__input w-28"
@@ -244,7 +244,7 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
             control={control}
             errors={errors}
           />
-          <div className="navds-form-field navds-form-field--medium">
+          <div className={`navds-form-field navds-form-field--medium ${errors.endTime && "navds-text-field--error"}`}>
             <input
               type="time"
               className="navds-text-field__input w-28"
@@ -310,7 +310,7 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
               control={control}
               errors={errors}
             />
-            <div className="navds-form-field navds-form-field--medium">
+            <div className={`navds-form-field navds-form-field--medium ${errors.signupDeadlineDate && "navds-text-field--error"}`}>
               <input
                 type="time"
                 className="navds-text-field__input w-28"

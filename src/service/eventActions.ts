@@ -45,19 +45,19 @@ export async function createEvent(
   const start = `${formatInTimeZone(
     formData.startDate,
     "Europe/Oslo",
-    "yyyy-MM-dd"
+    "yyyy-MM-dd",
   )}T${formData.startTime}:00Z`;
 
   const end = `${formatInTimeZone(
     formData.endDate,
     "Europe/Oslo",
-    "yyyy-MM-dd"
+    "yyyy-MM-dd",
   )}T${formData.endTime}:00Z`;
 
   const deadline = `${formatInTimeZone(
     formData.signupDeadlineDate,
     "Europe/Oslo",
-    "yyyy-MM-dd"
+    "yyyy-MM-dd",
   )}T${formData.signupDeadlineTime}:00Z`;
 
   const response = await api.put("/admin/event", createEvent);
@@ -95,7 +95,7 @@ function createDeltaEventFromFormData(
   const deadline = `${formatInTimeZone(
     formData.signupDeadlineDate,
     "Europe/Oslo",
-    "yyyy-MM-dd"
+    "yyyy-MM-dd",
   )}T${formData.signupDeadlineTime}:00Z`;
 
   return {

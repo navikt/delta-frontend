@@ -12,6 +12,7 @@ import { useState } from "react";
 import { Heading, Modal } from "@navikt/ds-react";
 import Participant from "./participant";
 import { formatDeadline } from "@/service/format";
+import Link from "next/link";
 
 type EventDescriptionProps = DeltaEventWithParticipant & { className?: string };
 export default function EventDescription({
@@ -27,12 +28,12 @@ export default function EventDescription({
         <ClockIcon />
         {`${event.startTime.substring(11, 16)} – ${event.endTime.substring(
           11,
-          16
+          16,
         )}`}
       </span>
       <span className="flex flex-row justify-start gap-2 items-center">
         <PersonCircleIcon />
-        {event.ownerEmail}
+        <Link href={`mailto:${event.ownerEmail}`}>{event.ownerEmail}</Link>
       </span>
       <div
         onClick={() => setOpenParticipantList(true)}
@@ -60,9 +61,7 @@ export default function EventDescription({
           {event.location}
         </span>
       )}
-      <div>
-        Påmeldingsfrist: {formatDeadline(event)}
-      </div>
+      <div>Påmeldingsfrist: {formatDeadline(event)}</div>
       <Modal
         className="w-4/5 max-w-[30rem] max-h-[50rem]"
         open={openParticipantList}

@@ -65,14 +65,14 @@ const createEventSchema = z
     {
       message: "Slutttid må være etter starttid",
       path: ["endTime"],
-    }
+    },
   )
   .refine(
     (data) => data.signupDeadlineDate.getTime() >= data.startDate.getTime(),
     {
       message: "Påmeldingsfrist kan ikke være etter startdato",
       path: ["signupDeadlineDate"],
-    }
+    },
   )
   .refine((data) => isValidParticipantLimit(data.participantLimit), {
     message: "Må være mellom 1 og 9999",
@@ -110,7 +110,7 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
     : [undefined, undefined, undefined];
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [hasParticipantLimit, setHasParticipantLimit] = useState(
-    (event?.participantLimit || 0) > 0
+    (event?.participantLimit || 0) > 0,
   );
   const [hasDeadline, setDeadline] = useState(false);
 
@@ -222,7 +222,11 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
             control={control}
             errors={errors}
           />
-          <div className={`navds-form-field navds-form-field--medium ${errors.startTime && "navds-text-field--error"}`}>
+          <div
+            className={`navds-form-field navds-form-field--medium ${
+              errors.startTime && "navds-text-field--error"
+            }`}
+          >
             <input
               type="time"
               className="navds-text-field__input w-28"
@@ -244,7 +248,11 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
             control={control}
             errors={errors}
           />
-          <div className={`navds-form-field navds-form-field--medium ${errors.endTime && "navds-text-field--error"}`}>
+          <div
+            className={`navds-form-field navds-form-field--medium ${
+              errors.endTime && "navds-text-field--error"
+            }`}
+          >
             <input
               type="time"
               className="navds-text-field__input w-28"
@@ -266,7 +274,7 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
             onChange={() => {
               const x = hasParticipantLimit;
               const invalidInput = !isValidParticipantLimit(
-                getValues().participantLimit
+                getValues().participantLimit,
               );
 
               if (x && invalidInput) setValue("participantLimit", "0"); // Maybe use default instead?
@@ -310,7 +318,11 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
               control={control}
               errors={errors}
             />
-            <div className={`navds-form-field navds-form-field--medium ${errors.signupDeadlineDate && "navds-text-field--error"}`}>
+            <div
+              className={`navds-form-field navds-form-field--medium ${
+                errors.signupDeadlineDate && "navds-text-field--error"
+              }`}
+            >
               <input
                 type="time"
                 className="navds-text-field__input w-28"

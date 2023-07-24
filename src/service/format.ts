@@ -20,7 +20,7 @@ export const formatDeadline = (event: DeltaEvent): string => {
   const [start, end, deadline] = dates(event);
 
   return `${format(deadline, fmt, { locale: nb })}`;
-}
+};
 
 export const isSameDay = (start: Date, end: Date): boolean => {
   return format(start, "do MM yyyy") === format(end, "do MM yyyy");
@@ -39,7 +39,7 @@ export const dates = (event: DeltaEvent): [Date, Date, Date] => {
   const offset = getTimezoneOffset("Europe/Oslo");
   var start = parseISO(event.startTime);
   var end = parseISO(event.endTime);
-  var deadline =parseISO(event.signupDeadline);
+  var deadline = parseISO(event.signupDeadline);
   start.setTime(start.getTime() - offset);
   end.setTime(end.getTime() - offset);
   deadline.setTime(deadline.getTime() - offset);

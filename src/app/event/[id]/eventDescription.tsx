@@ -3,6 +3,7 @@
 import { DeltaEventWithParticipant } from "@/types/event";
 import {
   ClockIcon,
+  HourglassTopFilledIcon,
   PersonCheckmarkIcon,
   PersonCircleIcon,
   PinIcon,
@@ -32,7 +33,7 @@ export default function EventDescription({
         <ClockIcon />
         {`${event.startTime.substring(11, 16)} – ${event.endTime.substring(
           11,
-          16
+          16,
         )}`}
       </span>
       <span className="flex flex-row justify-start gap-2 items-center">
@@ -45,8 +46,9 @@ export default function EventDescription({
       >
         <span className="flex flex-row justify-start gap-2 items-center cursor-pointer">
           <PersonCheckmarkIcon />
-          {participants.length}{" "}
-          {participants.length == 1 ? "deltaker" : "deltakere"}
+          {participants.length}
+          {event.participantLimit == 0 ? " " : ` av ${event.participantLimit} `}
+          {"deltakere"}
         </span>
         <div className="flex flex-row ml-[0.3rem] pl-6">
           {participants.slice(0, 4).map((p) => (
@@ -65,11 +67,15 @@ export default function EventDescription({
           {event.location}
         </span>
       )}
-      <div>Påmeldingsfrist: {formatDeadline(event)}</div>
+      {event.signupDeadline && (
+        <div className="flex items-center gap-2">
+          <HourglassTopFilledIcon />
+          <span className="text-red-500">{formatDeadline(event)}</span>
+        </div>
+      )}
       <Modal
         className="w-4/5 max-w-[30rem] max-h-[50rem]"
         open={openParticipantList}
-        aria-label="deltakere"
         onClose={() => setOpenParticipantList(false)}
         aria-labelledby="modal-heading"
         shouldCloseOnEsc={true}

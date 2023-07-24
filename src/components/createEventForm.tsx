@@ -23,7 +23,8 @@ import { format } from "date-fns";
 import { TrashIcon } from "@navikt/aksel-icons";
 import { deleteEvent } from "@/service/eventActions";
 
-function isValidParticipantLimit(limit: string) {
+function isValidParticipantLimit(limit?: string) {
+  if (!limit) return false;
   const limit_int = parseInt(limit);
   return !Number.isNaN(limit_int) && 0 < limit_int && limit_int < 10000;
 }
@@ -45,15 +46,13 @@ const createEventSchema = z
     }),
     public: z.boolean(),
     hasParticipantLimit: z.boolean(),
-    participantLimit: z.string({
-      required_error: "Må velge en antallsbegrensning",
-    }),
-    signupDeadlineDate: z.date({ required_error: "Du må velge en dato" }),
-    signupDeadlineTime: z.string().regex(/[0-9]{2}:[0-9]{2}/, {
+    participantLimit: z.string().optional(),
+    hasSignupDeadline: z.boolean(),
+    signupDeadlineDate: z.optional(z.date()),
+    signupDeadlineTime: z.string().regex(/(?:^$)|(?:^[0-9]{2}:[0-9]{2}$)/, {
       message: "Verdien må være et gyldig tidspunkt",
     }),
   })
-  .required()
   .refine((data) => data.endDate >= data.startDate, {
     message: "Sluttdato må være etter startdato",
     path: ["endDate"],
@@ -68,16 +67,35 @@ const createEventSchema = z
     },
   )
   .refine(
-    (data) => data.signupDeadlineDate.getTime() >= data.startDate.getTime(),
+    (data) =>
+      !data.hasSignupDeadline ||
+      (data.signupDeadlineDate !== undefined &&
+        data.signupDeadlineDate <= data.startDate),
     {
       message: "Påmeldingsfrist kan ikke være etter startdato",
       path: ["signupDeadlineDate"],
     },
   )
-  .refine((data) => isValidParticipantLimit(data.participantLimit), {
-    message: "Må være mellom 1 og 9999",
-    path: ["participantLimit"],
-  });
+  .refine(
+    (data) =>
+      !data.hasSignupDeadline ||
+      (data.signupDeadlineDate !== undefined &&
+        (data.signupDeadlineDate.getTime() !== data.startDate.getTime() ||
+          data.signupDeadlineTime <= data.startTime)),
+    {
+      message: "Tidspunktet kan ikke være etter starttiden",
+      path: ["signupDeadlineTime"],
+    },
+  )
+  .refine(
+    (data) =>
+      !data.hasParticipantLimit ||
+      isValidParticipantLimit(data.participantLimit),
+    {
+      message: "Må være mellom 1 og 9999",
+      path: ["participantLimit"],
+    },
+  );
 
 export type CreateEventSchema = z.infer<typeof createEventSchema>;
 
@@ -112,7 +130,7 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
   const [hasParticipantLimit, setHasParticipantLimit] = useState(
     (event?.participantLimit || 0) > 0,
   );
-  const [hasDeadline, setDeadline] = useState(false);
+  const [hasDeadline, setDeadline] = useState(!!event?.signupDeadline);
 
   const {
     register,
@@ -133,9 +151,12 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
           startDate: start!!,
           startTime: format(start!!, "HH:mm"),
           hasParticipantLimit,
-          participantLimit: event.participantLimit.toString(),
-          signupDeadlineDate: deadline!!,
-          signupDeadlineTime: format(deadline!!, "HH:mm"),
+          participantLimit: event.participantLimit
+            ? event.participantLimit.toString()
+            : undefined,
+          hasSignupDeadline: hasDeadline,
+          signupDeadlineDate: deadline,
+          signupDeadlineTime: deadline ? format(deadline, "HH:mm") : "",
           endTime: format(end!!, "HH:mm"),
         } satisfies CreateEventSchema),
     resolver: zodResolver(createEventSchema),
@@ -192,9 +213,13 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
       <form
         action={async () => {
           const valid = await trigger();
+          const values = getValues();
+          console.log(valid);
+          console.log(values);
+          console.log(errors);
           if (!valid) return;
-          if (!event) createAndRedirect(getValues());
-          else updateAndRedirect(getValues(), event.id);
+          if (!event) createAndRedirect(values);
+          else updateAndRedirect(values, event.id);
         }}
         className="flex flex-col gap-5"
       >
@@ -221,6 +246,7 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
             requiredMessage="Du må fylle inn en startdato"
             control={control}
             errors={errors}
+            hideLabel={false}
           />
           <div
             className={`navds-form-field navds-form-field--medium ${
@@ -247,6 +273,7 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
             requiredMessage="Du må fylle inn en sluttdato"
             control={control}
             errors={errors}
+            hideLabel={false}
           />
           <div
             className={`navds-form-field navds-form-field--medium ${
@@ -277,7 +304,7 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
                 getValues().participantLimit,
               );
 
-              if (x && invalidInput) setValue("participantLimit", "0"); // Maybe use default instead?
+              if (x && invalidInput) setValue("participantLimit", undefined);
               setHasParticipantLimit((x) => !x);
             }}
           >
@@ -291,15 +318,13 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
             pattern="[0-9]*"
             hideLabel
             label="Maksimalt antall deltagere"
-            defaultValue="0"
             error={errors.participantLimit?.message}
           />
         </div>
         <div>
           <Checkbox
-            value="Påmeldingsfrist"
+            {...register("hasSignupDeadline")}
             onChange={() => {
-              const x = hasDeadline;
               setDeadline((x) => !x);
             }}
           >
@@ -317,6 +342,7 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
               requiredMessage="Du må fylle inn en påmeldingsfrist"
               control={control}
               errors={errors}
+              hideLabel={true}
             />
             <div
               className={`navds-form-field navds-form-field--medium ${

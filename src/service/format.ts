@@ -12,14 +12,14 @@ export const formatEventTimes = (event: DeltaEvent): string => {
   return `${format(start, fmt, { locale: nb })} - ${format(
     end,
     isSameDay(start, end) ? "HH:mm" : fmt,
-    { locale: nb }
+    { locale: nb },
   )}`;
 };
 
-export const formatDeadline = (event: DeltaEvent): string => {
+export const formatDeadline = (event: DeltaEvent): string | undefined => {
   const [start, end, deadline] = dates(event);
 
-  return `${format(deadline, fmt, { locale: nb })}`;
+  return deadline ? `${format(deadline, fmt, { locale: nb })}` : undefined;
 };
 
 export const isSameDay = (start: Date, end: Date): boolean => {
@@ -35,14 +35,16 @@ export const formatEventDuration = (event: DeltaEvent): string => {
   });
 };
 
-export const dates = (event: DeltaEvent): [Date, Date, Date] => {
+export const dates = (event: DeltaEvent): [Date, Date, Date?] => {
   const offset = getTimezoneOffset("Europe/Oslo");
   var start = parseISO(event.startTime);
   var end = parseISO(event.endTime);
-  var deadline = parseISO(event.signupDeadline);
+  var deadline = event.signupDeadline
+    ? parseISO(event.signupDeadline)
+    : undefined;
   start.setTime(start.getTime() - offset);
   end.setTime(end.getTime() - offset);
-  deadline.setTime(deadline.getTime() - offset);
+  if (deadline) deadline.setTime(deadline.getTime() - offset);
   return [start, end, deadline];
 };
 

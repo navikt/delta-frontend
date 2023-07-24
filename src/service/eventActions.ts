@@ -92,6 +92,6 @@ function createDeltaEventFromFormData(
         : 0,
     startTime: start,
     endTime: end,
-    signupDeadline: deadline,
+    signupDeadline: formData.hasSignupDeadline ? deadline : undefined,
   };
 }

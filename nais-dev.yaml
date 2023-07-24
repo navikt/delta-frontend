@@ -21,3 +21,6 @@ spec:
     outbound:
       rules:
         - application: delta-backend
+  env:
+    - name: NEXT_PUBLIC_CLUSTER
+      value: dev

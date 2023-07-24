@@ -78,5 +78,7 @@ export async function getAccessToken(
 }
 
 export async function getDeltaBackendAccessToken(): Promise<string | null> {
-  return await getAccessToken("api://dev-gcp.delta.delta-backend/.default");
+  return process.env.NEXT_PUBLIC_CLUSTER === "prod"
+    ? await getAccessToken("api://prod-gcp.delta.delta-backend/.default")
+    : await getAccessToken("api://dev-gcp.delta.delta-backend/.default");
 }

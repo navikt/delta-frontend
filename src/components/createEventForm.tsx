@@ -214,9 +214,6 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
         action={async () => {
           const valid = await trigger();
           const values = getValues();
-          console.log(valid);
-          console.log(values);
-          console.log(errors);
           if (!valid) return;
           if (!event) createAndRedirect(values);
           else updateAndRedirect(values, event.id);

@@ -3,7 +3,15 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import { User } from "@/types/user";
 import EventDescription from "./eventDescription";
-import { Alert, Button, Heading, CopyButton, Tooltip } from "@navikt/ds-react";
+import {
+  Alert,
+  Button,
+  Heading,
+  CopyButton,
+  Tooltip,
+  Modal,
+  BodyLong,
+} from "@navikt/ds-react";
 import Link from "next/link";
 import { nb } from "date-fns/locale";
 import {
@@ -30,6 +38,8 @@ export default function EventDetails({
 
   const [showRegistration, setRegistration] = useState(false);
   const [showUnregistration, setUnregistration] = useState(false);
+
+  const [openConfirmation, setOpenConfirmation] = useState(false);
 
   const showAlert = () => {
     const setter = !isParticipant ? setRegistration : setUnregistration;
@@ -71,7 +81,7 @@ export default function EventDetails({
             )}
           </div>
           {(function () {
-            if (user.email === event.ownerEmail) {
+            if (false) {
               return (
                 <>
                   <Link
@@ -106,17 +116,58 @@ export default function EventDetails({
               <Button
                 variant={isParticipant ? "danger" : "primary"}
                 className="w-full h-fit"
-                onClick={async () =>
-                  toggleEventStatus(event.id, isParticipant, (state) => {
-                    showAlert();
-                    setParticipants(state);
-                  })
+                onClick={() =>
+                  isParticipant
+                    ? setOpenConfirmation((x) => !x)
+                    : toggleEventStatus(event.id, isParticipant, (state) => {
+                        showAlert();
+                        setParticipants(state);
+                      })
                 }
               >
                 {isParticipant ? "Meld av" : "Bli med"}
               </Button>
             );
           })()}
+          <Modal
+            open={openConfirmation}
+            aria-label="Meld av modal"
+            onClose={() => setOpenConfirmation((x) => !x)}
+            closeButton={false}
+            aria-labelledby="Meld av modal"
+            className="w-4/5 max-w-[30rem] max-h-[50rem]"
+          >
+            <Modal.Content>
+              <Heading spacing level="1" size="large" id="modal-heading">
+                {`Meld av?`}
+              </Heading>
+              <BodyLong spacing>
+                {`Er du sikker på at du vil melde deg av ${event.title}? Dersom påmeldignsfristen er utløpt 
+                eller antallsbegrensing er nådd, kan du ikke melde deg på igjen.`}
+              </BodyLong>
+              <div className="flex flex-row justify-end gap-4">
+                <Button
+                  variant="secondary"
+                  onClick={async () => setOpenConfirmation((x) => !x)}
+                >
+                  Avbryt
+                </Button>
+                <Button
+                  variant="danger"
+                  className="w-fit h-fit font-bold"
+                  onClick={() =>
+                    toggleEventStatus(event.id, isParticipant, (state) => {
+                      showAlert();
+                      setParticipants(state);
+                      setOpenConfirmation((x) => !x);
+                    })
+                  }
+                >
+                  Ja, meld meg av
+                </Button>
+              </div>
+            </Modal.Content>
+          </Modal>
           <CopyButton
             className="navds-button navds-button--secondary md:whitespace-nowrap w-full"
             copyText={`https://${window.location.hostname}/event/${event.id}`}

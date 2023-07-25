@@ -24,8 +24,10 @@ export default function EventDetails({
   event,
   participants,
   user,
+  hostname,
 }: DeltaEventWithParticipant & {
   user: User;
+  hostname: string | undefined;
 }) {
   const [reactiveParticipants, setParticipants] = useState(participants);
   const isParticipant = reactiveParticipants
@@ -163,8 +165,8 @@ export default function EventDetails({
             </Modal.Content>
           </Modal>
           <CopyButton
-            className="navds-button navds-button--secondary w-full md:whitespace-nowrap"
-            copyText={`https://${window.location.hostname}/event/${event.id}`}
+            className="navds-button navds-button--secondary md:whitespace-nowrap w-full"
+            copyText={`${hostname}/event/${event.id}`}
             text="Kopier link"
           />
         </div>

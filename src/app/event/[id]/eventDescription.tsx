@@ -3,7 +3,6 @@
 import { DeltaEventWithParticipant } from "@/types/event";
 import {
   ClockIcon,
-  HourglassTopFilledIcon,
   PersonCheckmarkIcon,
   PersonCircleIcon,
   PinIcon,
@@ -26,18 +25,20 @@ export default function EventDescription({
   }, []);
 
   return (
-    <div className={className || ""}>
+    <div className={className || "whitespace-nowrap"}>
       <span className="flex flex-row justify-start gap-2 items-center">
         <ClockIcon />
         {`${event.startTime.substring(11, 16)} – ${event.endTime.substring(
           11,
-          16,
+          16
         )}`}
       </span>
-      <span className="flex flex-row justify-start gap-2 items-center">
-        <PersonCircleIcon />
-        <Link href={`mailto:${event.ownerEmail}`}>{event.ownerEmail}</Link>
-      </span>
+      {event.location && (
+        <span className="flex flex-row justify-start gap-2 items-center">
+          <PinIcon />
+          {event.location}
+        </span>
+      )}
       <div
         onClick={() => setOpenParticipantList(true)}
         className="flex flex-col hover:bg-surface-subtle rounded-md cursor-pointer"
@@ -59,12 +60,6 @@ export default function EventDescription({
           {participants.length > 4 && <ParticipantIcon nameList={[]} />}
         </div>
       </div>
-      {event.location && (
-        <span className="flex flex-row justify-start gap-2 items-center">
-          <PinIcon />
-          {event.location}
-        </span>
-      )}
       <Modal
         className="w-4/5 max-w-[30rem] max-h-[50rem]"
         open={openParticipantList}

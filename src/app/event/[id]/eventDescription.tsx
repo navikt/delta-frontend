@@ -14,7 +14,6 @@ import { Heading, Modal } from "@navikt/ds-react";
 import Participant from "./participant";
 import { formatDeadline } from "@/service/format";
 import Link from "next/link";
-import ExportParticipants from "./exportParticipants";
 
 type EventDescriptionProps = DeltaEventWithParticipant & { className?: string };
 export default function EventDescription({

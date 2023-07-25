@@ -179,6 +179,10 @@ export default function EventDetails({
             </div>
           )}
           <p className="italic whitespace-pre-line">{event.description}</p>
+          <span className="flex flex-row justify-start gap-2 items-center">
+            Kontaktperson:
+            <Link href={`mailto:${event.ownerEmail}`}>{event.ownerEmail}</Link>
+          </span>
         </div>
       </div>
     </div>

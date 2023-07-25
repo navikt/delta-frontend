@@ -19,7 +19,7 @@ export default function EventFilters() {
     getEvents(onlyFuture, onlyMine, onlyJoined)
       .then(setEvents)
       .then(() => setLoading(false));
-  }, [onlyFuture, onlyMine, onlyJoined]);
+  }, [onlyFuture, onlyJoined]);
 
   return (
     <div className="flex flex-col gap-6 w-full justify-center items-center">
@@ -29,12 +29,6 @@ export default function EventFilters() {
           onClick={() => setOnlyFuture((x) => !x)}
         >
           Fremtidige
-        </Chips.Toggle>
-        <Chips.Toggle
-          selected={onlyMine}
-          onClick={() => setOnlyMine((x) => !x)}
-        >
-          Mine
         </Chips.Toggle>
         <Chips.Toggle
           selected={onlyJoined}

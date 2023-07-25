@@ -43,7 +43,11 @@ export default function CardWithBackground(props: CardWithBackgroundProps) {
                 >
                   Opprett nytt arrangement
                 </Dropdown.Menu.GroupedList.Item>
-                <Dropdown.Menu.GroupedList.Item>
+                <Dropdown.Menu.GroupedList.Item
+                  as={Link}
+                  href="/myEvents"
+                  className="no-underline"
+                >
                   Se mine arrangementer
                 </Dropdown.Menu.GroupedList.Item>
               </Dropdown.Menu.GroupedList>

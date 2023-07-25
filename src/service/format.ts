@@ -1,13 +1,12 @@
 import { DeltaEvent } from "@/types/event";
 import { format, formatDuration, intervalToDuration, parseISO } from "date-fns";
-import { getTimezoneOffset } from "date-fns-tz";
 import nb from "date-fns/locale/nb";
 
 const fmt = "do MMMM yyyy, HH:mm";
-// TODO: let's do this better!!!
 
 export const formatEventTimes = (event: DeltaEvent): string => {
-  const [start, end, deadline] = dates(event);
+  const start = new Date(event.startTime);
+  const end = new Date(event.endTime);
 
   return `${format(start, fmt, { locale: nb })} - ${format(
     end,
@@ -17,7 +16,9 @@ export const formatEventTimes = (event: DeltaEvent): string => {
 };
 
 export const formatDeadline = (event: DeltaEvent): string | undefined => {
-  const [start, end, deadline] = dates(event);
+  const deadline = event.signupDeadline
+    ? new Date(event.signupDeadline)
+    : undefined;
 
   return deadline ? `${format(deadline, fmt, { locale: nb })}` : undefined;
 };
@@ -27,29 +28,20 @@ export const isSameDay = (start: Date, end: Date): boolean => {
 };
 
 export const formatEventDuration = (event: DeltaEvent): string => {
-  const [start, end] = dates(event);
-
-  return formatDuration(intervalToDuration({ start, end }), {
-    locale: nb,
-    delimiter: ", ",
-  });
+  return formatDuration(
+    intervalToDuration({
+      start: new Date(event.startTime),
+      end: new Date(event.endTime),
+    }),
+    {
+      locale: nb,
+      delimiter: ", ",
+    },
+  );
 };
 
-export const dates = (event: DeltaEvent): [Date, Date, Date?] => {
-  const offset = getTimezoneOffset("Europe/Oslo");
-  var start = parseISO(event.startTime);
-  var end = parseISO(event.endTime);
-  var deadline = event.signupDeadline
-    ? parseISO(event.signupDeadline)
-    : undefined;
-  start.setTime(start.getTime() - offset);
-  end.setTime(end.getTime() - offset);
-  if (deadline) deadline.setTime(deadline.getTime() - offset);
-  return [start, end, deadline];
-};
-
-export const adjustTimezoneForward = (date: Date): Date => {
-  const offset = getTimezoneOffset("Europe/Oslo");
-  date.setTime(date.getTime() + offset);
+export const midnightDate = (dateString: string): Date => {
+  var date = new Date(dateString);
+  date.setHours(0, 0, 0, 0);
   return date;
 };

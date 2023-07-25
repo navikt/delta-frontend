@@ -6,7 +6,7 @@ import EventList from "./eventList";
 import { useEffect, useState } from "react";
 import { getEvents } from "@/service/eventActions";
 
-export default function EventListSwitcher() {
+export default function EventFilters() {
   const [onlyFuture, setOnlyFuture] = useState(true);
   const [onlyMine, setOnlyMine] = useState(false);
   const [onlyJoined, setOnlyJoined] = useState(false);

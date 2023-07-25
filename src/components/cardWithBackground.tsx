@@ -1,6 +1,10 @@
 "use client";
-import { HouseIcon, PencilWritingIcon } from "@navikt/aksel-icons";
-import { Heading, Link } from "@navikt/ds-react";
+import {
+  HouseIcon,
+  MenuHamburgerIcon,
+  PlusIcon,
+} from "@navikt/aksel-icons";
+import { Button, Dropdown, Heading, Link } from "@navikt/ds-react";
 
 type CardWithBackgroundProps = {
   title: string;
@@ -37,14 +41,30 @@ export default function CardWithBackground(props: CardWithBackgroundProps) {
           </Heading>
           {props.newEvent && (
             <div className="col-span-1 lg:col-start-3 flex flex-row justify-center lg:justify-end">
-              <Link
-                className="no-underline navds-button navds-button--secondary"
-                href="/event/new"
-              >
-                <span className="w-fit navds-label flex gap-2 items-center flex-row whitespace-nowrap">
-                  <PencilWritingIcon /> Nytt arrangement
-                </span>
-              </Link>
+              <div>
+                <Dropdown>
+                  <Button as={Dropdown.Toggle} className="bg-transparent hover:bg-blue-300">
+                    <MenuHamburgerIcon color="black" fontSize="1.5rem"/>
+                  </Button>
+                  <Dropdown.Menu>
+                    <Dropdown.Menu.GroupedList>
+                      <Dropdown.Menu.GroupedList.Heading>
+                        Arrangementer
+                      </Dropdown.Menu.GroupedList.Heading>
+                      <Dropdown.Menu.GroupedList.Item
+                        as={Link}
+                        href="/event/new"
+                        className="no-underline"
+                      >
+                        Opprett nytt arrangement
+                      </Dropdown.Menu.GroupedList.Item>
+                      <Dropdown.Menu.GroupedList.Item>
+                        Se mine arrangementer
+                      </Dropdown.Menu.GroupedList.Item>
+                    </Dropdown.Menu.GroupedList>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </div>
             </div>
           )}
         </div>

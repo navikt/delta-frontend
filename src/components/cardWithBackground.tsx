@@ -1,5 +1,5 @@
 "use client";
-import { HouseIcon, MenuHamburgerIcon, PlusIcon } from "@navikt/aksel-icons";
+import { MenuHamburgerIcon } from "@navikt/aksel-icons";
 import { Button, Dropdown, Heading, Link } from "@navikt/ds-react";
 
 type CardWithBackgroundProps = {
@@ -12,12 +12,14 @@ type CardWithBackgroundProps = {
 export default function CardWithBackground(props: CardWithBackgroundProps) {
   return (
     <div className="w-full flex flex-col align-center items-center">
-      <div className={`flex flex-row w-full justify-between ${props.color}`}>
+      <div
+        className={`flex flex-row w-full justify-between pt-3 ${props.color}`}
+      >
         <Link
-          className="px-2 flex items-center no-underline text-text-subtle hover:bg-blue-300 rounded"
+          className="flex items-center no-underline text-text-subtle "
           href="/"
         >
-          <span className="w-fit navds-label flex gap-2 items-center flex-row whitespace-nowrap">
+          <span className="w-fit flex gap-2 items-center flex-row whitespace-nowrap text-3xl mx-3">
             Δ Delta
           </span>
         </Link>
@@ -25,7 +27,7 @@ export default function CardWithBackground(props: CardWithBackgroundProps) {
           <Dropdown>
             <Button
               as={Dropdown.Toggle}
-              className="bg-transparent hover:bg-blue-300"
+              className="bg-transparent hover:bg-blue-300 mx-3"
             >
               <MenuHamburgerIcon color="black" fontSize="1.5rem" />
             </Button>

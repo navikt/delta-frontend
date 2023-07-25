@@ -49,7 +49,7 @@ export default function EventDetails({
     new Date(event.startTime),
     "Europe/Oslo",
     "MMM",
-    { locale: nb }
+    { locale: nb },
   )
     .substring(0, 3)
     .toUpperCase();
@@ -59,23 +59,21 @@ export default function EventDetails({
   return (
     <div>
       <div className="flex w-full justify-between items-start gap-4">
-        <div className="flex flex-col w-fit bg-red-100 p-2 rounded">
-          <span>{month}</span>
-          <span className="font-semibold text-3xl">{day}</span>
+        <div className="flex flex-col w-fit rounded border border-border-default">
+          <span className="bg-red-600 text-white px-2">{month}</span>
+          <span className="font-semibold text-3xl px-2">{day}</span>
         </div>
-        <div className="flex flex-col md:flex-row justify-between gap-4 items-end md:items-center">
-          <div className="whitespace-nowrap">
-            {showRegistration && (
-              <Alert variant="success" size="small">
-                Påmelding registrert
-              </Alert>
-            )}
-            {showUnregistration && (
-              <Alert variant="success" size="small">
-                Avmelding registrert
-              </Alert>
-            )}
-          </div>
+        <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
+          {showRegistration && (
+            <Alert variant="success" size="small">
+              Påmelding registrert
+            </Alert>
+          )}
+          {showUnregistration && (
+            <Alert variant="success" size="small">
+              Avmelding registrert
+            </Alert>
+          )}
           {(function () {
             if (event.ownerEmail === user.email) {
               return (
@@ -165,7 +163,7 @@ export default function EventDetails({
             </Modal.Content>
           </Modal>
           <CopyButton
-            className="navds-button navds-button--secondary md:whitespace-nowrap w-full"
+            className="navds-button navds-button--secondary w-full md:whitespace-nowrap"
             copyText={`https://${window.location.hostname}/event/${event.id}`}
             text="Kopier link"
           />
@@ -179,7 +177,7 @@ export default function EventDetails({
             <div className="flex items-center gap-2">
               Påmeldingsfrist:
               <span className="flex text-red-500 items-center gap-2">
-                {formatDeadline(event)} <HourglassTopFilledIcon />
+                {formatDeadline(event)}
               </span>
             </div>
           )}
@@ -193,7 +191,7 @@ export default function EventDetails({
 async function toggleEventStatus(
   eventId: string,
   isParticipant: boolean,
-  setParticipants: Dispatch<SetStateAction<DeltaParticipant[]>>
+  setParticipants: Dispatch<SetStateAction<DeltaParticipant[]>>,
 ) {
   await (isParticipant ? leaveEvent(eventId) : joinEvent(eventId));
   setParticipants((await getEvent(eventId)).participants);

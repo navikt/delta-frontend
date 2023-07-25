@@ -12,7 +12,6 @@ import ParticipantIcon from "@/app/event/[id]/participantIcon";
 import { useEffect, useState } from "react";
 import { Heading, Modal } from "@navikt/ds-react";
 import Participant from "./participant";
-import { formatDeadline } from "@/service/format";
 import Link from "next/link";
 
 type EventDescriptionProps = DeltaEventWithParticipant & { className?: string };

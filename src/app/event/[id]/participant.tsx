@@ -18,15 +18,6 @@ export default function Participant(participant: ParticipantProps) {
         <ParticipantIcon nameList={nameList} type="participantList" />
         <span className="text-md">{name}</span>
       </div>
-      <Button
-        variant="secondary"
-        size="small"
-        onClick={() => {
-          <Button variant="danger">Meld av</Button>;
-        }}
-      >
-        <TrashIcon />
-      </Button>
     </div>
   );
 }

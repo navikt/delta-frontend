@@ -66,12 +66,6 @@ export default function EventDescription({
           {event.location}
         </span>
       )}
-      {event.signupDeadline && (
-        <div className="flex items-center gap-2">
-          <HourglassTopFilledIcon />
-          <span className="text-red-500">{formatDeadline(event)}</span>
-        </div>
-      )}
       <Modal
         className="w-4/5 max-w-[30rem] max-h-[50rem]"
         open={openParticipantList}

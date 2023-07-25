@@ -12,9 +12,13 @@ export default function EventFilters() {
   const [onlyJoined, setOnlyJoined] = useState(false);
 
   const [events, setEvents] = useState([] as DeltaEvent[]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getEvents(onlyFuture, onlyMine, onlyJoined).then(setEvents);
+    setLoading(true);
+    getEvents(onlyFuture, onlyMine, onlyJoined)
+      .then(setEvents)
+      .then(() => setLoading(false));
   }, [onlyFuture, onlyMine, onlyJoined]);
 
   return (
@@ -40,7 +44,7 @@ export default function EventFilters() {
         </Chips.Toggle>
       </Chips>
       <div className="w-full p-4">
-        <EventList events={events} />
+        <EventList events={events} loading={loading} />
       </div>
     </div>
   );

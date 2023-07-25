@@ -3,6 +3,10 @@ const nextConfig = {
   experimental: {
     serverActions: true,
   },
+  i18n: {
+    locales: ['no'],
+    defaultLocale: 'no'
+  },
   headers: () => [
     {
       source: '/event/:path*',

@@ -18,7 +18,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import EventDatepicker from "../app/event/new/eventDatepicker";
 import { DeltaEvent } from "@/types/event";
-import { dates } from "@/service/format";
+import { midnightDate } from "@/service/format";
 import { format } from "date-fns";
 import { TrashIcon } from "@navikt/aksel-icons";
 import { deleteEvent } from "@/service/eventActions";
@@ -123,9 +123,6 @@ export default function CreateEventForm({ eventId }: CreateEventFormProps) {
 
 type InternalCreateEventFormProps = { event?: DeltaEvent };
 function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
-  const [start, end, deadline] = event
-    ? dates(event)
-    : [undefined, undefined, undefined];
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [hasParticipantLimit, setHasParticipantLimit] = useState(
     (event?.participantLimit || 0) > 0,
@@ -147,17 +144,21 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
           description: event.description,
           location: event.location,
           public: event.public,
-          endDate: end!!,
-          startDate: start!!,
-          startTime: format(start!!, "HH:mm"),
+          endDate: midnightDate(event.endTime),
+          startDate: midnightDate(event.startTime),
+          startTime: format(new Date(event.startTime), "HH:mm"),
           hasParticipantLimit,
           participantLimit: event.participantLimit
             ? event.participantLimit.toString()
             : undefined,
           hasSignupDeadline: hasDeadline,
-          signupDeadlineDate: deadline,
-          signupDeadlineTime: deadline ? format(deadline, "HH:mm") : "",
-          endTime: format(end!!, "HH:mm"),
+          signupDeadlineDate: event.signupDeadline
+            ? midnightDate(event.signupDeadline)
+            : undefined,
+          signupDeadlineTime: event.signupDeadline
+            ? format(new Date(event.signupDeadline), "HH:mm")
+            : "",
+          endTime: format(new Date(event.endTime), "HH:mm"),
         } satisfies CreateEventSchema),
     resolver: zodResolver(createEventSchema),
   });

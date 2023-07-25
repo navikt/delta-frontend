@@ -12,22 +12,20 @@ export default function ExportParticipants(
   const sendEmails = participants.participants.map((p) => p.email).join(", ");
 
   return (
-    <div className="min-h-32">
-      <Dropdown>
-        <Button as={Dropdown.Toggle} variant="secondary">
-          <span className="flex flex-row gap-1 whitespace-nowrap">
-            Eksporter deltakere <ChevronDownIcon />
-          </span>
-        </Button>
-        <Dropdown.Menu>
-          <Dropdown.Menu.List>
-            <CopyButton copyText={copyEmails} text="Kopier alle eposter" />
-            <Dropdown.Menu.List.Item as={Link} href={`mailto:${sendEmails}`}>
-              <EnvelopeClosedIcon /> Send e-post til deltakere
-            </Dropdown.Menu.List.Item>
-          </Dropdown.Menu.List>
-        </Dropdown.Menu>
-      </Dropdown>
-    </div>
+    <Dropdown>
+      <Button as={Dropdown.Toggle} variant="secondary" className="w-full">
+        <span className="flex flex-row gap-1 whitespace-nowrap items-center">
+          Eksporter <ChevronDownIcon className="h-6 w-6" />
+        </span>
+      </Button>
+      <Dropdown.Menu>
+        <Dropdown.Menu.List>
+          <CopyButton copyText={copyEmails} text="Kopier alle eposter" />
+          <Dropdown.Menu.List.Item as={Link} href={`mailto:${sendEmails}`}>
+            <EnvelopeClosedIcon /> Send e-post til deltakere
+          </Dropdown.Menu.List.Item>
+        </Dropdown.Menu.List>
+      </Dropdown.Menu>
+    </Dropdown>
   );
 }

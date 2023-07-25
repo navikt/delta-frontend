@@ -8,21 +8,17 @@ import {
   Button,
   Heading,
   CopyButton,
-  Tooltip,
   Modal,
   BodyLong,
 } from "@navikt/ds-react";
 import Link from "next/link";
 import { nb } from "date-fns/locale";
-import {
-  DeltaEvent,
-  DeltaEventWithParticipant,
-  DeltaParticipant,
-} from "@/types/event";
+import { DeltaEventWithParticipant, DeltaParticipant } from "@/types/event";
 import { formatInTimeZone } from "date-fns-tz";
 import { getEvent, joinEvent, leaveEvent } from "@/service/eventActions";
 import ExportParticipants from "./exportParticipants";
-import { dates } from "@/service/format";
+import { dates, formatDeadline } from "@/service/format";
+import { HourglassTopFilledIcon } from "@navikt/aksel-icons";
 
 export default function EventDetails({
   event,
@@ -65,23 +61,21 @@ export default function EventDetails({
   return (
     <div>
       <div className="flex w-full justify-between items-start gap-4">
-        <div className="flex flex-col w-fit bg-red-100 p-2 rounded">
-          <span>{month}</span>
-          <span className="font-semibold text-3xl">{day}</span>
+        <div className="flex flex-col w-fit rounded border border-border-default">
+          <span className="bg-red-600 text-white px-2">{month}</span>
+          <span className="font-semibold text-3xl px-2">{day}</span>
         </div>
-        <div className="flex flex-col md:flex-row justify-between gap-4 items-end md:items-center">
-          <div className="whitespace-nowrap">
-            {showRegistration && (
-              <Alert variant="success" size="small">
-                Påmelding registrert
-              </Alert>
-            )}
-            {showUnregistration && (
-              <Alert variant="success" size="small">
-                Avmelding registrert
-              </Alert>
-            )}
-          </div>
+        <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
+          {showRegistration && (
+            <Alert variant="success" size="small">
+              Påmelding registrert
+            </Alert>
+          )}
+          {showUnregistration && (
+            <Alert variant="success" size="small">
+              Avmelding registrert
+            </Alert>
+          )}
           {(function () {
             if (event.ownerEmail === user.email) {
               return (
@@ -181,6 +175,14 @@ export default function EventDetails({
         <EventDescription event={event} participants={reactiveParticipants} />
         <div className="flex-grow flex flex-col gap-2">
           <Heading size="medium">Detaljer:</Heading>
+          {event.signupDeadline && (
+            <div className="flex items-center gap-2">
+              Påmeldingsfrist:
+              <span className="flex text-red-500 items-center gap-2">
+                {formatDeadline(event)}
+              </span>
+            </div>
+          )}
           <p className="italic whitespace-pre-line">{event.description}</p>
         </div>
       </div>

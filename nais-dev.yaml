@@ -24,3 +24,5 @@ spec:
   env:
     - name: NEXT_PUBLIC_CLUSTER
       value: dev
+    - name: NEXT_PUBLIC_HOSTNAME
+      value: https://delta.ekstern.dev.nav.no

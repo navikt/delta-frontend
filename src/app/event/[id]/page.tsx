@@ -8,6 +8,8 @@ import CardWithBackground from "@/components/cardWithBackground";
 export default async function Page({ params }: { params: { id: string } }) {
   await checkToken(`/event/${params.id}`);
 
+  const hostname = process.env.NEXT_PUBLIC_HOSTNAME;
+
   const api = getAuthlessApi();
   const response = await api.get(`/event/${params.id}`);
   const user = getUser();
@@ -15,7 +17,12 @@ export default async function Page({ params }: { params: { id: string } }) {
   const { event, participants }: DeltaEventWithParticipant = response.data;
   return (
     <CardWithBackground color="bg-blue-200" title={event.title} home>
-      <EventDetails event={event} participants={participants} user={user} />
+      <EventDetails
+        event={event}
+        participants={participants}
+        user={user}
+        hostname={hostname}
+      />
     </CardWithBackground>
   );
 }

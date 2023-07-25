@@ -1,37 +1,47 @@
 "use client";
 
 import { DeltaEvent } from "@/types/event";
-import { Tabs } from "@navikt/ds-react";
+import { Chips } from "@navikt/ds-react";
 import EventList from "./eventList";
+import { useEffect, useState } from "react";
+import { getEvents } from "@/service/eventActions";
 
-type EventListSwitcherProps = {
-  all: DeltaEvent[];
-  my: DeltaEvent[];
-  joined: DeltaEvent[];
-};
-export default function EventListSwitcher({
-  all,
-  my,
-  joined,
-}: EventListSwitcherProps) {
+export default function EventListSwitcher() {
+  const [onlyFuture, setOnlyFuture] = useState(true);
+  const [onlyMine, setOnlyMine] = useState(false);
+  const [onlyJoined, setOnlyJoined] = useState(false);
+
+  const [events, setEvents] = useState([] as DeltaEvent[]);
+
+  useEffect(() => {
+    getEvents(onlyFuture, onlyMine, onlyJoined).then(setEvents);
+  }, [onlyFuture, onlyMine, onlyJoined]);
+
   return (
     <div className="flex flex-col gap-6 w-full justify-center items-center">
-      <Tabs defaultValue="all" className="w-full">
-        <Tabs.List className="flex w-full">
-          <Tabs.Tab value="all" label="Alle" />
-          <Tabs.Tab value="my" label="Mine" />
-          <Tabs.Tab value="joined" label="Påmeldt" />
-        </Tabs.List>
-        <Tabs.Panel value="all" className="w-full p-4">
-          <EventList events={all} />
-        </Tabs.Panel>
-        <Tabs.Panel value="my" className="w-full p-4">
-          <EventList events={my} />
-        </Tabs.Panel>
-        <Tabs.Panel value="joined" className="w-full p-4">
-          <EventList events={joined} />
-        </Tabs.Panel>
-      </Tabs>
+      <Chips defaultValue="all" className="w-full">
+        <Chips.Toggle
+          selected={onlyFuture}
+          onClick={() => setOnlyFuture((x) => !x)}
+        >
+          Fremtidige
+        </Chips.Toggle>
+        <Chips.Toggle
+          selected={onlyMine}
+          onClick={() => setOnlyMine((x) => !x)}
+        >
+          Mine
+        </Chips.Toggle>
+        <Chips.Toggle
+          selected={onlyJoined}
+          onClick={() => setOnlyJoined((x) => !x)}
+        >
+          Påmeldte
+        </Chips.Toggle>
+        <div className="w-full p-4">
+          <EventList events={events} />
+        </div>
+      </Chips>
     </div>
   );
 }

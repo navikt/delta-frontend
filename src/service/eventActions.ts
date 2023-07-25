@@ -29,6 +29,18 @@ export async function deleteParticipant(eventId: string) {
   await api.delete(`/admin/event/${eventId}/participant`);
 }
 
+export async function getEvents(onlyFuture: boolean, onlyMine: boolean, onlyJoined: boolean): Promise<DeltaEvent[]> {
+  const api = await getAuthApi();
+  const response = await api.get<DeltaEvent[]>("/event", {
+    params: {
+      onlyFuture,
+      onlyJoined,
+      onlyMine,
+    }
+  })
+  return response.data
+}
+
 export async function getEvent(id: string): Promise<DeltaEventWithParticipant> {
   const api = await getAuthlessApi();
   const response = await api.get(`/event/${id}`);

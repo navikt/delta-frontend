@@ -38,10 +38,10 @@ export default function EventFilters() {
         >
           Påmeldte
         </Chips.Toggle>
-        <div className="w-full p-4">
-          <EventList events={events} />
-        </div>
       </Chips>
+      <div className="w-full p-4">
+        <EventList events={events} />
+      </div>
     </div>
   );
 }

@@ -14,11 +14,10 @@ import {
 import Link from "next/link";
 import { nb } from "date-fns/locale";
 import { DeltaEventWithParticipant, DeltaParticipant } from "@/types/event";
-import { formatInTimeZone } from "date-fns-tz";
 import { getEvent, joinEvent, leaveEvent } from "@/service/eventActions";
 import ExportParticipants from "./exportParticipants";
-import { dates, formatDeadline } from "@/service/format";
-import { HourglassTopFilledIcon } from "@navikt/aksel-icons";
+import { formatDeadline } from "@/service/format";
+import { format } from "date-fns";
 
 export default function EventDetails({
   event,
@@ -47,17 +46,11 @@ export default function EventDetails({
     }, 2000);
   };
 
-  const month = formatInTimeZone(
-    new Date(event.startTime),
-    "Europe/Oslo",
-    "MMM",
-    { locale: nb },
-  )
+  const month = format(new Date(event.startTime), "MMM", { locale: nb })
     .substring(0, 3)
     .toUpperCase();
-  const day = formatInTimeZone(new Date(event.startTime), "Europe/Oslo", "d");
+  const day = format(new Date(event.startTime), "d");
 
-  const [start, end, deadline] = dates(event);
   return (
     <div>
       <div className="flex w-full justify-between items-start gap-4">
@@ -91,10 +84,12 @@ export default function EventDetails({
               );
             }
             // If det har vært -> tidlig retur
-            if (end < new Date()) return <></>;
+            if (new Date(event.endTime) < new Date()) return <></>;
 
             const isUtløpt =
-              !isParticipant && !!deadline && deadline < new Date()
+              !isParticipant &&
+              !!event.signupDeadline &&
+              new Date(event.signupDeadline) < new Date()
                 ? true
                 : false;
             if (isUtløpt) {

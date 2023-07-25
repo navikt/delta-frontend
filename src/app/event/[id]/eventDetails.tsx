@@ -15,7 +15,6 @@ import Link from "next/link";
 import { nb } from "date-fns/locale";
 import { DeltaEventWithParticipant, DeltaParticipant } from "@/types/event";
 import { getEvent, joinEvent, leaveEvent } from "@/service/eventActions";
-import ExportParticipants from "./exportParticipants";
 import { formatDeadline } from "@/service/format";
 import { format } from "date-fns";
 import { HourglassBottomFilledIcon } from "@navikt/aksel-icons";
@@ -27,7 +26,7 @@ export default function EventDetails({
   hostname,
 }: DeltaEventWithParticipant & {
   user: User;
-  hostname: string | undefined;
+  hostname?: string;
 }) {
   const [reactiveParticipants, setParticipants] = useState(participants);
   const isParticipant = reactiveParticipants
@@ -36,7 +35,6 @@ export default function EventDetails({
 
   const [showRegistration, setRegistration] = useState(false);
   const [showUnregistration, setUnregistration] = useState(false);
-
   const [openConfirmation, setOpenConfirmation] = useState(false);
 
   const showAlert = () => {
@@ -80,7 +78,6 @@ export default function EventDetails({
                   >
                     Rediger arrangement
                   </Link>
-                  <ExportParticipants participants={participants} />
                 </>
               );
             }
@@ -162,7 +159,7 @@ export default function EventDetails({
           </Modal>
           <CopyButton
             className="navds-button navds-button--secondary md:whitespace-nowrap w-full"
-            copyText={`${hostname}/event/${event.id}`}
+            copyText={`https://${hostname}/event/${event.id}`}
             text="Kopier link"
           />
         </div>
@@ -194,7 +191,7 @@ export default function EventDetails({
 async function toggleEventStatus(
   eventId: string,
   isParticipant: boolean,
-  setParticipants: Dispatch<SetStateAction<DeltaParticipant[]>>,
+  setParticipants: Dispatch<SetStateAction<DeltaParticipant[]>>
 ) {
   await (isParticipant ? leaveEvent(eventId) : joinEvent(eventId));
   setParticipants((await getEvent(eventId)).participants);

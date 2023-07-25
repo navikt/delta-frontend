@@ -28,8 +28,10 @@ export default function EventDetails({
   event,
   participants,
   user,
+  hostname,
 }: DeltaEventWithParticipant & {
   user: User;
+  hostname: string | undefined;
 }) {
   const [reactiveParticipants, setParticipants] = useState(participants);
   const isParticipant = reactiveParticipants
@@ -53,7 +55,7 @@ export default function EventDetails({
     new Date(event.startTime),
     "Europe/Oslo",
     "MMM",
-    { locale: nb }
+    { locale: nb },
   )
     .substring(0, 3)
     .toUpperCase();
@@ -170,7 +172,7 @@ export default function EventDetails({
           </Modal>
           <CopyButton
             className="navds-button navds-button--secondary md:whitespace-nowrap w-full"
-            copyText={`https://${window.location.hostname}/event/${event.id}`}
+            copyText={`${hostname}/event/${event.id}`}
             text="Kopier link"
           />
         </div>
@@ -189,7 +191,7 @@ export default function EventDetails({
 async function toggleEventStatus(
   eventId: string,
   isParticipant: boolean,
-  setParticipants: Dispatch<SetStateAction<DeltaParticipant[]>>
+  setParticipants: Dispatch<SetStateAction<DeltaParticipant[]>>,
 ) {
   await (isParticipant ? leaveEvent(eventId) : joinEvent(eventId));
   setParticipants((await getEvent(eventId)).participants);

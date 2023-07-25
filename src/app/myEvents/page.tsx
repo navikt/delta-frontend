@@ -1,9 +1,7 @@
-
 import CardWithBackground from "@/components/cardWithBackground";
 import EventList from "@/components/eventList";
 import { getEvents } from "@/service/eventActions";
 import { DeltaEvent } from "@/types/event";
-
 
 export default async function MyEvents() {
   var events: DeltaEvent[] = await getEvents(false, true, false);

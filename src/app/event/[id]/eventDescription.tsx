@@ -25,7 +25,7 @@ export default function EventDescription({
   }, []);
 
   return (
-    <div className={className || "whitespace-nowrap"}>
+    <div className={className || ""}>
       <span className="flex flex-row justify-start gap-2 items-center">
         <ClockIcon />
         {`${event.startTime.substring(11, 16)} – ${event.endTime.substring(

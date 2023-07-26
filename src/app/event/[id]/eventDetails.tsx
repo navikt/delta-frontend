@@ -18,10 +18,7 @@ import { getEvent, joinEvent, leaveEvent } from "@/service/eventActions";
 import ExportParticipants from "./exportParticipants";
 import { formatDeadline } from "@/service/format";
 import { format } from "date-fns";
-import {
-  HourglassBottomFilledIcon,
-  PersonCircleIcon,
-} from "@navikt/aksel-icons";
+import { HourglassBottomFilledIcon } from "@navikt/aksel-icons";
 
 export default function EventDetails({
   event,
@@ -197,7 +194,7 @@ export default function EventDetails({
 async function toggleEventStatus(
   eventId: string,
   isParticipant: boolean,
-  setParticipants: Dispatch<SetStateAction<DeltaParticipant[]>>
+  setParticipants: Dispatch<SetStateAction<DeltaParticipant[]>>,
 ) {
   await (isParticipant ? leaveEvent(eventId) : joinEvent(eventId));
   setParticipants((await getEvent(eventId)).participants);

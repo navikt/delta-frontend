@@ -1,8 +1,6 @@
 "use client";
 import { DeltaParticipant } from "@/types/event";
 import ParticipantIcon from "@/app/event/[id]/participantIcon";
-import { Button } from "@navikt/ds-react";
-import { TrashIcon } from "@navikt/aksel-icons";
 
 type ParticipantProps = DeltaParticipant;
 

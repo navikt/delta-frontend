@@ -35,11 +35,15 @@ export async function deleteParticipant(eventId: string, userEmail: string) {
   }
 }
 
-export async function getEvents(
-  onlyFuture: boolean,
-  onlyMine: boolean,
-  onlyJoined: boolean,
-): Promise<DeltaEvent[]> {
+export async function getEvents({
+  onlyFuture = false,
+  onlyMine = false,
+  onlyJoined = false,
+}: {
+  onlyFuture?: boolean;
+  onlyMine?: boolean;
+  onlyJoined?: boolean;
+}): Promise<DeltaEvent[]> {
   const api = await getApi();
   const response = await api.get<DeltaEvent[]>("/event", {
     params: {

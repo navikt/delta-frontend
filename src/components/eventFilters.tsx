@@ -8,7 +8,6 @@ import { getEvents } from "@/service/eventActions";
 
 export default function EventFilters() {
   const [onlyFuture, setOnlyFuture] = useState(true);
-  const [onlyMine, setOnlyMine] = useState(false);
   const [onlyJoined, setOnlyJoined] = useState(false);
 
   const [events, setEvents] = useState([] as DeltaEvent[]);
@@ -16,7 +15,7 @@ export default function EventFilters() {
 
   useEffect(() => {
     setLoading(true);
-    getEvents(onlyFuture, onlyMine, onlyJoined)
+    getEvents({ onlyFuture, onlyJoined })
       .then(setEvents)
       .then(() => setLoading(false));
   }, [onlyFuture, onlyJoined]);

@@ -1,17 +1,11 @@
 "use client";
 
-import { DeltaEventWithParticipant } from "@/types/event";
-import {
-  ClockIcon,
-  PersonCheckmarkIcon,
-  PersonCircleIcon,
-  PinIcon,
-} from "@navikt/aksel-icons";
+import { DeltaEventWithParticipant, DeltaParticipant } from "@/types/event";
+import { ClockIcon, PersonCheckmarkIcon, PinIcon } from "@navikt/aksel-icons";
 import ParticipantIcon from "@/app/event/[id]/participantIcon";
 import { useEffect, useState } from "react";
-import { Heading, Modal } from "@navikt/ds-react";
+import { Heading, Modal, Search } from "@navikt/ds-react";
 import Participant from "./participant";
-import Link from "next/link";
 
 type EventDescriptionProps = DeltaEventWithParticipant & { className?: string };
 export default function EventDescription({
@@ -20,9 +14,22 @@ export default function EventDescription({
   className,
 }: EventDescriptionProps) {
   const [openParticipantList, setOpenParticipantList] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
+  const [filterParticipants, setFilterParticipants] = useState<
+    DeltaParticipant[]
+  >([]);
+
   useEffect(() => {
     Modal.setAppElement("#main");
   }, []);
+
+  useEffect(() => {
+    const filtered = participants.filter((p) => {
+      const name = p.email.split("@")[0].split(".").join(" ");
+      return name.toLowerCase().includes(searchInput.toLowerCase());
+    });
+    setFilterParticipants(filtered);
+  }, [participants, searchInput]);
 
   return (
     <div className={className || ""}>
@@ -30,7 +37,7 @@ export default function EventDescription({
         <ClockIcon />
         {`${event.startTime.substring(11, 16)} – ${event.endTime.substring(
           11,
-          16
+          16,
         )}`}
       </span>
       {event.location && (
@@ -73,12 +80,26 @@ export default function EventDescription({
             Deltakere
           </Heading>
           <div className="flex flex-col gap-6">
-            <div className="flex flex-col gap-2">
-              {participants.map((p) => (
-                <Participant {...p} key={p.email} />
-              ))}
+            <form>
+              <Search
+                label="Søk alle deltakere"
+                variant="simple"
+                size="small"
+                value={searchInput}
+                onChange={(e) => {
+                  setSearchInput(e);
+                }}
+              />
+            </form>
+            <div className="flex flex-col gap-6">
+              <div className="flex flex-col gap-2">
+                {filterParticipants
+                  .sort((a, b) => (a.email > b.email ? 1 : -1))
+                  .map((p) => (
+                    <Participant {...p} key={p.email} />
+                  ))}
+              </div>
             </div>
-            <div></div>
           </div>
         </Modal.Content>
       </Modal>

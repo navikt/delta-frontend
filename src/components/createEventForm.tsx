@@ -291,7 +291,7 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
           </div>
         </div>
         <Checkbox {...register("public")}>
-          Gjør arrangementet synlig på forsiden
+          Gjør arrangementet offentlig
         </Checkbox>
         <div className="flex flex-col max-w-[21rem]">
           <Checkbox
@@ -306,7 +306,7 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
               setHasParticipantLimit((x) => !x);
             }}
           >
-            Begrens maksimalt antall deltagere
+            Begrens maksimalt antall deltakere
           </Checkbox>
           <TextField
             {...register("participantLimit")}

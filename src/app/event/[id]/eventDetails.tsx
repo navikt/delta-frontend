@@ -78,6 +78,12 @@ export default function EventDetails({
                   >
                     Rediger arrangement
                   </Link>
+                  <Link
+                    className="w-full h-fit navds-button navds-button--primary whitespace-nowrap navds-label"
+                    href={`/event/${event.id}/admin`}
+                  >
+                    Administrer arrabgement
+                  </Link>
                 </>
               );
             }
@@ -191,7 +197,7 @@ export default function EventDetails({
 async function toggleEventStatus(
   eventId: string,
   isParticipant: boolean,
-  setParticipants: Dispatch<SetStateAction<DeltaParticipant[]>>
+  setParticipants: Dispatch<SetStateAction<DeltaParticipant[]>>,
 ) {
   await (isParticipant ? leaveEvent(eventId) : joinEvent(eventId));
   setParticipants((await getEvent(eventId)).participants);

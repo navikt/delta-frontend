@@ -18,6 +18,10 @@ import { getEvent, joinEvent, leaveEvent } from "@/service/eventActions";
 import ExportParticipants from "./exportParticipants";
 import { formatDeadline } from "@/service/format";
 import { format } from "date-fns";
+import {
+  HourglassBottomFilledIcon,
+  PersonCircleIcon,
+} from "@navikt/aksel-icons";
 
 export default function EventDetails({
   event,
@@ -168,18 +172,19 @@ export default function EventDetails({
       </div>
       <div className="flex-col md:flex-row flex justify-between gap-4 md:gap-28 pt-4">
         <EventDescription event={event} participants={reactiveParticipants} />
-        <div className="flex-grow flex flex-col gap-2">
+        <div className="flex-grow flex flex-col gap-2 md:w-3/4">
           <Heading size="medium">Detaljer:</Heading>
           {event.signupDeadline && (
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col md:items-center gap-2 md:flex-row">
               Påmeldingsfrist:
               <span className="flex text-red-500 items-center gap-2">
                 {formatDeadline(event)}
+                <HourglassBottomFilledIcon />
               </span>
             </div>
           )}
           <p className="italic whitespace-pre-line">{event.description}</p>
-          <span className="flex flex-row justify-start gap-2 items-center">
+          <span className="flex flex-col md:flex-row md:gap-2 md:items-center">
             Kontaktperson:
             <Link href={`mailto:${event.ownerEmail}`}>{event.ownerEmail}</Link>
           </span>
@@ -192,7 +197,7 @@ export default function EventDetails({
 async function toggleEventStatus(
   eventId: string,
   isParticipant: boolean,
-  setParticipants: Dispatch<SetStateAction<DeltaParticipant[]>>,
+  setParticipants: Dispatch<SetStateAction<DeltaParticipant[]>>
 ) {
   await (isParticipant ? leaveEvent(eventId) : joinEvent(eventId));
   setParticipants((await getEvent(eventId)).participants);

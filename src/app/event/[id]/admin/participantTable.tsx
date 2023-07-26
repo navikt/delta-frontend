@@ -14,7 +14,7 @@ export default function ParticipantTable({
   participants,
 }: ParticipantTableProps) {
   const [openConfirmations, setOpenConfirmations] = useState<boolean[]>(
-    participants.map(() => false)
+    participants.map(() => false),
   );
 
   const toggleConfirmation = (index: number) => {

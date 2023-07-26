@@ -64,7 +64,7 @@ const createEventSchema = z
     {
       message: "Slutttid må være etter starttid",
       path: ["endTime"],
-    }
+    },
   )
   .refine(
     (data) =>
@@ -74,7 +74,7 @@ const createEventSchema = z
     {
       message: "Påmeldingsfrist kan ikke være etter startdato",
       path: ["signupDeadlineDate"],
-    }
+    },
   )
   .refine(
     (data) =>
@@ -85,7 +85,7 @@ const createEventSchema = z
     {
       message: "Tidspunktet kan ikke være etter starttiden",
       path: ["signupDeadlineTime"],
-    }
+    },
   )
   .refine(
     (data) =>
@@ -94,7 +94,7 @@ const createEventSchema = z
     {
       message: "Må være mellom 1 og 9999",
       path: ["participantLimit"],
-    }
+    },
   );
 
 export type CreateEventSchema = z.infer<typeof createEventSchema>;
@@ -124,7 +124,7 @@ export default function CreateEventForm({ eventId }: CreateEventFormProps) {
 type InternalCreateEventFormProps = { event?: DeltaEvent };
 function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
   const [hasParticipantLimit, setHasParticipantLimit] = useState(
-    (event?.participantLimit || 0) > 0
+    (event?.participantLimit || 0) > 0,
   );
   const [hasDeadline, setDeadline] = useState(!!event?.signupDeadline);
 
@@ -242,16 +242,14 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
           )}
         </div>
       </div>
-      <Checkbox {...register("public")}>
-        Gjør arrangementet offentlig
-      </Checkbox>
+      <Checkbox {...register("public")}>Gjør arrangementet offentlig</Checkbox>
       <div className="flex flex-col max-w-[21rem]">
         <Checkbox
           {...register("hasParticipantLimit")}
           onChange={() => {
             const x = hasParticipantLimit;
             const invalidInput = !isValidParticipantLimit(
-              getValues().participantLimit
+              getValues().participantLimit,
             );
 
             if (x && invalidInput) setValue("participantLimit", undefined);

@@ -15,10 +15,14 @@ export default function EventList({ events, loading }: EventListProps) {
           <Skeleton variant="rounded" />
           <Skeleton variant="rounded" />
         </>
-      ) : (
+      ) : events.length ? (
         events.map((event) => (
           <EventCard event={event} key={`event-${event.id}`} />
         ))
+      ) : (
+        <p className="text-center col-span-full italic text-xlarge">
+          Fant ingen arrangementer :--(
+        </p>
       )}
     </section>
   );

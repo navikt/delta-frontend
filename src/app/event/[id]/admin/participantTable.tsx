@@ -1,4 +1,5 @@
 //import { deleteParticipant } from "@/service/eventActions";
+import { deleteParticipant } from "@/service/eventActions";
 import { DeltaEvent, DeltaParticipant } from "@/types/event";
 import { BodyLong, Button, Heading, Modal, Table } from "@navikt/ds-react";
 import { useState } from "react";
@@ -82,6 +83,7 @@ export default function ParticipantTable({
                       onClick={async () => {
                         await removeUser(event.id, email);
                         toggleConfirmation(i);
+                        window.location.reload();
                       }}
                     >
                       Ja, jeg er sikker
@@ -98,6 +100,5 @@ export default function ParticipantTable({
 }
 
 async function removeUser(eventId: string, userEmail: string) {
-  console.log("fiks meg når deleteParticipant er fikset");
-  //await deleteParticipant(eventId, userEmail);
+  await deleteParticipant(eventId, userEmail);
 }

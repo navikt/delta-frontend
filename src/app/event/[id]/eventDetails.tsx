@@ -15,7 +15,6 @@ import Link from "next/link";
 import { nb } from "date-fns/locale";
 import { DeltaEventWithParticipant, DeltaParticipant } from "@/types/event";
 import { getEvent, joinEvent, leaveEvent } from "@/service/eventActions";
-import ExportParticipants from "./exportParticipants";
 import { formatDeadline } from "@/service/format";
 import { format } from "date-fns";
 import { HourglassBottomFilledIcon } from "@navikt/aksel-icons";
@@ -27,7 +26,7 @@ export default function EventDetails({
   hostname,
 }: DeltaEventWithParticipant & {
   user: User;
-  hostname: string | undefined;
+  hostname?: string;
 }) {
   const [reactiveParticipants, setParticipants] = useState(participants);
   const isParticipant = reactiveParticipants
@@ -36,7 +35,6 @@ export default function EventDetails({
 
   const [showRegistration, setRegistration] = useState(false);
   const [showUnregistration, setUnregistration] = useState(false);
-
   const [openConfirmation, setOpenConfirmation] = useState(false);
 
   const showAlert = () => {
@@ -80,7 +78,12 @@ export default function EventDetails({
                   >
                     Rediger arrangement
                   </Link>
-                  <ExportParticipants participants={participants} />
+                  <Link
+                    className="w-full h-fit navds-button navds-button--primary whitespace-nowrap navds-label"
+                    href={`/event/${event.id}/admin`}
+                  >
+                    Administrer arrabgement
+                  </Link>
                 </>
               );
             }

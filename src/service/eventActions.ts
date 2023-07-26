@@ -24,9 +24,15 @@ export async function deleteEvent(eventId: string) {
   await api.delete(`/admin/event/${eventId}`);
 }
 
-export async function deleteParticipant(eventId: string) {
+export async function deleteParticipant(eventId: string, userEmail: string) {
+  // todo: bruk userEmail i payload
   const api = await getApi();
-  await api.delete(`/admin/event/${eventId}/participant`);
+  const payload = { email: userEmail };
+  await api.delete(`/admin/event/${eventId}/participant`, { data: payload });
+
+  {
+    email: userEmail;
+  }
 }
 
 export async function getEvents(

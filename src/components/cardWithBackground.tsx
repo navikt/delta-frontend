@@ -7,7 +7,7 @@ type CardWithBackgroundProps = {
   children: React.ReactNode;
   home?: boolean;
   newEvent?: boolean;
-  color: "bg-green-200" | "bg-blue-200";
+  color: "bg-green-200" | "bg-blue-200" | "bg-red-300";
 };
 export default function CardWithBackground(props: CardWithBackgroundProps) {
   return (

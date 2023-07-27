@@ -46,6 +46,7 @@ export async function getEvents({
   const response = await api.get<DeltaEvent[]>("/event", {
     params: {
       onlyFuture,
+      onlyPast,
       onlyJoined,
       onlyMine,
     },

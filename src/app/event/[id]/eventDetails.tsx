@@ -73,16 +73,16 @@ export default function EventDetails({
               return (
                 <>
                   <Link
-                    className="w-full h-fit navds-button navds-button--primary whitespace-nowrap navds-label"
+                    className="w-full h-fit navds-button navds-button--primary navds-label"
                     href={`/event/${event.id}/edit`}
                   >
-                    Rediger arrangement
+                    Rediger
                   </Link>
                   <Link
-                    className="w-full h-fit navds-button navds-button--primary whitespace-nowrap navds-label"
+                    className="w-full h-fit navds-button navds-button--primary navds-label"
                     href={`/event/${event.id}/admin`}
                   >
-                    Administrer arrabgement
+                    Administrer
                   </Link>
                 </>
               );

@@ -87,8 +87,16 @@ export default function EventDetails({
                 </>
               );
             }
-            // If det har vært -> tidlig retur
-            if (new Date(event.endTime) < new Date()) return <></>;
+            if (new Date(event.endTime) < new Date())
+              return (
+                <Alert
+                  variant="info"
+                  size="small"
+                  className="md:whitespace-nowrap"
+                >
+                  Arrangementet er avsluttet
+                </Alert>
+              );
 
             const isUtløpt =
               !isParticipant &&

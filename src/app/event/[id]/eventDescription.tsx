@@ -93,6 +93,18 @@ export default function EventDescription({
             </form>
             <div className="flex flex-col gap-6">
               <div className="flex flex-col gap-2">
+                <div className="flex gap-2 items-center">
+                  <ParticipantIcon
+                    nameList={event.ownerEmail.split("@")[0].split(".")}
+                    type="participantList"
+                  ></ParticipantIcon>
+                  {event.ownerEmail
+                    .split("@")[0]
+                    .split(".")
+                    .map((name) => name.charAt(0).toUpperCase() + name.slice(1))
+                    .join(" ")}{" "}
+                  (arrangør)
+                </div>
                 {filterParticipants
                   .sort((a, b) => (a.email > b.email ? 1 : -1))
                   .map((p) => (

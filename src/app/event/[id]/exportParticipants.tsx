@@ -21,12 +21,26 @@ export default function ExportParticipants(
       <Dropdown.Menu>
         <Dropdown.Menu.List>
           <CopyButton
-            className="w-full"
+            className="w-full justify-start px-2"
+            size="small"
             copyText={copyEmails}
             text="Kopier alle eposter"
           />
-          <Dropdown.Menu.List.Item as={Link} href={`mailto:${sendEmails}`}>
-            <EnvelopeClosedIcon /> Send e-post til deltakere
+          <Dropdown.Menu.List.Item
+            className={`
+              navds-copybutton--small navds-copybutton--neutral
+              no-underline text-text-subtle hover:text-text-default
+              hover:bg-surface-hover w-full justify-start px-2
+            `}
+            as={Link}
+            href={`mailto:${sendEmails}`}
+          >
+            <span className="navds-copybutton__content">
+              <EnvelopeClosedIcon className="navds-copybutton__icon" />
+              <span className="navds-label navds-label--small">
+                Send e-post til deltakere
+              </span>
+            </span>
           </Dropdown.Menu.List.Item>
         </Dropdown.Menu.List>
       </Dropdown.Menu>

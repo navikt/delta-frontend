@@ -56,7 +56,7 @@ export default function EventDetails({
           <span className="bg-red-600 text-white px-2">{month}</span>
           <span className="font-semibold text-3xl px-2">{day}</span>
         </div>
-        <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
+        <div className="flex flex-col md:flex-row gap-4 items-start md:items-center md:whitespace-nowrap">
           {showRegistration && (
             <Alert variant="success" size="small">
               Påmelding registrert

@@ -18,6 +18,7 @@ import { getEvent, joinEvent, leaveEvent } from "@/service/eventActions";
 import { formatDeadline } from "@/service/format";
 import { format } from "date-fns";
 import { HourglassBottomFilledIcon } from "@navikt/aksel-icons";
+
 export default function EventDetails({
   event,
   participants,
@@ -172,7 +173,9 @@ export default function EventDetails({
       <div className="flex-col md:flex-row flex justify-between gap-4 md:gap-28 pt-4">
         <EventDescription event={event} participants={reactiveParticipants} />
         <div className="flex-grow flex flex-col gap-2 md:w-3/4">
-          <Heading size="medium">Detaljer:</Heading>
+          <Heading size="medium" as="h2">
+            Detaljer:
+          </Heading>
           {event.signupDeadline && (
             <div className="flex flex-col md:items-center gap-2 md:flex-row">
               Påmeldingsfrist:

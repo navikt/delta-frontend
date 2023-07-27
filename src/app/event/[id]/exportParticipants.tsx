@@ -20,7 +20,11 @@ export default function ExportParticipants(
       </Button>
       <Dropdown.Menu>
         <Dropdown.Menu.List>
-          <CopyButton copyText={copyEmails} text="Kopier alle eposter" />
+          <CopyButton
+            className="w-full"
+            copyText={copyEmails}
+            text="Kopier alle eposter"
+          />
           <Dropdown.Menu.List.Item as={Link} href={`mailto:${sendEmails}`}>
             <EnvelopeClosedIcon /> Send e-post til deltakere
           </Dropdown.Menu.List.Item>

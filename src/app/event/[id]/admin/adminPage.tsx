@@ -23,7 +23,7 @@ export default function AdminPage({
   const { event, participants }: DeltaEventWithParticipant =
     eventWithParticipants;
   return (
-    <div className="flex flex-col min-h-screen py-2 gap-10">
+    <div className="flex flex-col gap-10">
       <span className="w-full flex flex-row justify-end">
         <span className="flex w-full md:w-fit flex-col md:flex-row gap-4">
           <Link

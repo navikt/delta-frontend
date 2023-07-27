@@ -34,68 +34,76 @@ export default function ParticipantTable({
     };
   });
   return (
-    <Table size="small">
-      <Table.Header>
-        <Table.Row>
-          <Table.HeaderCell scope="col">Navn</Table.HeaderCell>
-          <Table.HeaderCell scope="col">Epost</Table.HeaderCell>
-          <Table.HeaderCell scope="col" aria-label="Meld av deltakere" />
-        </Table.Row>
-      </Table.Header>
-      <Table.Body>
-        {data.map(({ name, email }, i) => {
-          return (
-            <Table.Row key={i}>
-              <Table.DataCell scope="row">{name}</Table.DataCell>
-              <Table.DataCell>{email}</Table.DataCell>
-              <Table.DataCell>
-                <Button variant="danger" onClick={() => toggleConfirmation(i)}>
-                  Meld av
-                </Button>
-              </Table.DataCell>
-              <Modal
-                open={openConfirmations[i]}
-                aria-label={`Fjern deltaker ${name} fra arrangementet`}
-                onClose={() => toggleConfirmation(i)}
-                closeButton={false}
-                aria-labelledby="Fjern deltaker modal"
-                className="w-4/5 max-w-[30rem] max-h-[50rem]"
-              >
-                <Modal.Content>
-                  <Heading spacing level="1" size="large" id="modal-heading">
-                    {`Meld av ${name} fra ${event?.title}?`}
-                  </Heading>
-                  <BodyLong spacing>
-                    Er du sikker på at du vil melde {name} av arrangementet?
-                    Husk å si ifra til vedkommende, for de varsles ikke når du
-                    melder de av her.
-                  </BodyLong>
-                  <div className="flex flex-row justify-end gap-4">
-                    <Button
-                      variant="secondary"
-                      onClick={() => toggleConfirmation(i)}
-                    >
-                      Avbryt
-                    </Button>
-                    <Button
-                      variant="danger"
-                      className="w-fit h-fit font-bold"
-                      onClick={async () => {
-                        await removeUser(event.id, email);
-                        toggleConfirmation(i);
-                        window.location.reload();
-                      }}
-                    >
-                      Ja, jeg er sikker
-                    </Button>
-                  </div>
-                </Modal.Content>
-              </Modal>
-            </Table.Row>
-          );
-        })}
-      </Table.Body>
-    </Table>
+    <div className="flex flex-col gap-5 bg-bg-subtle rounded p-2">
+      <Table size="small">
+        <Table.Header>
+          <Table.Row>
+            <Table.HeaderCell scope="col">Navn</Table.HeaderCell>
+            <Table.HeaderCell scope="col">Epost</Table.HeaderCell>
+            <Table.HeaderCell scope="col" aria-label="Meld av deltakere" />
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
+          {data.map(({ name, email }, i) => {
+            return (
+              <Table.Row key={i}>
+                <Table.DataCell scope="row">{name}</Table.DataCell>
+                <Table.DataCell>{email}</Table.DataCell>
+                <Table.DataCell>
+                  <Button
+                    variant="danger"
+                    onClick={() => toggleConfirmation(i)}
+                  >
+                    Meld av
+                  </Button>
+                </Table.DataCell>
+                <Modal
+                  open={openConfirmations[i]}
+                  aria-label={`Fjern deltaker ${name} fra arrangementet`}
+                  onClose={() => toggleConfirmation(i)}
+                  closeButton={false}
+                  aria-labelledby="Fjern deltaker modal"
+                  className="w-4/5 max-w-[30rem] max-h-[50rem]"
+                >
+                  <Modal.Content>
+                    <Heading spacing level="1" size="large" id="modal-heading">
+                      {`Meld av ${name} fra ${event?.title}?`}
+                    </Heading>
+                    <BodyLong spacing>
+                      Er du sikker på at du vil melde {name} av arrangementet?
+                      Husk å si ifra til vedkommende, for de varsles ikke når du
+                      melder de av her.
+                    </BodyLong>
+                    <div className="flex flex-row justify-end gap-4">
+                      <Button
+                        variant="secondary"
+                        onClick={() => toggleConfirmation(i)}
+                      >
+                        Avbryt
+                      </Button>
+                      <Button
+                        variant="danger"
+                        className="w-fit h-fit font-bold"
+                        onClick={async () => {
+                          await removeUser(event.id, email);
+                          toggleConfirmation(i);
+                          window.location.reload();
+                        }}
+                      >
+                        Ja, jeg er sikker
+                      </Button>
+                    </div>
+                  </Modal.Content>
+                </Modal>
+              </Table.Row>
+            );
+          })}
+        </Table.Body>
+      </Table>
+      {!participants.length && (
+        <p className="text-center w-full italic">Ingen deltakere</p>
+      )}
+    </div>
   );
 }
 

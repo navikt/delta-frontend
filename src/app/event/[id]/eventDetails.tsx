@@ -168,7 +168,7 @@ export default function EventDetails({
           <CopyButton
             className="navds-button navds-button--secondary md:whitespace-nowrap w-full"
             copyText={`${hostname}/event/${event.id}`}
-            text="Kopier link"
+            text="Kopier lenke"
           />
         </div>
       </div>

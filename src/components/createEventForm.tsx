@@ -7,9 +7,6 @@ import {
   Link,
   Checkbox,
   Skeleton,
-  Modal,
-  Heading,
-  BodyLong,
 } from "@navikt/ds-react";
 import { useEffect, useState } from "react";
 import { createEvent, getEvent, updateEvent } from "@/service/eventActions";
@@ -20,8 +17,6 @@ import EventDatepicker from "../app/event/new/eventDatepicker";
 import { DeltaEvent } from "@/types/event";
 import { midnightDate } from "@/service/format";
 import { format } from "date-fns";
-import { TrashIcon } from "@navikt/aksel-icons";
-import { deleteEvent } from "@/service/eventActions";
 
 function isValidParticipantLimit(limit?: string) {
   if (!limit) return false;

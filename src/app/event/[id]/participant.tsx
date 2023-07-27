@@ -2,7 +2,7 @@
 import { DeltaParticipant } from "@/types/event";
 import ParticipantIcon from "@/app/event/[id]/participantIcon";
 
-type ParticipantProps = DeltaParticipant;
+type ParticipantProps = DeltaParticipant & { owner: boolean };
 
 export default function Participant(participant: ParticipantProps) {
   const nameList = participant.email.split("@")[0].split(".");
@@ -14,7 +14,10 @@ export default function Participant(participant: ParticipantProps) {
     <div className="flex flex-row items-center justify-between w-full gap-2">
       <div className="flex flex-row items-center gap-2">
         <ParticipantIcon nameList={nameList} type="participantList" />
-        <span className="text-md">{name}</span>
+        <span className="text-md">
+          {name}
+          {participant.owner && " (arrangør)"}
+        </span>
       </div>
     </div>
   );

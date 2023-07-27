@@ -33,13 +33,21 @@ export default function EventFilters() {
       <Chips defaultValue="all" className="w-full">
         <Chips.Toggle
           selected={onlyFuture}
-          onClick={() => onlyFuture ? setSelectedTime(TimeSelector.ALL) : setSelectedTime(TimeSelector.FUTURE)}
+          onClick={() =>
+            onlyFuture
+              ? setSelectedTime(TimeSelector.ALL)
+              : setSelectedTime(TimeSelector.FUTURE)
+          }
         >
           Fremtidige
         </Chips.Toggle>
         <Chips.Toggle
           selected={onlyPast}
-          onClick={() => onlyPast ? setSelectedTime(TimeSelector.ALL) : setSelectedTime(TimeSelector.PAST)}
+          onClick={() =>
+            onlyPast
+              ? setSelectedTime(TimeSelector.ALL)
+              : setSelectedTime(TimeSelector.PAST)
+          }
         >
           Tidligere
         </Chips.Toggle>

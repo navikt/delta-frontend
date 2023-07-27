@@ -12,17 +12,7 @@ type CardWithBackgroundProps = {
 export default function CardWithBackground(props: CardWithBackgroundProps) {
   return (
     <div className="w-full flex flex-col align-center items-center">
-      <div
-        className={`flex flex-row w-full justify-between pt-3 ${props.color}`}
-      >
-        <Link
-          className="flex items-center no-underline text-text-subtle "
-          href="/"
-        >
-          <span className="w-fit flex gap-2 items-center flex-row whitespace-nowrap text-3xl mx-3">
-            Δ Delta
-          </span>
-        </Link>
+      <div className={`flex flex-row w-full pt-3 ${props.color}`}>
         <div className="flex flex-row">
           <Dropdown>
             <Button
@@ -45,7 +35,7 @@ export default function CardWithBackground(props: CardWithBackgroundProps) {
                 </Dropdown.Menu.GroupedList.Item>
                 <Dropdown.Menu.GroupedList.Item
                   as={Link}
-                  href="/myEvents"
+                  href="/my-events"
                   className="no-underline"
                 >
                   Se mine arrangementer
@@ -54,6 +44,14 @@ export default function CardWithBackground(props: CardWithBackgroundProps) {
             </Dropdown.Menu>
           </Dropdown>
         </div>
+        <Link
+          className="flex items-center no-underline text-text-subtle "
+          href="/"
+        >
+          <span className="w-fit flex gap-2 items-center flex-row whitespace-nowrap text-3xl ">
+            Δ Delta
+          </span>
+        </Link>
       </div>
       <div
         className={`w-full flex flex-col items-center justify-center text-center ${props.color}`}

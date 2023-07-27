@@ -15,7 +15,12 @@ export default async function Page({ params }: { params: { id: string } }) {
   );
 
   return (
-    <CardWithBackground color="bg-blue-200" title={event.title} home>
+    <CardWithBackground
+      color="bg-blue-200"
+      title={event.title}
+      home
+      backLink="/"
+    >
       <EventDetails
         event={event}
         participants={participants}

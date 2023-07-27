@@ -7,7 +7,12 @@ export default async function EditEvent({
   params: { id: string };
 }) {
   return (
-    <CardWithBackground title="Rediger arrangement" color="bg-green-200" home>
+    <CardWithBackground
+      title="Rediger arrangement"
+      color="bg-green-200"
+      home
+      backLink={`/event/${params.id}/admin`}
+    >
       <CreateEventForm eventId={params.id} />
     </CardWithBackground>
   );

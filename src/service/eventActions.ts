@@ -33,10 +33,12 @@ export async function deleteParticipant(eventId: string, userEmail: string) {
 
 export async function getEvents({
   onlyFuture = false,
+  onlyPast = false,
   onlyMine = false,
   onlyJoined = false,
 }: {
   onlyFuture?: boolean;
+  onlyPast?: boolean;
   onlyMine?: boolean;
   onlyJoined?: boolean;
 }): Promise<DeltaEvent[]> {

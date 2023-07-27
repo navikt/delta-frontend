@@ -1,5 +1,5 @@
 "use client";
-import { MenuHamburgerIcon } from "@navikt/aksel-icons";
+import { ArrowLeftIcon, MenuHamburgerIcon } from "@navikt/aksel-icons";
 import { Button, Dropdown, Heading, Link } from "@navikt/ds-react";
 
 type CardWithBackgroundProps = {
@@ -8,6 +8,7 @@ type CardWithBackgroundProps = {
   home?: boolean;
   newEvent?: boolean;
   color: "bg-green-200" | "bg-blue-200" | "bg-red-300";
+  backLink?: string;
 };
 export default function CardWithBackground(props: CardWithBackgroundProps) {
   return (
@@ -66,7 +67,17 @@ export default function CardWithBackground(props: CardWithBackgroundProps) {
           </Heading>
         </div>
       </div>
-      <div className="bg-white drop-shadow-lg border-gray-200 border-2 rounded relative w-5/6 top-[-2.5rem] z-10 flex flex-col p-4 h-fit max-w-[80rem] gap-4">
+      <div className="bg-white drop-shadow-lg border-gray-200 border-2 rounded relative w-5/6 top-[-2.5rem] z-10 flex flex-col p-4 h-fit max-w-[80rem]">
+        {props.backLink && (
+          <span className="relative top-[-4rem] w-0 h-0">
+            <Link
+              href={props.backLink}
+              className="flex items-center no-underline font-bold border w-fit p-1 bg-bg-subtle rounded drop-shadow-sm text-sm hover:bg-bg-subtle-hover hover:text-text-default tracking-wide"
+            >
+              <ArrowLeftIcon /> Tilbake
+            </Link>
+          </span>
+        )}
         {props.children}
       </div>
     </div>

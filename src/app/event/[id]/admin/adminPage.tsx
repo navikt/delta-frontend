@@ -24,8 +24,8 @@ export default function AdminPage({
     eventWithParticipants;
   return (
     <div className="flex flex-col min-h-screen py-2 gap-10">
-      <span className="flex flex-row justify-end">
-        <span className="flex flex-row gap-4">
+      <span className="w-full flex flex-row justify-end">
+        <span className="flex w-full md:w-fit flex-col md:flex-row gap-4">
           <Link
             href={`/event/${event.id}/edit`}
             className="w-full h-fit navds-button navds-button--primary whitespace-nowrap navds-label"
@@ -36,7 +36,7 @@ export default function AdminPage({
           <Button
             type="submit"
             variant="danger"
-            className="w-fit h-fit font-bold"
+            className="w-full h-fit font-bold"
             onClick={() => setOpenConfirmation((x) => !x)}
           >
             <span className="flex items-center gap-1">

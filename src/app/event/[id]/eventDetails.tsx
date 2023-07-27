@@ -18,6 +18,7 @@ import { getEvent, joinEvent, leaveEvent } from "@/service/eventActions";
 import { formatDeadline } from "@/service/format";
 import { format } from "date-fns";
 import { HourglassBottomFilledIcon } from "@navikt/aksel-icons";
+
 export default function EventDetails({
   event,
   participants,

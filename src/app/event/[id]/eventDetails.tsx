@@ -74,12 +74,6 @@ export default function EventDetails({
                 <>
                   <Link
                     className="w-full h-fit navds-button navds-button--primary navds-label"
-                    href={`/event/${event.id}/edit`}
-                  >
-                    Rediger
-                  </Link>
-                  <Link
-                    className="w-full h-fit navds-button navds-button--primary navds-label"
                     href={`/event/${event.id}/admin`}
                   >
                     Administrer

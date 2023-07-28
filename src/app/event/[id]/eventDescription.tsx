@@ -71,12 +71,12 @@ export default function EventDescription({
           </li>
         ))}
       </ul>
-      <div
+      <button
         onClick={() => setOpenParticipantList(true)}
         className="flex flex-col hover:bg-surface-subtle rounded-md cursor-pointer"
       >
         <span className="flex flex-row justify-start gap-2 items-center cursor-pointer">
-          <PersonCheckmarkIcon aria-label="deltakere" />
+          <PersonCheckmarkIcon />
           {participants.length}
           {event.participantLimit == 0 ? " " : ` av ${event.participantLimit} `}
           {"deltakere"}
@@ -91,7 +91,7 @@ export default function EventDescription({
           ))}
           {participants.length > 4 && <ParticipantIcon name={""} />}
         </div>
-      </div>
+      </button>
       <Modal
         className="w-4/5 max-w-[30rem] max-h-[50rem]"
         open={openParticipantList}

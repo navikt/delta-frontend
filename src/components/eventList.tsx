@@ -18,8 +18,8 @@ export default function EventList({ events, loading }: EventListProps) {
           </>
         ) : events.length ? (
           events.map((event) => (
-            <li>
-              <EventCard event={event} key={`event-${event.id}`} />
+            <li key={`event-${event.id}`}>
+              <EventCard event={event} />
             </li>
           ))
         ) : (

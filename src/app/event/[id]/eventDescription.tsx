@@ -117,15 +117,17 @@ export default function EventDescription({
               />
             </form>
             <div className="flex flex-col gap-6">
-              <div className="flex flex-col gap-2">
-                {filterParticipants.map((p) => (
-                  <Participant
-                    {...p}
-                    owner={hosts.some((h) => h.email === p.email)}
-                    key={p.email}
-                  />
-                ))}
-              </div>
+              <ul className="flex flex-col gap-2">
+                <li>
+                  {filterParticipants.map((p) => (
+                    <Participant
+                      {...p}
+                      owner={hosts.some((h) => h.email === p.email)}
+                      key={p.email}
+                    />
+                  ))}
+                </li>
+              </ul>
             </div>
           </div>
         </Modal.Content>

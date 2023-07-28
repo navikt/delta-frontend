@@ -26,7 +26,7 @@ export default function EventFilters() {
     getEvents({ onlyFuture, onlyPast, onlyJoined })
       .then(setEvents)
       .then(() => setLoading(false));
-  }, [onlyFuture, onlyJoined]);
+  }, [onlyFuture, onlyPast, onlyJoined]);
 
   return (
     <div className="flex flex-col gap-6 w-full justify-center items-center">

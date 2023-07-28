@@ -19,8 +19,13 @@ export default function CardWithBackground(props: CardWithBackgroundProps) {
             <Button
               as={Dropdown.Toggle}
               className="bg-transparent hover:bg-blue-300 mx-3"
+              aria-label="Meny"
             >
-              <MenuHamburgerIcon color="black" fontSize="1.5rem" />
+              <MenuHamburgerIcon
+                color="black"
+                fontSize="1.5rem"
+                aria-label="Meny ikon"
+              />
             </Button>
             <Dropdown.Menu>
               <Dropdown.Menu.GroupedList>

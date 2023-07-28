@@ -1,5 +1,5 @@
 "use client";
-import { DeltaEventWithParticipant } from "@/types/event";
+import { FullDeltaEvent } from "@/types/event";
 import { BodyLong, Button, Heading, Modal } from "@navikt/ds-react";
 import ParticipantTable from "./participantTable";
 import ExportParticipants from "../exportParticipants";
@@ -7,21 +7,23 @@ import Link from "next/link";
 import { deleteEvent } from "@/service/eventActions";
 import { useEffect, useState } from "react";
 import { TrashIcon } from "@navikt/aksel-icons";
+import { User } from "@/types/user";
 
 type ParticipantPageProps = {
-  eventWithParticipants: DeltaEventWithParticipant;
+  fullEvent: FullDeltaEvent;
+  user: User;
 };
 
 export default function AdminPage({
-  eventWithParticipants,
+  fullEvent: eventWithParticipants,
+  user,
 }: ParticipantPageProps) {
   const [openConfirmation, setOpenConfirmation] = useState(false);
   useEffect(() => {
     Modal.setAppElement("#main");
   }, []);
 
-  const { event, participants }: DeltaEventWithParticipant =
-    eventWithParticipants;
+  const { event, participants, hosts }: FullDeltaEvent = eventWithParticipants;
   return (
     <div className="flex flex-col gap-10">
       <span className="w-full flex flex-row justify-end">
@@ -77,7 +79,12 @@ export default function AdminPage({
           </div>
         </Modal.Content>
       </Modal>
-      <ParticipantTable participants={participants} event={event} />
+      <ParticipantTable
+        participants={participants}
+        hosts={hosts}
+        event={event}
+        user={user}
+      />
     </div>
   );
 }

@@ -9,14 +9,14 @@ export type CreateDeltaEvent = {
   signupDeadline?: string;
 };
 
-export type DeltaEventWithParticipant = {
+export type FullDeltaEvent = {
   event: DeltaEvent;
   participants: DeltaParticipant[];
+  hosts: DeltaParticipant[];
 };
 
 export type DeltaEvent = {
   id: string;
-  ownerEmail: string;
   title: string;
   description: string;
   startTime: string;
@@ -29,4 +29,10 @@ export type DeltaEvent = {
 
 export type DeltaParticipant = {
   email: string;
+  name: string;
+};
+
+export type ChangeDeltaParticipant = {
+  email: string;
+  type: "PARTICIPANT" | "HOST";
 };

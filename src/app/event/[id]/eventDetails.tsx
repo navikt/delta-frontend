@@ -188,14 +188,13 @@ export default function EventDetails({
         />
         <div className="flex-grow flex flex-col gap-2 md:w-3/4">
           <Heading size="medium" as="h2">
-            Detaljer:
+            Detaljer
           </Heading>
           {event.signupDeadline && (
             <div className="flex flex-col md:items-center gap-2 md:flex-row">
               Påmeldingsfrist:
               <span className="flex text-red-500 items-center gap-2">
                 {formatDeadline(event)}
-                <HourglassBottomFilledIcon />
               </span>
             </div>
           )}

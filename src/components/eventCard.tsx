@@ -19,12 +19,12 @@ export function EventCard({ event }: EventCardProps) {
       <LinkPanel.Title>{event.title}</LinkPanel.Title>
       <LinkPanel.Description>
         <Detail className="flex gap-1 items-center">
-          <CalendarIcon />
+          <CalendarIcon aria-label="Dato" />
           {formatEventTimes(event)}
         </Detail>
         {formatEventDuration(event) !== "" && (
           <Detail className="flex gap-1 items-center">
-            <ClockIcon />
+            <ClockIcon aria-label="varighet" />
             {formatEventDuration(event)}
           </Detail>
         )}

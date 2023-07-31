@@ -54,12 +54,13 @@ export default function ParticipantTable({
                       <Button
                         variant="danger"
                         size="small"
-                        onClick={() =>
-                          changeParticipant(event.id, {
+                        onClick={async () => {
+                          await changeParticipant(event.id, {
                             email,
                             type: "PARTICIPANT",
-                          })
-                        }
+                          });
+                          window.location.reload();
+                        }}
                       >
                         Fjern arrangør
                       </Button>
@@ -68,9 +69,13 @@ export default function ParticipantTable({
                         <Button
                           variant="primary"
                           size="small"
-                          onClick={() =>
-                            changeParticipant(event.id, { email, type: "HOST" })
-                          }
+                          onClick={async () => {
+                            await changeParticipant(event.id, {
+                              email,
+                              type: "HOST",
+                            });
+                            window.location.reload();
+                          }}
                         >
                           Gjør til arrangør
                         </Button>

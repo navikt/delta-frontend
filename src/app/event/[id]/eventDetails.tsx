@@ -13,7 +13,7 @@ import {
 } from "@navikt/ds-react";
 import Link from "next/link";
 import { nb } from "date-fns/locale";
-import { DeltaEventWithParticipant, DeltaParticipant } from "@/types/event";
+import { FullDeltaEvent, DeltaParticipant } from "@/types/event";
 import { getEvent, joinEvent, leaveEvent } from "@/service/eventActions";
 import { formatDeadline } from "@/service/format";
 import { format } from "date-fns";
@@ -22,9 +22,10 @@ import { HourglassBottomFilledIcon } from "@navikt/aksel-icons";
 export default function EventDetails({
   event,
   participants,
+  hosts,
   user,
   hostname,
-}: DeltaEventWithParticipant & {
+}: FullDeltaEvent & {
   user: User;
   hostname?: string;
 }) {
@@ -69,7 +70,7 @@ export default function EventDetails({
             </Alert>
           )}
           {(function () {
-            if (event.ownerEmail === user.email) {
+            if (hosts.map((h) => h.email).includes(user.email)) {
               return (
                 <>
                   <Link
@@ -173,7 +174,11 @@ export default function EventDetails({
         </div>
       </div>
       <div className="flex-col md:flex-row flex justify-between gap-4 md:gap-28 pt-4">
-        <EventDescription event={event} participants={reactiveParticipants} />
+        <EventDescription
+          event={event}
+          participants={reactiveParticipants}
+          hosts={hosts}
+        />
         <div className="flex-grow flex flex-col gap-2 md:w-3/4">
           <Heading size="medium" as="h2">
             Detaljer:
@@ -188,10 +193,17 @@ export default function EventDetails({
             </div>
           )}
           <p className="italic whitespace-pre-line">{event.description}</p>
-          <span className="flex flex-col md:flex-row md:gap-2 md:items-center">
-            Kontaktperson:
-            <Link href={`mailto:${event.ownerEmail}`}>{event.ownerEmail}</Link>
-          </span>
+          <div className="flex flex-col">
+            {hosts.map((host) => (
+              <span
+                className="flex flex-col md:flex-row md:gap-2 md:items-center"
+                key={host.email}
+              >
+                Kontaktperson:
+                <Link href={`mailto:${host.email}`}>{host.email}</Link>
+              </span>
+            ))}
+          </div>
         </div>
       </div>
     </div>

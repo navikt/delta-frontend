@@ -3,9 +3,10 @@
 import { getApi } from "@/api/instance";
 import { CreateEventSchema } from "@/components/createEventForm";
 import {
+  ChangeDeltaParticipant,
   CreateDeltaEvent,
   DeltaEvent,
-  DeltaEventWithParticipant,
+  FullDeltaEvent,
 } from "@/types/event";
 import { formatInTimeZone } from "date-fns-tz";
 
@@ -31,6 +32,14 @@ export async function deleteParticipant(eventId: string, userEmail: string) {
   await api.delete(`/admin/event/${eventId}/participant`, { data: payload });
 }
 
+export async function changeParticipant(
+  eventId: string,
+  changeDeltaParticipant: ChangeDeltaParticipant,
+) {
+  const api = await getApi();
+  await api.post(`/admin/event/${eventId}/participant`, changeDeltaParticipant);
+}
+
 export async function getEvents({
   onlyFuture = false,
   onlyPast = false,
@@ -54,7 +63,7 @@ export async function getEvents({
   return response.data;
 }
 
-export async function getEvent(id: string): Promise<DeltaEventWithParticipant> {
+export async function getEvent(id: string): Promise<FullDeltaEvent> {
   const api = await getApi();
   const response = await api.get(`/event/${id}`);
   return response.data;

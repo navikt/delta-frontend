@@ -1,4 +1,4 @@
-import type { DeltaEventWithParticipant } from "@/types/event";
+import type { FullDeltaEvent } from "@/types/event";
 import { notFound } from "next/navigation";
 import { checkToken, getUser } from "@/auth/token";
 import EventDetails from "./eventDetails";
@@ -10,7 +10,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   const hostname = process.env.NEXT_PUBLIC_HOSTNAME;
 
   const user = getUser();
-  const { event, participants }: DeltaEventWithParticipant = await getEvent(
+  const { event, participants, hosts }: FullDeltaEvent = await getEvent(
     params.id,
   );
 
@@ -24,6 +24,7 @@ export default async function Page({ params }: { params: { id: string } }) {
       <EventDetails
         event={event}
         participants={participants}
+        hosts={hosts}
         user={user}
         hostname={hostname}
       />

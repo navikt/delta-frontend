@@ -1,5 +1,10 @@
 import CardWithBackground from "@/components/cardWithBackground";
 import CreateEventForm from "@/components/createEventForm";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Delta Δ - Rediger arrangement"
+}
 
 export default async function EditEvent({
   params,

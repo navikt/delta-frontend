@@ -5,6 +5,7 @@ import {
   ClockIcon,
   PersonCheckmarkIcon,
   PersonCircleIcon,
+  HourglassBottomFilledIcon,
   PinIcon,
 } from "@navikt/aksel-icons";
 import ParticipantIcon from "@/app/event/[id]/participantIcon";

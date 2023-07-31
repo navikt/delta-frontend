@@ -1,17 +1,21 @@
-//import { deleteParticipant } from "@/service/eventActions";
-import { deleteParticipant } from "@/service/eventActions";
+import { changeParticipant, deleteParticipant } from "@/service/eventActions";
 import { DeltaEvent, DeltaParticipant } from "@/types/event";
+import { User } from "@/types/user";
 import { BodyLong, Button, Heading, Modal, Table } from "@navikt/ds-react";
 import { useState } from "react";
 
 type ParticipantTableProps = {
   event: DeltaEvent;
   participants: DeltaParticipant[];
+  hosts: DeltaParticipant[];
+  user: User;
 };
 
 export default function ParticipantTable({
   event,
   participants,
+  hosts,
+  user,
 }: ParticipantTableProps) {
   const [openConfirmations, setOpenConfirmations] = useState<boolean[]>(
     participants.map(() => false),
@@ -23,16 +27,7 @@ export default function ParticipantTable({
     setOpenConfirmations(newConfirmations);
   };
 
-  const data = participants.map((p) => {
-    return {
-      name: p.email
-        .split("@")[0]
-        .split(".")
-        .map((name) => name.charAt(0).toUpperCase() + name.slice(1))
-        .join(" "),
-      email: p.email,
-    };
-  });
+  const data = hosts.concat(participants);
   return (
     <div className="flex flex-col gap-5 bg-bg-subtle rounded p-2">
       <Table size="small">
@@ -40,22 +35,55 @@ export default function ParticipantTable({
           <Table.Row>
             <Table.HeaderCell scope="col">Navn</Table.HeaderCell>
             <Table.HeaderCell scope="col">Epost</Table.HeaderCell>
-            <Table.HeaderCell scope="col" aria-label="Meld av deltakere" />
+            <Table.HeaderCell scope="col" aria-label="Deltaker handlinger" />
           </Table.Row>
         </Table.Header>
         <Table.Body>
           {data.map(({ name, email }, i) => {
             return (
               <Table.Row key={i}>
-                <Table.DataCell scope="row">{name}</Table.DataCell>
+                <Table.HeaderCell className="font-normal" scope="row">
+                  {name}
+                </Table.HeaderCell>
                 <Table.DataCell>{email}</Table.DataCell>
                 <Table.DataCell>
-                  <Button
-                    variant="danger"
-                    onClick={() => toggleConfirmation(i)}
-                  >
-                    Meld av
-                  </Button>
+                  <div className="flex justify-end gap-2">
+                    {email === user.email && hosts.length === 1 ? (
+                      <></>
+                    ) : hosts.some((host) => host.email === email) ? (
+                      <Button
+                        variant="danger"
+                        size="small"
+                        onClick={() =>
+                          changeParticipant(event.id, {
+                            email,
+                            type: "PARTICIPANT",
+                          })
+                        }
+                      >
+                        Fjern arrangør
+                      </Button>
+                    ) : (
+                      <>
+                        <Button
+                          variant="primary"
+                          size="small"
+                          onClick={() =>
+                            changeParticipant(event.id, { email, type: "HOST" })
+                          }
+                        >
+                          Gjør til arrangør
+                        </Button>
+                        <Button
+                          variant="danger"
+                          size="small"
+                          onClick={() => toggleConfirmation(i)}
+                        >
+                          Meld av
+                        </Button>
+                      </>
+                    )}
+                  </div>
                 </Table.DataCell>
                 <Modal
                   open={openConfirmations[i]}

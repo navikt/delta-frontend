@@ -1,16 +1,17 @@
 "use client";
 
-import { DeltaEventWithParticipant, DeltaParticipant } from "@/types/event";
+import { FullDeltaEvent, DeltaParticipant } from "@/types/event";
 import { ClockIcon, PersonCheckmarkIcon, PinIcon } from "@navikt/aksel-icons";
 import ParticipantIcon from "@/app/event/[id]/participantIcon";
 import { useEffect, useState } from "react";
 import { Heading, Modal, Search } from "@navikt/ds-react";
 import Participant from "./participant";
 
-type EventDescriptionProps = DeltaEventWithParticipant & { className?: string };
+type EventDescriptionProps = FullDeltaEvent & { className?: string };
 export default function EventDescription({
   event,
   participants,
+  hosts,
   className,
 }: EventDescriptionProps) {
   const [openParticipantList, setOpenParticipantList] = useState(false);
@@ -24,11 +25,11 @@ export default function EventDescription({
   }, []);
 
   useEffect(() => {
-    const filtered = [{ email: event.ownerEmail }]
+    const filtered = hosts
+      .sort((a, b) => (a.email > b.email ? 1 : -1))
       .concat(participants.sort((a, b) => (a.email > b.email ? 1 : -1)))
       .filter((p) => {
-        const name = p.email.split("@")[0].split(".").join(" ");
-        return name.toLowerCase().includes(searchInput.toLowerCase());
+        return p.name.split(", ").reverse().join(" ").includes(searchInput);
       });
     setFilterParticipants(filtered);
   }, [participants, searchInput]);
@@ -98,7 +99,7 @@ export default function EventDescription({
                 {filterParticipants.map((p) => (
                   <Participant
                     {...p}
-                    owner={event.ownerEmail === p.email}
+                    owner={hosts.some((h) => h.email === p.email)}
                     key={p.email}
                   />
                 ))}

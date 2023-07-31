@@ -200,17 +200,6 @@ export default function EventDetails({
             </div>
           )}
           <p className="italic whitespace-pre-line">{event.description}</p>
-          <div className="flex flex-col">
-            {hosts.map((host) => (
-              <span
-                className="flex flex-col md:flex-row md:gap-2 md:items-center"
-                key={host.email}
-              >
-                Kontaktperson:
-                <Link href={`mailto:${host.email}`}>{host.email}</Link>
-              </span>
-            ))}
-          </div>
         </div>
       </div>
     </div>

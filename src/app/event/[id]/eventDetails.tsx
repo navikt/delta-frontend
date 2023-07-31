@@ -18,6 +18,7 @@ import { getEvent, joinEvent, leaveEvent } from "@/service/eventActions";
 import { formatDeadline } from "@/service/format";
 import { format } from "date-fns";
 import { HourglassBottomFilledIcon } from "@navikt/aksel-icons";
+import Calendar from "@/components/calendar";
 
 export default function EventDetails({
   event,
@@ -46,18 +47,19 @@ export default function EventDetails({
     }, 2000);
   };
 
-  const month = format(new Date(event.startTime), "MMM", { locale: nb })
-    .substring(0, 3)
-    .toUpperCase();
-  const day = format(new Date(event.startTime), "d");
+  const isSameDay = format(new Date(event.startTime), "MMMd") === format(new Date(event.endTime), "MMMd")
 
   return (
     <div>
       <div className="flex w-full justify-between items-start gap-4">
-        <div className="flex flex-col w-fit rounded border border-border-default">
-          <span className="bg-red-600 text-white px-2">{month}</span>
-          <span className="font-semibold text-3xl px-2">{day}</span>
-        </div>
+        {isSameDay ?
+          <Calendar dateString={event.startTime} displayTime={!isSameDay} />
+          : <div className="flex gap-2 items-center">
+            <Calendar dateString={event.startTime} displayTime={!isSameDay} />
+            ⁠–
+            <Calendar dateString={event.endTime} displayTime={!isSameDay} />
+          </div>
+        }
         <div className="flex flex-col md:flex-row gap-4 items-start md:items-center md:whitespace-nowrap">
           {showRegistration && (
             <Alert variant="success" size="small">
@@ -122,6 +124,7 @@ export default function EventDetails({
                         setParticipants(state);
                       })
                 }
+                // disabled={event.participantLimit == participants.length} // TODO: needs an UI element explaining why the button is disabled
               >
                 {isParticipant ? "Meld av" : "Bli med"}
               </Button>
@@ -178,6 +181,7 @@ export default function EventDetails({
           event={event}
           participants={reactiveParticipants}
           hosts={hosts}
+          displayTime={isSameDay}
         />
         <div className="flex-grow flex flex-col gap-2 md:w-3/4">
           <Heading size="medium" as="h2">

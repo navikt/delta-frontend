@@ -81,12 +81,12 @@ export default function EventDescription({
         <div className="flex flex-row ml-[0.3rem] pl-6">
           {participants.slice(0, 4).map((p) => (
             <ParticipantIcon
-              nameList={p.email.split("@")[0].split(".")}
+              name={p.name}
               key={p.email}
               type="participantPreview"
             />
           ))}
-          {participants.length > 4 && <ParticipantIcon nameList={[]} />}
+          {participants.length > 4 && <ParticipantIcon name={""} />}
         </div>
       </div>
       <Modal

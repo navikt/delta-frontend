@@ -1,9 +1,14 @@
 import { checkToken, getUser } from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
-import { FullDeltaEvent } from "@/types/event";
 import AdminPage from "./adminPage";
 import Link from "next/link";
 import { getEvent } from "@/service/eventActions";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Delta Δ - Administrer arrangement"
+}
+
 
 export default async function ParticipantsPage({
   params,

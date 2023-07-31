@@ -1,13 +1,12 @@
 "use client";
 
 import { DeltaEvent } from "@/types/event";
-import { Chips } from "@navikt/ds-react";
+import { Chips, Tabs } from "@navikt/ds-react";
 import EventList from "./eventList";
 import { useEffect, useState } from "react";
 import { getEvents } from "@/service/eventActions";
 
 enum TimeSelector {
-  ALL,
   PAST,
   FUTURE,
 }
@@ -30,27 +29,21 @@ export default function EventFilters() {
 
   return (
     <div className="flex flex-col gap-6 w-full justify-center items-center">
+      <Tabs className="self-start w-full">
+        <Tabs.List>
+          <Tabs.Tab
+            value="fremtidige"
+            label="Fremtidige"
+            onClick={() => setSelectedTime(TimeSelector.FUTURE)}
+          />
+          <Tabs.Tab
+            value="tidligere"
+            label="Tidligere"
+            onClick={() => setSelectedTime(TimeSelector.PAST)}
+          />
+        </Tabs.List>
+      </Tabs>
       <Chips defaultValue="all" className="w-full">
-        <Chips.Toggle
-          selected={onlyFuture}
-          onClick={() =>
-            onlyFuture
-              ? setSelectedTime(TimeSelector.ALL)
-              : setSelectedTime(TimeSelector.FUTURE)
-          }
-        >
-          Fremtidige
-        </Chips.Toggle>
-        <Chips.Toggle
-          selected={onlyPast}
-          onClick={() =>
-            onlyPast
-              ? setSelectedTime(TimeSelector.ALL)
-              : setSelectedTime(TimeSelector.PAST)
-          }
-        >
-          Tidligere
-        </Chips.Toggle>
         <Chips.Toggle
           selected={onlyJoined}
           onClick={() => setOnlyJoined((x) => !x)}

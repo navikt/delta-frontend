@@ -1,10 +1,15 @@
 "use client";
 
 import { FullDeltaEvent, DeltaParticipant } from "@/types/event";
-import { ClockIcon, PersonCheckmarkIcon, PinIcon } from "@navikt/aksel-icons";
+import {
+  ClockIcon,
+  PersonCheckmarkIcon,
+  PersonCircleIcon,
+  PinIcon,
+} from "@navikt/aksel-icons";
 import ParticipantIcon from "@/app/event/[id]/participantIcon";
 import { useEffect, useState } from "react";
-import { Heading, Modal, Search } from "@navikt/ds-react";
+import { Heading, Link, Modal, Search } from "@navikt/ds-react";
 import Participant from "./participant";
 
 type EventDescriptionProps = FullDeltaEvent & { className?: string, displayTime: boolean };
@@ -52,6 +57,17 @@ export default function EventDescription({
           {event.location}
         </span>
       )}
+      <ul>
+        <span className="flex items-center gap-2">
+          <PersonCircleIcon />
+          Arrangeres av:
+        </span>
+        {hosts.map((host) => (
+          <li className="flex ml-[0.2rem] pl-6 gap-2" key={host.email}>
+            <Link href={`mailto:${host.email}`}>{host.name}</Link>
+          </li>
+        ))}
+      </ul>
       <div
         onClick={() => setOpenParticipantList(true)}
         className="flex flex-col hover:bg-surface-subtle rounded-md cursor-pointer"

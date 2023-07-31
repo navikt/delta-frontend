@@ -47,19 +47,22 @@ export default function EventDetails({
     }, 2000);
   };
 
-  const isSameDay = format(new Date(event.startTime), "MMMd") === format(new Date(event.endTime), "MMMd")
+  const isSameDay =
+    format(new Date(event.startTime), "MMMd") ===
+    format(new Date(event.endTime), "MMMd");
 
   return (
     <div>
       <div className="flex w-full justify-between items-start gap-4">
-        {isSameDay ?
+        {isSameDay ? (
           <Calendar dateString={event.startTime} displayTime={!isSameDay} />
-          : <div className="flex gap-2 items-center">
+        ) : (
+          <div className="flex gap-2 items-center">
             <Calendar dateString={event.startTime} displayTime={!isSameDay} />
             ⁠–
             <Calendar dateString={event.endTime} displayTime={!isSameDay} />
           </div>
-        }
+        )}
         <div className="flex flex-col md:flex-row gap-4 items-start md:items-center md:whitespace-nowrap">
           {showRegistration && (
             <Alert variant="success" size="small">

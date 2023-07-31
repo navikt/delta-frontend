@@ -237,7 +237,9 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
           )}
         </div>
       </div>
-      <Checkbox {...register("public")}>Gjør arrangementet offentlig</Checkbox>
+      <Checkbox {...register("public")}>
+        Gjør arrangementet synlig på forsiden
+      </Checkbox>
       <div className="flex flex-col max-w-[21rem]">
         <Checkbox
           {...register("hasParticipantLimit")}

@@ -5,20 +5,17 @@ import CardWithBackground from "@/components/cardWithBackground";
 import { getEvent } from "@/service/eventActions";
 import { Metadata, ResolvingMetadata } from "next";
 
-type EventPageProps = { params: { id: string } }
+type EventPageProps = { params: { id: string } };
 
 export async function generateMetadata(
   { params }: EventPageProps,
-  parent: ResolvingMetadata
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
-
-  const { event }: FullDeltaEvent = await getEvent(
-    params.id,
-  );
+  const { event }: FullDeltaEvent = await getEvent(params.id);
 
   return {
-    title: `Delta Δ - ${event.title}`
-  }
+    title: `Delta Δ - ${event.title}`,
+  };
 }
 
 export default async function Page({ params }: EventPageProps) {

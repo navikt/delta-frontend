@@ -10,8 +10,9 @@ import {
 } from "@navikt/aksel-icons";
 import ParticipantIcon from "@/app/event/[id]/participantIcon";
 import { useEffect, useState } from "react";
-import { Heading, Link, Modal, Search } from "@navikt/ds-react";
+import { Detail, Heading, Link, Modal, Search } from "@navikt/ds-react";
 import Participant from "./participant";
+import { formatDeadline } from "@/service/format";
 
 type EventDescriptionProps = FullDeltaEvent & {
   className?: string;
@@ -55,23 +56,43 @@ export default function EventDescription({
           )}`}
         </span>
       )}
-      {event.location && (
-        <span className="flex flex-row justify-start gap-2 items-center">
-          <PinIcon aria-label="lokasjon" />
-          {event.location}
-        </span>
+      <div>
+        {event.location && (
+          <span className="flex flex-row justify-start gap-2 items-center">
+            <PinIcon aria-label="lokasjon" />
+            {event.location}
+          </span>
+        )}
+      </div>
+      {event.signupDeadline && (
+        <div>
+          <label className="flex items-center gap-2">
+            <HourglassBottomFilledIcon aria-hidden />
+            Påmeldingsfrist:
+          </label>
+          <span className="flex ml-[0.2rem] pl-6 gap-2 text-red-600">
+            {formatDeadline(event)}{" "}
+          </span>
+        </div>
       )}
-      <ul>
-        <span className="flex items-center gap-2">
-          <PersonCircleIcon />
+      <div>
+        <label className="flex items-center gap-2">
+          <PersonCircleIcon aria-hidden />
           Arrangeres av:
-        </span>
-        {hosts.map((host) => (
-          <li className="flex ml-[0.2rem] pl-6 gap-2" key={host.email}>
-            <Link href={`mailto:${host.email}`}>{host.name}</Link>
-          </li>
-        ))}
-      </ul>
+        </label>
+        <ul>
+          {hosts.map((host) => (
+            <li className="flex ml-[0.2rem] pl-6 gap-2" key={host.email}>
+              <Link
+                title={`Send mail til ${host.name}`}
+                href={`mailto:${host.email}`}
+              >
+                {host.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
       <button
         onClick={() => setOpenParticipantList(true)}
         className="flex flex-col hover:bg-surface-subtle rounded-md cursor-pointer"

@@ -3,6 +3,7 @@
 import { getApi } from "@/api/instance";
 import { CreateEventSchema } from "@/components/createEventForm";
 import {
+  Category,
   ChangeDeltaParticipant,
   CreateDeltaEvent,
   DeltaEvent,
@@ -37,6 +38,18 @@ export async function changeParticipant(
 ) {
   const api = await getApi();
   await api.post(`/admin/event/${eventId}/participant`, changeDeltaParticipant);
+}
+
+export async function getCategories(eventId: string): Promise<Category[]> {
+  const api = await getApi();
+  const response = await api.get<Category[]>(`/event/${eventId}/category`);
+  return response.data;
+}
+
+export async function getAllCategories(): Promise<Category[]> {
+  const api = await getApi();
+  const response = await api.get<Category[]>("/category");
+  return response.data;
 }
 
 export async function getEvents({

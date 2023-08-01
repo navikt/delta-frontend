@@ -12,13 +12,16 @@ import { useEffect, useState } from "react";
 import { Heading, Link, Modal, Search } from "@navikt/ds-react";
 import Participant from "./participant";
 
-type EventDescriptionProps = FullDeltaEvent & { className?: string, displayTime: boolean };
+type EventDescriptionProps = FullDeltaEvent & {
+  className?: string;
+  displayTime: boolean;
+};
 export default function EventDescription({
   event,
   participants,
   hosts,
   className,
-  displayTime
+  displayTime,
 }: EventDescriptionProps) {
   const [openParticipantList, setOpenParticipantList] = useState(false);
   const [searchInput, setSearchInput] = useState("");
@@ -42,7 +45,7 @@ export default function EventDescription({
 
   return (
     <div className={className || ""}>
-      {displayTime &&
+      {displayTime && (
         <span className="flex flex-row justify-start gap-2 items-center">
           <ClockIcon />
           {`${event.startTime.substring(11, 16)} – ${event.endTime.substring(
@@ -50,7 +53,7 @@ export default function EventDescription({
             16,
           )}`}
         </span>
-      }
+      )}
       {event.location && (
         <span className="flex flex-row justify-start gap-2 items-center">
           <PinIcon />

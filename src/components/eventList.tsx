@@ -4,7 +4,10 @@ import { DeltaEvent } from "@/types/event";
 import { EventCard } from "@/components/eventCard";
 import { Skeleton } from "@navikt/ds-react";
 
-type EventListProps = { events: DeltaEvent[]; loading: boolean };
+type EventListProps = {
+  events: DeltaEvent[];
+  loading: boolean;
+};
 export default function EventList({ events, loading }: EventListProps) {
   return (
     <section className="grid grid-cols-1 md:grid-cols-3 gap-4">

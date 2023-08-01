@@ -1,5 +1,6 @@
 import CardWithBackground from "@/components/cardWithBackground";
 import CreateEventForm from "@/components/createEventForm";
+import { getAllCategories } from "@/service/eventActions";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -11,6 +12,7 @@ export default async function EditEvent({
 }: {
   params: { id: string };
 }) {
+  const categories = await getAllCategories();
   return (
     <CardWithBackground
       title="Rediger arrangement"
@@ -18,7 +20,7 @@ export default async function EditEvent({
       home
       backLink={`/event/${params.id}/admin`}
     >
-      <CreateEventForm eventId={params.id} />
+      <CreateEventForm eventId={params.id} allCategories={categories} />
     </CardWithBackground>
   );
 }

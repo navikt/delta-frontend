@@ -36,3 +36,8 @@ export type ChangeDeltaParticipant = {
   email: string;
   type: "PARTICIPANT" | "HOST";
 };
+
+export type Category = {
+  id: number;
+  name: string;
+};

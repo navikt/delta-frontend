@@ -24,6 +24,7 @@ export default function EventDetails({
   event,
   participants,
   hosts,
+  categories,
   user,
   hostname,
 }: FullDeltaEvent & {
@@ -184,6 +185,7 @@ export default function EventDetails({
           event={event}
           participants={reactiveParticipants}
           hosts={hosts}
+          categories={categories}
           displayTime={isSameDay}
         />
         <div className="flex-grow flex flex-col gap-2 md:w-3/4">

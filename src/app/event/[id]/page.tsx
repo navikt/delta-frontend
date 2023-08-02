@@ -23,9 +23,8 @@ export default async function Page({ params }: EventPageProps) {
   const hostname = process.env.NEXT_PUBLIC_HOSTNAME;
 
   const user = getUser();
-  const { event, participants, hosts }: FullDeltaEvent = await getEvent(
-    params.id,
-  );
+  const { event, participants, hosts, categories }: FullDeltaEvent =
+    await getEvent(params.id);
 
   return (
     <CardWithBackground
@@ -38,6 +37,7 @@ export default async function Page({ params }: EventPageProps) {
         event={event}
         participants={participants}
         hosts={hosts}
+        categories={categories}
         user={user}
         hostname={hostname}
       />

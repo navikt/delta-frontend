@@ -13,6 +13,7 @@ export type FullDeltaEvent = {
   event: DeltaEvent;
   participants: DeltaParticipant[];
   hosts: DeltaParticipant[];
+  categories: Category[];
 };
 
 export type DeltaEvent = {

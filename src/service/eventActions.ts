@@ -70,9 +70,9 @@ export async function getEvents({
   onlyPast?: boolean;
   onlyMine?: boolean;
   onlyJoined?: boolean;
-}): Promise<DeltaEvent[]> {
+}): Promise<FullDeltaEvent[]> {
   const api = await getApi();
-  const response = await api.get<DeltaEvent[]>("/event", {
+  const response = await api.get<FullDeltaEvent[]>("/event", {
     params: {
       onlyFuture,
       onlyPast,

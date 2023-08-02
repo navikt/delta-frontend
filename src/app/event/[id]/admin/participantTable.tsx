@@ -1,7 +1,14 @@
 import { changeParticipant, deleteParticipant } from "@/service/eventActions";
 import { DeltaEvent, DeltaParticipant } from "@/types/event";
 import { User } from "@/types/user";
-import { BodyLong, Button, Heading, Link, Modal, Table } from "@navikt/ds-react";
+import {
+  BodyLong,
+  Button,
+  Heading,
+  Link,
+  Modal,
+  Table,
+} from "@navikt/ds-react";
 import { useState } from "react";
 
 type ParticipantTableProps = {
@@ -45,7 +52,9 @@ export default function ParticipantTable({
                 <Table.HeaderCell className="font-normal" scope="row">
                   {name}
                 </Table.HeaderCell>
-                <Table.DataCell><Link href={`mailto:${email}`}>{email}</Link></Table.DataCell>
+                <Table.DataCell>
+                  <Link href={`mailto:${email}`}>{email}</Link>
+                </Table.DataCell>
                 <Table.DataCell>
                   <div className="flex justify-end gap-2">
                     {email === user.email && hosts.length === 1 ? (

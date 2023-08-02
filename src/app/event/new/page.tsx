@@ -5,9 +5,8 @@ import { Metadata } from "next";
 import { getAllCategories } from "@/service/eventActions";
 
 export const metadata: Metadata = {
-  title: "Delta Δ - Opprett arrangement"
-}
-
+  title: "Delta Δ - Opprett arrangement",
+};
 
 export default async function NewEvent() {
   await checkToken("/event/new");

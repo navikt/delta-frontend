@@ -12,12 +12,9 @@ import {
   BodyLong,
 } from "@navikt/ds-react";
 import Link from "next/link";
-import { nb } from "date-fns/locale";
 import { FullDeltaEvent, DeltaParticipant } from "@/types/event";
 import { getEvent, joinEvent, leaveEvent } from "@/service/eventActions";
-import { formatDeadline } from "@/service/format";
 import { format } from "date-fns";
-import { HourglassBottomFilledIcon } from "@navikt/aksel-icons";
 import Calendar from "@/components/calendar";
 
 export default function EventDetails({
@@ -190,18 +187,11 @@ export default function EventDetails({
         />
         <div className="flex-grow flex flex-col gap-2 md:w-3/4">
           <Heading size="medium" as="h2">
-            Detaljer:
+            Detaljer
           </Heading>
-          {event.signupDeadline && (
-            <div className="flex flex-col md:items-center gap-2 md:flex-row">
-              Påmeldingsfrist:
-              <span className="flex text-red-500 items-center gap-2">
-                {formatDeadline(event)}
-                <HourglassBottomFilledIcon />
-              </span>
-            </div>
-          )}
-          <p className="italic whitespace-pre-line">{event.description}</p>
+          <BodyLong className="italic whitespace-pre-line">
+            {event.description}
+          </BodyLong>
         </div>
       </div>
     </div>

@@ -5,12 +5,14 @@ import {
   ClockIcon,
   PersonCheckmarkIcon,
   PersonCircleIcon,
+  HourglassBottomFilledIcon,
   PinIcon,
 } from "@navikt/aksel-icons";
 import ParticipantIcon from "@/app/event/[id]/participantIcon";
 import { useEffect, useState } from "react";
-import { Heading, Link, Modal, Search } from "@navikt/ds-react";
+import { Detail, Heading, Link, Modal, Search } from "@navikt/ds-react";
 import Participant from "./participant";
+import { formatDeadline } from "@/service/format";
 
 type EventDescriptionProps = FullDeltaEvent & {
   className?: string;
@@ -47,31 +49,51 @@ export default function EventDescription({
     <div className={className || ""}>
       {displayTime && (
         <span className="flex flex-row justify-start gap-2 items-center">
-          <ClockIcon />
+          <ClockIcon aria-label="varighet" />
           {`${event.startTime.substring(11, 16)} – ${event.endTime.substring(
             11,
             16,
           )}`}
         </span>
       )}
-      {event.location && (
-        <span className="flex flex-row justify-start gap-2 items-center">
-          <PinIcon />
-          {event.location}
-        </span>
+      <div>
+        {event.location && (
+          <span className="flex flex-row justify-start gap-2 items-center">
+            <PinIcon aria-label="lokasjon" />
+            {event.location}
+          </span>
+        )}
+      </div>
+      {event.signupDeadline && (
+        <div>
+          <label className="flex items-center gap-2">
+            <HourglassBottomFilledIcon aria-hidden />
+            Påmeldingsfrist:
+          </label>
+          <span className="flex ml-[0.2rem] pl-6 gap-2 text-red-600">
+            {formatDeadline(event)}{" "}
+          </span>
+        </div>
       )}
-      <ul>
-        <span className="flex items-center gap-2">
-          <PersonCircleIcon />
+      <div>
+        <label className="flex items-center gap-2">
+          <PersonCircleIcon aria-hidden />
           Arrangeres av:
-        </span>
-        {hosts.map((host) => (
-          <li className="flex ml-[0.2rem] pl-6 gap-2" key={host.email}>
-            <Link href={`mailto:${host.email}`}>{host.name}</Link>
-          </li>
-        ))}
-      </ul>
-      <div
+        </label>
+        <ul>
+          {hosts.map((host) => (
+            <li className="flex ml-[0.2rem] pl-6 gap-2" key={host.email}>
+              <Link
+                title={`Send mail til ${host.name}`}
+                href={`mailto:${host.email}`}
+              >
+                {host.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <button
         onClick={() => setOpenParticipantList(true)}
         className="flex flex-col hover:bg-surface-subtle rounded-md cursor-pointer"
       >
@@ -91,7 +113,7 @@ export default function EventDescription({
           ))}
           {participants.length > 4 && <ParticipantIcon name={""} />}
         </div>
-      </div>
+      </button>
       <Modal
         className="w-4/5 max-w-[30rem] max-h-[50rem]"
         open={openParticipantList}
@@ -117,15 +139,17 @@ export default function EventDescription({
               />
             </form>
             <div className="flex flex-col gap-6">
-              <div className="flex flex-col gap-2">
-                {filterParticipants.map((p) => (
-                  <Participant
-                    {...p}
-                    owner={hosts.some((h) => h.email === p.email)}
-                    key={p.email}
-                  />
-                ))}
-              </div>
+              <ul className="flex flex-col gap-2">
+                <li>
+                  {filterParticipants.map((p) => (
+                    <Participant
+                      {...p}
+                      owner={hosts.some((h) => h.email === p.email)}
+                      key={p.email}
+                    />
+                  ))}
+                </li>
+              </ul>
             </div>
           </div>
         </Modal.Content>

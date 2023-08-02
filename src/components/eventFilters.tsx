@@ -34,7 +34,7 @@ export default function EventFilters({
 
   return (
     <div className="flex flex-col gap-6 w-full justify-center items-center">
-      <Tabs className="self-start w-full">
+      <Tabs className="self-start w-full" defaultValue="fremtidige">
         <Tabs.List>
           <Tabs.Tab
             value="fremtidige"

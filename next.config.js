@@ -4,16 +4,17 @@ const nextConfig = {
     serverActions: true,
   },
   i18n: {
-    locales: ['no'],
-    defaultLocale: 'no'
+    locales: ["nb-NO"],
+    defaultLocale: "nb-NO",
+    localeDetection: false,
   },
   headers: () => [
     {
-      source: '/event/:path*',
+      source: "/event/:path*",
       headers: [
         {
-          key: 'Cache-Control',
-          value: 'no-store',
+          key: "Cache-Control",
+          value: "no-store",
         },
       ],
     },

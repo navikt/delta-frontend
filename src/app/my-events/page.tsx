@@ -11,7 +11,7 @@ export default async function MyEvents() {
       title="Mine arrangementer"
       backLink="/"
     >
-      <EventList events={events} loading={false}></EventList>
+      <EventList fullEvents={events} loading={false}></EventList>
     </CardWithBackground>
   );
 }

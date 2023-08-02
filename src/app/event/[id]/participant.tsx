@@ -11,8 +11,12 @@ export default function Participant(participant: ParticipantProps) {
         <ParticipantIcon name={participant.name} type="participantList" />
         <span className="text-md">
           {participant.name.split(", ").reverse().join(" ")}
-          {participant.owner && " (arrangør)"}
         </span>
+        {participant.owner && (
+          <span className="bg-gray-500 text-surface-subtle cursor-default rounded-xl px-2">
+            ARRANGØR
+          </span>
+        )}
       </div>
     </div>
   );

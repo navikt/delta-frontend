@@ -34,13 +34,20 @@ export default function EventDescription({
   useEffect(() => {
     Modal.setAppElement("#main");
   }, []);
+  const sortParticipant = (a: DeltaParticipant, b: DeltaParticipant) =>
+    a.name.split(", ").reverse()[0] > b.name.split(", ").reverse()[0] ? 1 : -1;
 
   useEffect(() => {
     const filtered = hosts
-      .sort((a, b) => (a.email > b.email ? 1 : -1))
-      .concat(participants.sort((a, b) => (a.email > b.email ? 1 : -1)))
+      .sort(sortParticipant)
+      .concat(participants.sort(sortParticipant))
       .filter((p) => {
-        return p.name.split(", ").reverse().join(" ").includes(searchInput);
+        return p.name
+          .split(", ")
+          .reverse()
+          .join(" ")
+          .toLowerCase()
+          .includes(searchInput.toLocaleLowerCase());
       });
     setFilterParticipants(filtered);
   }, [participants, searchInput]);
@@ -138,19 +145,17 @@ export default function EventDescription({
                 }}
               />
             </form>
-            <div className="flex flex-col gap-6">
-              <ul className="flex flex-col gap-2">
+            <ul className="flex flex-col gap-1">
+              {filterParticipants.map((p) => (
                 <li>
-                  {filterParticipants.map((p) => (
-                    <Participant
-                      {...p}
-                      owner={hosts.some((h) => h.email === p.email)}
-                      key={p.email}
-                    />
-                  ))}
+                  <Participant
+                    {...p}
+                    owner={hosts.some((h) => h.email === p.email)}
+                    key={p.email}
+                  />
                 </li>
-              </ul>
-            </div>
+              ))}
+            </ul>
           </div>
         </Modal.Content>
       </Modal>

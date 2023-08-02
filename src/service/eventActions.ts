@@ -40,10 +40,18 @@ export async function changeParticipant(
   await api.post(`/admin/event/${eventId}/participant`, changeDeltaParticipant);
 }
 
-export async function getCategories(eventId: string): Promise<Category[]> {
+export async function createCategory(category: string): Promise<Category> {
   const api = await getApi();
-  const response = await api.get<Category[]>(`/event/${eventId}/category`);
+  const response = await api.put<Category>("/category", { name: category });
   return response.data;
+}
+
+export async function setCategories(eventId: string, categories: number[]) {
+  const api = await getApi();
+  const response = await api.post<string>(
+    `/admin/event/${eventId}/category`,
+    categories,
+  );
 }
 
 export async function getAllCategories(): Promise<Category[]> {

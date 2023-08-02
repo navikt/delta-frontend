@@ -246,7 +246,7 @@ function InternalCreateEventForm({
         }}
       >
         <UNSAFE_Combobox
-          label="Kategorier"
+          label="Kategorier (valgfritt)"
           shouldAutocomplete
           allowNewValues
           isMultiSelect

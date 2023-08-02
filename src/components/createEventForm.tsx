@@ -7,14 +7,21 @@ import {
   Link,
   Checkbox,
   Skeleton,
+  UNSAFE_Combobox,
 } from "@navikt/ds-react";
-import { useEffect, useState } from "react";
-import { createEvent, getEvent, updateEvent } from "@/service/eventActions";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import {
+  createCategory,
+  createEvent,
+  getEvent,
+  setCategories,
+  updateEvent,
+} from "@/service/eventActions";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import EventDatepicker from "../app/event/new/eventDatepicker";
-import { DeltaEvent } from "@/types/event";
+import { Category, DeltaEvent } from "@/types/event";
 import { midnightDate } from "@/service/format";
 import { format } from "date-fns";
 
@@ -94,14 +101,30 @@ const createEventSchema = z
 
 export type CreateEventSchema = z.infer<typeof createEventSchema>;
 
-type CreateEventFormProps = { eventId?: string };
-export default function CreateEventForm({ eventId }: CreateEventFormProps) {
+type CreateEventFormProps = { eventId?: string; allCategories: Category[] };
+export default function CreateEventForm({
+  eventId,
+  allCategories,
+}: CreateEventFormProps) {
   const [loading, setLoading] = useState(!!eventId);
-  const [event, setEvent] = useState(undefined as DeltaEvent | undefined);
+  const [event, setEvent] = useState<DeltaEvent | undefined>(
+    undefined as DeltaEvent | undefined,
+  );
+  const [selectedCategories, _setSelectedCategories] = useState<
+    Category[] | undefined
+  >(undefined);
+  const setSelectedCategories: Dispatch<SetStateAction<Category[]>> = (
+    setState: SetStateAction<Category[]>,
+  ) =>
+    _setSelectedCategories(setState as SetStateAction<Category[] | undefined>);
+
   useEffect(() => {
     if (!eventId) return;
     getEvent(eventId)
-      .then((e) => setEvent(e.event))
+      .then((e) => {
+        setEvent(e.event);
+        setSelectedCategories(e.categories);
+      })
       .then(() => setLoading(false));
   }, [eventId]);
 
@@ -112,16 +135,47 @@ export default function CreateEventForm({ eventId }: CreateEventFormProps) {
       <Skeleton variant="text" className="w-full" />
     </>
   ) : (
-    <InternalCreateEventForm event={event} />
+    <InternalCreateEventForm
+      event={event}
+      allCategories={allCategories}
+      selectedCategories={selectedCategories || []}
+      setSelectedCategories={setSelectedCategories}
+    />
   );
 }
 
-type InternalCreateEventFormProps = { event?: DeltaEvent };
-function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
+type InternalCreateEventFormProps = {
+  event?: DeltaEvent;
+  selectedCategories: Category[];
+  setSelectedCategories: Dispatch<Category[]>;
+  allCategories: Category[];
+};
+function InternalCreateEventForm({
+  event,
+  selectedCategories,
+  setSelectedCategories,
+  allCategories,
+}: InternalCreateEventFormProps) {
   const [hasParticipantLimit, setHasParticipantLimit] = useState(
     (event?.participantLimit || 0) > 0,
   );
   const [hasDeadline, setDeadline] = useState(!!event?.signupDeadline);
+
+  const [newTags, setNewTags] = useState<string[]>([]);
+  const setSelected = (tags: string[]) => {
+    const realTags = allCategories.filter((c) => tags.includes(c.name));
+    const fakeTags = tags.filter(
+      (c) => !realTags.map((c) => c.name).includes(c),
+    );
+    console.log(fakeTags, realTags);
+    setNewTags(fakeTags);
+    setSelectedCategories(realTags);
+  };
+  const options = [...allCategories.map((c) => c.name)];
+  const selectedOptions = [
+    ...selectedCategories.map((c) => c.name),
+    ...newTags,
+  ];
 
   const {
     register,
@@ -163,8 +217,8 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
         const valid = await trigger();
         const values = getValues();
         if (!valid) return;
-        if (!event) createAndRedirect(values);
-        else updateAndRedirect(values, event.id);
+        if (!event) createAndRedirect(values, newTags, selectedCategories);
+        else updateAndRedirect(values, event.id, newTags, selectedCategories);
       }}
       className="flex flex-col gap-5"
     >
@@ -183,6 +237,28 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
         {...register("description")}
         error={errors.description?.message}
       />
+      <div
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        }}
+      >
+        <UNSAFE_Combobox
+          label="Kategorier"
+          shouldAutocomplete
+          allowNewValues
+          isMultiSelect
+          options={options}
+          selectedOptions={selectedOptions}
+          onToggleSelected={(option, isSelected) => {
+            isSelected
+              ? setSelected([...selectedOptions, option])
+              : setSelected(selectedOptions.filter((c) => c !== option));
+          }}
+        />
+      </div>
       <div className="flex flex-row flex-wrap justify-left gap-4 pb-0 items-end">
         <EventDatepicker
           name="startDate"
@@ -317,12 +393,37 @@ function InternalCreateEventForm({ event }: InternalCreateEventFormProps) {
   );
 }
 
-async function createAndRedirect(formData: CreateEventSchema) {
+async function createAndRedirect(
+  formData: CreateEventSchema,
+  newTags: string[],
+  categories: Category[],
+) {
   const event = await createEvent(formData);
+
+  const newCategories = newTags.length
+    ? await Promise.all(newTags.map((c) => createCategory(c)))
+    : [];
+  await setCategories(
+    event.id,
+    categories.concat(newCategories).map((c) => c.id),
+  );
   window.location.href = `/event/${event.id}`;
 }
 
-async function updateAndRedirect(formData: CreateEventSchema, eventId: string) {
+async function updateAndRedirect(
+  formData: CreateEventSchema,
+  eventId: string,
+  newTags: string[],
+  categories: Category[],
+) {
+  const newCategories = newTags.length
+    ? await Promise.all(newTags.map((c) => createCategory(c)))
+    : [];
+  await setCategories(
+    eventId,
+    categories.concat(newCategories).map((c) => c.id),
+  );
+
   const event = await updateEvent(formData, eventId);
   window.location.href = `/event/${event.id}`;
 }

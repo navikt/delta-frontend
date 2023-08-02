@@ -7,7 +7,7 @@ import { Skeleton } from "@navikt/ds-react";
 type EventListProps = { events: DeltaEvent[]; loading: boolean };
 export default function EventList({ events, loading }: EventListProps) {
   return (
-    <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <ul className="grid grid-cols-1 md:grid-cols-3 gap-4">
       {loading ? (
         <>
           <Skeleton variant="rounded" />
@@ -17,13 +17,15 @@ export default function EventList({ events, loading }: EventListProps) {
         </>
       ) : events.length ? (
         events.map((event) => (
-          <EventCard event={event} key={`event-${event.id}`} />
+          <li key={`event-${event.id}`}>
+            <EventCard event={event} />
+          </li>
         ))
       ) : (
         <p className="text-center col-span-full italic text-xlarge">
           Fant ingen arrangementer :--(
         </p>
       )}
-    </section>
+    </ul>
   );
 }

@@ -26,7 +26,7 @@ export default function CardWithBackground(props: CardWithBackgroundProps) {
           </Heading>
         </div>
       </div>
-      <div className="bg-white drop-shadow-lg border-gray-200 border-2 rounded relative w-5/6 top-[-2.5rem] z-10 flex flex-col p-4 h-fit max-w-[80rem]">
+      <div className="bg-white drop-shadow-lg border-gray-200 border-2 rounded relative w-5/6 top-[-2.5rem] flex flex-col p-4 h-fit max-w-[80rem]">
         {props.backLink && (
           <span className="relative top-[-4rem] w-0 h-0">
             <Link

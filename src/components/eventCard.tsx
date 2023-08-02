@@ -36,7 +36,7 @@ export function EventCard({
         </div>
         <div className="flex gap-2">
           {categories.map((category) => (
-            <Tag variant="alt1">{category.name}</Tag>
+            <Tag variant="alt1" key={category.id}>{category.name}</Tag>
           ))}
         </div>
       </LinkPanel.Description>

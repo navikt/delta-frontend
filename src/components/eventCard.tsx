@@ -34,9 +34,11 @@ export function EventCard({
             </Detail>
           )}
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           {categories.map((category) => (
-            <Tag variant="alt1" key={category.id}>{category.name}</Tag>
+            <Tag variant="alt1" key={category.id}>
+              {category.name}
+            </Tag>
           ))}
         </div>
       </LinkPanel.Description>

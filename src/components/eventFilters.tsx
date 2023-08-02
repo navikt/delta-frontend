@@ -1,6 +1,6 @@
 "use client";
 
-import { DeltaEvent } from "@/types/event";
+import { Category, DeltaEvent, FullDeltaEvent } from "@/types/event";
 import { Chips, Tabs, UNSAFE_Combobox } from "@navikt/ds-react";
 import EventList from "./eventList";
 import { useEffect, useState } from "react";
@@ -12,13 +12,17 @@ enum TimeSelector {
   FUTURE,
 }
 
-export default function EventFilters({ options }: { options: string[] }) {
+export default function EventFilters({
+  categories,
+}: {
+  categories: Category[];
+}) {
   const [onlyJoined, setOnlyJoined] = useState(false);
   const [selectedTime, setSelectedTime] = useState(TimeSelector.FUTURE);
   const onlyFuture = selectedTime === TimeSelector.FUTURE;
   const onlyPast = selectedTime === TimeSelector.PAST;
 
-  const [events, setEvents] = useState([] as DeltaEvent[]);
+  const [events, setEvents] = useState([] as FullDeltaEvent[]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -62,14 +66,14 @@ export default function EventFilters({ options }: { options: string[] }) {
             size="small"
             label="Filtrer"
             hideLabel
-            options={options}
+            options={categories.map((category) => category.name)}
             isMultiSelect
             shouldAutocomplete
           />
         </div>
       </div>
       <div className="w-full p-4">
-        <EventList events={events} loading={loading} />
+        <EventList fullEvents={events} loading={loading} />
       </div>
     </div>
   );

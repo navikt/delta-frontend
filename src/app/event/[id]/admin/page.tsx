@@ -6,9 +6,8 @@ import { getEvent } from "@/service/eventActions";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Delta Δ - Administrer arrangement"
-}
-
+  title: "Delta Δ - Administrer arrangement",
+};
 
 export default async function ParticipantsPage({
   params,

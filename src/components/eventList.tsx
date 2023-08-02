@@ -1,11 +1,14 @@
 "use client";
 
-import { DeltaEvent } from "@/types/event";
+import { DeltaEvent, FullDeltaEvent } from "@/types/event";
 import { EventCard } from "@/components/eventCard";
 import { Skeleton } from "@navikt/ds-react";
 
-type EventListProps = { events: DeltaEvent[]; loading: boolean };
-export default function EventList({ events, loading }: EventListProps) {
+type EventListProps = {
+  fullEvents: FullDeltaEvent[];
+  loading: boolean;
+};
+export default function EventList({ fullEvents, loading }: EventListProps) {
   return (
     <ul className="grid grid-cols-1 md:grid-cols-3 gap-4">
       {loading ? (
@@ -15,11 +18,13 @@ export default function EventList({ events, loading }: EventListProps) {
           <Skeleton variant="rounded" />
           <Skeleton variant="rounded" />
         </>
-      ) : events.length ? (
-        events.map((event) => (
-          <li key={`event-${event.id}`}>
-            <EventCard event={event} />
-          </li>
+      ) : fullEvents.length ? (
+        fullEvents.map((fullEvent) => (
+          <EventCard
+            event={fullEvent.event}
+            categories={fullEvent.categories}
+            key={`event-${fullEvent.event.id}`}
+          />
         ))
       ) : (
         <p className="text-center col-span-full italic text-xlarge">

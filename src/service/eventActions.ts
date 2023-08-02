@@ -61,11 +61,13 @@ export async function getAllCategories(): Promise<Category[]> {
 }
 
 export async function getEvents({
+  categories = [],
   onlyFuture = false,
   onlyPast = false,
   onlyMine = false,
   onlyJoined = false,
 }: {
+  categories?: Category[];
   onlyFuture?: boolean;
   onlyPast?: boolean;
   onlyMine?: boolean;
@@ -74,6 +76,9 @@ export async function getEvents({
   const api = await getApi();
   const response = await api.get<FullDeltaEvent[]>("/event", {
     params: {
+      categories: categories.length
+        ? categories.map((c) => c.id).join(",")
+        : undefined,
       onlyFuture,
       onlyPast,
       onlyJoined,

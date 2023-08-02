@@ -13,10 +13,11 @@ enum TimeSelector {
 }
 
 export default function EventFilters({
-  categories,
+  categories: allCategories,
 }: {
   categories: Category[];
 }) {
+  const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
   const [onlyJoined, setOnlyJoined] = useState(false);
   const [selectedTime, setSelectedTime] = useState(TimeSelector.FUTURE);
   const onlyFuture = selectedTime === TimeSelector.FUTURE;
@@ -27,10 +28,15 @@ export default function EventFilters({
 
   useEffect(() => {
     setLoading(true);
-    getEvents({ onlyFuture, onlyPast, onlyJoined })
+    getEvents({
+      categories: selectedCategories,
+      onlyFuture,
+      onlyPast,
+      onlyJoined,
+    })
       .then(setEvents)
       .then(() => setLoading(false));
-  }, [onlyFuture, onlyPast, onlyJoined]);
+  }, [selectedCategories, onlyFuture, onlyPast, onlyJoined]);
 
   return (
     <div className="flex flex-col gap-6 w-full justify-center items-center">
@@ -48,7 +54,7 @@ export default function EventFilters({
           />
         </Tabs.List>
       </Tabs>
-      <div className="flex justify-between w-full">
+      <div className="flex justify-between items-center w-full flex-wrap gap-4">
         <div>
           <Chips defaultValue="all" className="w-full">
             <Chips.Toggle
@@ -66,7 +72,26 @@ export default function EventFilters({
             size="small"
             label="Filtrer"
             hideLabel
-            options={categories.map((category) => category.name)}
+            options={allCategories.map((category) => category.name)}
+            selectedOptions={selectedCategories.map(
+              (category) => category.name,
+            )}
+            onToggleSelected={(categoryName, isSelected) => {
+              if (isSelected) {
+                setSelectedCategories((categories) => [
+                  ...categories,
+                  allCategories.find(
+                    (category) => category.name === categoryName,
+                  )!,
+                ]);
+              } else {
+                setSelectedCategories((categories) =>
+                  categories.filter(
+                    (category) => category.name !== categoryName,
+                  ),
+                );
+              }
+            }}
             isMultiSelect
             shouldAutocomplete
           />

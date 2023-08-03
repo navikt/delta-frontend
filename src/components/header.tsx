@@ -14,14 +14,11 @@ export default function Header() {
             className="bg-transparent hover:bg-blue-300 mx-3"
             aria-label="Meny"
           >
-            <span className="flex flex-col text-text-default items-center">
-              <MenuHamburgerIcon
-                color="black"
-                fontSize="1.5rem"
-                aria-label="Meny ikon"
-              />
-              Meny
-            </span>
+            <MenuHamburgerIcon
+              color="black"
+              fontSize="1.5rem"
+              aria-label="Meny ikon"
+            />
           </Button>
           <Dropdown.Menu>
             <Dropdown.Menu.GroupedList>

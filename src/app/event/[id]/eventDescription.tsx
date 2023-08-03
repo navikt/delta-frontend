@@ -10,7 +10,7 @@ import {
 } from "@navikt/aksel-icons";
 import ParticipantIcon from "@/app/event/[id]/participantIcon";
 import { useEffect, useState } from "react";
-import { Detail, Heading, Link, Modal, Search } from "@navikt/ds-react";
+import { Heading, Link, Modal, Search } from "@navikt/ds-react";
 import Participant from "./participant";
 import { formatDeadline } from "@/service/format";
 
@@ -151,7 +151,6 @@ export default function EventDescription({
                   <Participant
                     {...p}
                     owner={hosts.some((h) => h.email === p.email)}
-                    key={p.email}
                   />
                 </li>
               ))}

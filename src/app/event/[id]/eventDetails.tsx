@@ -184,6 +184,7 @@ export default function EventDetails({
           hosts={hosts}
           categories={categories}
           displayTime={isSameDay}
+          className="flex flex-col gap-2 w-fit"
         />
         <div className="flex-grow flex flex-col gap-2 md:w-3/4">
           <Heading size="medium" as="h2">

@@ -115,7 +115,8 @@ export default function EventDetails({
             }
             if (
               event.participantLimit &&
-              event.participantLimit == participants.length
+              event.participantLimit <= participants.length &&
+              !isParticipant
             ) {
               return (
                 <Alert

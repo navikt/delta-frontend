@@ -1,9 +1,7 @@
 "use client";
 
 import {
-  ArrowCirclepathIcon,
   CheckmarkCircleIcon,
-  ChevronDownIcon,
   MenuHamburgerIcon,
   PencilIcon,
   PlusIcon,
@@ -17,7 +15,7 @@ export default function Header() {
   const linkButton =
     "flex no-underline items-center text-text-subtle bg-transparent hover:bg-border-subtle-hover navds-button navds-button--primary navds-button--medium";
   return (
-    <header className="flex pt-3 z-10 items-center w-full max-w-[80rem] m-auto">
+    <header className="flex pt-3 z-10 items-center w-full max-w-[80rem] m-auto justify-between">
       <div className="flex items-stretch">
         <Link className={linkButton} href="/">
           <span className="text-2xl whitespace-nowrap">Δ Delta</span>

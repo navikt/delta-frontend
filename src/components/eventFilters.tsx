@@ -1,7 +1,7 @@
 "use client";
 
-import { Category, DeltaEvent, FullDeltaEvent } from "@/types/event";
-import { Chips, Tabs, UNSAFE_Combobox } from "@navikt/ds-react";
+import { Category, FullDeltaEvent } from "@/types/event";
+import { Tabs, UNSAFE_Combobox } from "@navikt/ds-react";
 import EventList from "./eventList";
 import { useEffect, useState } from "react";
 import { getEvents } from "@/service/eventActions";

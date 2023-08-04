@@ -113,6 +113,21 @@ export default function EventDetails({
                 </Alert>
               );
             }
+            if (
+              event.participantLimit &&
+              event.participantLimit <= participants.length &&
+              !isParticipant
+            ) {
+              return (
+                <Alert
+                  variant="warning"
+                  size="small"
+                  className="md:whitespace-nowrap"
+                >
+                  Arrangementet er fullt
+                </Alert>
+              );
+            }
             return (
               <Button
                 variant={isParticipant ? "danger" : "primary"}

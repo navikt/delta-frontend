@@ -1,5 +1,5 @@
 import CardWithBackground from "@/components/cardWithBackground";
-import EventList from "@/components/eventList";
+import EventFilters from "@/components/eventFilters";
 import { getEvents } from "@/service/eventActions";
 
 export default async function MyEvents() {

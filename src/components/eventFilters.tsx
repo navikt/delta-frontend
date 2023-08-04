@@ -1,11 +1,12 @@
 "use client";
 
 import { Category, FullDeltaEvent } from "@/types/event";
-import { Tabs, UNSAFE_Combobox } from "@navikt/ds-react";
+import { Search, Tabs, UNSAFE_Combobox } from "@navikt/ds-react";
 import EventList from "./eventList";
 import { useEffect, useState } from "react";
 import { getEvents } from "@/service/eventActions";
 import { FunnelIcon } from "@navikt/aksel-icons";
+import { EventCard } from "./eventCard";
 
 enum TimeSelector {
   PAST,
@@ -26,6 +27,8 @@ export default function EventFilters({
   onlyMine?: boolean;
 }) {
   const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
+  const [searchInput, setSearchInput] = useState("");
+  const [filterEvents, setFilterEvents] = useState<FullDeltaEvent[]>([]);
 
   const [selectedTime, setSelectedTime] = useState(TimeSelector.FUTURE);
   const onlyFuture = selectedTime === TimeSelector.FUTURE;
@@ -47,6 +50,23 @@ export default function EventFilters({
       .then(() => setLoading(false));
   }, [selectedCategories, onlyFuture, onlyPast, onlyJoined]);
 
+  useEffect(() => {
+    const filtered = events.filter((fullEvent) => {
+      if (
+        fullEvent.event.title.toLowerCase().includes(searchInput.toLowerCase())
+      ) {
+        return (
+          <EventCard
+            event={fullEvent.event}
+            categories={fullEvent.categories}
+            key={`event-${fullEvent.event.id}`}
+          />
+        );
+      }
+    });
+    setFilterEvents(filtered);
+  }, [events, searchInput]);
+
   return (
     <div className="flex flex-col w-full gap-6 items-start">
       {selectTime && (
@@ -66,43 +86,55 @@ export default function EventFilters({
         </Tabs>
       )}
       {selectCategory && (
-        <div className="flex justify-between items-center flex-wrap gap-2">
-          <span className="flex gap-2 items-center">
-            <FunnelIcon />
-            <label className="font-bold">Filtrer på kategori</label>
-          </span>
-          <UNSAFE_Combobox
-            className="w-fit"
-            size="small"
-            label="Filtrer på kategori"
-            hideLabel
-            options={allCategories.map((category) => category.name)}
-            selectedOptions={selectedCategories.map(
-              (category) => category.name,
-            )}
-            onToggleSelected={(categoryName, isSelected) => {
-              if (isSelected) {
-                setSelectedCategories((categories) => [
-                  ...categories,
-                  allCategories.find(
-                    (category) => category.name === categoryName,
-                  )!,
-                ]);
-              } else {
-                setSelectedCategories((categories) =>
-                  categories.filter(
-                    (category) => category.name !== categoryName,
-                  ),
-                );
-              }
-            }}
-            isMultiSelect
-            shouldAutocomplete
-          />
+        <div className="flex justify-between w-full">
+          <form>
+            <Search
+              label="Søk alle kommende arrangementer"
+              variant="simple"
+              value={searchInput}
+              onChange={(e) => {
+                setSearchInput(e);
+              }}
+            />
+          </form>
+          <div className="flex items-center flex-wrap gap-2">
+            <span className="flex gap-2 items-center">
+              <FunnelIcon />
+              <label className="font-bold">Filtrer på kategori</label>
+            </span>
+            <UNSAFE_Combobox
+              className="w-fit"
+              size="small"
+              label="Filtrer på kategori"
+              hideLabel
+              options={allCategories.map((category) => category.name)}
+              selectedOptions={selectedCategories.map(
+                (category) => category.name,
+              )}
+              onToggleSelected={(categoryName, isSelected) => {
+                if (isSelected) {
+                  setSelectedCategories((categories) => [
+                    ...categories,
+                    allCategories.find(
+                      (category) => category.name === categoryName,
+                    )!,
+                  ]);
+                } else {
+                  setSelectedCategories((categories) =>
+                    categories.filter(
+                      (category) => category.name !== categoryName,
+                    ),
+                  );
+                }
+              }}
+              isMultiSelect
+              shouldAutocomplete
+            />
+          </div>
         </div>
       )}
       <div className="w-full p-4">
-        <EventList fullEvents={events} loading={loading} />
+        <EventList fullEvents={filterEvents} loading={loading} />
       </div>
     </div>
   );

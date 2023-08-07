@@ -7,11 +7,22 @@ import {
   PlusIcon,
 } from "@navikt/aksel-icons";
 import { Button, Dropdown } from "@navikt/ds-react";
-import { useMediaQuery } from "react-responsive";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function Header() {
-  const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   const linkButton =
     "flex no-underline items-center text-text-subtle bg-transparent hover:bg-border-subtle-hover navds-button navds-button--primary navds-button--medium";
   return (

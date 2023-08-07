@@ -30,6 +30,7 @@ export default function EventDescription({
   const [filterParticipants, setFilterParticipants] = useState<
     DeltaParticipant[]
   >([]);
+  const participantsAndHosts = participants.concat(hosts);
 
   useEffect(() => {
     Modal.setAppElement("#main");
@@ -106,12 +107,14 @@ export default function EventDescription({
       >
         <span className="flex flex-row justify-start gap-2 items-center cursor-pointer">
           <PersonCheckmarkIcon />
-          {participants.length}
-          {event.participantLimit == 0 ? " " : ` av ${event.participantLimit} `}
+          {participantsAndHosts.length}
+          {event.participantLimit == 0
+            ? " "
+            : ` av ${event.participantLimit + hosts.length} `}
           {"deltakere"}
         </span>
         <div className="flex flex-row ml-[0.3rem] pl-6">
-          {participants.slice(0, 4).map((p) => (
+          {participantsAndHosts.slice(0, 4).map((p) => (
             <ParticipantIcon
               name={p.name}
               key={p.email}

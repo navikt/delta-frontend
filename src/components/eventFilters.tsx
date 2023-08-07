@@ -17,11 +17,13 @@ export default function EventFilters({
   categories: allCategories = [],
   selectTime = false,
   selectCategory = false,
+  searchName = false,
   onlyJoined = false,
   onlyMine = false,
 }: {
   categories?: Category[];
   selectTime?: boolean;
+  searchName?: boolean;
   selectCategory?: boolean;
   onlyJoined?: boolean;
   onlyMine?: boolean;
@@ -37,6 +39,18 @@ export default function EventFilters({
   const [events, setEvents] = useState([] as FullDeltaEvent[]);
   const [loading, setLoading] = useState(true);
 
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   useEffect(() => {
     setLoading(true);
     getEvents({
@@ -51,19 +65,9 @@ export default function EventFilters({
   }, [selectedCategories, onlyFuture, onlyPast, onlyJoined]);
 
   useEffect(() => {
-    const filtered = events.filter((fullEvent) => {
-      if (
-        fullEvent.event.title.toLowerCase().includes(searchInput.toLowerCase())
-      ) {
-        return (
-          <EventCard
-            event={fullEvent.event}
-            categories={fullEvent.categories}
-            key={`event-${fullEvent.event.id}`}
-          />
-        );
-      }
-    });
+    const filtered = events.filter((fullEvent) =>
+      fullEvent.event.title.toLowerCase().includes(searchInput.toLowerCase()),
+    );
     setFilterEvents(filtered);
   }, [events, searchInput]);
 
@@ -85,52 +89,56 @@ export default function EventFilters({
           </Tabs.List>
         </Tabs>
       )}
-      {selectCategory && (
-        <div className="flex justify-between w-full">
-          <form>
+      {(searchName || selectCategory) && (
+        <div className="flex flex-col-reverse gap-2 items-start md:flex-row justify-between w-full md:items-center px-4">
+          {searchName && (
             <Search
               label="Søk alle kommende arrangementer"
               variant="simple"
               value={searchInput}
+              size="small"
+              className="border-[#000] w-full md:w-auto"
               onChange={(e) => {
                 setSearchInput(e);
               }}
             />
-          </form>
-          <div className="flex items-center flex-wrap gap-2">
-            <span className="flex gap-2 items-center">
-              <FunnelIcon />
-              <label className="font-bold">Filtrer på kategori</label>
-            </span>
-            <UNSAFE_Combobox
-              className="w-fit"
-              size="small"
-              label="Filtrer på kategori"
-              hideLabel
-              options={allCategories.map((category) => category.name)}
-              selectedOptions={selectedCategories.map(
-                (category) => category.name,
-              )}
-              onToggleSelected={(categoryName, isSelected) => {
-                if (isSelected) {
-                  setSelectedCategories((categories) => [
-                    ...categories,
-                    allCategories.find(
-                      (category) => category.name === categoryName,
-                    )!,
-                  ]);
-                } else {
-                  setSelectedCategories((categories) =>
-                    categories.filter(
-                      (category) => category.name !== categoryName,
-                    ),
-                  );
-                }
-              }}
-              isMultiSelect
-              shouldAutocomplete
-            />
-          </div>
+          )}
+          {selectCategory && (
+            <div className="w-full md:w-fit flex items-center flex-wrap flex-row-reverse md:flex-row gap-2">
+              <span className="gap-2 items-center hidden md:flex">
+                <FunnelIcon />
+                <label className="font-bold">Filtrer på kategori</label>
+              </span>
+              <UNSAFE_Combobox
+                className="w-full md:w-fit"
+                size="small"
+                label="Filtrer på kategori"
+                hideLabel={!isMobile}
+                options={allCategories.map((category) => category.name)}
+                selectedOptions={selectedCategories.map(
+                  (category) => category.name,
+                )}
+                onToggleSelected={(categoryName, isSelected) => {
+                  if (isSelected) {
+                    setSelectedCategories((categories) => [
+                      ...categories,
+                      allCategories.find(
+                        (category) => category.name === categoryName,
+                      )!,
+                    ]);
+                  } else {
+                    setSelectedCategories((categories) =>
+                      categories.filter(
+                        (category) => category.name !== categoryName,
+                      ),
+                    );
+                  }
+                }}
+                isMultiSelect
+                shouldAutocomplete
+              />
+            </div>
+          )}
         </div>
       )}
       <div className="w-full p-4">

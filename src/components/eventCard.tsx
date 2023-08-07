@@ -1,6 +1,6 @@
 "use client";
 
-import { Category, DeltaEvent, FullDeltaEvent } from "@/types/event";
+import { Category, DeltaEvent } from "@/types/event";
 import { Detail, LinkPanel, Tag } from "@navikt/ds-react";
 import { CalendarIcon, ClockIcon } from "@navikt/aksel-icons";
 import Link from "next/link";

@@ -8,10 +8,10 @@ export default async function MyEvents() {
   return (
     <CardWithBackground
       color="bg-blue-200"
-      title="Opprettede arrangementer"
+      title="Påmeldte arrangementer"
       backLink="/"
     >
-      <EventFilters onlyMine selectTime />
+      <EventFilters onlyJoined selectTime />
     </CardWithBackground>
   );
 }

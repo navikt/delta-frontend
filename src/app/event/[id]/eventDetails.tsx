@@ -18,6 +18,7 @@ import { getEvent, joinEvent, leaveEvent } from "@/service/eventActions";
 import { format } from "date-fns";
 import Calendar from "@/components/calendar";
 import { ca } from "date-fns/locale";
+import { InformationSquareFillIcon } from "@navikt/aksel-icons";
 
 export default function EventDetails({
   event,
@@ -154,10 +155,13 @@ export default function EventDetails({
                 {isParticipant ? "Meld av" : "Bli med"}
               </Heading>
               <BodyLong spacing>
-                {isParticipant
-                  ? `Er du sikker på at du vil melde deg av ${event.title}? Dersom påmeldignsfristen er utløpt 
+                <span className="flex flex-row gap-2">
+                  <InformationSquareFillIcon fontSize="1.5rem" />
+                  {isParticipant
+                    ? `Er du sikker på at du vil melde deg av? Dersom påmeldignsfristen er utløpt 
                 eller antallsbegrensing er nådd, kan du ikke melde deg på igjen.`
-                  : `Ved å melde deg på ${event.title} godtar du at Delta lagrer ditt navn og e-postadresse.`}
+                    : `Ved å melde deg på arrangementet, godtar du at Delta lagrer ditt navn og e-postadresse.`}
+                </span>
               </BodyLong>
               <div className="flex flex-row justify-end gap-4">
                 <Button
@@ -177,7 +181,7 @@ export default function EventDetails({
                     })
                   }
                 >
-                  {isParticipant ? "Ja, meld meg av" : "Bli med"}
+                  {isParticipant ? "Ja, meld meg av" : "Godta og bli med"}
                 </Button>
               </div>
             </Modal.Content>

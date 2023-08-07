@@ -10,12 +10,14 @@ import {
   CopyButton,
   Modal,
   BodyLong,
+  Tag,
 } from "@navikt/ds-react";
 import Link from "next/link";
 import { FullDeltaEvent, DeltaParticipant } from "@/types/event";
 import { getEvent, joinEvent, leaveEvent } from "@/service/eventActions";
 import { format } from "date-fns";
 import Calendar from "@/components/calendar";
+import { ca } from "date-fns/locale";
 
 export default function EventDetails({
   event,
@@ -208,6 +210,14 @@ export default function EventDetails({
           <BodyLong className="italic whitespace-pre-line">
             {event.description}
           </BodyLong>
+          <div className="flex gap-2 flex-wrap">
+            {categories.length &&
+              categories.map((category) => (
+                <Tag variant="alt1" key={category.id}>
+                  {category.name}
+                </Tag>
+              ))}
+          </div>
         </div>
       </div>
     </div>

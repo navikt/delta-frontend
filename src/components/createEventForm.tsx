@@ -398,7 +398,7 @@ async function createAndRedirect(
   newTags: string[],
   categories: Category[],
 ) {
-  const event = await createEvent(formData);
+  const { event } = await createEvent(formData);
 
   const newCategories = newTags.length
     ? await Promise.all(newTags.map((c) => createCategory(c)))
@@ -424,6 +424,6 @@ async function updateAndRedirect(
     categories.concat(newCategories).map((c) => c.id),
   );
 
-  const event = await updateEvent(formData, eventId);
+  const { event } = await updateEvent(formData, eventId);
   window.location.href = `/event/${event.id}`;
 }

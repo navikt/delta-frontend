@@ -15,13 +15,17 @@ export default function Header() {
   const linkButton =
     "flex no-underline items-center text-text-subtle bg-transparent hover:bg-border-subtle-hover navds-button navds-button--primary navds-button--medium";
   return (
-    <header className="flex pt-3 z-10 items-center w-fit md:w-5/6 max-w-[80rem] m-auto justify-start md:justify-between">
+    <header className="flex pt-3 z-10 items-center w-5/6 max-w-[80rem] m-auto justify-between">
       <div className="flex items-stretch">
         <Link className={linkButton} href="/">
           <span className="text-2xl whitespace-nowrap">Δ Delta</span>
         </Link>
-        <div className="w-1 border-r-[1px] border-border-subtle border-solid"></div>
-        <div className="w-1 border-l-[1px] border-border-subtle border-solid"></div>
+        {!isMobile && (
+          <>
+            <div className="w-1 border-r-[1px] border-border-subtle border-solid"></div>
+            <div className="w-1 border-l-[1px] border-border-subtle border-solid"></div>
+          </>
+        )}
       </div>
       {isMobile ? (
         <Dropdown>

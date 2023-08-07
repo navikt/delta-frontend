@@ -1,6 +1,7 @@
 "use client";
-import { ArrowLeftIcon, MenuHamburgerIcon } from "@navikt/aksel-icons";
-import { Button, Dropdown, Heading, Link } from "@navikt/ds-react";
+import { ArrowLeftIcon } from "@navikt/aksel-icons";
+import { Heading } from "@navikt/ds-react";
+import Link from "next/link";
 
 type CardWithBackgroundProps = {
   title: string;

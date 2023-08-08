@@ -206,7 +206,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen.`
             {event.description}
           </BodyLong>
           <div className="flex gap-2 flex-wrap">
-            {categories.length &&
+            {categories.length > 0 &&
               categories.map((category) => (
                 <Tag variant="alt1" key={category.id}>
                   {category.name}

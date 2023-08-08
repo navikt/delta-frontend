@@ -17,7 +17,6 @@ import { FullDeltaEvent, DeltaParticipant } from "@/types/event";
 import { getEvent, joinEvent, leaveEvent } from "@/service/eventActions";
 import { format } from "date-fns";
 import Calendar from "@/components/calendar";
-import { ca } from "date-fns/locale";
 import { InformationSquareFillIcon } from "@navikt/aksel-icons";
 
 export default function EventDetails({

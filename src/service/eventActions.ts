@@ -6,7 +6,6 @@ import {
   Category,
   ChangeDeltaParticipant,
   CreateDeltaEvent,
-  DeltaEvent,
   FullDeltaEvent,
 } from "@/types/event";
 import { formatInTimeZone } from "date-fns-tz";

@@ -1,6 +1,6 @@
 "use client";
 
-import { DeltaEvent, FullDeltaEvent } from "@/types/event";
+import { FullDeltaEvent } from "@/types/event";
 import { EventCard } from "@/components/eventCard";
 import { Skeleton } from "@navikt/ds-react";
 

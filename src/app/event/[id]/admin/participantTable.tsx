@@ -68,7 +68,9 @@ export default function ParticipantTable({
                             email,
                             type: "PARTICIPANT",
                           });
-                          window.location.reload();
+                          user.email === email
+                            ? (window.location.href = `/event/${event.id}`)
+                            : window.location.reload();
                         }}
                       >
                         Fjern arrangør

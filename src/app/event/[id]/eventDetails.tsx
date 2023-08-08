@@ -154,13 +154,10 @@ export default function EventDetails({
                 {isParticipant ? "Meld av" : "Bli med"}
               </Heading>
               <BodyLong spacing>
-                <span className="flex flex-row gap-2">
-                  <InformationSquareFillIcon fontSize="1.5rem" />
-                  {isParticipant
-                    ? `Er du sikker på at du vil melde deg av? Dersom påmeldignsfristen er utløpt 
-                eller antallsbegrensing er nådd, kan du ikke melde deg på igjen.`
-                    : `Ved å melde deg på arrangementet, godtar du at Delta lagrer ditt navn og e-postadresse.`}
-                </span>
+                {isParticipant
+                  ? `Er du sikker på at du vil melde deg av? Dersom påmeldignsfristen er utløpt \
+eller antallsbegrensing er nådd, kan du ikke melde deg på igjen.`
+                  : `Ved å melde deg på arrangementet, godtar du at Delta lagrer ditt navn og e-postadresse.`}
               </BodyLong>
               <div className="flex flex-row justify-end gap-4">
                 <Button

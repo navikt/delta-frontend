@@ -6,7 +6,7 @@ metadata:
   labels:
     team: delta
 spec:
-  image: { { image } }
+  image: {{ image }}
   ingresses:
     - https://delta.ekstern.dev.nav.no
   port: 3000

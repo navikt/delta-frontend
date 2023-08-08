@@ -14,7 +14,6 @@ import {
   formatEventDuration,
   formatEventTimes,
 } from "@/service/format";
-import { format } from "path";
 
 export function EventCard({
   event,

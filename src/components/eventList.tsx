@@ -1,24 +1,32 @@
-"use client";
-
 import { FullDeltaEvent } from "@/types/event";
 import { EventCard } from "@/components/eventCard";
-import { Skeleton } from "@navikt/ds-react";
+import { getEvents } from "@/service/eventActions";
 
 type EventListProps = {
   fullEvents: FullDeltaEvent[];
-  loading: boolean;
 };
-export default function EventList({ fullEvents, loading }: EventListProps) {
+
+export async function EventList({
+  categories,
+  onlyFuture = false,
+  onlyPast = false,
+  onlyMine = false,
+}: any) {
+  const events = await getEvents({
+    categories: categories,
+    onlyFuture: onlyFuture,
+    onlyPast: onlyPast,
+    onlyMine: onlyMine,
+    onlyJoined: false,
+  });
+
+  return <EventListItems fullEvents={events} />;
+}
+
+function EventListItems({ fullEvents }: EventListProps) {
   return (
     <ul className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      {loading ? (
-        <>
-          <Skeleton variant="rounded" />
-          <Skeleton variant="rounded" />
-          <Skeleton variant="rounded" />
-          <Skeleton variant="rounded" />
-        </>
-      ) : fullEvents.length ? (
+      {fullEvents.length ? (
         fullEvents.map((fullEvent) => (
           <EventCard
             event={fullEvent.event}

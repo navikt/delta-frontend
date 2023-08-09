@@ -75,9 +75,7 @@ export async function getEvents({
   const api = await getApi();
   const response = await api.get<FullDeltaEvent[]>("/event", {
     params: {
-      categories: categories.length
-        ? categories.map((c) => c.id).join(",")
-        : undefined,
+      categories: categories.length ? categories.join(",") : undefined,
       onlyFuture,
       onlyPast,
       onlyJoined,

@@ -108,7 +108,9 @@ function ExpandedTable({
                     email,
                     type: "PARTICIPANT",
                   });
-                  window.location.reload();
+                  email == user.email
+                    ? (window.location.href = `/event/${event.id}`)
+                    : window.location.reload();
                 }}
               >
                 Fjern arrangør
@@ -226,7 +228,9 @@ function FullTable({
                     email,
                     type: "PARTICIPANT",
                   });
-                  window.location.reload();
+                  email == user.email
+                    ? (window.location.href = `/event/${event.id}`)
+                    : window.location.reload();
                 }}
               >
                 Fjern arrangør

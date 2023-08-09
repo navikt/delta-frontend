@@ -29,7 +29,7 @@ export default function ParticipantIcon({ name, type }: ParticipantIconProps) {
   } else {
     return (
       <div className="flex justify-center w-7 h-7 text-white text-sm bg-limegreen-800 items-center rounded-full -ml-1 border border-white">
-        ...
+        ···
       </div>
     );
   }

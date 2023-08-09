@@ -6,7 +6,6 @@ import EventList from "./eventList";
 import { useEffect, useState } from "react";
 import { getEvents } from "@/service/eventActions";
 import { FunnelIcon } from "@navikt/aksel-icons";
-import { EventCard } from "./eventCard";
 
 enum TimeSelector {
   PAST,

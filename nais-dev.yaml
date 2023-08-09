@@ -6,7 +6,7 @@ metadata:
   labels:
     team: delta
 spec:
-  image: {{image}}
+  image: {{ image }}
   ingresses:
     - https://delta.ekstern.dev.nav.no
   port: 3000
@@ -26,3 +26,14 @@ spec:
       value: dev
     - name: NEXT_PUBLIC_HOSTNAME
       value: https://delta.ekstern.dev.nav.no
+  liveness:
+    path: /internal/is-alive
+    initialDelay: 10
+    timeout: 5
+    periodSeconds: 5
+    failureThreshold: 30
+  readiness:
+    path: /internal/is-ready
+    initialDelay: 10
+    periodSeconds: 5
+    timeout: 5

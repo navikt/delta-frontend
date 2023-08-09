@@ -6,7 +6,6 @@ import {
   Category,
   ChangeDeltaParticipant,
   CreateDeltaEvent,
-  DeltaEvent,
   FullDeltaEvent,
 } from "@/types/event";
 import { formatInTimeZone } from "date-fns-tz";
@@ -96,7 +95,7 @@ export async function getEvent(id: string): Promise<FullDeltaEvent> {
 
 export async function createEvent(
   formData: CreateEventSchema,
-): Promise<DeltaEvent> {
+): Promise<FullDeltaEvent> {
   const api = await getApi();
 
   const createEvent = createDeltaEventFromFormData(formData);
@@ -108,7 +107,7 @@ export async function createEvent(
 export async function updateEvent(
   formData: CreateEventSchema,
   eventId: string,
-): Promise<DeltaEvent> {
+): Promise<FullDeltaEvent> {
   const api = await getApi();
 
   const createEvent = createDeltaEventFromFormData(formData);

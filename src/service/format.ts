@@ -1,5 +1,5 @@
 import { DeltaEvent } from "@/types/event";
-import { format, formatDuration, intervalToDuration, parseISO } from "date-fns";
+import { format, formatDuration, intervalToDuration } from "date-fns";
 import nb from "date-fns/locale/nb";
 
 const fmt = "do MMMM yyyy, HH:mm";

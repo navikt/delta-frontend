@@ -17,7 +17,7 @@ import { FullDeltaEvent, DeltaParticipant } from "@/types/event";
 import { getEvent, joinEvent, leaveEvent } from "@/service/eventActions";
 import { format } from "date-fns";
 import Calendar from "@/components/calendar";
-import { ca } from "date-fns/locale";
+import { InformationSquareFillIcon } from "@navikt/aksel-icons";
 
 export default function EventDetails({
   event,
@@ -134,14 +134,7 @@ export default function EventDetails({
               <Button
                 variant={isParticipant ? "danger" : "primary"}
                 className="w-full h-fit"
-                onClick={() =>
-                  isParticipant
-                    ? setOpenConfirmation((x) => !x)
-                    : toggleEventStatus(event.id, isParticipant, (state) => {
-                        showAlert();
-                        setParticipants(state);
-                      })
-                }
+                onClick={() => setOpenConfirmation((x) => !x)}
                 // disabled={event.participantLimit == participants.length} // TODO: needs an UI element explaining why the button is disabled
               >
                 {isParticipant ? "Meld av" : "Bli med"}
@@ -153,16 +146,18 @@ export default function EventDetails({
             aria-label="Meld av modal"
             onClose={() => setOpenConfirmation((x) => !x)}
             closeButton={false}
-            aria-labelledby="Meld av modal"
+            aria-labelledby={isParticipant ? "Meld av modal" : "Bli med modal"}
             className="w-4/5 max-w-[30rem] max-h-[50rem]"
           >
             <Modal.Content>
               <Heading spacing level="1" size="large" id="modal-heading">
-                {`Meld av?`}
+                {isParticipant ? "Meld av" : "Bli med"}
               </Heading>
               <BodyLong spacing>
-                {`Er du sikker på at du vil melde deg av ${event.title}? Dersom påmeldignsfristen er utløpt 
-                eller antallsbegrensing er nådd, kan du ikke melde deg på igjen.`}
+                {isParticipant
+                  ? `Er du sikker på at du vil melde deg av? Dersom påmeldignsfristen er utløpt \
+eller antallsbegrensing er nådd, kan du ikke melde deg på igjen.`
+                  : `Ved å melde deg på arrangementet, godtar du at Delta lagrer ditt navn og e-postadresse.`}
               </BodyLong>
               <div className="flex flex-row justify-end gap-4">
                 <Button
@@ -172,7 +167,7 @@ export default function EventDetails({
                   Avbryt
                 </Button>
                 <Button
-                  variant="danger"
+                  variant={isParticipant ? "danger" : "primary"}
                   className="w-fit h-fit font-bold"
                   onClick={() =>
                     toggleEventStatus(event.id, isParticipant, (state) => {
@@ -182,7 +177,7 @@ export default function EventDetails({
                     })
                   }
                 >
-                  Ja, meld meg av
+                  {isParticipant ? "Ja, meld meg av" : "Godta og bli med"}
                 </Button>
               </div>
             </Modal.Content>
@@ -211,7 +206,7 @@ export default function EventDetails({
             {event.description}
           </BodyLong>
           <div className="flex gap-2 flex-wrap">
-            {categories.length &&
+            {categories.length > 0 &&
               categories.map((category) => (
                 <Tag variant="alt1" key={category.id}>
                   {category.name}

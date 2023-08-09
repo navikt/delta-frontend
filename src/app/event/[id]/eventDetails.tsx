@@ -17,7 +17,6 @@ import { FullDeltaEvent, DeltaParticipant } from "@/types/event";
 import { getEvent, joinEvent, leaveEvent } from "@/service/eventActions";
 import { format } from "date-fns";
 import Calendar from "@/components/calendar";
-import { InformationSquareFillIcon } from "@navikt/aksel-icons";
 
 export default function EventDetails({
   event,
@@ -202,7 +201,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen.`
           <Heading size="medium" as="h2">
             Detaljer
           </Heading>
-          <BodyLong className="italic whitespace-pre-line">
+          <BodyLong className="italic whitespace-pre-line overflow-wrap break-words">
             {event.description}
           </BodyLong>
           <div className="flex gap-2 flex-wrap">

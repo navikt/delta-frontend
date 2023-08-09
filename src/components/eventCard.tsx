@@ -33,8 +33,8 @@ export function EventCard({
       key={`event-${event.id}`}
       className="transition-all rounded-xl border-gray-300 hover:-translate-y-1 hover:scale-105 h-full event-card"
     >
-      <LinkPanel.Title>{event.title}</LinkPanel.Title>
-      <LinkPanel.Description className="flex flex-col gap-2 flex-grow w-full justify-between">
+      <LinkPanel.Title className="break-all">{event.title}</LinkPanel.Title>
+      <LinkPanel.Description className="flex flex-col gap-2 flex-grow justify-between">
         <div>
           <Detail className="flex gap-1 items-center">
             <CalendarIcon />

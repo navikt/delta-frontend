@@ -2,7 +2,7 @@
 
 import "./eventCard.css";
 import { Category, DeltaEvent } from "@/types/event";
-import { Detail, LinkPanel, Tag } from "@navikt/ds-react";
+import { Detail, Heading, LinkPanel, Tag } from "@navikt/ds-react";
 import {
   CalendarIcon,
   ClockIcon,
@@ -27,14 +27,13 @@ export function EventCard({
       ? true
       : false;
   return (
-    <LinkPanel
+    <Link
       href={`/event/${event.id}`}
-      as={Link}
       key={`event-${event.id}`}
-      className="transition-all rounded-xl border-gray-300 hover:-translate-y-1 hover:scale-105 h-full event-card"
+      className="flex flex-col h-full p-4 border rounded-xl text-text-default border-gray-300 transition-all hover:-translate-y-1 hover:scale-105 hover:text-surface-action-selected-hover hover:border-border-action event-card"
     >
-      <LinkPanel.Title className="break-all">{event.title}</LinkPanel.Title>
-      <LinkPanel.Description className="flex flex-col gap-2 flex-grow justify-between">
+      <Heading size="small">{event.title}</Heading>
+      <div className="flex flex-col gap-2 h-full justify-between">
         <div>
           <Detail className="flex gap-1 items-center">
             <CalendarIcon />
@@ -62,14 +61,14 @@ export function EventCard({
             )}
           </Detail>
         </div>
-        <div className="flex gap-2 flex-wrap items-end w-full">
+        <div className="flex gap-2 flex-wrap h-full items-end w-full">
           {categories.map((category) => (
             <Tag variant="alt1" key={category.id}>
               {category.name}
             </Tag>
           ))}
         </div>
-      </LinkPanel.Description>
-    </LinkPanel>
+      </div>
+    </Link>
   );
 }

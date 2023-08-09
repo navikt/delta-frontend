@@ -1,5 +1,3 @@
-.event-card > .navds-link-panel__content {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
+.event-card:hover > .navds-heading {
+  text-decoration: underline;
 }

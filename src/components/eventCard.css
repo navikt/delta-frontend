@@ -1,0 +1,5 @@
+.event-card > .navds-link-panel__content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}

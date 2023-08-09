@@ -9,7 +9,11 @@ export default async function Home(context: any) {
   const allCategories = await getAllCategories();
 
   return (
-    <CardWithBackground color="bg-blue-200" title="Arrangementer" newEvent>
+    <CardWithBackground
+      color="bg-blue-200"
+      title="Kommende arrangementer"
+      newEvent
+    >
       <EventFilters categories={allCategories} selectCategory searchName />
     </CardWithBackground>
   );

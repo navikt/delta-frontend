@@ -28,6 +28,20 @@ export type DeltaEvent = {
   signupDeadline?: string;
 };
 
+export type TemplateDeltaEvent = {
+  title: string;
+  description: string;
+  location: string;
+  public: boolean;
+  participantLimit: number;
+};
+
+export enum EditTypeEnum {
+  NEW,
+  EDIT,
+  TEMPLATE,
+}
+
 export type DeltaParticipant = {
   email: string;
   name: string;

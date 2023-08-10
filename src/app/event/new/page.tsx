@@ -3,14 +3,25 @@ import CreateEventForm from "@/components/createEventForm";
 import CardWithBackground from "@/components/cardWithBackground";
 import { Metadata } from "next";
 import { getAllCategories } from "@/service/eventActions";
+import { useSearchParams } from "next/navigation";
+import { EditTypeEnum } from "@/types/event";
 
 export const metadata: Metadata = {
   title: "Delta Δ - Opprett arrangement",
 };
 
-export default async function NewEvent() {
+export default async function NewEvent({
+  searchParams,
+}: {
+  searchParams?: { [key: string]: string | string[] | undefined };
+}) {
   await checkToken("/event/new");
   const categories = await getAllCategories();
+
+  let eventId = searchParams?.template;
+  if (eventId && typeof eventId !== "string") {
+    eventId = eventId[0];
+  }
 
   return (
     <CardWithBackground
@@ -19,7 +30,14 @@ export default async function NewEvent() {
       home
       backLink="/"
     >
-      <CreateEventForm allCategories={categories} />
+      <CreateEventForm
+        editType={
+          eventId
+            ? { type: EditTypeEnum.TEMPLATE, eventId }
+            : { type: EditTypeEnum.NEW }
+        }
+        allCategories={categories}
+      />
     </CardWithBackground>
   );
 }

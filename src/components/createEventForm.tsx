@@ -21,7 +21,12 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import EventDatepicker from "../app/event/new/eventDatepicker";
-import { Category, DeltaEvent } from "@/types/event";
+import {
+  Category,
+  DeltaEvent,
+  EditTypeEnum,
+  TemplateDeltaEvent,
+} from "@/types/event";
 import { midnightDate } from "@/service/format";
 import { format } from "date-fns";
 
@@ -101,15 +106,18 @@ const createEventSchema = z
 
 export type CreateEventSchema = z.infer<typeof createEventSchema>;
 
-type CreateEventFormProps = { eventId?: string; allCategories: Category[] };
+export type EditType =
+  | { type: EditTypeEnum.NEW }
+  | { type: EditTypeEnum.EDIT | EditTypeEnum.TEMPLATE; eventId: string };
+type CreateEventFormProps = { editType: EditType; allCategories: Category[] };
 export default function CreateEventForm({
-  eventId,
+  editType,
   allCategories,
 }: CreateEventFormProps) {
-  const [loading, setLoading] = useState(!!eventId);
-  const [event, setEvent] = useState<DeltaEvent | undefined>(
-    undefined as DeltaEvent | undefined,
-  );
+  const [loading, setLoading] = useState(editType.type !== EditTypeEnum.NEW);
+  const [richEvent, setRichEvent] = useState<RichEvent>({
+    type: EditTypeEnum.NEW,
+  });
   const [selectedCategories, _setSelectedCategories] = useState<
     Category[] | undefined
   >(undefined);
@@ -119,14 +127,30 @@ export default function CreateEventForm({
     _setSelectedCategories(setState as SetStateAction<Category[] | undefined>);
 
   useEffect(() => {
-    if (!eventId) return;
-    getEvent(eventId)
+    if (editType.type === EditTypeEnum.NEW) return;
+    getEvent(editType.eventId)
       .then((e) => {
-        setEvent(e.event);
+        const richEvent =
+          editType.type === EditTypeEnum.EDIT
+            ? ({
+                type: EditTypeEnum.EDIT,
+                event: e.event,
+              } satisfies RichEvent)
+            : ({
+                type: EditTypeEnum.TEMPLATE,
+                event: {
+                  title: e.event.title,
+                  description: e.event.description,
+                  location: e.event.location,
+                  public: e.event.public,
+                  participantLimit: e.event.participantLimit,
+                } satisfies TemplateDeltaEvent,
+              } satisfies RichEvent);
+        setRichEvent(richEvent);
         setSelectedCategories(e.categories);
       })
       .then(() => setLoading(false));
-  }, [eventId]);
+  }, [editType]);
 
   return loading ? (
     <>
@@ -136,30 +160,38 @@ export default function CreateEventForm({
     </>
   ) : (
     <InternalCreateEventForm
-      event={event}
+      richEvent={richEvent}
       allCategories={allCategories}
       selectedCategories={selectedCategories || []}
       setSelectedCategories={setSelectedCategories}
     />
   );
 }
+type RichEvent =
+  | { type: EditTypeEnum.EDIT; event: DeltaEvent }
+  | { type: EditTypeEnum.TEMPLATE; event: TemplateDeltaEvent }
+  | { type: EditTypeEnum.NEW };
 
 type InternalCreateEventFormProps = {
-  event?: DeltaEvent;
+  richEvent: RichEvent;
   selectedCategories: Category[];
   setSelectedCategories: Dispatch<Category[]>;
   allCategories: Category[];
 };
 function InternalCreateEventForm({
-  event,
+  richEvent,
   selectedCategories,
   setSelectedCategories,
   allCategories,
 }: InternalCreateEventFormProps) {
   const [hasParticipantLimit, setHasParticipantLimit] = useState(
-    (event?.participantLimit || 0) > 0,
+    ((richEvent.type !== EditTypeEnum.NEW &&
+      richEvent.event.participantLimit) ||
+      0) > 0,
   );
-  const [hasDeadline, setDeadline] = useState(!!event?.signupDeadline);
+  const [hasDeadline, setDeadline] = useState(
+    !!(richEvent.type === EditTypeEnum.EDIT && richEvent.event.signupDeadline),
+  );
 
   const [newTags, setNewTags] = useState<string[]>([]);
   const setSelected = (tags: string[]) => {
@@ -185,29 +217,48 @@ function InternalCreateEventForm({
     formState: { errors },
     setValue,
   } = useForm<CreateEventSchema>({
-    defaultValues: !event
-      ? undefined
-      : ({
-          title: event.title,
-          description: event.description,
-          location: event.location,
-          public: event.public,
-          endDate: midnightDate(event.endTime),
-          startDate: midnightDate(event.startTime),
-          startTime: format(new Date(event.startTime), "HH:mm"),
-          hasParticipantLimit,
-          participantLimit: event.participantLimit
-            ? event.participantLimit.toString()
-            : undefined,
-          hasSignupDeadline: hasDeadline,
-          signupDeadlineDate: event.signupDeadline
-            ? midnightDate(event.signupDeadline)
-            : undefined,
-          signupDeadlineTime: event.signupDeadline
-            ? format(new Date(event.signupDeadline), "HH:mm")
-            : "",
-          endTime: format(new Date(event.endTime), "HH:mm"),
-        } satisfies CreateEventSchema),
+    defaultValues:
+      richEvent.type === EditTypeEnum.NEW
+        ? undefined
+        : richEvent.type === EditTypeEnum.TEMPLATE
+        ? ({
+            title: richEvent.event.title,
+            description: richEvent.event.description,
+            location: richEvent.event.location,
+            public: richEvent.event.public,
+            endDate: undefined as unknown as Date, // pls be quiet
+            endTime: "",
+            startDate: undefined as unknown as Date,
+            startTime: "",
+            hasParticipantLimit,
+            participantLimit: hasParticipantLimit
+              ? richEvent.event.participantLimit.toString()
+              : undefined,
+            hasSignupDeadline: hasDeadline,
+            signupDeadlineDate: undefined,
+            signupDeadlineTime: "",
+          } satisfies CreateEventSchema)
+        : ({
+            title: richEvent.event.title,
+            description: richEvent.event.description,
+            location: richEvent.event.location,
+            public: richEvent.event.public,
+            endDate: midnightDate(richEvent.event.endTime!!),
+            endTime: format(new Date(richEvent.event.endTime!!), "HH:mm"),
+            startDate: midnightDate(richEvent.event.startTime!!),
+            startTime: format(new Date(richEvent.event.startTime!!), "HH:mm"),
+            hasParticipantLimit,
+            participantLimit: richEvent.event.participantLimit
+              ? richEvent.event.participantLimit.toString()
+              : undefined,
+            hasSignupDeadline: hasDeadline,
+            signupDeadlineDate: richEvent.event.signupDeadline
+              ? midnightDate(richEvent.event.signupDeadline)
+              : undefined,
+            signupDeadlineTime: richEvent.event.signupDeadline
+              ? format(new Date(richEvent.event.signupDeadline), "HH:mm")
+              : "",
+          } satisfies CreateEventSchema),
     resolver: zodResolver(createEventSchema),
   });
 
@@ -217,8 +268,14 @@ function InternalCreateEventForm({
         const valid = await trigger();
         const values = getValues();
         if (!valid) return;
-        if (!event) createAndRedirect(values, newTags, selectedCategories);
-        else updateAndRedirect(values, event.id, newTags, selectedCategories);
+        if (richEvent.type === EditTypeEnum.EDIT)
+          updateAndRedirect(
+            values,
+            richEvent.event.id,
+            newTags,
+            selectedCategories,
+          );
+        else createAndRedirect(values, newTags, selectedCategories);
       }}
       className="flex flex-col gap-5"
     >
@@ -384,10 +441,19 @@ function InternalCreateEventForm({
         </div>
       </div>
       <div className="flex items-center justify-end gap-4">
-        <Link className="w-fit h-fit" href={event ? `/event/${event.id}` : "/"}>
+        <Link
+          className="w-fit h-fit"
+          href={
+            richEvent.type === EditTypeEnum.EDIT
+              ? `/event/${richEvent.event.id}`
+              : "/"
+          }
+        >
           Avbryt
         </Link>
-        <Button type="submit">{event ? "Oppdater" : "Opprett"}</Button>
+        <Button type="submit">
+          {richEvent.type === EditTypeEnum.EDIT ? "Oppdater" : "Opprett"}
+        </Button>
       </div>
     </form>
   );

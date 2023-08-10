@@ -1,6 +1,7 @@
 import CardWithBackground from "@/components/cardWithBackground";
 import CreateEventForm from "@/components/createEventForm";
 import { getAllCategories } from "@/service/eventActions";
+import { EditTypeEnum } from "@/types/event";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -20,7 +21,10 @@ export default async function EditEvent({
       home
       backLink={`/event/${params.id}/admin`}
     >
-      <CreateEventForm eventId={params.id} allCategories={categories} />
+      <CreateEventForm
+        editType={{ type: EditTypeEnum.EDIT, eventId: params.id }}
+        allCategories={categories}
+      />
     </CardWithBackground>
   );
 }

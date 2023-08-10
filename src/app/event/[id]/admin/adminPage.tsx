@@ -34,6 +34,12 @@ export default function AdminPage({
           >
             Rediger arrangement
           </Link>
+          <Link
+            href={`/event/new?template=${event.id}`}
+            className="w-full h-fit navds-button navds-button--primary-neutral whitespace-nowrap navds-label"
+          >
+            Bruk som mal
+          </Link>
           <ExportParticipants participants={participants} />
           <Button
             type="submit"

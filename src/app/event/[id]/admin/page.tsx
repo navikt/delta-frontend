@@ -14,7 +14,7 @@ export default async function ParticipantsPage({
 }: {
   params: { id: string };
 }) {
-  await checkToken(`/event/${params.id}/participants`);
+  await checkToken(`/event/${params.id}/admin`);
 
   const fullEvent = await getEvent(params.id);
   const user = getUser();

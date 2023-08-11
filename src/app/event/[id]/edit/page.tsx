@@ -1,3 +1,4 @@
+import { checkToken } from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
 import CreateEventForm from "@/components/createEventForm";
 import { getAllCategories } from "@/service/eventActions";
@@ -13,6 +14,7 @@ export default async function EditEvent({
 }: {
   params: { id: string };
 }) {
+  checkToken(`/event/${params.id}/edit`)
   const categories = await getAllCategories();
   return (
     <CardWithBackground

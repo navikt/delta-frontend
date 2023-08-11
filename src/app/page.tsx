@@ -4,7 +4,7 @@ import EventFilters from "@/components/eventFilters";
 import { getAllCategories } from "@/service/eventActions";
 
 export default async function Home(context: any) {
-  await checkToken();
+  await checkToken("/");
 
   const allCategories = await getAllCategories();
 

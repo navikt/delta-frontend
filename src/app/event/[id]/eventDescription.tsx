@@ -108,9 +108,7 @@ export default function EventDescription({
         <span className="flex flex-row justify-start gap-2 items-center cursor-pointer">
           <PersonCheckmarkIcon />
           {participantsAndHosts.length}
-          {event.participantLimit == 0
-            ? " "
-            : ` av ${event.participantLimit + hosts.length} `}
+          {event.participantLimit == 0 ? " " : ` av ${event.participantLimit} `}
           {"deltakere"}
         </span>
         <div className="flex flex-row ml-[0.3rem] pl-6">

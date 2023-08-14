@@ -14,7 +14,7 @@ export default async function EditEvent({
 }: {
   params: { id: string };
 }) {
-  checkToken(`/event/${params.id}/edit`)
+  checkToken(`/event/${params.id}/edit`);
   const categories = await getAllCategories();
   return (
     <CardWithBackground

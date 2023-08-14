@@ -61,7 +61,7 @@ export async function getAccessToken(
 
   const authHeader = headers().get("Authorization");
   if (!authHeader) {
-    throw new Error("No access token, please log in...")
+    throw new Error("No access token, please log in...");
   }
 
   const result = await grantAzureOboToken(

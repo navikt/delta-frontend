@@ -116,7 +116,7 @@ export default function EventDetails({
             }
             if (
               event.participantLimit &&
-              event.participantLimit <= participants.length &&
+              event.participantLimit <= hosts.length + participants.length &&
               !isParticipant
             ) {
               return (
@@ -134,7 +134,6 @@ export default function EventDetails({
                 variant={isParticipant ? "danger" : "primary"}
                 className="w-full h-fit"
                 onClick={() => setOpenConfirmation((x) => !x)}
-                // disabled={event.participantLimit == participants.length} // TODO: needs an UI element explaining why the button is disabled
               >
                 {isParticipant ? "Meld av" : "Bli med"}
               </Button>

@@ -6,7 +6,7 @@ import { EditTypeEnum } from "@/types/event";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Delta Δ - Rediger arrangement",
+  title: "Rediger arrangement Δ Delta",
 };
 
 export default async function EditEvent({

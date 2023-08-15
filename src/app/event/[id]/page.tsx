@@ -7,14 +7,28 @@ import { Metadata, ResolvingMetadata } from "next";
 
 type EventPageProps = { params: { id: string } };
 
+async function getOptionalEventFromId(id: string) {
+  try {
+    const { event }: FullDeltaEvent = await getEvent(id);
+    return event;
+  } catch (e) {
+    return null;
+  }
+}
+
 export async function generateMetadata(
   { params }: EventPageProps,
   parent: ResolvingMetadata,
 ): Promise<Metadata> {
-  const { event }: FullDeltaEvent = await getEvent(params.id);
+  const event = await getOptionalEventFromId(params.id);
+  if (!event) {
+    return {
+      title: "Delta Δ"
+    };
+  }
 
   return {
-    title: `Delta Δ - ${event.title}`,
+    title: `${event.title} Δ Delta`,
   };
 }
 

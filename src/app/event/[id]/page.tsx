@@ -28,7 +28,7 @@ export async function generateMetadata(
   }
 
   return {
-    title: `Delta Δ - ${event.title}`,
+    title: `${event.title} Δ Delta`,
   };
 }
 

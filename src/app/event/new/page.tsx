@@ -7,7 +7,7 @@ import { useSearchParams } from "next/navigation";
 import { EditTypeEnum } from "@/types/event";
 
 export const metadata: Metadata = {
-  title: "Delta Δ - Opprett arrangement",
+  title: "Opprett arrangement Δ Delta",
 };
 
 export default async function NewEvent({

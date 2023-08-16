@@ -22,7 +22,7 @@ export const formatEventDates = (event: DeltaEvent): string => {
 
   return `${format(start, fmtShort, { locale: nb })} - ${format(
       end,
-      isSameDay(start, end) ? "" : fmtShort,
+      isSameDay(start, end) ? "HH:mm" : fmtShort,
       { locale: nb },
   )}`;
 };

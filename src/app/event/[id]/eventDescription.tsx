@@ -2,6 +2,7 @@
 
 import { FullDeltaEvent, DeltaParticipant } from "@/types/event";
 import {
+  ClockIcon,
   CalendarIcon,
   PersonCheckmarkIcon,
   PersonCircleIcon,
@@ -12,7 +13,7 @@ import ParticipantIcon from "@/app/event/[id]/participantIcon";
 import { useEffect, useState } from "react";
 import { Heading, Link, Modal, Search } from "@navikt/ds-react";
 import Participant from "./participant";
-import { formatEventTimes, formatDeadline } from "@/service/format";
+import { formatEventDates, formatDeadline } from "@/service/format";
 
 type EventDescriptionProps = FullDeltaEvent & {
   className?: string;
@@ -55,17 +56,25 @@ export default function EventDescription({
 
   return (
     <div className={className || ""}>
-      {displayTime && (
-        <span className="flex flex-row justify-start gap-2 items-center">
-        {/* <ClockIcon aria-label="varighet" />
-          {`${event.startTime.substring(11, 16)} – ${event.endTime.substring(
-            11,
-            16,
-          )}`}*/}
-          <CalendarIcon aria-label="dato"/>
-          {formatEventTimes(event)}
-        </span>
-      )}
+      <div>
+        {displayTime && (
+            <span className="flex flex-row justify-start gap-2 items-center">
+            <CalendarIcon aria-label="dato"/>
+              {formatEventDates(event)}
+            </span>
+        )}
+      </div>
+      <div>
+        {displayTime && (
+          <span className="flex flex-row justify-start gap-2 items-center">
+          <ClockIcon aria-label="tid" />
+        {`${event.startTime.substring(11, 16)} – ${event.endTime.substring(
+          11,
+          16,
+          )}`}
+          </span>
+        )}
+      </div>
       <div>
         {event.location && (
           <span className="flex flex-row justify-start gap-2 items-center">

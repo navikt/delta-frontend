@@ -3,6 +3,7 @@ import { format, formatDuration, intervalToDuration } from "date-fns";
 import nb from "date-fns/locale/nb";
 
 const fmt = "EEEE do MMMM, HH:mm";
+const fmtShort = "EEEE do MMMM";
 
 export const formatEventTimes = (event: DeltaEvent): string => {
   const start = new Date(event.startTime);
@@ -12,6 +13,16 @@ export const formatEventTimes = (event: DeltaEvent): string => {
     end,
     isSameDay(start, end) ? "HH:mm" : fmt,
     { locale: nb },
+  )}`;
+};
+
+export const formatEventDates = (event: DeltaEvent): string => {
+  const start = new Date(event.startTime);
+  const end = new Date(event.endTime);
+
+  return `${format(start, fmtShort, { locale: nb })} - ${format(
+      end, fmtShort,
+      { locale: nb },
   )}`;
 };
 

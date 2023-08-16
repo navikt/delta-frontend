@@ -2,7 +2,7 @@ import { DeltaEvent } from "@/types/event";
 import { format, formatDuration, intervalToDuration } from "date-fns";
 import nb from "date-fns/locale/nb";
 
-const fmt = "do MMMM yyyy, HH:mm";
+const fmt = "EEEE do MMMM yyyy, HH:mm";
 
 export const formatEventTimes = (event: DeltaEvent): string => {
   const start = new Date(event.startTime);

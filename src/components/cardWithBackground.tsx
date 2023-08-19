@@ -19,7 +19,7 @@ export default function CardWithBackground(props: CardWithBackgroundProps) {
       >
         <div className="pt-32 pb-24 items-end">
           <Heading
-            className="w-full col-span-1 lg:col-start-2 max-w-[90vw] break-words hyphens-auto"
+            className="w-full col-span-1 lg:col-start-2 max-w-[90vw]"
             level="1"
             size="xlarge"
           >

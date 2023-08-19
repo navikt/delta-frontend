@@ -27,6 +27,8 @@ export default async function Page({
                         color="bg-blue-200"
                         title={title}
                         newEvent
+                        home
+                        backLink="/"
                     >
                         <EventFilters categories={[{id: theCatogery.id, name: theCatogery.name}]} searchName/>
                     </CardWithBackground>

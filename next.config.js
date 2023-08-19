@@ -18,6 +18,15 @@ const nextConfig = {
         },
       ],
     },
+    {
+      source: "/category/:path*",
+      headers: [
+        {
+          key: "Cache-Control",
+          value: "no-store",
+        },
+      ],
+    },
   ],
 };
 

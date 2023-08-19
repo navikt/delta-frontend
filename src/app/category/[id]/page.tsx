@@ -2,7 +2,7 @@ import {checkToken} from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
 import EventFilters from "@/components/eventFiltersCategory";
 import {getAllCategories} from "@/service/eventActions";
-import {Metadata, ResolvingMetadata} from "next";
+import {Metadata} from "next";
 
 export const metadata: Metadata = {
     title: "Kategori Δ Delta",

@@ -1,4 +1,5 @@
 import Header from "@/components/header";
+import Footer from "@/components/footer";
 import "./globals.css";
 import { Metadata } from "next";
 
@@ -17,9 +18,10 @@ export default async function RootLayout({ children }: RootLayoutProps) {
       <body>
         <div id="main" className="flex flex-col min-h-screen">
           <Header />
-          <main className="bg-surface-subtle flex-grow flex justify-center">
+          <main className="bg-surface-subtle flex-grow flex justify-center pb-10">
             {children}
           </main>
+          <Footer />
         </div>
       </body>
     </html>

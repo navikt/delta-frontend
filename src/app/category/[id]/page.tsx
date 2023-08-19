@@ -2,11 +2,16 @@ import {checkToken} from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
 import EventFilters from "@/components/eventFiltersCategory";
 import {getAllCategories} from "@/service/eventActions";
+import { Metadata, ResolvingMetadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Kategori Δ Delta",
+};
 
 type EventPageProps = { params: { id: string } };
 
 export default async function Page({params}: EventPageProps) {
-    await checkToken("/");
+    checkToken(`/category/${params.id}`);
     const allCategories = await getAllCategories();
     const category = params.id
     const theCatogery = allCategories.find(item => item.name === category);

@@ -19,9 +19,6 @@ export default function AdminPage({
   user,
 }: ParticipantPageProps) {
   const [openConfirmation, setOpenConfirmation] = useState(false);
-  useEffect(() => {
-    Modal.setAppElement("#main");
-  }, []);
 
   const { event, participants, hosts }: FullDeltaEvent = eventWithParticipants;
   return (
@@ -56,19 +53,18 @@ export default function AdminPage({
       <Modal
         open={openConfirmation}
         aria-label="Slett arrangement modal"
-        onClose={() => setOpenConfirmation((x) => !x)}
-        closeButton={false}
         aria-labelledby="Slett arrangement modal"
         className="w-4/5 max-w-[30rem] max-h-[50rem]"
       >
-        <Modal.Content>
+        <Modal.Body>
           <Heading spacing level="1" size="large" id="modal-heading">
-            {`Slett ${event?.title}?`}
+            {`Slett: "${event?.title}?"`}
           </Heading>
           <BodyLong spacing>
-            {`Er du sikker på at du vil slette ${event?.title}? Dette kan ikke angres.`}
+            {`Er du sikker på at du vil slette "${event?.title}"? Dette kan ikke angres.`}
           </BodyLong>
-          <div className="flex flex-row justify-end gap-4">
+        </Modal.Body>
+        <Modal.Footer>
             <Button
               variant="secondary"
               onClick={async () => setOpenConfirmation((x) => !x)}
@@ -82,8 +78,7 @@ export default function AdminPage({
             >
               Ja, jeg vil slette arrangementet
             </Button>
-          </div>
-        </Modal.Content>
+        </Modal.Footer>
       </Modal>
       <ParticipantTable
         participants={participants}

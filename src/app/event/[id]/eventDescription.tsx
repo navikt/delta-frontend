@@ -10,7 +10,7 @@ import {
   PinIcon,
 } from "@navikt/aksel-icons";
 import ParticipantIcon from "@/app/event/[id]/participantIcon";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Heading, Link, Modal, Search } from "@navikt/ds-react";
 import Participant from "./participant";
 import { formatEventDates, formatDeadline } from "@/service/format";
@@ -33,9 +33,6 @@ export default function EventDescription({
   >([]);
   const participantsAndHosts = participants.concat(hosts);
 
-  useEffect(() => {
-    Modal.setAppElement("#main");
-  }, []);
   const sortParticipant = (a: DeltaParticipant, b: DeltaParticipant) =>
     a.name.split(", ").reverse()[0] > b.name.split(", ").reverse()[0] ? 1 : -1;
 
@@ -53,6 +50,8 @@ export default function EventDescription({
       });
     setFilterParticipants(filtered);
   }, [participants, searchInput]);
+
+  const ref = useRef<HTMLDialogElement>(null);
 
   return (
     <div className={className || ""}>
@@ -138,13 +137,9 @@ export default function EventDescription({
         open={openParticipantList}
         onClose={() => setOpenParticipantList(false)}
         aria-labelledby="modal-heading"
-        shouldCloseOnEsc={true}
-        shouldCloseOnOverlayClick={true}
+        ref={ref} header={{ heading: "Deltakere" }}
       >
-        <Modal.Content>
-          <Heading spacing level="1" size="large" id="modal-heading">
-            Deltakere
-          </Heading>
+        <Modal.Body>
           <div className="flex flex-col gap-6">
             <form>
               <Search
@@ -168,7 +163,7 @@ export default function EventDescription({
               ))}
             </ul>
           </div>
-        </Modal.Content>
+        </Modal.Body>
       </Modal>
     </div>
   );

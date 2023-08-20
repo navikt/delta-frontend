@@ -153,12 +153,10 @@ function ExpandedTable({
         <Modal
           open={openConfirmations[i]}
           aria-label={`Fjern deltaker ${name} fra arrangementet`}
-          onClose={() => toggleConfirmation(i)}
-          closeButton={false}
           aria-labelledby="Fjern deltaker modal"
           className="w-4/5 max-w-[30rem] max-h-[50rem]"
         >
-          <Modal.Content>
+          <Modal.Body>
             <Heading spacing level="1" size="large" id="modal-heading">
               {`Meld av ${name} fra ${event?.title}?`}
             </Heading>
@@ -166,7 +164,8 @@ function ExpandedTable({
               Er du sikker på at du vil melde {name} av arrangementet? Husk å si
               ifra til vedkommende, for de varsles ikke når du melder de av her.
             </BodyLong>
-            <div className="flex flex-row justify-end gap-4">
+          </Modal.Body>
+          <Modal.Footer>
               <Button variant="secondary" onClick={() => toggleConfirmation(i)}>
                 Avbryt
               </Button>
@@ -181,8 +180,7 @@ function ExpandedTable({
               >
                 Ja, jeg er sikker
               </Button>
-            </div>
-          </Modal.Content>
+          </Modal.Footer>
         </Modal>
       </Table.ExpandableRow>
     );
@@ -265,11 +263,10 @@ function FullTable({
           open={openConfirmations[i]}
           aria-label={`Fjern deltaker ${name} fra arrangementet`}
           onClose={() => toggleConfirmation(i)}
-          closeButton={false}
           aria-labelledby="Fjern deltaker modal"
           className="w-4/5 max-w-[30rem] max-h-[50rem]"
         >
-          <Modal.Content>
+          <Modal.Body>
             <Heading spacing level="1" size="large" id="modal-heading">
               {`Meld av ${name} fra ${event?.title}?`}
             </Heading>
@@ -277,7 +274,8 @@ function FullTable({
               Er du sikker på at du vil melde {name} av arrangementet? Husk å si
               ifra til vedkommende, for de varsles ikke når du melder de av her.
             </BodyLong>
-            <div className="flex flex-row justify-end gap-4">
+            </Modal.Body>
+            <Modal.Footer>
               <Button variant="secondary" onClick={() => toggleConfirmation(i)}>
                 Avbryt
               </Button>
@@ -292,8 +290,7 @@ function FullTable({
               >
                 Ja, jeg er sikker
               </Button>
-            </div>
-          </Modal.Content>
+          </Modal.Footer>
         </Modal>
       </Table.Row>
     );

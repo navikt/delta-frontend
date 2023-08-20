@@ -39,6 +39,8 @@ export default function EventDetails({
   const [openConfirmation, setOpenConfirmation] = useState(false);
 
   const showAlert = () => {
+    setUnregistration(false)
+    setRegistration(false)
     const setter = !isParticipant ? setRegistration : setUnregistration;
     setter(true);
 /*    setTimeout(() => {

@@ -144,12 +144,10 @@ export default function EventDetails({
           <Modal
             open={openConfirmation}
             aria-label="Meld av modal"
-            onClose={() => setOpenConfirmation((x) => !x)}
-            closeButton={false}
             aria-labelledby={isParticipant ? "Meld av modal" : "Bli med modal"}
             className="w-4/5 max-w-[30rem] max-h-[50rem]"
           >
-            <Modal.Content>
+            <Modal.Body>
               <Heading spacing level="1" size="large" id="modal-heading">
                 {isParticipant ? "Meld av" : "Bli med"}
               </Heading>
@@ -159,7 +157,8 @@ export default function EventDetails({
 eller antallsbegrensing er nådd, kan du ikke melde deg på igjen.`
                   : `Ved å melde deg på arrangementet, godtar du at Delta lagrer ditt navn og e-postadresse.`}
               </BodyLong>
-              <div className="flex flex-row justify-end gap-4">
+              </Modal.Body>
+              <Modal.Footer>
                 <Button
                   variant="secondary"
                   onClick={async () => setOpenConfirmation((x) => !x)}
@@ -179,8 +178,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen.`
                 >
                   {isParticipant ? "Ja, meld meg av" : "Godta og bli med"}
                 </Button>
-              </div>
-            </Modal.Content>
+              </Modal.Footer>
           </Modal>
           <CopyButton
             className="navds-button navds-button--secondary md:whitespace-nowrap w-full"

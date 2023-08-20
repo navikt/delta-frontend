@@ -10,7 +10,7 @@ export default async function MyEvents() {
   return (
     <CardWithBackground
       color="bg-blue-200"
-      title="Opprettede arrangementer"
+      title="Arrangert av meg"
       backLink="/"
     >
       <EventFilters onlyMine selectTime />

@@ -22,7 +22,7 @@ export default async function ParticipantsPage({
   if (fullEvent.hosts.some((host) => host.email === user.email)) {
     return (
       <CardWithBackground
-        title={`Adminstrer ${fullEvent.event.title}`}
+        title={`Adminstrer: ${fullEvent.event.title}`}
         color="bg-green-200"
         home
         backLink={`/event/${params.id}`}

@@ -36,19 +36,19 @@ export function EventCard({
       <div className="flex flex-col gap-2 h-full justify-between">
         <div>
           <Detail className="flex gap-1 items-center">
-            <CalendarIcon />
+            <CalendarIcon title="kalender" />
             {formatEventTimes(event)}
           </Detail>
           {formatEventDuration(event) !== "" && (
             <Detail className="flex gap-1 items-center">
-              <ClockIcon />
+              <ClockIcon title="klokke" />
               {formatEventDuration(event)}
             </Detail>
           )}
           <Detail>
             {event.signupDeadline && (
               <span className="flex items-center gap-1">
-                <HourglassBottomFilledIcon />
+                <HourglassBottomFilledIcon title="timeglass" />
                 Påmeldingsfrist:{" "}
                 {isUtløpt ? (
                   <span className="text-white bg-red-600 rounded px-2">

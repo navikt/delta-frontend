@@ -13,7 +13,7 @@ export default async function Page({
     }: {
     params: { id: string };
 }) {
-    checkToken(`/category/${params.id}`);
+    await checkToken(`/category/${params.id}`);
     const allCategories = await getAllCategories();
     const category = params.id
     const theCatogery = allCategories.find(item => item.name === category);

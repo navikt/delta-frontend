@@ -41,9 +41,9 @@ export default function EventDetails({
   const showAlert = () => {
     const setter = !isParticipant ? setRegistration : setUnregistration;
     setter(true);
-    setTimeout(() => {
+/*    setTimeout(() => {
       setter(false);
-    }, 2000);
+    }, 2000);*/
   };
 
   const isSameDay =

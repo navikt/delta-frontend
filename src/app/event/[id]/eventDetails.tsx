@@ -145,7 +145,6 @@ export default function EventDetails({
             open={openConfirmation}
             aria-label="Meld av modal"
             aria-labelledby={isParticipant ? "Meld av modal" : "Bli med modal"}
-            className="w-4/5 max-w-[30rem] max-h-[50rem]"
           >
             <Modal.Body>
               <Heading spacing level="1" size="large" id="modal-heading">

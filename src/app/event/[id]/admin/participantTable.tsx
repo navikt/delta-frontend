@@ -154,7 +154,6 @@ function ExpandedTable({
           open={openConfirmations[i]}
           aria-label={`Fjern deltaker ${name} fra arrangementet`}
           aria-labelledby="Fjern deltaker modal"
-          className="w-4/5 max-w-[30rem] max-h-[50rem]"
         >
           <Modal.Body>
             <Heading spacing level="1" size="large" id="modal-heading">
@@ -264,7 +263,6 @@ function FullTable({
           aria-label={`Fjern deltaker ${name} fra arrangementet`}
           onClose={() => toggleConfirmation(i)}
           aria-labelledby="Fjern deltaker modal"
-          className="w-4/5 max-w-[30rem] max-h-[50rem]"
         >
           <Modal.Body>
             <Heading spacing level="1" size="large" id="modal-heading">

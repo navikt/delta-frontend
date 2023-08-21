@@ -133,7 +133,6 @@ export default function EventDescription({
         </div>
       </button>
       <Modal
-        className="w-4/5 max-w-[30rem] max-h-[50rem]"
         open={openParticipantList}
         onClose={() => setOpenParticipantList(false)}
         aria-labelledby="modal-heading"

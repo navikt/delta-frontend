@@ -261,7 +261,6 @@ function FullTable({
         <Modal
           open={openConfirmations[i]}
           aria-label={`Fjern deltaker ${name} fra arrangementet`}
-          onClose={() => toggleConfirmation(i)}
           aria-labelledby="Fjern deltaker modal"
         >
           <Modal.Body>

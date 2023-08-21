@@ -64,7 +64,7 @@ export default function EventDetails({
             <Calendar dateString={event.endTime} displayTime={!isSameDay} />
           </div>
         )}
-        <div className="flex flex-col md:flex-row gap-4 items-start md:items-center md:whitespace-nowrap">
+        <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
           {showRegistration && (
             <Alert variant="success" size="small">
               Påmelding registrert

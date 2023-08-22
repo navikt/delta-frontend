@@ -7,6 +7,7 @@ import {
   CalendarIcon,
   ClockIcon,
   HourglassBottomFilledIcon,
+  PersonCheckmarkIcon,
 } from "@navikt/aksel-icons";
 import Link from "next/link";
 import {
@@ -26,6 +27,7 @@ export function EventCard({
     !!event.signupDeadline && new Date(event.signupDeadline) < new Date()
       ? true
       : false;
+  console.log(event)
   return (
     <Link
       href={`/event/${event.id}`}
@@ -59,6 +61,15 @@ export function EventCard({
                 )}
               </span>
             )}
+          </Detail>
+          <Detail>
+            {event.participantLimit > 0 && (
+                <>
+                  <PersonCheckmarkIcon />
+                  Antallsbegrensning: {event.participantLimit} personer
+                </>
+            )
+            }
           </Detail>
         </div>
         <div className="flex gap-2 flex-wrap h-full items-end w-full">

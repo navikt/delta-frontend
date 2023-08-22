@@ -21,7 +21,7 @@ export default function EventList({ fullEvents, loading }: EventListProps) {
       ) : fullEvents.length ? (
         fullEvents.map((fullEvent) => (
           <EventCard
-            event={fullEvent.event}
+            event={fullEvent}
             categories={fullEvent.categories}
             key={`event-${fullEvent.event.id}`}
           />

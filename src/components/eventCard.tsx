@@ -67,14 +67,13 @@ export function EventCard({
               <>
                 <span className="flex items-center gap-1">
                   <PersonCheckmarkIcon title="person" />
-                  Antallsbegrensning: {event.participants.length + event.hosts.length} av
-                  {event.event.participantLimit} deltakere
+                  {/*Maks {event.participants.length + event.hosts.length} av*/}
                   {event.participants.length + event.hosts.length >=
-                    event.event.participantLimit && (
+                    event.event.participantLimit ? (
                     <span className="bg-red-600 text-white rounded px-2">
-                      Fullbooket
+                      Arrangementet er fullt
                     </span>
-                  )}
+                  ) : (<>Maks {event.event.participantLimit} deltakere</>)}
 
                 </span>
               </>

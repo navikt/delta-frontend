@@ -18,14 +18,14 @@ export default async function Page({ params }: CategoryPageProps) {
     await checkToken(`/category/${params.id}`);
     const allCategories = await getAllCategories();
     const category = params.id
-    const theCatogery = allCategories.find(item => item.name === category);
+    const theCategory = allCategories.find(item => item.name === category);
 
     const title = category + "-arrangementer"
 
     return (
         <>
             <main className="flex flex-grow">
-                {theCatogery ? (
+                {theCategory ? (
                     <CardWithBackground
                         color="bg-blue-200"
                         title={title}
@@ -33,7 +33,7 @@ export default async function Page({ params }: CategoryPageProps) {
                         home
                         backLink="/"
                     >
-                        <EventFilters categories={[{id: theCatogery.id, name: theCatogery.name}]} searchName/>
+                        <EventFilters categories={[{id: theCategory.id, name: theCategory.name}]} searchName/>
                     </CardWithBackground>
                 ) : (<section className="w-screen flex-grow flex justify-center items-center">
                     404 - Kategorien finnes ikke

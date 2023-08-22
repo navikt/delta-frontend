@@ -24,7 +24,7 @@ export default function ExportParticipants(
             className="w-full justify-start px-2"
             size="small"
             copyText={copyEmails}
-            text="Kopier alle e-poster"
+            text="Kopier alle e-postadresser"
           />
           <Dropdown.Menu.List.Item
             className={`

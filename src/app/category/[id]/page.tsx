@@ -17,7 +17,7 @@ export default async function Page({
     const allCategories = await getAllCategories();
     const category = params.id
     const theCatogery = allCategories.find(item => item.name === category);
-    const title = category + " arrangementer"
+    const title = category + "-arrangementer"
 
     return (
         <>

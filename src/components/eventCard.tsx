@@ -65,8 +65,10 @@ export function EventCard({
           <Detail>
             {event.participantLimit > 0 && (
                 <>
-                  <PersonCheckmarkIcon />
-                  Antallsbegrensning: {event.participantLimit} personer
+                  <span className="flex items-center gap-1">
+                    <PersonCheckmarkIcon title="person" />
+                    Antallsbegrensning: {event.participantLimit} personer
+                  </span>
                 </>
             )
             }

@@ -152,9 +152,9 @@ export default function EventDetails({
               </Heading>
               <BodyLong spacing>
                 {isParticipant
-                  ? `Er du sikker på at du vil melde deg av? Dersom påmeldignsfristen er utløpt \
+                  ? `Er du sikker på at du vil melde deg av? Dersom påmeldingsfristen er utløpt \
 eller antallsbegrensing er nådd, kan du ikke melde deg på igjen.`
-                  : `Ved å melde deg på arrangementet, godtar du at Delta lagrer ditt navn og e-postadresse.`}
+                  : `Ved å melde deg på arrangementet, godtar du at Delta lagrer ditt navn og din e-postadresse.`}
               </BodyLong>
               </Modal.Body>
               <Modal.Footer>

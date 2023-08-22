@@ -45,7 +45,7 @@ export default function ParticipantTable({
             <Table.HeaderCell scope="col">Navn</Table.HeaderCell>
             <Table.HeaderCell scope="col">E-post</Table.HeaderCell>
             {!isMobile && (
-              <Table.HeaderCell scope="col" aria-label="Deltaker handlinger" />
+              <Table.HeaderCell scope="col" aria-label="Deltaker-handlinger" />
             )}
           </Table.Row>
         </Table.Header>
@@ -68,7 +68,7 @@ export default function ParticipantTable({
         </Table.Body>
       </Table>
       {!participants.length && (
-        <p className="w-full italic ml-3 mt-4 mb-5">Ingen deltakere enda — husk å markedsføre arrangementet!</p>
+        <p className="w-full italic ml-3 mt-4 mb-5">Ingen deltakere ennå — husk å markedsføre arrangementet!</p>
       )}
     </div>
   );
@@ -128,7 +128,7 @@ function ExpandedTable({
                     window.location.reload();
                   }}
                 >
-                  Gjør til arrangør
+                  Gjør til med-arrangør
                 </Button>
                 <Button
                   variant="danger"

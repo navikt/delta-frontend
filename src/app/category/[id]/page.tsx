@@ -4,19 +4,22 @@ import EventFilters from "@/components/eventFiltersCategory";
 import {getAllCategories} from "@/service/eventActions";
 import {Metadata} from "next";
 
-export const metadata: Metadata = {
-    title: "Kategori Δ Delta",
-};
+type CategoryPageProps = { params: { id: string } };
 
-export default async function Page({
-    params,
-    }: {
-    params: { id: string };
-}) {
+export function generateMetadata(
+    { params }: CategoryPageProps
+  ): Metadata {
+    return {
+        title: `${params.id}-arrangementer Δ Delta`
+    }
+  }
+
+export default async function Page({ params }: CategoryPageProps) {
     await checkToken(`/category/${params.id}`);
     const allCategories = await getAllCategories();
     const category = params.id
     const theCatogery = allCategories.find(item => item.name === category);
+
     const title = category + "-arrangementer"
 
     return (

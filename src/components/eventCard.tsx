@@ -27,7 +27,6 @@ export function EventCard({
     !!event.signupDeadline && new Date(event.signupDeadline) < new Date()
       ? true
       : false;
-  console.log(event)
   return (
     <Link
       href={`/event/${event.id}`}

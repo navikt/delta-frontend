@@ -57,7 +57,7 @@ export default function EventDescription({
     <div className={className || ""}>
       <div>
         {displayTime && (
-            <span className="flex flex-row justify-start gap-2 items-center">
+            <span className="flex flex-row justify-start gap-2 items-center pb-1 pt-1">
             <CalendarIcon aria-label="dato"/>
               {formatEventDates(event)}
             </span>
@@ -65,7 +65,7 @@ export default function EventDescription({
       </div>
       <div>
         {displayTime && (
-          <span className="flex flex-row justify-start gap-2 items-center">
+          <span className="flex flex-row justify-start gap-2 items-center pb-1">
           <ClockIcon aria-label="tid" />
         {`${event.startTime.substring(11, 16)} – ${event.endTime.substring(
           11,
@@ -76,7 +76,7 @@ export default function EventDescription({
       </div>
       <div>
         {event.location && (
-          <span className="flex flex-row justify-start gap-2 items-center">
+          <span className="flex flex-row justify-start gap-2 items-center pb-1">
             <PinIcon aria-label="lokasjon" />
             {event.location}
           </span>
@@ -93,7 +93,7 @@ export default function EventDescription({
           </span>
         </div>
       )}
-      <div>
+      <div className="pb-1">
         <label className="flex items-center gap-2">
           <PersonCircleIcon aria-hidden />
           Arrangeres av:

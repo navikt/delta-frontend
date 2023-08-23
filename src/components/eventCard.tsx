@@ -37,19 +37,19 @@ export function EventCard({
       <Heading size="small">{event.event.title}</Heading>
       <div className="flex flex-col gap-2 h-full justify-between">
         <div>
-          <Detail className="flex gap-1 items-center">
+          <Detail className="flex gap-1 items-center pb-1 pt-1">
             <CalendarIcon title="kalender" />
             {formatEventTimes(event.event)}
           </Detail>
           {formatEventDuration(event.event) !== "" && (
-            <Detail className="flex gap-1 items-center">
+            <Detail className="flex gap-1 items-center pb-1">
               <ClockIcon title="klokke" />
               {formatEventDuration(event.event)}
             </Detail>
           )}
           <Detail>
             {event.event.signupDeadline && (
-              <span className="flex items-center gap-1">
+              <span className="flex items-center gap-1 pb-1">
                 <HourglassBottomFilledIcon title="timeglass" />
                 Påmeldingsfrist:{" "}
                 {isUtløpt ? (
@@ -65,7 +65,7 @@ export function EventCard({
           <Detail>
             {event.event.participantLimit > 0 && (
               <>
-                <span className="flex items-center gap-1">
+                <span className="flex items-center gap-1 pb-1">
                   <PersonCheckmarkIcon title="person" />
                   {/*Maks {event.participants.length + event.hosts.length} av*/}
                   {event.participants.length + event.hosts.length >=

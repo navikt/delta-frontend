@@ -199,7 +199,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen.`
           <Heading size="medium" as="h2">
             Detaljer
           </Heading>
-          <BodyLong className="italic whitespace-pre-line break-words">
+          <BodyLong className="whitespace-pre-line break-words">
             {event.description}
           </BodyLong>
           <div className="flex gap-2 flex-wrap mt-6 mb-6">

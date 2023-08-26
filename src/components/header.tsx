@@ -31,12 +31,12 @@ export default function Header() {
         <Link className={linkButton} href="/">
           <span className="text-2xl whitespace-nowrap">Δ Delta</span>
         </Link>
-        {!isMobile && (
+{/*        {!isMobile && (
           <>
             <div className="w-1 border-r-[1px] border-border-subtle border-solid"></div>
             <div className="w-1 border-l-[1px] border-border-subtle border-solid"></div>
           </>
-        )}
+        )}*/}
       </div>
       {isMobile ? (
         <Dropdown>
@@ -45,10 +45,10 @@ export default function Header() {
           </Button>
           <Dropdown.Menu className="w-auto">
             <Dropdown.Menu.List>
-              <Dropdown.Menu.List.Item as={Link} href="/joined-events">
+{/*              <Dropdown.Menu.List.Item as={Link} href="/joined-events">
                 <CheckmarkCircleIcon aria-hidden fontSize="1.5rem" />
                 <span>Påmeldte</span>
-              </Dropdown.Menu.List.Item>
+              </Dropdown.Menu.List.Item>*/}
               <Dropdown.Menu.List.Item as={Link} href="/my-events">
                 <PencilIcon fontSize="1.5rem" />
                 <span className="whitespace-nowrap">Arrangert av meg</span>
@@ -64,10 +64,10 @@ export default function Header() {
         </Dropdown>
       ) : (
         <div className="flex items-center justify-between w-full">
-          <Link href="/joined-events" className={linkButton}>
+{/*          <Link href="/joined-events" className={linkButton}>
             <CheckmarkCircleIcon aria-hidden fontSize="1.5rem" />
             Påmeldte
-          </Link>
+          </Link>*/}
           <div className="flex items-center w-full"></div>
           <div className="flex flex-grow">
             <Link href="/my-events" className={linkButton}>

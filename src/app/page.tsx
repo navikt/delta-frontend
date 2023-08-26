@@ -14,7 +14,7 @@ export default async function Home(context: any) {
       title="Kommende arrangementer"
       newEvent
     >
-      <EventFilters categories={allCategories} selectCategory searchName />
+      <EventFilters categories={allCategories} selectCategory searchName joinedLink />
     </CardWithBackground>
   );
 }

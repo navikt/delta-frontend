@@ -41,20 +41,20 @@ export default function Header() {
       {isMobile ? (
         <Dropdown>
           <Button as={Dropdown.Toggle} className={linkButton}>
-            <MenuHamburgerIcon fontSize="1.5rem" />
+            <MenuHamburgerIcon title="meny" fontSize="1.5rem" />
           </Button>
           <Dropdown.Menu className="w-auto">
             <Dropdown.Menu.List>
               <Dropdown.Menu.List.Item as={Link} href="/joined-events">
-                <CheckmarkCircleIcon title="avmerkingsboks" fontSize="1.5rem" />
+                <CheckmarkCircleIcon aria-hidden fontSize="1.5rem" />
                 <span>Påmeldte</span>
               </Dropdown.Menu.List.Item>
               <Dropdown.Menu.List.Item as={Link} href="/my-events">
-                <PencilIcon title="blyant" fontSize="1.5rem" />
+                <PencilIcon fontSize="1.5rem" />
                 <span className="whitespace-nowrap">Arrangert av meg</span>
               </Dropdown.Menu.List.Item>
               <Dropdown.Menu.List.Item as={Link} href="/event/new">
-                <PlusIcon title="pluss" fontSize="1.5rem" />
+                <PlusIcon aria-hidden fontSize="1.5rem" />
                 <span className="whitespace-nowrap">
                   Opprett nytt arrangement
                 </span>
@@ -65,17 +65,17 @@ export default function Header() {
       ) : (
         <div className="flex items-center justify-between w-full">
           <Link href="/joined-events" className={linkButton}>
-            <CheckmarkCircleIcon title="avmerkingsboks" fontSize="1.5rem" />
+            <CheckmarkCircleIcon aria-hidden fontSize="1.5rem" />
             Påmeldte
           </Link>
           <div className="flex items-center w-full"></div>
           <div className="flex flex-grow">
             <Link href="/my-events" className={linkButton}>
-              <PencilIcon title="blyant" fontSize="1.5rem" />
+              <PencilIcon aria-hidden fontSize="1.5rem" />
               <span className="whitespace-nowrap">Arrangert av meg</span>
             </Link>
             <Link className={linkButton} href="/event/new">
-              <PlusIcon title="pluss" fontSize="1.5rem" />
+              <PlusIcon aria-hidden fontSize="1.5rem" />
               <span className="whitespace-nowrap">
                 Opprett nytt arrangement
               </span>

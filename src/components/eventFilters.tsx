@@ -146,7 +146,7 @@ export default function EventFilters({
       )}
       {joinedLink && (
       <div className="px-4">
-      <Link href="/joined-events" className="hover:underline">
+      <Link href="/joined-events" className="underline hover:no-underline">
         Vis arrangementer jeg deltar på
       </Link>
       </div>

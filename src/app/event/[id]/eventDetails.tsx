@@ -43,9 +43,6 @@ export default function EventDetails({
     setRegistration(false)
     const setter = !isParticipant ? setRegistration : setUnregistration;
     setter(true);
-/*    setTimeout(() => {
-      setter(false);
-    }, 2000);*/
   };
 
   const isSameDay =

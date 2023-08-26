@@ -11,7 +11,7 @@ import {
 } from "@navikt/aksel-icons";
 import ParticipantIcon from "@/app/event/[id]/participantIcon";
 import { useEffect, useRef, useState } from "react";
-import { Heading, Link, Modal, Search } from "@navikt/ds-react";
+import { Link, Modal, Search } from "@navikt/ds-react";
 import Participant from "./participant";
 import { formatEventDates, formatDeadline } from "@/service/format";
 
@@ -77,7 +77,7 @@ export default function EventDescription({
       <div>
         {event.location && (
           <span className="flex flex-row justify-start gap-2 items-center pb-1">
-            <PinIcon aria-label="lokasjon" />
+            <PinIcon aria-label="sted" />
             {event.location}
           </span>
         )}
@@ -116,7 +116,7 @@ export default function EventDescription({
         className="flex flex-col hover:bg-surface-subtle rounded-md cursor-pointer"
       >
         <span className="flex flex-row justify-start gap-2 items-center cursor-pointer">
-          <PersonCheckmarkIcon />
+          <PersonCheckmarkIcon aria-hidden />
           {participantsAndHosts.length}
           {event.participantLimit == 0 ? "" : ` av ${event.participantLimit}`}
           {" deltakere"}

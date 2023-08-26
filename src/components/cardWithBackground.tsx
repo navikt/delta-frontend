@@ -34,7 +34,7 @@ export default function CardWithBackground(props: CardWithBackgroundProps) {
               href={props.backLink}
               className="flex items-center no-underline font-bold border w-fit p-1 bg-bg-subtle rounded drop-shadow-sm text-sm hover:bg-bg-subtle-hover hover:text-text-default tracking-wide"
             >
-              <ArrowLeftIcon /> Tilbake
+              <ArrowLeftIcon aria-hidden /> Tilbake
             </Link>
           </span>
         )}

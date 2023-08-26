@@ -61,7 +61,6 @@ export default function EventFilters({
       onlyPast,
       onlyJoined,
       onlyMine,
-      joinedLink
     })
       .then(setEvents)
       .then(() => setLoading(false));

@@ -6,6 +6,7 @@ import EventList from "./eventList";
 import { useEffect, useState } from "react";
 import { getEvents } from "@/service/eventActions";
 import { FunnelIcon } from "@navikt/aksel-icons";
+import Link from "next/link";
 
 enum TimeSelector {
   PAST,
@@ -19,6 +20,7 @@ export default function EventFilters({
   searchName = false,
   onlyJoined = false,
   onlyMine = false,
+  joinedLink  = false,
 }: {
   categories?: Category[];
   selectTime?: boolean;
@@ -26,6 +28,7 @@ export default function EventFilters({
   selectCategory?: boolean;
   onlyJoined?: boolean;
   onlyMine?: boolean;
+  joinedLink?: boolean;
 }) {
   const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
   const [searchInput, setSearchInput] = useState("");
@@ -58,6 +61,7 @@ export default function EventFilters({
       onlyPast,
       onlyJoined,
       onlyMine,
+      joinedLink
     })
       .then(setEvents)
       .then(() => setLoading(false));
@@ -139,6 +143,13 @@ export default function EventFilters({
             </div>
           )}
         </div>
+      )}
+      {joinedLink && (
+      <div className="px-4">
+      <Link href="/joined-events" className="hover:underline">
+        Vis arrangementer jeg deltar på
+      </Link>
+      </div>
       )}
       <div className="w-full p-4">
         <EventList fullEvents={filterEvents} loading={loading} />

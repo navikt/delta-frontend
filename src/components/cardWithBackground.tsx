@@ -10,6 +10,7 @@ type CardWithBackgroundProps = {
   newEvent?: boolean;
   color: "bg-green-200" | "bg-blue-200" | "bg-red-300";
   backLink?: string;
+  backText?: string;
 };
 export default function CardWithBackground(props: CardWithBackgroundProps) {
   return (
@@ -28,13 +29,13 @@ export default function CardWithBackground(props: CardWithBackgroundProps) {
         </div>
       </div>
       <div className="bg-white border-gray-200 border-2 rounded-2xl relative w-5/6 top-[-2.5rem] flex flex-col px-4 py-5 h-fit max-w-[80rem]">
-        {props.backLink && (
+        {props.backLink && props.backText && (
           <span className="relative mb-2 top-[-4rem] w-0 h-0">
             <Link
               href={props.backLink}
               className="flex items-center no-underline font-bold border w-fit p-1 bg-bg-subtle rounded drop-shadow-sm text-sm hover:bg-bg-subtle-hover hover:text-text-default tracking-wide"
             >
-              <ArrowLeftIcon aria-hidden /> Tilbake
+              <ArrowLeftIcon aria-hidden /> {props.backText}
             </Link>
           </span>
         )}

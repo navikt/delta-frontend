@@ -19,7 +19,6 @@ export default async function Page({ params }: CategoryPageProps) {
     const allCategories = await getAllCategories();
     const category = params.id
     const theCategory = allCategories.find(item => item.name === category);
-
     const title = category + "-arrangementer"
 
     return (
@@ -31,7 +30,6 @@ export default async function Page({ params }: CategoryPageProps) {
                         title={title}
                         newEvent
                         home
-                        backLink="/"
                     >
                         <EventFilters categories={[{id: theCategory.id, name: theCategory.name}]} searchName/>
                     </CardWithBackground>

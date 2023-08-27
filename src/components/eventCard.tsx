@@ -37,18 +37,18 @@ export function EventCard({
       <Heading level="2" size="small">{event.event.title}</Heading>
       <div className="flex flex-col gap-2 h-full justify-between">
         <div>
-          <Detail className="flex gap-1 items-center pb-1 pt-1">
+          <Detail className="flex gap-1 items-center pb-1 pt-1 leading-normal">
             <CalendarIcon title="kalender" />
             {formatEventTimes(event.event)}
           </Detail>
           {formatEventDuration(event.event) !== "" && (
-            <Detail className="flex gap-1 items-center pb-1">
+            <Detail className="flex gap-1 items-center pb-1 leading-normal">
               <ClockIcon title="klokke" />
               {formatEventDuration(event.event)}
             </Detail>
           )}
-          <Detail>
             {event.event.signupDeadline && (
+            <Detail className="leading-normal">
               <span className="flex items-center gap-1 pb-1">
                 <HourglassBottomFilledIcon title="timeglass" />
                 Påmeldingsfrist:{" "}
@@ -60,12 +60,12 @@ export function EventCard({
                   formatDeadline(event.event)
                 )}
               </span>
+            </Detail>
             )}
-          </Detail>
-          <Detail>
             {event.event.participantLimit > 0 && (
               <>
-                <span className="flex items-center gap-1 pb-1">
+              <Detail className="leading-normal">
+                <span className="flex items-center gap-1 pb-1 leading-normal">
                   <PersonCheckmarkIcon title="person" />
                   {/*Maks {event.participants.length + event.hosts.length} av*/}
                   {event.participants.length + event.hosts.length >=
@@ -76,9 +76,9 @@ export function EventCard({
                   ) : (<>Maks {event.event.participantLimit} deltakere</>)}
 
                 </span>
+              </Detail>
               </>
             )}
-          </Detail>
         </div>
         <div className="flex gap-2 flex-wrap h-full items-end w-full">
           {categories.map((category) => (

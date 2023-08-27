@@ -157,7 +157,7 @@ export default function EventFilters({
       </div>
       {ctaLink && (
           <div className="px-4">
-            <Link href="/new" className="underline hover:no-underline">
+            <Link href="/event/new" className="underline hover:no-underline">
               Opprett nytt arrangement
             </Link>
           </div>

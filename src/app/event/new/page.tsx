@@ -23,6 +23,7 @@ export default async function NewEvent({
     eventId = eventId[0];
   }
 
+
   return (
     <CardWithBackground
       color="bg-green-200"
@@ -30,6 +31,7 @@ export default async function NewEvent({
       home
       backLink="/"
     >
+      {/* @ts-ignore */}
       <CreateEventForm
         editType={
           eventId

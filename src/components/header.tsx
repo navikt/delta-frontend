@@ -50,7 +50,7 @@ export default function Header() {
                 <span>Påmeldte</span>
               </Dropdown.Menu.List.Item>*/}
               <Dropdown.Menu.List.Item as={Link} href="/my-events">
-                <PencilIcon fontSize="1.5rem" />
+                <PencilIcon aria-hidden fontSize="1.5rem" />
                 <span className="whitespace-nowrap">Arrangert av meg</span>
               </Dropdown.Menu.List.Item>
               <Dropdown.Menu.List.Item as={Link} href="/event/new">

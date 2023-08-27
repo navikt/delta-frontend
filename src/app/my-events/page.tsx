@@ -9,7 +9,7 @@ export default async function MyEvents() {
 
   return (
     <CardWithBackground
-      color="bg-blue-200"
+      color="bg-green-200"
       title="Arrangert av meg"
       backLink="/"
     >

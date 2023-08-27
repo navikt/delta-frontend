@@ -12,11 +12,10 @@ const Footer = () => {
             data-theme="dark"
             className="flex pt-3 z-10 items-center w-5/6 max-w-[80rem] m-auto justify-between toc-ignore text-text-on-inverted bg-deepblue-800 relative flex justify-center"
         >
-            <div className="relative z-10 mx-auto grid w-full max-w-screen-2xl gap-12 px-4 pb-16 pt-12 md:grid-cols-2 md:px-6 lg:grid-cols-3 xl:grid-cols-3 xl:gap-6">
+            <div className="relative z-10 mx-auto grid w-full max-w-screen-2xl gap-12 px-4 pb-16 pt-12 md:grid-cols-2 md:px-6 lg:grid-cols-2 xl:grid-cols-4 xl:gap-6">
                 <LogoBlock />
                 <Snarveier />
-{/*                
-                <Kontakt />*/}
+                <SideLenker />
                 <Kontakt />
             </div>
         </footer>
@@ -41,11 +40,11 @@ function Snarveier() {
                 Snarveier
             </Heading>
             <BodyShort as="ul" className="mt-3 grid gap-3">
+                <FooterLink href="https://forms.office.com/e/LyKPTdaRw5">
+                    Innspill til Delta
+                </FooterLink>
                 <FooterLink href="https://trello.com/b/lwLQ2ApY/delta-%CE%B4">
                     Veikart på Trello
-                </FooterLink>
-                <FooterLink href="/event/new">
-                    Opprett nytt arrangement
                 </FooterLink>
             </BodyShort>
         </div>
@@ -59,14 +58,11 @@ function Kontakt() {
                 Finn oss
             </Heading>
             <BodyShort as="ul" className="mt-3 grid gap-3">
-{/*                <FooterLink href="https://trello.com/b/lwLQ2ApY/delta-%CE%B4">
-                    Trello
-                </FooterLink>*/}
-                <FooterLink href="https://github.com/navikt/delta-frontend">
-                    Github
-                </FooterLink>
                 <FooterLink href="https://nav-it.slack.com/archives/C05E0NJ6Z0C">
                     Slack
+                </FooterLink>
+                <FooterLink href="https://github.com/navikt/delta-frontend#readme">
+                    Github
                 </FooterLink>
             </BodyShort>
         </div>
@@ -76,17 +72,14 @@ function SideLenker() {
     return (
         <div>
             <Heading level="2" size="xsmall">
-                Om nettstedet
+                Erklæringer
             </Heading>
             <BodyShort as="ul" className="mt-3 grid gap-3">
-                <FooterLink href="/god-praksis/artikler/om-aksel">
-                    Hva er Aksel?
+                <FooterLink href="/legal/privacy">
+                    Personvern
                 </FooterLink>
-                <FooterLink href="/side/personvernerklaering">
-                    Personvernserklæring
-                </FooterLink>
-                <FooterLink href="/side/tilgjengelighetserklaring-for-aksel">
-                    Tilgjengelighetserklæring
+                <FooterLink href="/legal/accessibility">
+                    Tilgjengelighet
                 </FooterLink>
             </BodyShort>
         </div>

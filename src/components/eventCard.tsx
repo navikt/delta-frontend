@@ -34,7 +34,7 @@ export function EventCard({
       key={`event-${event.event.id}`}
       className="flex flex-col h-full p-4 border rounded-xl text-text-default border-gray-300 transition-all hover:-translate-y-1 hover:scale-105 hover:text-surface-action-selected-hover hover:border-border-action event-card"
     >
-      <Heading size="small">{event.event.title}</Heading>
+      <Heading level="2" size="small">{event.event.title}</Heading>
       <div className="flex flex-col gap-2 h-full justify-between">
         <div>
           <Detail className="flex gap-1 items-center pb-1 pt-1">

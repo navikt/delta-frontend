@@ -1,7 +1,18 @@
 # delta-frontend
 
-Frontenden som hører til [delta-backend](https://github.com/navikt/delta-backend)
+[Delta](https://delta.nav.no) er en påmeldinsapp for NAVs interne arrangementer.
 
+## Henvendelser
+
+Du kan sende spørsmål til [eilif.johansen@nav.no](mailto:eilif.johansen@nav.no).
+
+## For NAV-ansatte
+
+Du kan sende spørsmål i [#delta](https://nav-it.slack.com/archives/C05E0NJ6Z0C) på Slack, eller til [eilif.johansen@nav.no](mailto:eilif.johansen@nav.no)
+
+## Backend
+
+[delta-backend](https://github.com/navikt/delta-backend)
 
 ## Avhengigheter
 

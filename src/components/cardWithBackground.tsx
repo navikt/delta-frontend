@@ -17,9 +17,9 @@ export default function CardWithBackground(props: CardWithBackgroundProps) {
       <div
         className={`w-full flex flex-col items-center justify-center text-center ${props.color} pt-12`}
       >
-        <div className="pt-32 pb-24 items-end">
+        <div className="pt-32 pb-24  col-span-1 lg:col-start-2 w-5/6 max-w-[80rem]">
           <Heading
-            className="w-full text-deepblue-800 col-span-1 lg:col-start-2 max-w-[90vw] first-letter:uppercase"
+            className="text-deepblue-800 first-letter:uppercase"
             level="1"
             size="xlarge"
           >

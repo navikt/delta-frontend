@@ -14,9 +14,10 @@ const Footer = () => {
         >
             <div className="relative z-10 mx-auto grid w-full max-w-screen-2xl gap-12 px-4 pb-16 pt-12 md:grid-cols-2 md:px-6 lg:grid-cols-3 xl:grid-cols-3 xl:gap-6">
                 <LogoBlock />
-{/*                <Snarveier />
-                <SideLenker />
+                <Snarveier />
+{/*                
                 <Kontakt />*/}
+                <Kontakt />
             </div>
         </footer>
         </div>
@@ -40,17 +41,11 @@ function Snarveier() {
                 Snarveier
             </Heading>
             <BodyShort as="ul" className="mt-3 grid gap-3">
-                <FooterLink href="/god-praksis/artikler/skriv-for-aksel">
-                    Skriv for Aksel
+                <FooterLink href="https://trello.com/b/lwLQ2ApY/delta-%CE%B4">
+                    Veikart på Trello
                 </FooterLink>
-                <FooterLink href="/prinsipper/brukeropplevelse">
-                    Prinsipper for brukeropplevelse
-                </FooterLink>
-                <FooterLink href="https://sikkerhet.nav.no/">
-                    Security Playbook
-                </FooterLink>
-                <FooterLink href="https://etterlevelse.intern.nav.no/">
-                    Etterlevelse
+                <FooterLink href="/event/new">
+                    Opprett nytt arrangement
                 </FooterLink>
             </BodyShort>
         </div>
@@ -64,13 +59,13 @@ function Kontakt() {
                 Finn oss
             </Heading>
             <BodyShort as="ul" className="mt-3 grid gap-3">
-                <FooterLink href="https://www.figma.com/@nav_aksel">
-                    Figma
-                </FooterLink>
-                <FooterLink href="https://github.com/navikt/aksel">
+{/*                <FooterLink href="https://trello.com/b/lwLQ2ApY/delta-%CE%B4">
+                    Trello
+                </FooterLink>*/}
+                <FooterLink href="https://github.com/navikt/delta-frontend">
                     Github
                 </FooterLink>
-                <FooterLink href="https://nav-it.slack.com/archives/C7NE7A8UF">
+                <FooterLink href="https://nav-it.slack.com/archives/C05E0NJ6Z0C">
                     Slack
                 </FooterLink>
             </BodyShort>

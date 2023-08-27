@@ -192,7 +192,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen.`
           displayTime={isSameDay}
           className="flex flex-col gap-2 w-fit"
         />
-        <div className="flex-grow flex flex-col gap-2 md:w-3/4">
+        <div className="flex-grow flex flex-col gap-2 md:w-2/4">
           <Heading size="medium" as="h2">
             Detaljer
           </Heading>

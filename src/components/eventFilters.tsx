@@ -21,6 +21,7 @@ export default function EventFilters({
   onlyJoined = false,
   onlyMine = false,
   joinedLink  = false,
+  ctaLink  = false,
 }: {
   categories?: Category[];
   selectTime?: boolean;
@@ -29,6 +30,7 @@ export default function EventFilters({
   onlyJoined?: boolean;
   onlyMine?: boolean;
   joinedLink?: boolean;
+  ctaLink?: boolean;
 }) {
   const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
   const [searchInput, setSearchInput] = useState("");
@@ -153,6 +155,13 @@ export default function EventFilters({
       <div className="w-full p-4">
         <EventList fullEvents={filterEvents} loading={loading} />
       </div>
+      {ctaLink && (
+          <div className="px-4">
+            <Link href="/new" className="underline hover:no-underline">
+              Opprett nytt arrangement
+            </Link>
+          </div>
+      )}
     </div>
   );
 }

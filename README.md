@@ -1,6 +1,6 @@
 # delta-frontend
 
-[Delta](https://delta.nav.no) er en påmeldinsapp for NAVs interne arrangementer.
+[Delta](https://delta.nav.no) er en påmeldingsapp for NAVs interne arrangementer.
 
 ## Henvendelser
 
@@ -10,17 +10,18 @@ Du kan sende spørsmål til [eilif.johansen@nav.no](mailto:eilif.johansen@nav.no
 
 Du kan sende spørsmål i [#delta](https://nav-it.slack.com/archives/C05E0NJ6Z0C) på Slack, eller til [eilif.johansen@nav.no](mailto:eilif.johansen@nav.no)
 
-## Backend
+## Delta backend
 
-[delta-backend](https://github.com/navikt/delta-backend)
+Kode på Github: [delta-backend](https://github.com/navikt/delta-backend)
 
 ## Avhengigheter
 
 - node
 - npm
 
-## Hvordan kjøre backenden
+## Hvordan kjøre frontenden
 
+- Delta backend må kjøre før du starter Delta frontend
 - Installer programvareavhengigheter
   - `npm i`
 - Om npm klager på at man ikke er autentisert:

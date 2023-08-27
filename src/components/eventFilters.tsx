@@ -147,7 +147,7 @@ export default function EventFilters({
       )}
       {joinedLink && (
       <div className="px-4">
-        <Link href="/joined-events" className="underline hover:no-underline">
+        <Link href="/joined-events" className="text-deepblue-500 underline hover:no-underline">
           Påmeldte arrangementer
         </Link>
       </div>
@@ -157,7 +157,7 @@ export default function EventFilters({
       </div>
       {ctaLink && (
           <div className="px-4">
-            <Link href="/event/new" className="underline hover:no-underline">
+            <Link href="/event/new" className="text-deepblue-500 underline hover:no-underline">
               Opprett nytt arrangement
             </Link>
           </div>

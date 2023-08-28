@@ -157,22 +157,20 @@ export default function EventDetails({
               <Heading spacing level="1" size="large" id="modal-heading">
                 Meld interesse
               </Heading>
-              <BodyLong spacing>
-                <p className="leading-normal mb-4">Arrangementet er fullt, men det kan hende at arrangøren har en venteliste / planer om lignende arrangementer.</p>
-                <p className="leading-normal mb-4">Meld interesse til arrangøren:</p>
-                <ul className="list-disc">
-                  {hosts.map((host) => (
-                      <li className="flex ml-[0.2rem] pl-6 gap-2" key={host.email}>
-                        <Link
-                            title={`Send e-post til ${host.name}`}
-                            href={`mailto:${host.email}`}
-                        >
-                          {host.name}
-                        </Link>
-                      </li>
-                  ))}
-                </ul>
-              </BodyLong>
+              <p className="leading-normal mb-4">Arrangementet er dessverre fullt, men det er mulig at arrangøren har en venteliste eller planer om lignende arrangementer.</p>
+              <p className="leading-normal mb-4">Meld interesse til arrangøren:</p>
+              <ul className="list-disc list-inside">
+                {hosts.map((host) => (
+                    <li key={host.email}>
+                      <Link
+                          title={`Send e-post til ${host.name}`}
+                          href={`mailto:${host.email}`}
+                      >
+                        {host.name}
+                      </Link>
+                    </li>
+                ))}
+              </ul>
             </Modal.Body>
             <Modal.Footer>
               <Button

@@ -112,10 +112,10 @@ export default function EventDescription({
           {hosts.map((host) => (
             <li className="flex ml-[0.2rem] pl-6 gap-2" key={host.email}>
               <Link
-                title={`Send e-post til ${host.name}`}
+                title={`Send e-post til ${host.name.split(", ").reverse().join(" ")}`}
                 href={`mailto:${host.email}`}
               >
-                {host.name}
+                {host.name.split(", ").reverse().join(" ")}
               </Link>
             </li>
           ))}

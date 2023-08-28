@@ -160,7 +160,7 @@ export default function EventDetails({
               <BodyLong spacing>
                 <p className="leading-normal mb-4">Arrangementet er fullt, men det kan hende at arrangøren har en venteliste / planer om lignende arrangementer.</p>
                 <p className="leading-normal mb-4">Meld interesse til arrangøren:</p>
-                <ul>
+                <ul className="list-disc">
                   {hosts.map((host) => (
                       <li className="flex ml-[0.2rem] pl-6 gap-2" key={host.email}>
                         <Link

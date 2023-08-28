@@ -163,10 +163,10 @@ export default function EventDetails({
                 {hosts.map((host) => (
                     <li key={host.email}>
                       <Link
-                          title={`Send e-post til ${host.name}`}
+                          title={`Send e-post til ${host.name.split(", ").reverse().join(" ")}`}
                           href={`mailto:${host.email}`}
                       >
-                        {host.name}
+                        {host.name.split(", ").reverse().join(" ")}
                       </Link>
                     </li>
                 ))}

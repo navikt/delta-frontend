@@ -37,6 +37,7 @@ export default function EventDetails({
   const [showRegistration, setRegistration] = useState(false);
   const [showUnregistration, setUnregistration] = useState(false);
   const [openConfirmation, setOpenConfirmation] = useState(false);
+  const [openInterested, setOpenInterested] = useState(false);
 
   const showAlert = () => {
     setUnregistration(false)
@@ -119,6 +120,7 @@ export default function EventDetails({
               !isParticipant
             ) {
               return (
+                  <>
                 <Alert
                   variant="warning"
                   size="small"
@@ -126,6 +128,14 @@ export default function EventDetails({
                 >
                   Arrangementet er fullt
                 </Alert>
+                <Button
+                    variant="primary"
+                    className="w-full h-fit"
+                    onClick={() => setOpenInterested((x) => !x)}
+                >
+                  Meld interesse
+                </Button>
+                  </>
               );
             }
             return (
@@ -138,6 +148,28 @@ export default function EventDetails({
               </Button>
             );
           })()}
+          <Modal
+              open={openInterested}
+              aria-label="Meld interesse"
+              aria-labelledby="Meld interesse"
+          >
+            <Modal.Body>
+              <Heading spacing level="1" size="large" id="modal-heading">
+                Meld interesse
+              </Heading>
+              <BodyLong spacing>
+                Tekst kommer.
+              </BodyLong>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                  variant="secondary"
+                  onClick={async () => setOpenInterested((x) => !x)}
+              >
+                Lukk
+              </Button>
+            </Modal.Footer>
+          </Modal>
           <Modal
             open={openConfirmation}
             aria-label="Meld av modal"

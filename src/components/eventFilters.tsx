@@ -156,7 +156,7 @@ export default function EventFilters({
         <EventList fullEvents={filterEvents} loading={loading} />
       </div>
       {ctaLink && (
-          <div className="px-4">
+          <div className="px-4 mb-4">
             <Link href="/event/new" className="text-deepblue-500 underline hover:no-underline">
               Opprett nytt arrangement
             </Link>

@@ -109,11 +109,11 @@ export default function EventDescription({
         </label>
         <ul>
           {hosts.map((host) => (
-            <li className="flex ml-[0.2rem] pl-6 gap-2 leading-loose" key={host.email}>
+            <li className="flex ml-[0.2rem] pl-6 gap-2" key={host.email}>
               <Link
                 title={`Send e-post til ${host.name.split(", ").reverse().join(" ")}`}
                 href={`mailto:${host.email}`}
-                className="leading-loose"
+                className="leading-relaxed"
               >
                 {host.name.split(", ").reverse().join(" ")}
               </Link>
@@ -131,7 +131,7 @@ export default function EventDescription({
             <Button
                 variant="secondary"
                 onClick={() => setOpenParticipantList(true)}
-                className="-mt-1"
+                className="-mt-1 mb-4"
                 size="small"
             >
                 Vis deltakere

@@ -9,9 +9,8 @@ import {
   HourglassBottomFilledIcon,
   PinIcon,
 } from "@navikt/aksel-icons";
-import ParticipantIcon from "@/app/event/[id]/participantIcon";
 import { useEffect, useRef, useState } from "react";
-import { Link, Modal, Search } from "@navikt/ds-react";
+import { Link, Modal, Search, Button } from "@navikt/ds-react";
 import Participant from "./participant";
 import { formatEventDates, formatEventTimes, formatDeadline, formatEventDuration } from "@/service/format";
 
@@ -110,10 +109,11 @@ export default function EventDescription({
         </label>
         <ul>
           {hosts.map((host) => (
-            <li className="flex ml-[0.2rem] pl-6 gap-2" key={host.email}>
+            <li className="flex ml-[0.2rem] pl-6 gap-2 leading-loose" key={host.email}>
               <Link
                 title={`Send e-post til ${host.name.split(", ").reverse().join(" ")}`}
                 href={`mailto:${host.email}`}
+                className="leading-loose"
               >
                 {host.name.split(", ").reverse().join(" ")}
               </Link>
@@ -121,10 +121,6 @@ export default function EventDescription({
           ))}
         </ul>
       </div>
-      <button
-        onClick={() => setOpenParticipantList(true)}
-        className="flex flex-col hover:bg-surface-subtle rounded-md cursor-pointer"
-      >
         <span className="flex flex-row justify-start gap-2 items-center cursor-pointer">
           <PersonCheckmarkIcon aria-hidden />
           {participantsAndHosts.length}
@@ -132,16 +128,15 @@ export default function EventDescription({
           {" deltakere"}
         </span>
         <div className="flex flex-row ml-[0.3rem] pl-6">
-          {participantsAndHosts.slice(0, 4).map((p) => (
-            <ParticipantIcon
-              name={p.name}
-              key={p.email}
-              type="participantPreview"
-            />
-          ))}
-          {participants.length > 4 && <ParticipantIcon name={""} />}
+            <Button
+                variant="secondary"
+                onClick={() => setOpenParticipantList(true)}
+                className="-mt-1"
+                size="small"
+            >
+                Vis deltakere
+            </Button>
         </div>
-      </button>
       <Modal
         open={openParticipantList}
         onClose={() => setOpenParticipantList(false)}

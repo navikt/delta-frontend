@@ -282,7 +282,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen.`
                 QR-kode
               </Heading>
               <Canvas
-                  text={'https://delta.nav.no/' + event.id}
+                  text={'https://delta.nav.no/event/' + event.id}
                   options={{
                     errorCorrectionLevel: 'M',
                     margin: 3,

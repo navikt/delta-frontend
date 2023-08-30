@@ -289,7 +289,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen.`
                     scale: 4,
                     width: 200,
                     color: {
-                      dark: '#003453',
+                      dark: '#000',
                       light: 'd9cfe4',
                     },
                   }}

@@ -279,7 +279,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen.`
           >
             <Modal.Body>
               <Heading spacing level="1" size="large" id="modal-heading">
-                QR-kode
+                Δ Delta
               </Heading>
               <Canvas
                   text={'https://delta.nav.no/event/' + event.id}

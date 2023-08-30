@@ -13,6 +13,7 @@ import {
   Tag,
 } from "@navikt/ds-react";
 import Link from "next/link";
+import { useQRCode } from 'next-qrcode';
 import { FullDeltaEvent, DeltaParticipant } from "@/types/event";
 import { getEvent, joinEvent, leaveEvent } from "@/service/eventActions";
 import { format } from "date-fns";
@@ -38,6 +39,8 @@ export default function EventDetails({
   const [showUnregistration, setUnregistration] = useState(false);
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [openInterested, setOpenInterested] = useState(false);
+  const [openQR, setOpenQR] = useState(false);
+  const { Canvas } = useQRCode();
 
   const showAlert = () => {
     setUnregistration(false)
@@ -242,7 +245,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen.`
           <BodyLong className="whitespace-pre-line break-words max-w-prose">
             {event.description}
           </BodyLong>
-          <div className="flex gap-2 flex-wrap mt-6 mb-6">
+          <div className="flex gap-2 flex-wrap mt-5 mb-12">
             {categories.length > 0 &&
               categories.map((category) => (
                 <Tag variant="alt1" key={category.id}>
@@ -250,6 +253,57 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen.`
                 </Tag>
               ))}
           </div>
+          <Heading size="medium" as="h2">
+            Del arrangementet
+          </Heading>
+          <div className="flex gap-3 mt-2 mb-6">
+          <CopyButton
+              className="navds-button navds-button--secondary md:whitespace-nowrap w-fit h-fit"
+              copyText={`${hostname}/event/${event.id}`}
+              text="Kopier lenke"
+              size="small"
+          />
+          <Button
+              variant="secondary"
+              onClick={async () => setOpenQR((x) => !x)}
+              className="mb-4 w-fit"
+              size="small"
+          >
+            Vis QR-kode
+          </Button>
+          </div>
+          <Modal
+              open={openQR}
+              aria-label="Meld interesse"
+              aria-labelledby="Meld interesse"
+          >
+            <Modal.Body>
+              <Heading spacing level="1" size="large" id="modal-heading">
+                QR-kode
+              </Heading>
+              <Canvas
+                  text={'https://delta.nav.no/' + event.id}
+                  options={{
+                    errorCorrectionLevel: 'M',
+                    margin: 3,
+                    scale: 4,
+                    width: 200,
+                    color: {
+                      dark: '#003453',
+                      light: 'd9cfe4',
+                    },
+                  }}
+              />
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                  variant="secondary"
+                  onClick={async () => setOpenQR((x) => !x)}
+              >
+                Lukk
+              </Button>
+            </Modal.Footer>
+          </Modal>
         </div>
       </div>
     </div>

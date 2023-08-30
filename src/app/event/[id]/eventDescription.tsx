@@ -131,7 +131,7 @@ export default function EventDescription({
             <Button
                 variant="secondary"
                 onClick={() => setOpenParticipantList(true)}
-                className="-mt-1 mb-4"
+                className="mb-4"
                 size="small"
             >
                 Vis deltakere

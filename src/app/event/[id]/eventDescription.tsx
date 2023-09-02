@@ -141,21 +141,27 @@ export default function EventDescription({
         open={openParticipantList}
         onClose={() => setOpenParticipantList(false)}
         aria-labelledby="modal-heading"
-        ref={ref} header={{ heading: "Deltakere" }}
+        ref={ref}
       >
+          <Modal.Header>
+              <h1 className="navds-heading navds-heading--medium">
+                  Deltakere
+              </h1>
+              <form>
+                  <Search
+                      className="pt-4 pb-2"
+                      label="Søk alle deltakere"
+                      variant="simple"
+                      size="small"
+                      value={searchInput}
+                      onChange={(e) => {
+                          setSearchInput(e);
+                      }}
+                  />
+              </form>
+          </Modal.Header>
         <Modal.Body>
           <div className="flex flex-col gap-6">
-            <form>
-              <Search
-                label="Søk alle deltakere"
-                variant="simple"
-                size="small"
-                value={searchInput}
-                onChange={(e) => {
-                  setSearchInput(e);
-                }}
-              />
-            </form>
             <ul className="flex flex-col gap-1">
               {filterParticipants.map((p) => (
                 <li key={p.email}>

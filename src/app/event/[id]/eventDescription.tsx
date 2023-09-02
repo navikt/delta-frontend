@@ -164,7 +164,7 @@ export default function EventDescription({
           <div className="flex flex-col gap-6">
             <ul className="flex flex-col gap-1">
               {filterParticipants.map((p) => (
-                <li key={p.email}>
+                <li className="pb-4" key={p.email}>
                   <Participant
                     {...p}
                     owner={hosts.some((h) => h.email === p.email)}

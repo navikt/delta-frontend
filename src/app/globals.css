@@ -2,3 +2,287 @@
 @import "@navikt/ds-css";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+
+
+
+.feedback_overrideSecondaryButton__GJyIS {
+    --ac-button-secondary-text: var(--a-deepblue-500);
+    --ac-button-secondary-bg: var(--a-surface-default);
+    --ac-button-secondary-border: var(--a-deepblue-500);
+    --ac-button-secondary-hover-text: var(--a-deepblue-500);
+    --ac-button-secondary-hover-bg: var(--a-deepblue-50);
+    --ac-button-secondary-focus-border: var(--a-deepblue-500)
+}
+
+.feedback_overrideSecondaryButtonActive__TitX3 {
+    --ac-button-secondary-text: var(--a-text-on-action);
+    --ac-button-secondary-hover-bg: var(--a-deepblue-700);
+    --ac-button-secondary-hover-text: var(--a-text-on-action)
+}
+
+.cube_animated__vdkt0 {
+    animation: cube_rotation__9Nrr9 60s ease-in-out infinite;
+    opacity: .3;
+    pointer-events: none;
+    position: absolute;
+    transform: rotate(-45deg);
+    z-index: -1
+}
+
+.cube_animated1__VoRKe {
+    animation: cube_shape-1__8iczD 60s ease-in-out infinite;
+    transform: translate(-95rem, -13.95rem)
+}
+
+.cube_animated1__VoRKe,
+.cube_animated2__ttRM_ {
+    color: #fff;
+    position: absolute
+}
+
+.cube_animated2__ttRM_ {
+    animation: cube_shape-2__6K5kp 60s ease-in-out infinite;
+    transform: translate(-69.5rem, -13.95rem)
+}
+
+.cube_animated3__oV3de {
+    animation: cube_shape-3__vBIO9 60s ease-in-out infinite;
+    transform: scaleX(-1) rotate(90deg) translateY(-27.7rem)
+}
+
+.cube_animated3__oV3de,
+.cube_animated4__TZIuJ,
+.cube_animated5__f9PNs {
+    color: #fff;
+    position: absolute
+}
+
+.cube_animated5__f9PNs {
+    animation: cube_shape-5__H0Q_G 60s ease-in-out infinite;
+    transform: scaleX(-1) rotate(90deg) translate(-27.75rem, 27.75rem)
+}
+
+.cube_animated6__kllvd {
+    animation: cube_shape-6__tBN5r 60s ease-in-out infinite;
+    color: #fff;
+    position: absolute;
+    transform: translate(70rem, -13.95rem)
+}
+
+@keyframes cube_rotation__9Nrr9 {
+    0% {
+        bottom: 50%;
+        left: 50%;
+        transform: rotate(-45deg)
+    }
+
+    33% {
+        bottom: 0;
+        left: 1.2rem;
+        transform: rotate(0)
+    }
+
+    66% {
+        bottom: 0;
+        left: 1.2rem;
+        transform: rotate(0)
+    }
+
+    to {
+        bottom: 50%;
+        left: 50%;
+        transform: rotate(-45deg)
+    }
+}
+
+@keyframes cube_shape-1__8iczD {
+    0% {
+        transform: translate(-95rem, -13.95rem)
+    }
+
+    33% {
+        transform: translate(-95rem, -13.95rem)
+    }
+
+    66% {
+        transform: translate(-13.8rem, -13.95rem)
+    }
+
+    to {
+        transform: translate(-95rem, -13.95rem)
+    }
+}
+
+@keyframes cube_shape-2__6K5kp {
+    0% {
+        transform: translate(-69.5rem, -13.95rem)
+    }
+
+    33% {
+        transform: translate(-69.5rem, -13.95rem)
+    }
+
+    66% {
+        transform: translate(-13.95rem, -13.95rem)
+    }
+
+    to {
+        transform: translate(-69.5rem, -13.95rem)
+    }
+}
+
+@keyframes cube_shape-3__vBIO9 {
+    0% {
+        transform: scaleX(-1) rotate(90deg) translateY(-27.7rem)
+    }
+
+    33% {
+        transform: scaleX(-1) rotate(90deg) translateY(-27.7rem)
+    }
+
+    66% {
+        transform: scaleX(-1) rotate(90deg) translate(0)
+    }
+
+    to {
+        transform: scaleX(-1) rotate(90deg) translateY(-27.7rem)
+    }
+}
+
+@keyframes cube_shape-5__H0Q_G {
+    0% {
+        transform: scaleX(-1) rotate(90deg) translate(-27.75rem, 27.75rem)
+    }
+
+    33% {
+        transform: scaleX(-1) rotate(90deg) translate(-27.75rem, 27.75rem)
+    }
+
+    66% {
+        transform: scaleX(-1) rotate(90deg) translate(-27.75rem)
+    }
+
+    to {
+        transform: scaleX(-1) rotate(90deg) translate(-27.75rem, 27.75rem)
+    }
+}
+
+@keyframes cube_shape-6__tBN5r {
+    0% {
+        transform: translate(70rem, -13.95rem)
+    }
+
+    33% {
+        transform: translate(70rem, -13.95rem)
+    }
+
+    66% {
+        transform: translate(13.9rem, -13.95rem)
+    }
+
+    to {
+        transform: translate(70rem, -13.95rem)
+    }
+}
+
+.cube_static__ejo3O {
+    left: -30rem;
+    pointer-events: none;
+    right: 0;
+    top: 20rem;
+    transform: rotate(70deg) translateX(50%)
+}
+
+.cube_static1___8cgL,
+.cube_static__ejo3O {
+    position: absolute
+}
+
+.cube_static1___8cgL {
+    transform: scaleX(-1) rotate(90deg) translateY(-50rem)
+}
+
+.cube_static2__MmEHo {
+    position: absolute;
+    transform: translate(-6rem)
+}
+
+.cube_static3__7lNMS {
+    position: absolute;
+    transform: translate(23rem, -13rem)
+}
+
+.cube_static4__6LBVL {
+    position: absolute;
+    transform: translate(68rem, -13rem)
+}
+
+.cube_static5__b420D {
+    position: absolute;
+    transform: translate(140rem, -13rem)
+}
+
+.cube_static6__slVLb {
+    position: absolute;
+    transform: scaleX(-1) translate(-170rem, -26.7rem) rotate(90deg)
+}
+
+
+
+
+
+
+
+.bg-violet-200 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(214 195 238/1);
+}
+
+
+
+
+
+.header-animated-bg {
+    animation: animated-bg 60s ease infinite;
+    z-index: 0;
+}
+
+@keyframes animated-bg {
+    0% {
+        background-color: #dccaf3
+    }
+
+    10% {
+        background-color: #dccaf3
+    }
+
+    33% {
+        background-color: #dccaf3
+    }
+
+    45% {
+        background-color: #b2f0e4
+    }
+
+    60% {
+        background-color: #b2f0e4
+    }
+
+    90% {
+        background-color: #dccaf3
+    }
+
+    to {
+        background-color: #dccaf3
+    }
+}
+
+.animation-stop,.animation-stop *,.animation-stop :after,.animation-stop :before {
+    animation-delay: -1ms!important;
+    animation-duration: 1ms!important;
+    animation-iteration-count: 1!important;
+    background-attachment: scroll!important;
+    scroll-behavior: auto!important;
+    transition-delay: 0s!important;
+    transition-duration: 0s!important
+}

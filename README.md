@@ -21,7 +21,7 @@ Kode på Github: [delta-backend](https://github.com/navikt/delta-backend)
 
 ## Hvordan kjøre frontenden
 
-- Delta backend må kjøre før du starter Delta frontend
+- [Delta-backend](https://github.com/navikt/delta-backend) må kjøre før du starter Delta frontend
 - Installer programvareavhengigheter
   - `npm i`
 - Om npm klager på at man ikke er autentisert:

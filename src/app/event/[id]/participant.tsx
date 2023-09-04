@@ -7,7 +7,7 @@ type ParticipantProps = DeltaParticipant & { owner: boolean };
 export default function Participant(participant: ParticipantProps) {
   return (
     <div className="flex flex-row items-center justify-between w-full gap-2">
-      <span className="flex items-center gap-2">
+      <span className="flex items-center gap-2 leading-relaxed">
 {/*        <span className="flex-none">
           <ParticipantIcon name={participant.name} type="participantList" />
         </span>*/}

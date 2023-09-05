@@ -264,7 +264,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen.`
                     hosts={hosts}
                     categories={categories}
                     displayTime={isSameDay}
-                    className="flex flex-col gap-2 w-fit"
+                    className="flex flex-col gap-2 max-w-xs"
                 />
                 <div className="flex-grow flex flex-col gap-2 md:w-2/4">
                     <Heading size="medium" as="h2">

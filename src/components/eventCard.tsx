@@ -90,7 +90,10 @@ export function EventCard({
                         <span className="bg-red-600 text-white rounded px-2">
                       Arrangementet er fullt
                     </span>
-                    ) : (<>Maks {event.event.participantLimit} deltakere</>)}
+                    ) : (<>
+                         {event.event.participantLimit > 9 ? (
+                             <>Maks {event.event.participantLimit} deltakere</>):(<>{event.event.participantLimit - event.participants.length - event.hosts.length} plasser igjen</>)}
+                    </>)}
 
                 </span>
                             </Detail>

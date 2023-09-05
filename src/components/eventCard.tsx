@@ -91,8 +91,8 @@ export function EventCard({
                       Arrangementet er fullt
                     </span>
                     ) : (<>
-                         {event.event.participantLimit > 9 ? (
-                             <>Maks {event.event.participantLimit} deltakere</>):(<>{event.event.participantLimit - event.participants.length - event.hosts.length} plasser igjen</>)}
+                         {event.event.participantLimit - event.participants.length - event.hosts.length > 9 ? (
+                             <>Maks {event.event.participantLimit} deltakere</>):(<>Kun {event.event.participantLimit - event.participants.length - event.hosts.length} plasser igjen</>)}
                     </>)}
 
                 </span>

@@ -4,7 +4,7 @@ import EventFilters from "@/components/eventFilters";
 import { getEvents } from "@/service/eventActions";
 
 export default async function MyEvents() {
-  checkToken("/joined-events");
+  await checkToken("/joined-events");
   const events = await getEvents({ onlyMine: true });
 
   return (

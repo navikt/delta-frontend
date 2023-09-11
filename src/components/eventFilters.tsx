@@ -21,6 +21,7 @@ export default function EventFilters({
   onlyJoined = false,
   onlyMine = false,
   joinedLink  = false,
+  homeTabs  = false,
   ctaLink  = false,
 }: {
   categories?: Category[];
@@ -30,6 +31,7 @@ export default function EventFilters({
   onlyJoined?: boolean;
   onlyMine?: boolean;
   joinedLink?: boolean;
+  homeTabs?: boolean;
   ctaLink?: boolean;
 }) {
   const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
@@ -68,6 +70,38 @@ export default function EventFilters({
       .then(() => setLoading(false));
   }, [selectedCategories, onlyFuture, onlyPast, onlyJoined]);
 
+  function getOnlyJoined() {
+    setLoading(true);
+    getEvents({
+      categories: selectedCategories,
+      onlyFuture,
+      onlyJoined: true,
+    })
+        .then(setEvents)
+        .then(() => setLoading(false));
+  }
+
+  function getOnlyMine() {
+    setLoading(true);
+    getEvents({
+      categories: selectedCategories,
+      onlyFuture,
+      onlyMine: true,
+    })
+        .then(setEvents)
+        .then(() => setLoading(false));
+  }
+
+  function getAll() {
+    setLoading(true);
+    getEvents({
+      categories: selectedCategories,
+      onlyFuture: true,
+    })
+        .then(setEvents)
+        .then(() => setLoading(false));
+  }
+
   useEffect(() => {
     const filtered = events.filter((fullEvent) =>
       fullEvent.event.title.toLowerCase().includes(searchInput.toLowerCase()),
@@ -75,6 +109,7 @@ export default function EventFilters({
     setFilterEvents(filtered);
   }, [events, searchInput]);
 
+  // @ts-ignore
   return (
     <div className="flex flex-col w-full gap-6 items-start">
       {selectTime && (
@@ -144,6 +179,27 @@ export default function EventFilters({
             </div>
           )}
         </div>
+      )}
+      {homeTabs && (
+          <Tabs className="self-start w-full" defaultValue="fremtidige">
+            <Tabs.List>
+              <Tabs.Tab
+                  value="fremtidige"
+                  label="Alle"
+                  onClick={() => getAll()}
+              />
+              <Tabs.Tab
+                  value="tidligere"
+                  label="Påmeldte"
+                  onClick={() => getOnlyJoined()}
+              />
+              <Tabs.Tab
+                  value="mine"
+                  label="Mine"
+                  onClick={() => getOnlyMine()}
+              />
+            </Tabs.List>
+          </Tabs>
       )}
       {joinedLink && (
       <div className="px-4">

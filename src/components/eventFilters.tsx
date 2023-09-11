@@ -112,6 +112,27 @@ export default function EventFilters({
   // @ts-ignore
   return (
     <div className="flex flex-col w-full gap-6 items-start">
+      {homeTabs && (
+          <Tabs className="self-start w-full" defaultValue="fremtidige">
+            <Tabs.List>
+              <Tabs.Tab
+                  value="fremtidige"
+                  label="Alle"
+                  onClick={() => getAll()}
+              />
+              <Tabs.Tab
+                  value="tidligere"
+                  label="Påmeldte"
+                  onClick={() => getOnlyJoined()}
+              />
+              <Tabs.Tab
+                  value="mine"
+                  label="Mine"
+                  onClick={() => getOnlyMine()}
+              />
+            </Tabs.List>
+          </Tabs>
+      )}
       {selectTime && (
         <Tabs className="self-start w-full" defaultValue="fremtidige">
           <Tabs.List>
@@ -179,27 +200,6 @@ export default function EventFilters({
             </div>
           )}
         </div>
-      )}
-      {homeTabs && (
-          <Tabs className="self-start w-full" defaultValue="fremtidige">
-            <Tabs.List>
-              <Tabs.Tab
-                  value="fremtidige"
-                  label="Alle"
-                  onClick={() => getAll()}
-              />
-              <Tabs.Tab
-                  value="tidligere"
-                  label="Påmeldte"
-                  onClick={() => getOnlyJoined()}
-              />
-              <Tabs.Tab
-                  value="mine"
-                  label="Mine"
-                  onClick={() => getOnlyMine()}
-              />
-            </Tabs.List>
-          </Tabs>
       )}
       {joinedLink && (
       <div className="px-4">

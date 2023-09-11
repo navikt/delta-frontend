@@ -32,40 +32,40 @@ export default function CardWithBackground(props: CardWithBackgroundProps) {
                              className="cube_animated1__VoRKe">
                             <path
                                 d="M224.332 224.831L224.333 669.053L2.55446 447.275L2.55401 3.05265L224.332 224.831Z"
-                                stroke="currentColor" stroke-width="4.5" stroke-linejoin="round"></path>
+                                stroke="currentColor" strokeWidth="4.5" strokeLinejoin="round"></path>
                         </svg>
                         <svg width="28.125rem" height="28.125rem" viewBox="0 0 450 450" fill="none"
                              xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"
                              className="cube_animated2__ttRM_">
                             <path d="M2.55469 447.272H446.775L446.774 3.05239H2.55424L2.55469 447.272Z"
-                                  stroke="currentColor" stroke-width="4.5" stroke-linejoin="round"></path>
+                                  stroke="currentColor" strokeWidth="4.5" strokeLinejoin="round"></path>
                         </svg>
                         <svg width="14.1875rem" height="42rem" viewBox="0 0 227 672" fill="none"
                              xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"
                              className="cube_animated3__oV3de">
                             <path
                                 d="M224.332 224.831L224.333 669.053L2.55446 447.275L2.55401 3.05265L224.332 224.831Z"
-                                stroke="currentColor" stroke-width="4.5" stroke-linejoin="round"></path>
+                                stroke="currentColor" strokeWidth="4.5" strokeLinejoin="round"></path>
                         </svg>
                         <svg width="28.125rem" height="28.125rem" viewBox="0 0 450 450" fill="none"
                              xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"
                              className="cube_animated4__TZIuJ">
                             <path d="M2.55469 447.272H446.775L446.774 3.05239H2.55424L2.55469 447.272Z"
-                                  stroke="currentColor" stroke-width="4.5" stroke-linejoin="round"></path>
+                                  stroke="currentColor" strokeWidth="4.5" strokeLinejoin="round"></path>
                         </svg>
                         <svg width="14.1875rem" height="42rem" viewBox="0 0 227 672" fill="none"
                              xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"
                              className="cube_animated5__f9PNs">
                             <path
                                 d="M224.332 224.831L224.333 669.053L2.55446 447.275L2.55401 3.05265L224.332 224.831Z"
-                                stroke="currentColor" stroke-width="4.5" stroke-linejoin="round"></path>
+                                stroke="currentColor" strokeWidth="4.5" strokeLinejoin="round"></path>
                         </svg>
                         <svg width="14.1875rem" height="42rem" viewBox="0 0 227 672" fill="none"
                              xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"
                              className="cube_animated6__kllvd">
                             <path
                                 d="M224.332 224.831L224.333 669.053L2.55446 447.275L2.55401 3.05265L224.332 224.831Z"
-                                stroke="currentColor" stroke-width="4.5" stroke-linejoin="round"></path>
+                                stroke="currentColor" strokeWidth="4.5" strokeLinejoin="round"></path>
                         </svg>
                     </div>
                 </div>

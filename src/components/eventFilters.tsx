@@ -92,7 +92,7 @@ export default function EventFilters({
     setLoading(true);
     getEvents({
       categories: selectedCategories,
-      onlyPast,
+      onlyPast: true,
       onlyJoined: true,
     })
         .then(setEvents)
@@ -116,7 +116,7 @@ export default function EventFilters({
     setLoading(true);
     getEvents({
       categories: selectedCategories,
-      onlyPast,
+      onlyPast: true,
       onlyMine: true,
     })
         .then(setEvents)
@@ -139,7 +139,7 @@ export default function EventFilters({
     setLoading(true);
     getEvents({
       categories: selectedCategories,
-      onlyPast
+      onlyPast: true
     })
         .then(setEvents)
         .then(() => setLoading(false));

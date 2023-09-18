@@ -1,7 +1,7 @@
 "use client";
 
 import { Category, FullDeltaEvent } from "@/types/event";
-import { Search, Tabs, UNSAFE_Combobox } from "@navikt/ds-react";
+import { Search, Tabs, UNSAFE_Combobox, RadioGroup, Radio } from "@navikt/ds-react";
 import EventList from "./eventList";
 import { useEffect, useState } from "react";
 import { getEvents } from "@/service/eventActions";
@@ -16,6 +16,7 @@ enum TimeSelector {
 export default function EventFilters({
   categories: allCategories = [],
   selectTime = false,
+  selectTimeRadio = false,
   selectCategory = false,
   searchName = false,
   onlyJoined = false,
@@ -26,6 +27,7 @@ export default function EventFilters({
 }: {
   categories?: Category[];
   selectTime?: boolean;
+  selectTimeRadio?: boolean;
   searchName?: boolean;
   selectCategory?: boolean;
   onlyJoined?: boolean;
@@ -41,6 +43,9 @@ export default function EventFilters({
   const [selectedTime, setSelectedTime] = useState(TimeSelector.FUTURE);
   const onlyFuture = selectedTime === TimeSelector.FUTURE;
   const onlyPast = selectedTime === TimeSelector.PAST;
+  const handleChange = (val: any) => setVal(val);
+  const [val, setVal] = useState("10");
+  const [tabname, setTabname] = useState("alle");
 
   const [events, setEvents] = useState([] as FullDeltaEvent[]);
   const [loading, setLoading] = useState(true);
@@ -81,6 +86,17 @@ export default function EventFilters({
         .then(() => setLoading(false));
   }
 
+  function getOnlyJoinedPrev() {
+    setLoading(true);
+    getEvents({
+      categories: selectedCategories,
+      onlyFuture: false,
+      onlyJoined: true,
+    })
+        .then(setEvents)
+        .then(() => setLoading(false));
+  }
+
   function getOnlyMine() {
     setLoading(true);
     getEvents({
@@ -92,11 +108,32 @@ export default function EventFilters({
         .then(() => setLoading(false));
   }
 
+  function getOnlyMinePrev() {
+    setLoading(true);
+    getEvents({
+      categories: selectedCategories,
+      onlyFuture: false,
+      onlyMine: true,
+    })
+        .then(setEvents)
+        .then(() => setLoading(false));
+  }
+
   function getAll() {
     setLoading(true);
     getEvents({
       categories: selectedCategories,
       onlyFuture: true,
+    })
+        .then(setEvents)
+        .then(() => setLoading(false));
+  }
+
+  function getAllPrev() {
+    setLoading(true);
+    getEvents({
+      categories: selectedCategories,
+      onlyFuture: false,
     })
         .then(setEvents)
         .then(() => setLoading(false));
@@ -118,17 +155,17 @@ export default function EventFilters({
               <Tabs.Tab
                   value="fremtidige"
                   label="Alle"
-                  onClick={() => getAll()}
+                  onClick={() => setVal("10") & setTabname("alle") & getAll()}
               />
               <Tabs.Tab
                   value="tidligere"
                   label="Påmeldte"
-                  onClick={() => getOnlyJoined()}
+                  onClick={() => setVal("10") & setTabname("påmeldte") & getOnlyJoined()}
               />
               <Tabs.Tab
                   value="mine"
                   label="Mine"
-                  onClick={() => getOnlyMine()}
+                  onClick={() => setVal("10") & setTabname("mine") & getOnlyMine()}
               />
             </Tabs.List>
           </Tabs>
@@ -200,6 +237,26 @@ export default function EventFilters({
             </div>
           )}
         </div>
+      )}
+      {selectTimeRadio && (
+          <RadioGroup id="timeRadio" className={"-mt-6 -mb-2"}
+                      onChange={(val: any) => handleChange(val)}
+                      value={val} aria-label={"Vil du se kommende eller tidligere arrangementer?"}
+          >
+
+            {tabname == "alle" && (<>
+            <Radio value="10" onClick={() => getAll()} className="pl-4">Kommende</Radio>
+            <Radio value="20" onClick={() => getAllPrev()} className="pl-4" >Tidligere</Radio>
+            </>)}
+            {tabname == "påmeldte" && (<>
+              <Radio value="10" onClick={() => getOnlyJoined()} className="pl-4">Kommende</Radio>
+              <Radio value="20" onClick={() => getOnlyJoinedPrev()} className="pl-4" >Tidligere</Radio>
+            </>)}
+            {tabname == "mine" && (<>
+              <Radio value="10" onClick={() => getOnlyMine()} className="pl-4">Kommende</Radio>
+              <Radio value="20" onClick={() => getOnlyMinePrev()} className="pl-4" >Tidligere</Radio>
+            </>)}
+          </RadioGroup>
       )}
       {joinedLink && (
       <div className="px-4">

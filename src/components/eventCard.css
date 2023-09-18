@@ -1,3 +1,8 @@
 .event-card:hover > .navds-heading {
   text-decoration: underline;
 }
+
+
+#timeRadio > .navds-radio-buttons {
+  display: flex;
+}

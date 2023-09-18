@@ -244,7 +244,7 @@ export default function EventFilters({
         </div>
       )}
       {selectTimeRadio && (
-          <RadioGroup id="timeRadio" className={"-mt-6 -mb-2"}
+          <RadioGroup id="timeRadio" className={"-mt-5 -mb-2"} legend={"Vis"} hideLegend
                       onChange={(val: any) => handleChange(val)}
                       value={val} aria-label={"Vil du se kommende eller tidligere arrangementer?"}
           >

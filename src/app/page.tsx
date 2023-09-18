@@ -16,10 +16,10 @@ export default async function Home(context: any) {
   return (
     <CardWithBackground
       color="bg-blue-200"
-      title="Kommende arrangementer"
+      title="Arrangementer"
       newEvent
     >
-      <EventFilters categories={allCategories} selectCategory searchName homeTabs ctaLink />
+      <EventFilters categories={allCategories} selectCategory searchName homeTabs ctaLink selectTimeRadio />
     </CardWithBackground>
   );
 }

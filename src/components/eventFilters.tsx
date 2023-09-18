@@ -77,6 +77,8 @@ export default function EventFilters({
 
   function getOnlyJoined() {
     setLoading(true);
+    setTabname("påmeldte")
+    setVal("10")
     getEvents({
       categories: selectedCategories,
       onlyFuture,
@@ -99,6 +101,8 @@ export default function EventFilters({
 
   function getOnlyMine() {
     setLoading(true);
+    setTabname("mine")
+    setVal("10")
     getEvents({
       categories: selectedCategories,
       onlyFuture,
@@ -121,6 +125,8 @@ export default function EventFilters({
 
   function getAll() {
     setLoading(true);
+    setTabname("alle")
+    setVal("10")
     getEvents({
       categories: selectedCategories,
       onlyFuture: true,
@@ -146,7 +152,6 @@ export default function EventFilters({
     setFilterEvents(filtered);
   }, [events, searchInput]);
 
-  // @ts-ignore
   return (
     <div className="flex flex-col w-full gap-6 items-start">
       {homeTabs && (
@@ -155,17 +160,17 @@ export default function EventFilters({
               <Tabs.Tab
                   value="fremtidige"
                   label="Alle"
-                  onClick={() => setVal("10") & setTabname("alle") & getAll()}
+                  onClick={() => getAll()}
               />
               <Tabs.Tab
                   value="tidligere"
                   label="Påmeldte"
-                  onClick={() => setVal("10") & setTabname("påmeldte") & getOnlyJoined()}
+                  onClick={() => getOnlyJoined()}
               />
               <Tabs.Tab
                   value="mine"
                   label="Mine"
-                  onClick={() => setVal("10") & setTabname("mine") & getOnlyMine()}
+                  onClick={() => getOnlyMine()}
               />
             </Tabs.List>
           </Tabs>

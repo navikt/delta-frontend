@@ -27,7 +27,7 @@ export default function EventList({ fullEvents, loading }: EventListProps) {
           />
         ))
       ) : (
-        <p className="text-center col-span-full italic text-xlarge">
+        <p className="col-span-full italic text-xlarge">
           Fant ingen arrangementer :--(
         </p>
       )}

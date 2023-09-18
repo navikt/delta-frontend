@@ -92,7 +92,7 @@ export default function EventFilters({
     setLoading(true);
     getEvents({
       categories: selectedCategories,
-      onlyFuture: false,
+      onlyPast,
       onlyJoined: true,
     })
         .then(setEvents)
@@ -116,7 +116,7 @@ export default function EventFilters({
     setLoading(true);
     getEvents({
       categories: selectedCategories,
-      onlyFuture: false,
+      onlyPast,
       onlyMine: true,
     })
         .then(setEvents)
@@ -139,7 +139,7 @@ export default function EventFilters({
     setLoading(true);
     getEvents({
       categories: selectedCategories,
-      onlyFuture: false,
+      onlyPast
     })
         .then(setEvents)
         .then(() => setLoading(false));
@@ -246,7 +246,7 @@ export default function EventFilters({
       {selectTimeRadio && (
           <RadioGroup id="timeRadio" className={"-mt-5 -mb-2"} legend={"Vis"} hideLegend
                       onChange={(val: any) => handleChange(val)}
-                      value={val} aria-label={"Vil du se kommende eller tidligere arrangementer?"}
+                      value={val} aria-label={"Filtrer på kommende eller tidligere arrangementer"}
           >
 
             {tabname == "alle" && (<>

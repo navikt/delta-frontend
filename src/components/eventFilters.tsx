@@ -180,7 +180,7 @@ export default function EventFilters({
           <Tabs.List>
             <Tabs.Tab
               value="fremtidige"
-              label="Fremtidige"
+              label="Kommende"
               onClick={() => setSelectedTime(TimeSelector.FUTURE)}
             />
             <Tabs.Tab

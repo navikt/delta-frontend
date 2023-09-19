@@ -45,10 +45,10 @@ export default function Header() {
           </Button>
           <Dropdown.Menu className="w-auto">
             <Dropdown.Menu.List>
-{/*              <Dropdown.Menu.List.Item as={Link} href="/joined-events">
+              <Dropdown.Menu.List.Item as={Link} href="/joined-events">
                 <CheckmarkCircleIcon aria-hidden fontSize="1.5rem" />
                 <span>Påmeldte</span>
-              </Dropdown.Menu.List.Item>*/}
+              </Dropdown.Menu.List.Item>
               <Dropdown.Menu.List.Item as={Link} href="/my-events">
                 <PencilIcon aria-hidden fontSize="1.5rem" />
                 <span className="whitespace-nowrap">Arrangert av meg</span>
@@ -56,7 +56,7 @@ export default function Header() {
               <Dropdown.Menu.List.Item as={Link} href="/event/new">
                 <PlusIcon aria-hidden fontSize="1.5rem" />
                 <span className="whitespace-nowrap">
-                  Opprett nytt arrangement
+                  Opprett arrangement
                 </span>
               </Dropdown.Menu.List.Item>
             </Dropdown.Menu.List>
@@ -64,12 +64,12 @@ export default function Header() {
         </Dropdown>
       ) : (
         <div className="flex items-center justify-between w-full">
-{/*          <Link href="/joined-events" className={linkButton}>
-            <CheckmarkCircleIcon aria-hidden fontSize="1.5rem" />
-            Påmeldte
-          </Link>*/}
           <div className="flex items-center w-full"></div>
           <div className="flex flex-grow">
+            <Link href="/joined-events" className={linkButton}>
+              <CheckmarkCircleIcon aria-hidden fontSize="1.5rem" />
+              Påmeldte
+            </Link>
             <Link href="/my-events" className={linkButton}>
               <PencilIcon aria-hidden fontSize="1.5rem" />
               <span className="whitespace-nowrap">Arrangert av meg</span>
@@ -77,7 +77,7 @@ export default function Header() {
             <Link className={linkButton} href="/event/new">
               <PlusIcon aria-hidden fontSize="1.5rem" />
               <span className="whitespace-nowrap">
-                Opprett nytt arrangement
+                Opprett arrangement
               </span>
             </Link>
           </div>

@@ -7,7 +7,7 @@ import { useSearchParams } from "next/navigation";
 import { EditTypeEnum } from "@/types/event";
 
 export const metadata: Metadata = {
-  title: "Opprett arrangement Δ Delta",
+  title: "Opprett nytt arrangement Δ Delta",
 };
 
 export default async function NewEvent({
@@ -27,7 +27,7 @@ export default async function NewEvent({
   return (
     <CardWithBackground
       color="bg-green-200"
-      title="Opprett arrangement"
+      title="Opprett nytt arrangement"
       home
       backLink="/"
     >

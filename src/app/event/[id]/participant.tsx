@@ -15,7 +15,7 @@ export default function Participant(participant: ParticipantProps) {
       </span>
       {participant.owner && (
         <span className="bg-gray-500 text-surface-subtle cursor-default rounded-xl px-2">
-          ARRANGØR
+          arrangør
         </span>
       )}
     </div>

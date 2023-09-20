@@ -1,7 +1,7 @@
 "use client";
 
 import { Category, FullDeltaEvent } from "@/types/event";
-import { Search, Tabs, UNSAFE_Combobox, RadioGroup, Radio } from "@navikt/ds-react";
+import { Search, Tabs, UNSAFE_Combobox, CheckboxGroup, Checkbox } from "@navikt/ds-react";
 import EventList from "./eventList";
 import { useEffect, useState } from "react";
 import { getEvents } from "@/service/eventActions";
@@ -43,8 +43,38 @@ export default function EventFilters({
   const [selectedTime, setSelectedTime] = useState(TimeSelector.FUTURE);
   const onlyFuture = selectedTime === TimeSelector.FUTURE;
   const onlyPast = selectedTime === TimeSelector.PAST;
-  const handleChange = (val: any) => setVal(val);
-  const [val, setVal] = useState("10");
+
+  const handleChange = (val: any) => {
+    if (tabname == "alle") {
+      if (val.length == 0) {
+        setVal(val);
+        getAll()
+      } else {
+        setVal(val);
+        getAllPrev()
+      }
+    }
+    if (tabname == "påmeldte") {
+      if (val.length == 0) {
+        setVal(val);
+        getOnlyJoined()
+      } else {
+        setVal(val);
+        getOnlyJoinedPrev()
+      }
+    }
+    if (tabname == "mine") {
+      if (val.length == 0) {
+        setVal(val);
+        getOnlyMine()
+      } else {
+        setVal(val);
+        getOnlyMinePrev()
+      }
+    }
+  }
+
+  const [val, setVal] = useState([]);
   const [tabname, setTabname] = useState("alle");
 
   const [events, setEvents] = useState([] as FullDeltaEvent[]);
@@ -78,7 +108,7 @@ export default function EventFilters({
   function getOnlyJoined() {
     setLoading(true);
     setTabname("påmeldte")
-    setVal("10")
+    setVal([])
     getEvents({
       categories: selectedCategories,
       onlyFuture,
@@ -92,7 +122,7 @@ export default function EventFilters({
     setLoading(true);
     getEvents({
       categories: selectedCategories,
-      onlyPast: true,
+      onlyPast,
       onlyJoined: true,
     })
         .then(setEvents)
@@ -102,7 +132,7 @@ export default function EventFilters({
   function getOnlyMine() {
     setLoading(true);
     setTabname("mine")
-    setVal("10")
+    setVal([])
     getEvents({
       categories: selectedCategories,
       onlyFuture,
@@ -116,7 +146,7 @@ export default function EventFilters({
     setLoading(true);
     getEvents({
       categories: selectedCategories,
-      onlyPast: true,
+      onlyPast,
       onlyMine: true,
     })
         .then(setEvents)
@@ -126,7 +156,7 @@ export default function EventFilters({
   function getAll() {
     setLoading(true);
     setTabname("alle")
-    setVal("10")
+    setVal([])
     getEvents({
       categories: selectedCategories,
       onlyFuture: true,
@@ -139,7 +169,7 @@ export default function EventFilters({
     setLoading(true);
     getEvents({
       categories: selectedCategories,
-      onlyPast: true
+      onlyPast
     })
         .then(setEvents)
         .then(() => setLoading(false));
@@ -244,24 +274,15 @@ export default function EventFilters({
         </div>
       )}
       {selectTimeRadio && (
-          <RadioGroup id="timeRadio" className={"-mt-5 -mb-2"} legend={"Vis"} hideLegend
-                      onChange={(val: any) => handleChange(val)}
-                      value={val} aria-label={"Filtrer på kommende eller tidligere arrangementer"}
-          >
-
-            {tabname == "alle" && (<>
-            <Radio value="10" onClick={() => getAll()} className="pl-4">Kommende</Radio>
-            <Radio value="20" onClick={() => getAllPrev()} className="pl-4" >Tidligere</Radio>
-            </>)}
-            {tabname == "påmeldte" && (<>
-              <Radio value="10" onClick={() => getOnlyJoined()} className="pl-4">Kommende</Radio>
-              <Radio value="20" onClick={() => getOnlyJoinedPrev()} className="pl-4" >Tidligere</Radio>
-            </>)}
-            {tabname == "mine" && (<>
-              <Radio value="10" onClick={() => getOnlyMine()} className="pl-4">Kommende</Radio>
-              <Radio value="20" onClick={() => getOnlyMinePrev()} className="pl-4" >Tidligere</Radio>
-            </>)}
-          </RadioGroup>
+          <>
+            <CheckboxGroup
+                legend={"Vis"} hideLegend className={"-mt-5 -mb-2 ml-4"}
+                onChange={(val: any[]) => handleChange(val)}
+                value={val}
+            >
+              <Checkbox value="10">Vis tidligere</Checkbox>
+            </CheckboxGroup>
+          </>
       )}
       {joinedLink && (
       <div className="px-4">

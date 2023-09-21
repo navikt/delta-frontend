@@ -143,7 +143,7 @@ function ExpandedTable({
         }
       >
         <Table.HeaderCell className="font-normal" scope="row">
-          {name}
+          {name.split(", ").reverse().join(" ")}
         </Table.HeaderCell>
         <Table.DataCell>
           <Link href={`mailto:${email} `} className="break-all">
@@ -207,7 +207,7 @@ function FullTable({
     return (
       <Table.Row key={i}>
         <Table.HeaderCell className="font-normal" scope="row">
-          {name}
+          {name.split(", ").reverse().join(" ")}
         </Table.HeaderCell>
         <Table.DataCell>
           <Link href={`mailto:${email}`}>{email}</Link>

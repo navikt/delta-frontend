@@ -1,7 +1,7 @@
 "use client";
 
 import { Category, FullDeltaEvent } from "@/types/event";
-import { Search, Tabs, UNSAFE_Combobox, CheckboxGroup, Checkbox } from "@navikt/ds-react";
+import { Search, Tabs, UNSAFE_Combobox, CheckboxGroup, Checkbox, Switch } from "@navikt/ds-react";
 import EventList from "./eventList";
 import { useEffect, useState } from "react";
 import { getEvents } from "@/service/eventActions";
@@ -275,6 +275,7 @@ export default function EventFilters({
       )}
       {selectTimeRadio && (
           <>
+            {/*<Switch className={"-mt-5 -mb-2 ml-4"}>Vis tidligere</Switch>*/}
             <CheckboxGroup
                 legend={"Vis"} hideLegend className={"-mt-5 -mb-2 ml-4"}
                 onChange={(val: any[]) => handleChange(val)}

@@ -17,6 +17,7 @@ type ParticipantTableProps = {
   participants: DeltaParticipant[];
   hosts: DeltaParticipant[];
   user: User;
+  searchInput: string;
 };
 
 export default function ParticipantTable({
@@ -39,6 +40,7 @@ export default function ParticipantTable({
 
   const [searchInput, setSearchInput] = useState("");
 
+  // @ts-ignore
   return (
       <>
         <form>

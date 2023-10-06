@@ -270,8 +270,8 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen.`
                                     })
                                 }
                             >
-                                {isParticipant && new Date(event.endTime < new Date()) ? "Ja, meld meg av" : "Godta og bli med"}
-                                {isParticipant && new Date(event.endTime > new Date()) ? "Ja, slett min deltakelse" : "Godta og bli med"}
+                                {isParticipant && new Date(event.endTime) < new Date() ? "Ja, meld meg av" : "Godta og bli med"}
+                                {isParticipant && new Date(event.endTime) > new Date() ? "Ja, slett min deltakelse" : "Godta og bli med"}
                             </Button>
                         </Modal.Footer>
                     </Modal>

@@ -236,7 +236,7 @@ export default function EventDetails({
                     >
                         <Modal.Body>
                             <Heading spacing level="1" size="large" id="modal-heading">
-                                {isParticipant ? <>{new Date(event.endTime) < new Date() ? "mMld av" : "Slett min deltakelse"}</> : "Bli med"}
+                                {isParticipant ? <>{new Date(event.endTime) < new Date() ? "Slett min deltakelse" : "Meld av"}</> : "Bli med"}
                             </Heading>
                             <BodyLong spacing>
                                 {isParticipant

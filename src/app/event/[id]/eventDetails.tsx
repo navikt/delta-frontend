@@ -259,6 +259,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen.`
             </div>
             <div className="flex-col md:flex-row flex justify-between gap-4 md:gap-28 pt-4">
                 <EventDescription
+                    user={user}
                     event={event}
                     participants={reactiveParticipants}
                     hosts={hosts}

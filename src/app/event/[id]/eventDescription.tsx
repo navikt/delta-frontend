@@ -1,6 +1,7 @@
 "use client";
 
 import {FullDeltaEvent, DeltaParticipant} from "@/types/event";
+import {User} from "@/types/user";
 import {
     ClockIcon,
     CalendarIcon,
@@ -17,14 +18,17 @@ import {formatEventDates, formatEventTimes, formatDeadline, formatEventDuration}
 type EventDescriptionProps = FullDeltaEvent & {
     className?: string;
     displayTime: boolean;
+    user: User;
 };
 export default function EventDescription({
-         event,
-         participants,
-         hosts,
-         className,
-         displayTime,
-     }: EventDescriptionProps) {
+                                             event,
+                                             participants,
+                                             hosts,
+                                             user,
+                                             className,
+                                             displayTime,
+                                         }: EventDescriptionProps) {
+
     const [openParticipantList, setOpenParticipantList] = useState(false);
     const [searchInput, setSearchInput] = useState("");
     const [filterParticipants, setFilterParticipants] = useState<DeltaParticipant[]>([]);
@@ -152,14 +156,26 @@ export default function EventDescription({
                 {" deltakere"}
         </span>
             <div className="flex flex-row ml-[0.3rem] pl-6">
-                <Button
-                    variant="secondary"
-                    onClick={() => setOpenParticipantList(true)}
-                    className="mb-4"
-                    size="small"
-                >
-                    Vis deltakere
-                </Button>
+                {hosts.map((h) => h.email).includes(user.email) ? (<>
+                    <Button
+                        as="a"
+                        variant="secondary"
+                        href={`/event/${event.id}/admin`}
+                        className="mb-4"
+                        size="small"
+                    >
+                        Vis deltakere
+                    </Button>
+                </>) : (<>
+                    <Button
+                        variant="secondary"
+                        onClick={() => setOpenParticipantList(true)}
+                        className="mb-4"
+                        size="small"
+                    >
+                        Vis deltakere
+                    </Button>
+                </>)}
             </div>
             <Modal
                 open={openParticipantList}

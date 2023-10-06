@@ -117,13 +117,25 @@ export default function EventDetails({
                         }
                         if (new Date(event.endTime) < new Date())
                             return (
-                                <Alert
-                                    variant="info"
-                                    size="small"
-                                    className="md:whitespace-nowrap"
-                                >
-                                    Arrangementet er avsluttet
-                                </Alert>
+                                <>
+                                    <Alert
+                                        variant="info"
+                                        size="small"
+                                        className="md:whitespace-nowrap"
+                                    >
+                                        Arrangementet er avsluttet
+                                    </Alert>
+                                    {isParticipant && (
+                                        <>
+                                        <Button
+                                            variant="danger"
+                                            className="w-full h-fit"
+                                            onClick={() => setOpenConfirmation((x) => !x)}
+                                        >
+                                            Slett min deltakelse
+                                        </Button>
+                                    </>)}
+                                </>
                             );
                         const isUtløpt =
                             !isParticipant &&
@@ -227,12 +239,16 @@ export default function EventDetails({
                     >
                         <Modal.Body>
                             <Heading spacing level="1" size="large" id="modal-heading">
-                                {isParticipant ? "Meld av" : "Bli med"}
+                                {isParticipant && new Date(event.endTime) < new Date() ? "Meld av" : "Bli med"}
+                                {isParticipant && new Date(event.endTime) > new Date() ? "Slett min deltakelse" : "Bli med"}
                             </Heading>
                             <BodyLong spacing>
-                                {isParticipant
+                                {isParticipant && new Date(event.endTime) < new Date()
                                     ? `Er du sikker på at du vil melde deg av? Dersom påmeldingsfristen er utløpt \
 eller antallsbegrensing er nådd, kan du ikke melde deg på igjen.`
+                                    : `Ved å melde deg på arrangementet, godtar du at Delta lagrer ditt navn og din e-postadresse.`}
+                                {isParticipant && new Date(event.endTime) > new Date()
+                                    ? `Ønsker du å slette din deltakelse? Hvis ja sletter vi all data lagret om deg tilknyttet dette arrangementet. Handlingen kan ikke angres.`
                                     : `Ved å melde deg på arrangementet, godtar du at Delta lagrer ditt navn og din e-postadresse.`}
                             </BodyLong>
                         </Modal.Body>
@@ -254,7 +270,8 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen.`
                                     })
                                 }
                             >
-                                {isParticipant ? "Ja, meld meg av" : "Godta og bli med"}
+                                {isParticipant && new Date(event.endTime < new Date()) ? "Ja, meld meg av" : "Godta og bli med"}
+                                {isParticipant && new Date(event.endTime > new Date()) ? "Ja, slett min deltakelse" : "Godta og bli med"}
                             </Button>
                         </Modal.Footer>
                     </Modal>

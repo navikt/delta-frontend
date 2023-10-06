@@ -21,14 +21,13 @@ type EventDescriptionProps = FullDeltaEvent & {
     user: User;
 };
 export default function EventDescription({
-                                             event,
-                                             participants,
-                                             hosts,
-                                             user,
-                                             className,
-                                             displayTime,
-                                         }: EventDescriptionProps) {
-
+     event,
+     participants,
+     hosts,
+     user,
+     className,
+     displayTime,
+ }: EventDescriptionProps) {
     const [openParticipantList, setOpenParticipantList] = useState(false);
     const [searchInput, setSearchInput] = useState("");
     const [filterParticipants, setFilterParticipants] = useState<DeltaParticipant[]>([]);

@@ -8,6 +8,7 @@ import {
   Link,
   Modal,
   Table,
+  Search,
 } from "@navikt/ds-react";
 import { useEffect, useState } from "react";
 
@@ -36,9 +37,24 @@ export default function ParticipantTable({
     };
   }, []);
 
+  const [searchInput, setSearchInput] = useState("");
+
   return (
-    <div className="flex flex-col gap-5 bg-bg-subtle rounded p-2">
-      <Table size="small" className="">
+      <>
+        <form>
+          <Search
+              className="pt-2 -mb-2 sm:w-64"
+              label="Søk alle deltakere"
+              variant="simple"
+              size="small"
+              value={searchInput}
+              onChange={(e) => {
+                setSearchInput(e);
+              }}
+          />
+        </form>
+    <div className="flex flex-col gap-5 rounded px-2 pb-2">
+      <Table size="small" zebraStripes>
         <Table.Header>
           <Table.Row>
             {isMobile && <Table.HeaderCell scope="col" />}
@@ -56,6 +72,7 @@ export default function ParticipantTable({
               participants={participants}
               user={user}
               event={event}
+              searchInput={searchInput}
             />
           ) : (
             <FullTable
@@ -63,6 +80,7 @@ export default function ParticipantTable({
               participants={participants}
               user={user}
               event={event}
+              searchInput={searchInput}
             />
           )}
         </Table.Body>
@@ -71,6 +89,7 @@ export default function ParticipantTable({
         <p className="w-full italic ml-3 mt-4 mb-5">Ingen deltakere ennå — husk å markedsføre arrangementet!</p>
       )}
     </div>
+      </>
   );
 }
 
@@ -79,6 +98,7 @@ function ExpandedTable({
   participants,
   user,
   event,
+  searchInput,
 }: ParticipantTableProps) {
   const [openConfirmations, setOpenConfirmations] = useState<boolean[]>(
     participants.map(() => false),
@@ -91,7 +111,16 @@ function ExpandedTable({
 
   const data = hosts.concat(participants);
 
-  return data.map(({ name, email }, i) => {
+  // Filter the data based on the searchInput
+  const filteredData = data.filter(({ name, email }) => {
+    const searchValue = searchInput.toLowerCase();
+    return (
+        name.toLowerCase().includes(searchValue) ||
+        email.toLowerCase().includes(searchValue)
+    );
+  });
+
+  return filteredData.map(({ name, email }, i) => {
     return (
       <Table.ExpandableRow
         key={i}
@@ -191,6 +220,7 @@ function FullTable({
   participants,
   user,
   event,
+  searchInput,
 }: ParticipantTableProps) {
   const [openConfirmations, setOpenConfirmations] = useState<boolean[]>(
     participants.map(() => false),
@@ -203,7 +233,16 @@ function FullTable({
 
   const data = hosts.concat(participants);
 
-  return data.map(({ name, email }, i) => {
+  // Filter the data based on the searchInput
+  const filteredData = data.filter(({ name, email }) => {
+    const searchValue = searchInput.toLowerCase();
+    return (
+        name.toLowerCase().includes(searchValue) ||
+        email.toLowerCase().includes(searchValue)
+    );
+  });
+
+  return filteredData.map(({ name, email }, i) => {
     return (
       <Table.Row key={i}>
         <Table.HeaderCell className="font-normal" scope="row">

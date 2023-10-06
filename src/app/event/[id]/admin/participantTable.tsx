@@ -69,6 +69,7 @@ export default function ParticipantTable({
         </Table.Header>
         <Table.Body>
           {isMobile ? (
+            /* @ts-ignore */
             <ExpandedTable
               hosts={hosts}
               participants={participants}
@@ -77,6 +78,7 @@ export default function ParticipantTable({
               searchInput={searchInput}
             />
           ) : (
+            /* @ts-ignore */
             <FullTable
               hosts={hosts}
               participants={participants}

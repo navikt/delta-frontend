@@ -117,13 +117,22 @@ export default function EventDetails({
                         }
                         if (new Date(event.endTime) < new Date())
                             return (
-                                <Alert
-                                    variant="info"
-                                    size="small"
-                                    className="md:whitespace-nowrap"
-                                >
-                                    Arrangementet er avsluttet
-                                </Alert>
+                                <>
+                                    <Alert
+                                        variant="info"
+                                        size="small"
+                                        className="md:whitespace-nowrap"
+                                    >
+                                        Arrangementet er avsluttet
+                                    </Alert>
+                                    <Button
+                                        variant={isParticipant ? "danger" : "primary"}
+                                        className="w-full h-fit"
+                                        onClick={() => setOpenConfirmation((x) => !x)}
+                                    >
+                                        Slett meg
+                                    </Button>
+                                </>
                             );
                         const isUtløpt =
                             !isParticipant &&
@@ -181,7 +190,7 @@ export default function EventDetails({
                                 className="w-full h-fit"
                                 onClick={() => setOpenConfirmation((x) => !x)}
                             >
-                                {isParticipant ? <>{new Date(event.endTime) < new Date() ? "meld av" : "slett min deltakelse"}</> : "Bli med"}
+                                {isParticipant ? "Meld av" : "Bli med"}
                             </Button>
                         );
                     })()}
@@ -227,7 +236,7 @@ export default function EventDetails({
                     >
                         <Modal.Body>
                             <Heading spacing level="1" size="large" id="modal-heading">
-                                {isParticipant ? "Meld av" : "Bli med"}
+                                {isParticipant ? <>{new Date(event.endTime) < new Date() ? "mMld av" : "Slett min deltakelse"}</> : "Bli med"}
                             </Heading>
                             <BodyLong spacing>
                                 {isParticipant

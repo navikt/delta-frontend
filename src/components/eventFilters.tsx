@@ -242,32 +242,30 @@ export default function EventFilters({
                 <label className="font-bold">Filtrer på kategori</label>
               </span>
               <UNSAFE_Combobox
-                className="w-full md:w-fit"
-                size="small"
-                label="Filtrer på kategori"
-                hideLabel={!isMobile}
-                options={allCategories.map((category) => category.name)}
-                selectedOptions={selectedCategories.map(
-                  (category) => category.name,
-                )}
-                onToggleSelected={(categoryName, isSelected) => {
-                  if (isSelected) {
-                    setSelectedCategories((categories) => [
-                      ...categories,
-                      allCategories.find(
-                        (category) => category.name === categoryName,
-                      )!,
-                    ]);
-                  } else {
-                    setSelectedCategories((categories) =>
-                      categories.filter(
-                        (category) => category.name !== categoryName,
-                      ),
-                    );
-                  }
-                }}
-                isMultiSelect
-                shouldAutocomplete
+                  className="w-full md:w-fit"
+                  size="small"
+                  label="Filtrer på kategori"
+                  hideLabel={!isMobile}
+                  options={allCategories
+                      .map((category) => category.name)
+                      .sort((a, b) => a.localeCompare(b))}
+                  selectedOptions={selectedCategories
+                      .map((category) => category.name)
+                      .sort((a, b) => a.localeCompare(b))}
+                  onToggleSelected={(categoryName, isSelected) => {
+                    if (isSelected) {
+                      setSelectedCategories((categories) => [
+                        ...categories,
+                        allCategories.find((category) => category.name === categoryName)!,
+                      ]);
+                    } else {
+                      setSelectedCategories((categories) =>
+                          categories.filter((category) => category.name !== categoryName)
+                      );
+                    }
+                  }}
+                  isMultiSelect
+                  shouldAutocomplete
               />
             </div>
           )}

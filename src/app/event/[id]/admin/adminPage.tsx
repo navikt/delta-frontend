@@ -1,6 +1,6 @@
 "use client";
 import { FullDeltaEvent } from "@/types/event";
-import { BodyLong, Button, Heading, Modal } from "@navikt/ds-react";
+import { BodyLong, Button, Heading, Modal, Search } from "@navikt/ds-react";
 import ParticipantTable from "./participantTable";
 import ExportParticipants from "../exportParticipants";
 import Link from "next/link";
@@ -19,8 +19,10 @@ export default function AdminPage({
   user,
 }: ParticipantPageProps) {
   const [openConfirmation, setOpenConfirmation] = useState(false);
-
+  
+  const [searchInput, setSearchInput] = useState("");
   const { event, participants, hosts }: FullDeltaEvent = eventWithParticipants;
+  
   return (
     <div className="flex flex-col gap-10">
       <span className="w-full flex flex-row justify-end">
@@ -80,11 +82,24 @@ export default function AdminPage({
             </Button>
         </Modal.Footer>
       </Modal>
+        <form>
+            <Search
+                className="pt-2 -mb-2 sm:w-64"
+                label="Søk alle deltakere"
+                variant="simple"
+                size="small"
+                value={searchInput}
+                onChange={(e) => {
+                    setSearchInput(e);
+                }}
+            />
+        </form>
       <ParticipantTable
         participants={participants}
         hosts={hosts}
         event={event}
         user={user}
+        searchInput={searchInput}
       />
     </div>
   );

@@ -8,7 +8,6 @@ import {
   Link,
   Modal,
   Table,
-  Search,
 } from "@navikt/ds-react";
 import { useEffect, useState } from "react";
 
@@ -25,6 +24,7 @@ export default function ParticipantTable({
   participants,
   hosts,
   user,
+  searchInput,
 }: ParticipantTableProps) {
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
@@ -38,23 +38,9 @@ export default function ParticipantTable({
     };
   }, []);
 
-  const [searchInput, setSearchInput] = useState("");
-
   // @ts-ignore
   return (
       <>
-        <form>
-          <Search
-              className="pt-2 -mb-2 sm:w-64"
-              label="Søk alle deltakere"
-              variant="simple"
-              size="small"
-              value={searchInput}
-              onChange={(e) => {
-                setSearchInput(e);
-              }}
-          />
-        </form>
     <div className="flex flex-col gap-5 rounded px-2 pb-2">
       <Table size="small" zebraStripes>
         <Table.Header>

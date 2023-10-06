@@ -125,7 +125,6 @@ export default function EventDetails({
                                     Arrangementet er avsluttet
                                 </Alert>
                             );
-
                         const isUtløpt =
                             !isParticipant &&
                             !!event.signupDeadline &&
@@ -134,13 +133,22 @@ export default function EventDetails({
                                 : false;
                         if (isUtløpt) {
                             return (
-                                <Alert
-                                    variant="warning"
-                                    size="small"
-                                    className="md:whitespace-nowrap"
-                                >
-                                    Påmeldingsfristen er utløpt
-                                </Alert>
+                                <>
+                                    <Alert
+                                        variant="warning"
+                                        size="small"
+                                        className="md:whitespace-nowrap"
+                                    >
+                                        Påmeldingsfristen er utløpt
+                                    </Alert>
+                                    <Button
+                                        variant="primary"
+                                        className="w-full h-fit"
+                                        onClick={() => setOpenInterested((x) => !x)}
+                                    >
+                                        Meld interesse
+                                    </Button>
+                                </>
                             );
                         }
                         if (

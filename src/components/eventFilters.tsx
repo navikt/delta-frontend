@@ -83,7 +83,6 @@ export default function EventFilters({
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
     getEvents({
       categories: selectedCategories,
       onlyFuture,

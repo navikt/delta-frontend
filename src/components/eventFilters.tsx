@@ -92,6 +92,7 @@ export default function EventFilters({
     })
       .then(setEvents)
       .then(() => setLoading(false));
+      setLoading(false);
   }, [selectedCategories, onlyFuture, onlyPast, onlyJoined]);
 
   useEffect(() => {

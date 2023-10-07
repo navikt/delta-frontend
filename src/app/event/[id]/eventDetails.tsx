@@ -99,7 +99,7 @@ export default function EventDetails({
                     )}
                     {showUnregistration && (
                         <Alert variant="success" size="small">
-                            {new Date(event.endTime) < new Date() ? "Deltakelse slettet" : "Avmelding registrert")}
+                            {new Date(event.endTime) < new Date() ? "Deltakelse slettet" : "Avmelding registrert"}
                         </Alert>
                     )}
                     {(function () {

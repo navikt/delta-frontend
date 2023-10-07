@@ -82,14 +82,11 @@ export default function EventFilters({
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-
-
-    setTimeout(() => {
       getAll()
-    }, 50);
   }, [selectedCategories, onlyFuture, onlyPast, onlyJoined]);
 
   useEffect(() => {
+    getAll()
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
     };

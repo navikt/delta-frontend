@@ -20,13 +20,13 @@ import {format} from "date-fns";
 import Calendar from "@/components/calendar";
 
 export default function EventDetails({
-                                         event,
-                                         participants,
-                                         hosts,
-                                         categories,
-                                         user,
-                                         hostname,
-                                     }: FullDeltaEvent & {
+     event,
+     participants,
+     hosts,
+     categories,
+     user,
+     hostname,
+ }: FullDeltaEvent & {
     user: User;
     hostname?: string;
 }) {
@@ -131,7 +131,7 @@ export default function EventDetails({
                                         className="w-full h-fit"
                                         onClick={() => setOpenConfirmation((x) => !x)}
                                     >
-                                        Slett meg
+                                        Slett deltakelse
                                     </Button>
                                     )}
                                 </>

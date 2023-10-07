@@ -1,7 +1,7 @@
 "use client";
 
 import { Category, FullDeltaEvent } from "@/types/event";
-import { Search, Tabs, UNSAFE_Combobox, CheckboxGroup, Checkbox, Switch } from "@navikt/ds-react";
+import { Search, Tabs, UNSAFE_Combobox, CheckboxGroup, Checkbox } from "@navikt/ds-react";
 import EventList from "./eventList";
 import { useEffect, useState } from "react";
 import { getEvents } from "@/service/eventActions";
@@ -20,7 +20,6 @@ export default function EventFilters({
   selectCategory = false,
   searchName = false,
   onlyJoined = false,
-  onlyMine = false,
   joinedLink  = false,
   homeTabs  = false,
   ctaLink  = false,
@@ -83,9 +82,7 @@ export default function EventFilters({
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-      setLoading(true);
       getAll()
-      setLoading(false);
   }, [selectedCategories, onlyFuture, onlyPast, onlyJoined]);
 
   useEffect(() => {

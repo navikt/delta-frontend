@@ -82,7 +82,9 @@ export default function EventFilters({
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    if (events) {
       getAll()
+    }
   }, [selectedCategories, onlyFuture, onlyPast, onlyJoined]);
 
   useEffect(() => {

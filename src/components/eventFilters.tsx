@@ -86,9 +86,6 @@ export default function EventFilters({
     getEvents({
       categories: selectedCategories,
       onlyFuture,
-      onlyPast,
-      onlyJoined,
-      onlyMine,
     })
       .then(setEvents)
       .then(() => setLoading(false));

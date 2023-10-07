@@ -93,7 +93,7 @@ export default function EventFilters({
     })
       .then(setEvents)
       .then(() => setLoading(false));
-  }, []);
+  }, [selectedCategories, onlyFuture, onlyPast, onlyJoined]);
 
   useEffect(() => {
     const handleResize = () => {

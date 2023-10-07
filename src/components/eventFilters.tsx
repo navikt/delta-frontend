@@ -81,16 +81,6 @@ export default function EventFilters({
   const [loading, setLoading] = useState(true);
 
   const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -103,7 +93,18 @@ export default function EventFilters({
     })
       .then(setEvents)
       .then(() => setLoading(false));
-  }, [selectedCategories, onlyFuture, onlyPast, onlyJoined]);
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   function getOnlyJoined() {
     setLoading(true);

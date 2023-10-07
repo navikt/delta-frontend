@@ -143,17 +143,17 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@navikt/aksel-icons@^5.5.0", "@navikt/aksel-icons@^5.6.3":
+"@navikt/aksel-icons@^5.6.3":
   version "5.6.3"
   resolved "https://npm.pkg.github.com/download/@navikt/aksel-icons/5.6.3/5270b4d69ced1fd5d071a9cbb79a19f034adc125"
   integrity sha512-MVlgZH96qcCHgwUKMsNCOrMubAT9Me6Z28tlqvHY44OZx3M2wz2U/qV2NiogUcWVxSA1OVBgx2/9vyJacpIuMQ==
 
-"@navikt/ds-css@^5.5.0":
+"@navikt/ds-css@^5.6.3":
   version "5.6.3"
   resolved "https://npm.pkg.github.com/download/@navikt/ds-css/5.6.3/aa618ef975c8361f06874c3c12a05e145e0146ba"
   integrity sha512-dlC9ir7EmlGBtGHi6yyLpfNlNFhHWq1dLHFR6zy0nzyyGoTKPSzrHZqzhacO0/r/DZEIpeoPJuwkLslCmt4PPQ==
 
-"@navikt/ds-react@^5.5.0":
+"@navikt/ds-react@^5.6.3":
   version "5.6.3"
   resolved "https://npm.pkg.github.com/download/@navikt/ds-react/5.6.3/d9e45a4994a4a06e861fe1da7cecdbe3d44a3cc5"
   integrity sha512-dGqwOXFA7DGSyF38iI/GBCNucEuS6ShEy/1lbGa580Tu7cVXVI3Bjs1pJ1hv0XWReoGHfjCgT0ZhbXtV56SODg==
@@ -167,7 +167,7 @@
     date-fns "2.29.3"
     react-day-picker "8.3.4"
 
-"@navikt/ds-tailwind@^5.5.0":
+"@navikt/ds-tailwind@^5.6.3":
   version "5.6.3"
   resolved "https://npm.pkg.github.com/download/@navikt/ds-tailwind/5.6.3/817a6582abd49ee4ccb0ee73f0b9f5c7233878c7"
   integrity sha512-oQo25qMDoP6kfOkbriWAYo33AZdWUCPrZ3c6dYusrKThfqLGz4kVcckXB57BcM+AnmyvF/zI4eJw2cWgq6+TPw==

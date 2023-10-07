@@ -125,6 +125,7 @@ export default function EventDetails({
                                     >
                                         Arrangementet er avsluttet
                                     </Alert>
+                                    {isParticipant && (
                                     <Button
                                         variant={isParticipant ? "danger" : "primary"}
                                         className="w-full h-fit"
@@ -132,6 +133,7 @@ export default function EventDetails({
                                     >
                                         Slett meg
                                     </Button>
+                                    )}
                                 </>
                             );
                         const isUtløpt =
@@ -239,10 +241,10 @@ export default function EventDetails({
                                 {isParticipant ? <>{new Date(event.endTime) < new Date() ? "Slett min deltakelse" : "Meld av"}</> : "Bli med"}
                             </Heading>
                             <BodyLong spacing>
-                                {isParticipant
-                                    ? `Er du sikker på at du vil melde deg av? Dersom påmeldingsfristen er utløpt \
-eller antallsbegrensing er nådd, kan du ikke melde deg på igjen.`
-                                    : `Ved å melde deg på arrangementet, godtar du at Delta lagrer ditt navn og din e-postadresse.`}
+                                {isParticipant ? <>{new Date(event.endTime) < new Date() ? "Ønsker du å slette deltakelsen din? Hvis ja sletter Delta data lagret om deg knyttet til dette arrangementet." : "Er du sikker på at du vil melde deg av? Dersom påmeldingsfristen er utløpt \
+eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved å melde deg på arrangementet, godtar du at Delta lagrer ditt navn og din e-postadresse."}
+
+
                             </BodyLong>
                         </Modal.Body>
                         <Modal.Footer>
@@ -263,7 +265,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen.`
                                     })
                                 }
                             >
-                                {isParticipant ? "Ja, meld meg av" : "Godta og bli med"}
+                                {isParticipant ? <>{new Date(event.endTime) < new Date() ? "Ja, slett meg" : "Ja, meld meg av"}</> : "Godta og bli med"}
                             </Button>
                         </Modal.Footer>
                     </Modal>

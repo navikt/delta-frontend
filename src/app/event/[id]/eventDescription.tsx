@@ -156,15 +156,12 @@ export default function EventDescription({
         </span>
             <div className="flex flex-row ml-[0.3rem] pl-6">
                 {hosts.map((h) => h.email).includes(user.email) ? (<>
-                    <Button
-                        as="a"
-                        variant="secondary"
+                    <Link
+                        className="mb-4 navds-button navds-button--secondary navds-button--xsmall no-underline"
                         href={`/event/${event.id}/admin`}
-                        className="mb-4"
-                        size="small"
                     >
                         Vis deltakere
-                    </Button>
+                    </Link>
                 </>) : (<>
                     <Button
                         variant="secondary"

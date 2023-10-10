@@ -21,6 +21,7 @@ export default function EventFilters({
   searchName = false,
   onlyJoined = false,
   joinedLink  = false,
+  onlyMine = false,
   homeTabs  = false,
   ctaLink  = false,
 }: {
@@ -82,7 +83,15 @@ export default function EventFilters({
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-      getAll()
+    getEvents({
+      categories: selectedCategories,
+      onlyFuture,
+      onlyPast,
+      onlyJoined,
+      onlyMine,
+    })
+        .then(setEvents)
+        .then(() => setLoading(false));
   }, [selectedCategories, onlyFuture, onlyPast, onlyJoined]);
 
   useEffect(() => {

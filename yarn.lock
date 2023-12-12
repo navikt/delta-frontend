@@ -143,43 +143,43 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@navikt/aksel-icons@^5.6.3":
-  version "5.6.3"
-  resolved "https://npm.pkg.github.com/download/@navikt/aksel-icons/5.6.3/5270b4d69ced1fd5d071a9cbb79a19f034adc125"
-  integrity sha512-MVlgZH96qcCHgwUKMsNCOrMubAT9Me6Z28tlqvHY44OZx3M2wz2U/qV2NiogUcWVxSA1OVBgx2/9vyJacpIuMQ==
+"@navikt/aksel-icons@^5.11.4":
+  version "5.11.4"
+  resolved "https://npm.pkg.github.com/download/@navikt/aksel-icons/5.11.4/9eab45d1624b61d38e54ea293d346d49da5d8502#9eab45d1624b61d38e54ea293d346d49da5d8502"
+  integrity sha512-QhiM3Y2OQuaF3Dsq0pgESHSo9k2ffwN3S8wN9ik9P2eq9rZMe1jSDhkGeSeo1ungVqIdnUX4p62gO+cwQumPcA==
 
-"@navikt/ds-css@^5.6.3":
-  version "5.6.3"
-  resolved "https://npm.pkg.github.com/download/@navikt/ds-css/5.6.3/aa618ef975c8361f06874c3c12a05e145e0146ba"
-  integrity sha512-dlC9ir7EmlGBtGHi6yyLpfNlNFhHWq1dLHFR6zy0nzyyGoTKPSzrHZqzhacO0/r/DZEIpeoPJuwkLslCmt4PPQ==
+"@navikt/ds-css@^5.11.4":
+  version "5.11.4"
+  resolved "https://npm.pkg.github.com/download/@navikt/ds-css/5.11.4/4c44cc238b7aca5ab1cb0e62d204a3d98f50623b#4c44cc238b7aca5ab1cb0e62d204a3d98f50623b"
+  integrity sha512-7iRniSsoQAijBA9Bj3OzBDS8dX/ANI8kEImJlaIuR8hssxd3h1NXeZAG2+sbOkqJYq+xG7PCRFDHwTXf/PLL3A==
 
-"@navikt/ds-react@^5.6.3":
-  version "5.6.3"
-  resolved "https://npm.pkg.github.com/download/@navikt/ds-react/5.6.3/d9e45a4994a4a06e861fe1da7cecdbe3d44a3cc5"
-  integrity sha512-dGqwOXFA7DGSyF38iI/GBCNucEuS6ShEy/1lbGa580Tu7cVXVI3Bjs1pJ1hv0XWReoGHfjCgT0ZhbXtV56SODg==
+"@navikt/ds-react@^5.11.4":
+  version "5.11.4"
+  resolved "https://npm.pkg.github.com/download/@navikt/ds-react/5.11.4/9b45f3797cd369133213e642d00152dee4652857#9b45f3797cd369133213e642d00152dee4652857"
+  integrity sha512-Drhm3yzS5hpRcePR9ZW7rs97FTz7IXHQwaVTKAg5vZtIfYFkgQ+JbuW1h44guYoccV2XmGFOAVayb4dT/qJh/A==
   dependencies:
     "@floating-ui/react" "0.25.4"
-    "@navikt/aksel-icons" "^5.6.3"
-    "@navikt/ds-tokens" "^5.6.3"
+    "@navikt/aksel-icons" "^5.11.4"
+    "@navikt/ds-tokens" "^5.11.4"
     "@radix-ui/react-tabs" "1.0.0"
     "@radix-ui/react-toggle-group" "1.0.0"
     clsx "^1.2.1"
-    date-fns "2.29.3"
+    date-fns "^2.30.0"
     react-day-picker "8.3.4"
 
-"@navikt/ds-tailwind@^5.6.3":
-  version "5.6.3"
-  resolved "https://npm.pkg.github.com/download/@navikt/ds-tailwind/5.6.3/817a6582abd49ee4ccb0ee73f0b9f5c7233878c7"
-  integrity sha512-oQo25qMDoP6kfOkbriWAYo33AZdWUCPrZ3c6dYusrKThfqLGz4kVcckXB57BcM+AnmyvF/zI4eJw2cWgq6+TPw==
+"@navikt/ds-tailwind@^5.11.4":
+  version "5.11.4"
+  resolved "https://npm.pkg.github.com/download/@navikt/ds-tailwind/5.11.4/2253605e313def356b860869bcc4216555ebcc23#2253605e313def356b860869bcc4216555ebcc23"
+  integrity sha512-xzG5sjylXeDrpVSno1Tid5Yhw3J7ZnuYcevNW7hHXF7IYN7YKOMDPiGJ4Ucbkjoi4mEN7wD06G3M61v9ut2/oA==
 
-"@navikt/ds-tokens@^5.6.3":
-  version "5.6.3"
-  resolved "https://npm.pkg.github.com/download/@navikt/ds-tokens/5.6.3/4a8a1619a6815d55226077deb858991d6a7cd5f6"
-  integrity sha512-/G4to/cg2v4WuTBO8uHS7dwtWBYXFFuq4HwN5JdZcwjPCQxFzcMfYB4lNzDhbn1BboFRyUTkos1yH9iDALa7pg==
+"@navikt/ds-tokens@^5.11.4":
+  version "5.11.4"
+  resolved "https://npm.pkg.github.com/download/@navikt/ds-tokens/5.11.4/3394f559aa4ca0676b7e902aab971863d06cff73#3394f559aa4ca0676b7e902aab971863d06cff73"
+  integrity sha512-tPItY1DAhtPA35/geBAza2I8Nw9kAgVvT220K+dI0ejWSuMdGTkwBwmtRCfi7O9JJ2hHMnVtAWQJ/TyjtwBKJg==
 
-"@navikt/next-auth-wonderwall@^1.4.0":
+"@navikt/next-auth-wonderwall@^1.5.0":
   version "1.5.0"
-  resolved "https://npm.pkg.github.com/download/@navikt/next-auth-wonderwall/1.5.0/643addd5bb139ccf885908e0e27c5cb7b4a6a44d"
+  resolved "https://npm.pkg.github.com/download/@navikt/next-auth-wonderwall/1.5.0/643addd5bb139ccf885908e0e27c5cb7b4a6a44d#643addd5bb139ccf885908e0e27c5cb7b4a6a44d"
   integrity sha512-1EnG5KbEJ7Vy8PXpzH3CEupfy6NIfMDhx0aH29kWhsFn2lfl6fxd8+LgqmLd4Weo0HVOpfL9gTptD7SK1Pf/hg==
   dependencies:
     jose "^4.14.4"
@@ -876,11 +876,6 @@ date-fns-tz@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/date-fns-tz/-/date-fns-tz-2.0.0.tgz"
   integrity sha512-OAtcLdB9vxSXTWHdT8b398ARImVwQMyjfYGkKD2zaGpHseG2UPHbHjXELReErZFxWdSLph3c2zOaaTyHfOhERQ==
-
-date-fns@2.29.3:
-  version "2.29.3"
-  resolved "https://registry.npmjs.org/date-fns/-/date-fns-2.29.3.tgz"
-  integrity sha512-dDCnyH2WnnKusqvZZ6+jA1O51Ibt8ZMRNkDZdyAyK4YfbDwa/cEmuztzG5pk6hqlp9aSBPYcjOlktquahGwGeA==
 
 date-fns@^2.30.0:
   version "2.30.0"

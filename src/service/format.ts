@@ -18,7 +18,7 @@ export const formatEventTimes = (event: DeltaEvent): string => {
 
 export const formatEventDates = (event: DeltaEvent): string => {
   const start = new Date(event.startTime);
-  const end = new Date(event.endTime);
+  /*const end = new Date(event.endTime);*/
 
   return `${format(start, fmtShort, { locale: nb })}`;
 };
@@ -49,7 +49,7 @@ export const formatEventDuration = (event: DeltaEvent): string => {
 };
 
 export const midnightDate = (dateString: string): Date => {
-  var date = new Date(dateString);
+  const date = new Date(dateString);
   date.setHours(0, 0, 0, 0);
   return date;
 };

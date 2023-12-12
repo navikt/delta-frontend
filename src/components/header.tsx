@@ -1,9 +1,7 @@
 "use client";
 
 import {
-  CheckmarkCircleIcon,
   MenuHamburgerIcon,
-  PencilIcon,
   PlusIcon,
 } from "@navikt/aksel-icons";
 import { Button, Dropdown } from "@navikt/ds-react";
@@ -53,6 +51,10 @@ export default function Header() {
                 <PencilIcon aria-hidden fontSize="1.5rem" />
                 <span className="whitespace-nowrap">Arrangert av meg</span>
               </Dropdown.Menu.List.Item>*/}
+  {/*            <Dropdown.Menu.List.Item as={Link} href="/my-events">
+                <CalendarIcon aria-hidden fontSize="1.5rem" />
+                <span className="whitespace-nowrap">Alle arrangementer</span>
+              </Dropdown.Menu.List.Item>*/}
               <Dropdown.Menu.List.Item as={Link} href="/event/new">
                 <PlusIcon aria-hidden fontSize="1.5rem" />
                 <span className="whitespace-nowrap">
@@ -73,6 +75,10 @@ export default function Header() {
             <Link href="/my-events" className={linkButton}>
               <PencilIcon aria-hidden fontSize="1.5rem" />
               <span className="whitespace-nowrap">Arrangert av meg</span>
+            </Link>*/}
+{/*            <Link href="." className={linkButton}>
+              <CalendarIcon aria-hidden fontSize="1.5rem" />
+              <span className="whitespace-nowrap">Alle arrangementer</span>
             </Link>*/}
             <Link className={linkButton} href="/event/new">
               <PlusIcon aria-hidden fontSize="1.5rem" />

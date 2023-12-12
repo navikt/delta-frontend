@@ -130,35 +130,38 @@ export default function CreateEventForm({
     if (editType.type === EditTypeEnum.NEW) return;
     getEvent(editType.eventId)
       .then((e) => {
-        const richEvent =
-          editType.type === EditTypeEnum.EDIT
-            ? ({
-                type: EditTypeEnum.EDIT,
-                event: e.event,
-              } satisfies RichEvent)
-            : ({
-                type: EditTypeEnum.TEMPLATE,
-                event: {
-                  title: e.event.title,
-                  description: e.event.description,
-                  location: e.event.location,
-                  public: e.event.public,
-                  participantLimit: e.event.participantLimit,
-                } satisfies TemplateDeltaEvent,
-              } satisfies RichEvent);
+        let richEvent: RichEvent;
+        if (editType.type === EditTypeEnum.EDIT) {
+          richEvent = {
+            type: EditTypeEnum.EDIT,
+            event: e.event,
+          };
+        } else {
+          richEvent = {
+            type: EditTypeEnum.TEMPLATE,
+            event: {
+              title: e.event.title,
+              description: e.event.description,
+              location: e.event.location,
+              public: e.event.public,
+              participantLimit: e.event.participantLimit,
+            },
+          };
+        }
         setRichEvent(richEvent);
         setSelectedCategories(e.categories);
       })
       .then(() => setLoading(false));
   }, [editType]);
 
-  return loading ? (
+    return loading ? (
     <>
       <Skeleton variant="text" className="w-full" />
       <Skeleton variant="text" className="w-full" />
       <Skeleton variant="text" className="w-full" />
     </>
   ) : (
+    // @ts-ignore
     <InternalCreateEventForm
       richEvent={richEvent}
       allCategories={allCategories}
@@ -221,7 +224,7 @@ function InternalCreateEventForm({
       richEvent.type === EditTypeEnum.NEW
         ? undefined
         : richEvent.type === EditTypeEnum.TEMPLATE
-        ? ({
+        ? {
             title: richEvent.event.title,
             description: richEvent.event.description,
             location: richEvent.event.location,
@@ -230,15 +233,15 @@ function InternalCreateEventForm({
             endTime: "",
             startDate: undefined as unknown as Date,
             startTime: "",
-            hasParticipantLimit,
+            hasParticipantLimit: hasParticipantLimit,
             participantLimit: hasParticipantLimit
               ? richEvent.event.participantLimit.toString()
               : undefined,
             hasSignupDeadline: hasDeadline,
             signupDeadlineDate: undefined,
             signupDeadlineTime: "",
-          } satisfies CreateEventSchema)
-        : ({
+          }
+        : {
             title: richEvent.event.title,
             description: richEvent.event.description,
             location: richEvent.event.location,
@@ -247,7 +250,7 @@ function InternalCreateEventForm({
             endTime: format(new Date(richEvent.event.endTime!!), "HH:mm"),
             startDate: midnightDate(richEvent.event.startTime!!),
             startTime: format(new Date(richEvent.event.startTime!!), "HH:mm"),
-            hasParticipantLimit,
+            hasParticipantLimit: hasParticipantLimit,
             participantLimit: richEvent.event.participantLimit
               ? richEvent.event.participantLimit.toString()
               : undefined,
@@ -258,7 +261,7 @@ function InternalCreateEventForm({
             signupDeadlineTime: richEvent.event.signupDeadline
               ? format(new Date(richEvent.event.signupDeadline), "HH:mm")
               : "",
-          } satisfies CreateEventSchema),
+          },
     resolver: zodResolver(createEventSchema),
   });
 

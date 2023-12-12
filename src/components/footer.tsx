@@ -1,7 +1,6 @@
 "use client";
 
 import { BodyShort, Heading, Link } from "@navikt/ds-react";
-import dynamic from "next/dynamic";
 
 const Footer = () => {
     return (

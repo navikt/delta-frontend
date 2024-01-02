@@ -60,7 +60,7 @@ export default function EventFilters({
     })
       .then(setEvents)
       .then(() => setLoading(false));
-  }, [selectedCategories, onlyFuture, onlyPast, onlyJoined]);
+  }, [selectedCategories, onlyFuture, onlyPast, onlyJoined, onlyMine]);
 
   useEffect(() => {
     const filtered = events.filter((fullEvent) =>

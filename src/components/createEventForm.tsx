@@ -1,11 +1,11 @@
 "use client";
-
 import {
   Button,
   Textarea,
   TextField,
   Link,
   Checkbox,
+  Switch,
   Skeleton,
   UNSAFE_Combobox,
 } from "@navikt/ds-react";
@@ -29,6 +29,7 @@ import {
 } from "@/types/event";
 import { midnightDate } from "@/service/format";
 import { format } from "date-fns";
+import {Spraksjekk} from "@/components/library";
 
 function isValidParticipantLimit(limit?: string) {
   if (!limit) return false;
@@ -265,234 +266,251 @@ function InternalCreateEventForm({
     resolver: zodResolver(createEventSchema),
   });
 
-  return (
-    <form
-      action={async () => {
-        const valid = await trigger();
-        const values = getValues();
-        if (!valid) return;
-        if (richEvent.type === EditTypeEnum.EDIT)
-          updateAndRedirect(
-            values,
-            richEvent.event.id,
-            newTags,
-            selectedCategories,
-          );
-        else createAndRedirect(values, newTags, selectedCategories);
-      }}
-      className="flex flex-col gap-5"
-    >
-      <TextField
-        label="Tittel"
-        {...register("title")}
-        error={errors.title?.message}
-      />
-      <TextField
-        label="Sted"
-        {...register("location")}
-        error={errors.location?.message}
-      />
-      <Textarea
-        label="Beskrivelse"
-        {...register("description")}
-        error={errors.description?.message}
-      />
-      <div
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            e.stopPropagation();
-          }
-        }}
-      >
-        <UNSAFE_Combobox
-          label="Kategorier (valgfritt)"
-          shouldAutocomplete
-          allowNewValues
-          isMultiSelect
-          options={options}
-          selectedOptions={selectedOptions}
-          onToggleSelected={(option, isSelected) => {
-            isSelected
-              ? setSelected([...selectedOptions, option])
-              : setSelected(selectedOptions.filter((c) => c !== option));
-          }}
-        />
-      </div>
-      <div className="flex flex-row flex-wrap justify-left gap-4 pb-0 items-end">
-        <EventDatepicker
-          name="startDate"
-          label="Fra"
-          invalidMessage="Du må fylle inn en gyldig startdato"
-          requiredMessage="Du må fylle inn en startdato"
-          control={control}
-          errors={errors}
-          hideLabel={false}
-        />
-        <div
-          className={`navds-form-field navds-form-field--medium ${
-            errors.startTime && "navds-text-field--error"
-          }`}
-        >
-          <input
-            type="time"
-            className="navds-text-field__input w-28"
-            {...register("startTime")}
-          />
-          {errors.startTime && (
-            <p className="navds-error-message navds-label">
-              {errors.startTime.message}
-            </p>
-          )}
-        </div>
-      </div>
-      <div className="flex flex-row flex-wrap justify-left gap-4 pb-0 items-end">
-        <EventDatepicker
-          name="endDate"
-          label="Til"
-          invalidMessage="Du må fylle inn en gyldig sluttdato"
-          requiredMessage="Du må fylle inn en sluttdato"
-          control={control}
-          errors={errors}
-          hideLabel={false}
-        />
-        <div
-          className={`navds-form-field navds-form-field--medium ${
-            errors.endTime && "navds-text-field--error"
-          }`}
-        >
-          <input
-            type="time"
-            className="navds-text-field__input w-28"
-            {...register("endTime")}
-          />
-          {errors.endTime && (
-            <p className="navds-error-message navds-label">
-              {errors.endTime.message}
-            </p>
-          )}
-        </div>
-      </div>
-      <Checkbox {...register("public")}>
-        Gjør arrangementet synlig på forsiden
-      </Checkbox>
-      <div className="flex flex-col max-w-[21rem]">
-        <Checkbox
-          {...register("hasParticipantLimit")}
-          onChange={() => {
-            const x = hasParticipantLimit;
-            const invalidInput = !isValidParticipantLimit(
-              getValues().participantLimit,
-            );
+  const [mobilvisning, setMobilvisning] = useState(true)
+  const [dvalue, setDvalue] = useState("")
 
-            if (x && invalidInput) setValue("participantLimit", undefined);
-            setHasParticipantLimit((x) => !x);
+  return (
+      <form
+          action={async () => {
+              const valid = await trigger();
+              const values = getValues();
+              if (!valid) return;
+              if (richEvent.type === EditTypeEnum.EDIT)
+                  updateAndRedirect(
+                      values,
+                      richEvent.event.id,
+                      newTags,
+                      selectedCategories,
+                  );
+              else createAndRedirect(values, newTags, selectedCategories);
           }}
-        >
-          Begrens maksimalt antall deltakere
-        </Checkbox>
-        <TextField
-          {...register("participantLimit")}
-          className={`${!hasParticipantLimit && "hidden"}`}
-          type="text"
-          inputMode="numeric"
-          pattern="[0-9]*"
-          hideLabel
-          label="Maksimalt antall deltagere"
-          error={errors.participantLimit?.message}
-        />
-      </div>
-      <div>
-        <Checkbox
-          {...register("hasSignupDeadline")}
-          onChange={() => {
-            setDeadline((x) => !x);
-          }}
-        >
-          Spesifiser en påmeldingsfrist
-        </Checkbox>
-        <div
-          className={`flex flex-row flex-wrap justify-left gap-4 pb-0 items-end ${
-            !hasDeadline && "hidden"
-          }`}
-        >
-          <EventDatepicker
-            name="signupDeadlineDate"
-            label="Påmeldingsfrist"
-            invalidMessage="Du må fylle inn en gyldig påmeldingsfrist"
-            requiredMessage="Du må fylle inn en påmeldingsfrist"
-            control={control}
-            errors={errors}
-            hideLabel={true}
+          className="flex flex-col gap-5"
+      >
+          <TextField
+              label="Tittel"
+              {...register("title")}
+              error={errors.title?.message}
+          />
+          <div className="flex flex-row flex-wrap justify-left gap-4 pb-0 items-end">
+              <EventDatepicker
+                  name="startDate"
+                  label="Fra"
+                  invalidMessage="Du må fylle inn en gyldig startdato"
+                  requiredMessage="Du må fylle inn en startdato"
+                  control={control}
+                  errors={errors}
+                  hideLabel={false}
+              />
+              <div
+                  className={`navds-form-field navds-form-field--medium ${
+                      errors.startTime && "navds-text-field--error"
+                  }`}
+              >
+                  <input
+                      type="time"
+                      className="navds-text-field__input w-28"
+                      {...register("startTime")}
+                  />
+                  {errors.startTime && (
+                      <p className="navds-error-message navds-label">
+                          {errors.startTime.message}
+                      </p>
+                  )}
+              </div>
+          </div>
+          <div className="flex flex-row flex-wrap justify-left gap-4 pb-0 items-end">
+              <EventDatepicker
+                  name="endDate"
+                  label="Til"
+                  invalidMessage="Du må fylle inn en gyldig sluttdato"
+                  requiredMessage="Du må fylle inn en sluttdato"
+                  control={control}
+                  errors={errors}
+                  hideLabel={false}
+              />
+              <div
+                  className={`navds-form-field navds-form-field--medium ${
+                      errors.endTime && "navds-text-field--error"
+                  }`}
+              >
+                  <input
+                      type="time"
+                      className="navds-text-field__input w-28"
+                      {...register("endTime")}
+                  />
+                  {errors.endTime && (
+                      <p className="navds-error-message navds-label">
+                          {errors.endTime.message}
+                      </p>
+                  )}
+              </div>
+          </div>
+          <TextField
+              label="Sted"
+              {...register("location")}
+              error={errors.location?.message}
           />
           <div
-            className={`navds-form-field navds-form-field--medium ${
-              errors.signupDeadlineDate && "navds-text-field--error"
-            }`}
+              onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                      e.preventDefault();
+                      e.stopPropagation();
+                  }
+              }}
           >
-            <input
-              type="time"
-              className="navds-text-field__input w-28"
-              {...register("signupDeadlineTime")}
-            />
-            {errors.signupDeadlineTime && (
-              <p className="navds-error-message navds-label">
-                {errors.signupDeadlineTime.message}
-              </p>
-            )}
+              <UNSAFE_Combobox
+                  label="Kategorier (valgfritt)"
+                  shouldAutocomplete
+                  allowNewValues
+                  isMultiSelect
+                  options={options}
+                  selectedOptions={selectedOptions}
+                  onToggleSelected={(option, isSelected) => {
+                      isSelected
+                          ? setSelected([...selectedOptions, option])
+                          : setSelected(selectedOptions.filter((c) => c !== option));
+                  }}
+              />
           </div>
-        </div>
-      </div>
-      <div className="flex items-center justify-end gap-4">
-        <Link
-          className="w-fit h-fit"
-          href={
-            richEvent.type === EditTypeEnum.EDIT
-              ? `/event/${richEvent.event.id}`
-              : "/"
-          }
-        >
-          Avbryt
-        </Link>
-        <Button type="submit">
-          {richEvent.type === EditTypeEnum.EDIT ? "Oppdater" : "Opprett"}
-        </Button>
-      </div>
-    </form>
+          <Textarea
+              label="Beskrivelse"
+              {...register("description")}
+              error={errors.description?.message}
+              onChange={(e) => setDvalue(e.target.value)}
+          />
+          <div style={{display: "block", marginBottom: "0px"}}>
+              <div style={{marginTop: "-20px", float: "right"}}>
+                  <Switch onChange={() => setMobilvisning(!mobilvisning)}
+                          checked={mobilvisning}>Språkhjelp</Switch>
+              </div>
+          </div>
+          <div style={{marginBottom: "0px", display: "block"}}>
+              {mobilvisning == true && (
+                  <>
+                      <Spraksjekk value={dvalue} open={true}/>
+                  </>)
+              }
+          </div>
+          <Checkbox {...register("public")}>
+              Gjør arrangementet synlig på forsiden
+          </Checkbox>
+          <div className="flex flex-col max-w-[21rem]">
+              <Checkbox
+                  {...register("hasParticipantLimit")}
+                  onChange={() => {
+                      const x = hasParticipantLimit;
+                      const invalidInput = !isValidParticipantLimit(
+                          getValues().participantLimit,
+                      );
+
+                      if (x && invalidInput) setValue("participantLimit", undefined);
+                      setHasParticipantLimit((x) => !x);
+                  }}
+              >
+                  Begrens maksimalt antall deltakere
+              </Checkbox>
+              <TextField
+                  {...register("participantLimit")}
+                  className={`${!hasParticipantLimit && "hidden"}`}
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  hideLabel
+                  label="Maksimalt antall deltagere"
+                  error={errors.participantLimit?.message}
+              />
+          </div>
+          <div>
+              <Checkbox
+                  {...register("hasSignupDeadline")}
+                  onChange={() => {
+                      setDeadline((x) => !x);
+                  }}
+              >
+                  Spesifiser en påmeldingsfrist
+              </Checkbox>
+              <div
+                  className={`flex flex-row flex-wrap justify-left gap-4 pb-0 items-end ${
+                      !hasDeadline && "hidden"
+                  }`}
+              >
+                  <EventDatepicker
+                      name="signupDeadlineDate"
+                      label="Påmeldingsfrist"
+                      invalidMessage="Du må fylle inn en gyldig påmeldingsfrist"
+                      requiredMessage="Du må fylle inn en påmeldingsfrist"
+                      control={control}
+                      errors={errors}
+                      hideLabel={true}
+                  />
+                  <div
+                      className={`navds-form-field navds-form-field--medium ${
+                          errors.signupDeadlineDate && "navds-text-field--error"
+                      }`}
+                  >
+                      <input
+                          type="time"
+                          className="navds-text-field__input w-28"
+                          {...register("signupDeadlineTime")}
+                      />
+                      {errors.signupDeadlineTime && (
+                          <p className="navds-error-message navds-label">
+                              {errors.signupDeadlineTime.message}
+                          </p>
+                      )}
+                  </div>
+              </div>
+          </div>
+          <div className="flex items-center justify-end gap-4">
+              <Link
+                  className="w-fit h-fit"
+                  href={
+                      richEvent.type === EditTypeEnum.EDIT
+                          ? `/event/${richEvent.event.id}`
+                          : "/"
+                  }
+              >
+                  Avbryt
+              </Link>
+              <Button type="submit">
+                  {richEvent.type === EditTypeEnum.EDIT ? "Oppdater" : "Opprett"}
+              </Button>
+          </div>
+      </form>
   );
 }
 
 async function createAndRedirect(
-  formData: CreateEventSchema,
-  newTags: string[],
-  categories: Category[],
+    formData: CreateEventSchema,
+    newTags: string[],
+    categories: Category[],
 ) {
-  const { event } = await createEvent(formData);
+    const {event} = await createEvent(formData);
 
-  const newCategories = newTags.length
-    ? await Promise.all(newTags.map((c) => createCategory(c)))
-    : [];
-  await setCategories(
-    event.id,
-    categories.concat(newCategories).map((c) => c.id),
-  );
-  window.location.href = `/event/${event.id}`;
+    const newCategories = newTags.length
+        ? await Promise.all(newTags.map((c) => createCategory(c)))
+        : [];
+    await setCategories(
+        event.id,
+        categories.concat(newCategories).map((c) => c.id),
+    );
+    window.location.href = `/event/${event.id}`;
 }
 
 async function updateAndRedirect(
-  formData: CreateEventSchema,
-  eventId: string,
-  newTags: string[],
-  categories: Category[],
+    formData: CreateEventSchema,
+    eventId: string,
+    newTags: string[],
+    categories: Category[],
 ) {
-  const newCategories = newTags.length
-    ? await Promise.all(newTags.map((c) => createCategory(c)))
-    : [];
-  await setCategories(
-    eventId,
-    categories.concat(newCategories).map((c) => c.id),
-  );
+    const newCategories = newTags.length
+        ? await Promise.all(newTags.map((c) => createCategory(c)))
+        : [];
+    await setCategories(
+        eventId,
+        categories.concat(newCategories).map((c) => c.id),
+    );
 
-  const { event } = await updateEvent(formData, eventId);
-  window.location.href = `/event/${event.id}`;
+    const {event} = await updateEvent(formData, eventId);
+    window.location.href = `/event/${event.id}`;
 }

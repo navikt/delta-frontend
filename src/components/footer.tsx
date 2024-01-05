@@ -42,8 +42,8 @@ function Snarveier() {
                 <FooterLink href="https://forms.office.com/e/LyKPTdaRw5">
                     Innspill til Delta
                 </FooterLink>
-                <FooterLink href="https://trello.com/b/lwLQ2ApY/delta-%CE%B4">
-                    Veikart på Trello
+                <FooterLink href="https://delta.nav.no/event/new">
+                    Opprett arrangement
                 </FooterLink>
             </BodyShort>
         </div>

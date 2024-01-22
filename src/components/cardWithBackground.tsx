@@ -21,7 +21,8 @@ export default function CardWithBackground(props: CardWithBackgroundProps) {
                 <div
                     className="relative mx-auto mt-36 grid w-full place-items-center px-4 text-center sm:max-w-[632px] sm:px-6">
                     <Heading
-                        className="text-deepblue-800 first-letter:uppercase"
+                        className="first-letter:uppercase"
+                        style={{color: "rgb(7, 63, 100)"}}
                         level="1"
                         size="xlarge"
                     >

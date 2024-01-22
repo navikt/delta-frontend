@@ -15,8 +15,9 @@ type CardWithBackgroundProps = {
 export default function CardWithBackground(props: CardWithBackgroundProps) {
   return (
     <div className={`w-full flex flex-col align-center items-center -mt-20`}>
-        <div className={`w-full header-animated-bg relative max-w-[100vw] overflow-hidden ${props.color} animation-stop`}>
-            <div className="z-20 pb-28">
+        {/*${props.color}*/}
+        <div className={`w-full header-animated-bg relative max-w-[100vw] overflow-hidden animation-stop`}>
+            <div className="z-20 pb-24">
                 <div
                     className="relative mx-auto mt-36 grid w-full place-items-center px-4 text-center sm:max-w-[632px] sm:px-6">
                     <Heading
@@ -26,7 +27,7 @@ export default function CardWithBackground(props: CardWithBackgroundProps) {
                     >
                         {props.title}
                     </Heading>
-                    <div className="cube_animated__vdkt0">
+{/*                    <div className="cube_animated__vdkt0">
                         <svg width="14.1875rem" height="42rem" viewBox="0 0 227 672" fill="none"
                              xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"
                              className="cube_animated1__VoRKe">
@@ -67,7 +68,7 @@ export default function CardWithBackground(props: CardWithBackgroundProps) {
                                 d="M224.332 224.831L224.333 669.053L2.55446 447.275L2.55401 3.05265L224.332 224.831Z"
                                 stroke="currentColor" strokeWidth="4.5" strokeLinejoin="round"></path>
                         </svg>
-                    </div>
+                    </div>*/}
                 </div>
             </div>
         </div>

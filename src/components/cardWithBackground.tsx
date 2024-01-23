@@ -22,7 +22,7 @@ export default function CardWithBackground(props: CardWithBackgroundProps) {
                     className="relative mx-auto mt-36 grid w-full place-items-center px-4 text-center sm:max-w-[632px] sm:px-6">
                     <Heading
                         className="first-letter:uppercase"
-                        style={{color: "rgb(7, 63, 100)"}}
+                        style={{color: "rgba(0, 80, 119, 1)"}}
                         level="1"
                         size="xlarge"
                     >

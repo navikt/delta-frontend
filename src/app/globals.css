@@ -3,7 +3,6 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-
 .mb-6 {
     margin-bottom: 0 !important;
 }
@@ -296,4 +295,19 @@
     scroll-behavior: auto!important;
     transition-delay: 0s!important;
     transition-duration: 0s!important
+}
+
+/* Scroll to top button */
+#språkhjelp-back-to-top {
+    z-index: 999;
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    border-radius: 100px;
+    background: #073f64;
+    border: 1px solid #fff;
+}
+
+#språkhjelp-back-to-top:hover {
+    background: #000;
 }

@@ -1,5 +1,6 @@
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import ScrollToTop from "@/components/ScrollToTop";
 import "./globals.css";
 import { Metadata } from "next";
 
@@ -22,6 +23,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
             {children}
           </main>
           <Footer />
+          <ScrollToTop />
         </div>
       </body>
     </html>

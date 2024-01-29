@@ -10,6 +10,11 @@ spec:
   ingresses:
     - https://delta.nav.no
   port: 3000
+  resources:
+    limits:
+      cpu: 200m
+    requests:
+      cpu: 200m
   azure:
     application:
       enabled: true

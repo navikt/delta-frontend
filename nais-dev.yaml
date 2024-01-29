@@ -10,6 +10,11 @@ spec:
   ingresses:
     - https://delta.ekstern.dev.nav.no
   port: 3000
+  resources:
+    limits:
+      cpu: 100m
+    requests:
+      cpu: 100m
   azure:
     application:
       enabled: true

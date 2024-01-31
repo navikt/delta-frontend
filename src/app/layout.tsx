@@ -5,10 +5,12 @@ import ScrollToTop from "@/components/ScrollToTop";
 import "./globals.css";
 import {usePathname} from "next/navigation";
 import FagfestivalHeader from "@/components/fagfestival/header";
+import React from "react";
 
 type RootLayoutProps = {
   children: React.ReactNode;
 };
+// eslint-disable-next-line @next/next/no-async-client-component
 export default async function RootLayout({ children }: RootLayoutProps) {
   const pathname = usePathname(); const is_fagfestival = pathname !== '/fagfestival';
   return (

@@ -3,7 +3,10 @@ import CardWithBackground from "@/components/cardWithBackground";
 import EventFilters from "@/components/eventFilters";
 import { getEvents } from "@/service/eventActions";
 import Link from "next/link";
-
+import { Metadata } from "next";
+export const metadata: Metadata = {
+    title: "Personvern Δ Delta",
+};
 export default async function Privacy() {
   await checkToken("/legal/privacy");
   const events = await getEvents({ onlyMine: true });

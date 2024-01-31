@@ -4,6 +4,11 @@ import EventFilters from "@/components/eventFilters";
 import { getEvents } from "@/service/eventActions";
 import Link from "next/link";
 
+import { Metadata } from "next";
+export const metadata: Metadata = {
+  title: "Universell utforming Δ Delta",
+};
+
 export default async function Accessibility() {
   await checkToken("/legal/accessibility");
   const events = await getEvents({ onlyMine: true });

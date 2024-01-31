@@ -1,3 +1,8 @@
+import { Metadata } from "next";
+export const metadata: Metadata = {
+    title: "404 Δ Delta",
+};
+
 export default async function NotFound() {
   return (
     <main className="flex flex-grow">

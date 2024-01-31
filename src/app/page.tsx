@@ -6,8 +6,8 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Delta Δ NAV",
+  description: "Påmeldingsapp",
 };
-
 export default async function Home(context: any) {
   await checkToken("/");
 

@@ -19,7 +19,7 @@ export default async function Fagfestival() {
                 <div className="w-full">
                     <CardWithBackground
                         color="bg-blue-200"
-                        title="Velkomen til felles fagfestival 🎉"
+                        title="Velkommen til felles fagfestival 🎉"
                         backLink="/"
                     >
                         <div className="m-4 max-w-2xl font-serif">

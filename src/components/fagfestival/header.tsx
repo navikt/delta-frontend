@@ -26,7 +26,7 @@ export default function FagfestivalHeader() {
   return (
     <header className="flex py-1 z-10 items-center w-5/6 max-w-[80rem] m-auto justify-between">
       <div className="flex items-stretch">
-        <Link className={linkButton} href="/public">
+        <Link className={linkButton} href="/">
           <span className="text-2xl whitespace-nowrap font-medium text-black text-white">Fagfestival 2024</span>
         </Link>
 {/*        {!isMobile && (

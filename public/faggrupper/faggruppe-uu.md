@@ -20,4 +20,4 @@ Hver fagtorsdag går vi gjennom et nytt tema, der en av oss presenterer tema og 
 
 ## Slack-gruppe
 
-#faggruppe-uu
+[\#uu-forum](https://nav-it.slack.com/archives/C05UDT6C5AQ)

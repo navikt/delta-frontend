@@ -47,13 +47,13 @@ export default function SearchArticles({ articles }: { articles: Article[] }) {
                     <span className="flex items-center gap-1">
                       <CalendarIcon title="person" /> {article.when}
                     </span>
-                                    </Detail>
+                                </Detail>
                                 )}
                                 {article.audience && (
                                     <Detail className="leading-normal">
-                    <span className="flex items-center gap-1">
-                      <PersonCheckmarkIcon title="person" /> {article.audience}
-                    </span>
+                                        <span className="flex items-center gap-1">
+                                          <PersonCheckmarkIcon title="person" /> {article.audience}
+                                        </span>
                                     </Detail>
                                 )}
                             </div>

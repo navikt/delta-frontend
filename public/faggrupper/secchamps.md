@@ -22,4 +22,4 @@ Vi drifter også vår [security playbook](https://sikkerhet.nav.no/) som er åpe
 
 ## Slack-gruppe
 
-#security-champion
+[\#security-champion](https://nav-it.slack.com/archives/CN8N938K1)

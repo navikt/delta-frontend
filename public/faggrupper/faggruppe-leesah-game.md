@@ -27,5 +27,5 @@ For mer detaljert forklaring, se [https://navikt.github.io/leesah-game/](https:/
 
 ## Slack-gruppe
 
-\#leesah-game
+[\#leesah-game](https://nav-it.slack.com/archives/C04AYEUQ9CH)
 

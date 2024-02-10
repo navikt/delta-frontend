@@ -18,4 +18,4 @@ Vi spenderer fagtorsdager på å læra mer om sikkerhet & hacking med hjelp av f
 
 ## Slack-gruppe
 
-#faggruppe-hack
+[\#faggruppe-hack](https://nav-it.slack.com/archives/C045XD7KV32)

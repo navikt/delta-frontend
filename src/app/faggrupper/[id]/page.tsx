@@ -10,7 +10,7 @@ import CardWithBackground from "@/components/cardWithBackground";
 // @ts-ignore
 export default async function ArticlePage({ params }) {
     await checkToken("/faggrupper/${params.id");
-    const filePath = path.join(process.cwd(), `public/articles-md/${params.id}.md`);
+    const filePath = path.join(process.cwd(), `public/faggrupper/${params.id}.md`);
     const fileContent = fs.readFileSync(filePath, 'utf8');
     const { content, data: { title } } = matter(fileContent); // Extract title
 
@@ -25,7 +25,7 @@ export default async function ArticlePage({ params }) {
             backLink="/faggrupper"
             backText={"Faggrupper"}
         >
-            <div className="prose mx-4 mt-3 mb-1">
+            <div className="prose mx-4 mt-4 mb-2">
                 {/*<div className="pb-1">Faggruppe</div>*/}
                 <article dangerouslySetInnerHTML={{ __html: htmlContent }} />
             </div>

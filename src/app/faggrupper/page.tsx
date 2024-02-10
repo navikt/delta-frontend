@@ -7,7 +7,7 @@ import matter from "gray-matter";
 // Server component using server-side rendering (SSR)
 export default async function ArticlesPage() {
     await checkToken("/faggrupperl");
-    const articleDirectory = path.join(process.cwd(), 'public/articles-md');
+    const articleDirectory = path.join(process.cwd(), 'public/faggrupper');
     const filenames = fs.readdirSync(articleDirectory);
 
     const articles = await Promise.all(

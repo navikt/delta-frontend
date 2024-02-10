@@ -1,14 +1,12 @@
+import { checkToken } from "@/auth/token";
 import fs from 'fs';
 import path from 'path';
-import Link from 'next/link';
 import CardWithBackground from '@/components/cardWithBackground';
 import SearchArticles from '@/components/SearchArticles';
 import matter from "gray-matter";
-import {Detail, Heading, Search, Tag} from "@navikt/ds-react";
-import {CalendarIcon, ClockIcon, HourglassBottomFilledIcon, PersonCheckmarkIcon} from "@navikt/aksel-icons";
-
 // Server component using server-side rendering (SSR)
 export default async function ArticlesPage() {
+    await checkToken("/faggrupperl");
     const articleDirectory = path.join(process.cwd(), 'public/articles-md');
     const filenames = fs.readdirSync(articleDirectory);
 

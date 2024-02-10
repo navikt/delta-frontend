@@ -1,3 +1,4 @@
+import { checkToken } from "@/auth/token";
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
@@ -8,6 +9,7 @@ import CardWithBackground from "@/components/cardWithBackground";
 // Server component for fetching and processing article content
 // @ts-ignore
 export default async function ArticlePage({ params }) {
+    await checkToken("/faggrupper/${params.id");
     const filePath = path.join(process.cwd(), `public/articles-md/${params.id}.md`);
     const fileContent = fs.readFileSync(filePath, 'utf8');
     const { content, data: { title } } = matter(fileContent); // Extract title

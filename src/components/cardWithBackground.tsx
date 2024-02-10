@@ -19,15 +19,17 @@ export default function CardWithBackground(props: CardWithBackgroundProps) {
         <div className={`w-full header-animated-bg relative max-w-[100vw] overflow-hidden animation-stop`}>
             <div className="z-20 pb-24">
                 <div
-                    className="relative mx-auto mt-36 grid w-full place-items-center px-4 text-center sm:max-w-[632px] sm:px-6">
+                    className="relative mt-28 mx-auto grid w-full place-items-center px-4 text-center sm:max-w-[632px] sm:px-6">
+                    {props.title && (
                     <Heading
-                        className="first-letter:uppercase"
+                        className="first-letter:uppercase mt-8"
                         style={{color: "rgba(0, 80, 119, 1)"}}
                         level="1"
                         size="xlarge"
                     >
                         {props.title}
                     </Heading>
+                    )}
 {/*                    <div className="cube_animated__vdkt0">
                         <svg width="14.1875rem" height="42rem" viewBox="0 0 227 672" fill="none"
                              xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"

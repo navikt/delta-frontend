@@ -10,12 +10,14 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
-    "@navikt/ds-icons": "^3.4.3",
+    "@mdx-js/loader": "^3.0.0",
     "@navikt/aksel-icons": "^5.15.1",
     "@navikt/ds-css": "^5.15.1",
+    "@navikt/ds-icons": "^3.4.3",
     "@navikt/ds-react": "^5.15.1",
     "@navikt/ds-tailwind": "^5.15.1",
     "@navikt/next-auth-wonderwall": "^1.5.0",
+    "@next/mdx": "^14.1.0",
     "@types/node": "20.11.6",
     "@types/react": "18.2.48",
     "@types/react-dom": "18.2.18",
@@ -25,6 +27,7 @@
     "date-fns-tz": "^2.0.0",
     "eslint": "8.56.0",
     "eslint-config-next": "^14.1.0",
+    "gray-matter": "^4.0.3",
     "next": "^14.1.0",
     "next-qrcode": "^2.5.1",
     "postcss": "8.4.33",
@@ -32,8 +35,13 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.49.3",
+    "remark": "^15.0.1",
+    "remark-html": "^16.0.1",
     "tailwindcss": "3.4.1",
     "typescript": "5.3.3",
     "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.10"
   }
 }

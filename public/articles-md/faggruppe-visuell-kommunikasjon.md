@@ -1,0 +1,21 @@
+---
+title: Visuell Kommunikasjon
+when: En gang i måneden
+audience: Åpen for alle
+---
+
+# Universell utforming
+
+## Kontaktpersoner
+
+[Taj Hultmark](https://nav-it.slack.com/archives/D03UBCL3WG0)
+
+## Beskrivelse
+
+Har du lyst til å praktisere visuell fasilitering sammen med kjente og ukjente kollegaer? Nå får du muligheten til å bli tryggere på å tegne enkle ikoner og prosesstegninger. De kan brukes til å forklare notater fra møter eller pågående prosesser i NAV.
+
+Dette er lavterskeltilbud, alle kan bli med. Du trenger ingen forkunnskaper, bare lyst til å tegne på et blankt papir. Ta gjerne med egne tegnesaker om du har noen preferanser. Det er tilgjengelig materiale.
+
+## Slack-gruppe
+
+[faggr-visuell-kommunikasjon](https://nav-it.slack.com/archives/CPW2JRPB9)

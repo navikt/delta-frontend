@@ -12,6 +12,6 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/typography')],
   presets: [require('@navikt/ds-tailwind')]
 }

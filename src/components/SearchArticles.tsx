@@ -7,7 +7,7 @@ import {CalendarIcon, ClockIcon, HourglassBottomFilledIcon, PersonCheckmarkIcon}
 interface Article {
     title: string;
     when?: string;
-    audience?: string;
+    target_audience?: string;
     href: string;
 }
 
@@ -49,10 +49,10 @@ export default function SearchArticles({ articles }: { articles: Article[] }) {
                     </span>
                                 </Detail>
                                 )}
-                                {article.audience && (
+                                {article.target_audience && (
                                     <Detail className="leading-normal">
                                         <span className="flex items-center gap-1">
-                                          <PersonCheckmarkIcon title="person" /> {article.audience}
+                                          <PersonCheckmarkIcon title="person" /> Målgruppe: {article.target_audience}
                                         </span>
                                     </Detail>
                                 )}

@@ -8,11 +8,11 @@ target_audience: Utviklere
 
 ## Kontaktpersoner
 
-[Emil Albrektsson](https://nav-it.slack.com/team/UTTQH7RD1)
-[Jan-Kåre Solbakken](https://nav-it.slack.com/team/U6X8YAQQG)
-[Per-Christian Nilsen](https://nav-it.slack.com/team/UNFCPQ1BQ)
-[Marte Pedersen](https://nav-it.slack.com/team/U5MQHE0CF)
-[Dani Alexander Berentzen](https://nav-it.slack.com/team/UUDLK0H5H)
+- [Emil Albrektsson](https://nav-it.slack.com/team/UTTQH7RD1)
+- [Jan-Kåre Solbakken](https://nav-it.slack.com/team/U6X8YAQQG)
+- [Per-Christian Nilsen](https://nav-it.slack.com/team/UNFCPQ1BQ)
+- [Marte Pedersen](https://nav-it.slack.com/team/U5MQHE0CF)
+- [Dani Alexander Berentzen](https://nav-it.slack.com/team/UUDLK0H5H)
 
 ## Beskrivelse
 

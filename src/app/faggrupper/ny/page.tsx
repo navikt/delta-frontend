@@ -17,7 +17,7 @@ export default async function NewArticlesPage() {
                     <h2 className="text-2xl  font-bold text-deepblue-500 mb-4">Vi gjør det sammen 😃</h2>
                     <Link target="_blank" href="https://forms.office.com/e/LyKPTdaRw5"
                           className="text-deepblue-500 underline hover:no-underline">
-                        Skjema for opprettelse av faggruppe
+                        Skjema for å opprette ny faggruppe.
                     </Link>
 
                     <p className="mt-8">
@@ -32,7 +32,7 @@ export default async function NewArticlesPage() {
                     <h2 className="text-2xl  mt-8 mb-4 font-bold text-deepblue-500">Gjør det selv 🛠️</h2>
                     <Link href="https://github.com/navikt/delta-frontend/tree/main/public/faggrupper"
                           className="text-deepblue-500 underline hover:no-underline">
-                          Legg til markdown-fil i public/faggrupper på Github.
+                          Legg til faggruppe på Github.
                     </Link>
                     </div>
                 </CardWithBackground>

@@ -2,6 +2,7 @@
 title: Microfrontends
 when: Tidspunkt annonseres på Slack
 audience: Åpen for alle
+target_audience: Utviklere
 ---
 
 # Microfrontends

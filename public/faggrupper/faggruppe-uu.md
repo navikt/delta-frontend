@@ -1,7 +1,7 @@
 ---
 title: Universell utforming
 when: Hver fagtorsdag
-audience: Åpen for alle
+target_audience: Alle som vil sertifseres
 ---
 
 # Universell utforming

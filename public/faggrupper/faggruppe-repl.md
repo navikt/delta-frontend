@@ -1,7 +1,7 @@
 ---
 title: REPL
 when: Tidspunkt annonseres på Slack
-audience: Åpen for alle
+target_audience: Utviklere
 ---
 
 # REPL

@@ -1,7 +1,7 @@
 ---
 title: Visuell Kommunikasjon
 when: En gang i måneden
-audience: Åpen for alle
+target_audience: Alle
 ---
 
 # Universell utforming

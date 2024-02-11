@@ -1,9 +1,7 @@
 ---
 title: Backendforum
-target_audience: Utviklere
 when:  Hver fagtorsdag 
-where: Zoom og/eller speakers corner
-audience: Åpen for alle
+target_audience: Utviklere
 ---
 
 # Backendforum

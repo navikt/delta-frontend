@@ -1,7 +1,7 @@
 ---
 title: Produktdesign
 when: Tidspunkt annonseres på Slack
-audience: Kun for produktdesign
+target_audience: Kun produktdesign
 ---
 
 # Fagmiljø for produktdesign

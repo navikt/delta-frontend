@@ -1,7 +1,7 @@
 ---
 title: Hack / CTF
 when: Hver fagtorsdag
-audience: Åpen for alle
+target_audience: Utviklere
 ---
 
 # Hack / CTF

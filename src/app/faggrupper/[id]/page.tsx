@@ -5,6 +5,7 @@ import matter from 'gray-matter';
 import { remark } from 'remark'; // Correct import
 import html from 'remark-html';
 import CardWithBackground from "@/components/cardWithBackground";
+import EditArticleModal from "@/components/editarticlemodal";
 
 // Server component for fetching and processing article content
 // @ts-ignore
@@ -29,6 +30,8 @@ export default async function ArticlePage({ params }) {
                 {/*<div className="pb-1">Faggruppe</div>*/}
                 <article dangerouslySetInnerHTML={{ __html: htmlContent }} />
             </div>
+
+            <EditArticleModal articlepath={params.id} />
         </CardWithBackground>
     );
 }

@@ -1,8 +1,8 @@
 "use client"
 import { useState } from 'react';
 import Link from 'next/link';
-import {Detail, Heading, Search, Tag} from "@navikt/ds-react";
-import {CalendarIcon, ClockIcon, HourglassBottomFilledIcon, PersonCheckmarkIcon} from "@navikt/aksel-icons";
+import {Detail, Heading, Search} from "@navikt/ds-react";
+import {CalendarIcon, PersonGroupIcon} from "@navikt/aksel-icons";
 
 interface Article {
     title: string;
@@ -52,7 +52,7 @@ export default function SearchArticles({ articles }: { articles: Article[] }) {
                                 {article.target_audience && (
                                     <Detail className="leading-normal">
                                         <span className="flex items-center gap-1">
-                                          <PersonCheckmarkIcon title="person" /> Målgruppe: {article.target_audience}
+                                          <PersonGroupIcon title="person" /> Målgruppe: {article.target_audience}
                                         </span>
                                     </Detail>
                                 )}

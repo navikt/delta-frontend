@@ -10,7 +10,7 @@ function EditArticleModal({ articlepath }) {
 
     return (
         <div>
-            <Button className="mx-4 my-10" variant="secondary"  size="small" onClick={() => ref.current?.showModal()}><PencilIcon className="inline " title="rediger" fontSize="1.2rem" /> Rediger</Button>
+            <Button className="mx-4 mt-8 mb-10" variant="secondary"  size="small" onClick={() => ref.current?.showModal()}><PencilIcon className="inline " title="rediger" fontSize="1.2rem" /> Rediger</Button>
 
             <Modal ref={ref} header={{ heading: "Rediger faggruppe" }}>
                 <Modal.Body>

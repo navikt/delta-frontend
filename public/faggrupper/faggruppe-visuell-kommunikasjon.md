@@ -4,7 +4,7 @@ when: En gang i måneden
 target_audience: Alle
 ---
 
-# Universell utforming
+# Visuell kommunikasjon
 
 ## Kontaktpersoner
 

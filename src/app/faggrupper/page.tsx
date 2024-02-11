@@ -4,9 +4,10 @@ import path from 'path';
 import CardWithBackground from '@/components/cardWithBackground';
 import SearchArticles from '@/components/SearchArticles';
 import matter from "gray-matter";
+import Link from "next/link";
 // Server component using server-side rendering (SSR)
 export default async function ArticlesPage() {
-    await checkToken("/faggrupperl");
+    await checkToken("/faggrupper");
     const articleDirectory = path.join(process.cwd(), 'public/faggrupper');
     const filenames = fs.readdirSync(articleDirectory);
 
@@ -33,30 +34,14 @@ export default async function ArticlesPage() {
                     title="Faggrupper"
                     backLink="/"
                 >
-                    <SearchArticles articles={articles} />
- {/*                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        {articles.map((article) => (
-                            <Link
-                                href={article.href}
-                                key={article.title}
-                                className="flex flex-col h-full p-4 border rounded-xl text-text-default border-gray-300 transition-all hover:-translate-y-1 hover:scale-105 hover:text-surface-action-selected-hover hover:border-border-action event-card"
-                            >
-                                <Heading level="2" size="small">{article.title}</Heading>
-                                <div className="flex pt-2 flex-col gap-2 h-full justify-between">
-                                    {article.when && (
-                                        <Detail className="leading-normal">
-                                            <span className="flex items-center gap-1 pb-1">
-                                                <CalendarIcon title="person"/>  {article.when}
-                                            </span>
-                                        </Detail>
-                                    )}
-                                </div>
-                            </Link>
-                        ))}
-                    </div>*/}
+                    <SearchArticles articles={articles}/>
+                    <div className="px-4 mb-5 pt-5">
+                        <Link href="/faggrupper/ny" className="text-deepblue-500 underline hover:no-underline">
+                            Opprett ny faggruppe
+                        </Link>
+                    </div>
                 </CardWithBackground>
             </div>
         </div>
-);
+    );
 }
-

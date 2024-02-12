@@ -3,7 +3,7 @@
 import "./eventCard.css";
 import {Category, FullDeltaEvent} from "@/types/event";
 import {format} from "date-fns";
-import {Detail, Heading, LinkPanel, Tag} from "@navikt/ds-react";
+import {Detail, Heading,  Tag} from "@navikt/ds-react";
 import {
     CalendarIcon,
     ClockIcon,
@@ -21,16 +21,23 @@ import {
 export function EventCard({
                               event,
                               categories,
+                              showAll,
+                              tabname,
                           }: {
     event: FullDeltaEvent;
     categories: Category[];
+    showAll?: any;
+    tabname?: string;
 }) {
     const isUtløpt =
         !!event.event.signupDeadline &&
         new Date(event.event.signupDeadline) < new Date()
             ? true
             : false;
+
     return (
+<>
+    {isUtløpt && tabname == "alle" && showAll != 10 ? (<></>) : (<>
         <Link
             href={`/event/${event.event.id}`}
             key={`event-${event.event.id}`}
@@ -109,5 +116,7 @@ export function EventCard({
                 </div>
             </div>
         </Link>
+        </>)}
+        </>
     );
 }

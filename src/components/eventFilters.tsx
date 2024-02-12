@@ -292,7 +292,7 @@ export default function EventFilters({
       </div>
       )}
       <div className="w-full p-4">
-        <EventList fullEvents={filterEvents} loading={loading} />
+        <EventList fullEvents={filterEvents} loading={loading}  showAll={val} tabname={tabname } />
       </div>
       {ctaLink && (
           <div className="px-4 mb-4">

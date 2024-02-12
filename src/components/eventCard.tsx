@@ -1,5 +1,4 @@
 "use client";
-
 import "./eventCard.css";
 import {Category, FullDeltaEvent} from "@/types/event";
 import {format} from "date-fns";
@@ -37,6 +36,7 @@ export function EventCard({
 
     return (
 <>
+    {/*logikken skjuler utløpte arrangementer fra "alle" fanen*/}
     {isUtløpt && tabname == "alle" && showAll != 10 ? (<></>) : (<>
         <Link
             href={`/event/${event.event.id}`}

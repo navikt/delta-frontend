@@ -1,7 +1,7 @@
 "use client";
-
 import {
   MenuHamburgerIcon,
+  PersonGroupIcon,
   PlusIcon,
 } from "@navikt/aksel-icons";
 import { Button, Dropdown } from "@navikt/ds-react";
@@ -55,6 +55,10 @@ export default function Header() {
                 <CalendarIcon aria-hidden fontSize="1.5rem" />
                 <span className="whitespace-nowrap">Alle arrangementer</span>
               </Dropdown.Menu.List.Item>*/}
+              <Dropdown.Menu.List.Item as={Link} href="/faggrupper">
+                <PersonGroupIcon aria-hidden fontSize="1.5rem" />
+                <span className="whitespace-nowrap">Faggrupper</span>
+              </Dropdown.Menu.List.Item>
               <Dropdown.Menu.List.Item as={Link} href="/event/new">
                 <PlusIcon aria-hidden fontSize="1.5rem" />
                 <span className="whitespace-nowrap">
@@ -80,6 +84,10 @@ export default function Header() {
               <CalendarIcon aria-hidden fontSize="1.5rem" />
               <span className="whitespace-nowrap">Alle arrangementer</span>
             </Link>*/}
+           <Link href="/faggrupper" className={linkButton}>
+             {/*<PersonGroupIcon aria-hidden fontSize="1.5rem" />*/}
+              <span className="whitespace-nowrap">Faggrupper</span>
+            </Link>
             <Link className={linkButton} href="/event/new">
               <PlusIcon aria-hidden fontSize="1.5rem" />
               <span className="whitespace-nowrap">

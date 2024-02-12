@@ -10,7 +10,6 @@ export const metadata: Metadata = {
 };
 export default async function Home(context: any) {
   await checkToken("/");
-
   const allCategories = await getAllCategories();
 
   return (

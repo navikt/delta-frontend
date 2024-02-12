@@ -1,5 +1,4 @@
-"use client";
-
+"use client"
 import { Category, FullDeltaEvent } from "@/types/event";
 import { Search, Tabs, UNSAFE_Combobox, CheckboxGroup, Checkbox } from "@navikt/ds-react";
 import EventList from "./eventList";

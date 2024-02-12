@@ -1,6 +1,6 @@
 import { checkToken } from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
-import EventFilters from "@/components/eventFilters";
+import EventFiltersFagFest from "@/components/eventFiltersFagFest";
 import {getAllCategories, getEvents} from "@/service/eventActions";
 
 import { Metadata } from "next";
@@ -38,7 +38,7 @@ export default async function Fagfestival() {
                         title=""
                         newEvent
                     >
-                        <EventFilters categories={allCategories} searchName homeTabs />
+                        <EventFiltersFagFest categories={allCategories} searchName homeTabs />
                     </CardWithBackground>
                 </div>
             </div>

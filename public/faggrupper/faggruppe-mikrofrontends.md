@@ -9,7 +9,7 @@ target_audience: Utviklere
 
 ## Kontaktpersoner
 
-[Sergio Alberto Arevalo Soria](https://nav-it.slack.com/archives/DL36NAPLN)
+[Sergio Alberto Arevalo Soria](https://nav-it.slack.com/archives/D04QEE7M7MF/p1708086675725989)
 
 ## Beskrivelse
 

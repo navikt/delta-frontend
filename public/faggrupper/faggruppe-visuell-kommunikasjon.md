@@ -8,7 +8,7 @@ target_audience: Alle
 
 ## Kontaktpersoner
 
-[Taj Hultmark](https://nav-it.slack.com/archives/D03UBCL3WG0)
+[Taj Hultmark](https://nav-it.slack.com/team/U631M996Y)
 
 ## Beskrivelse
 

@@ -171,8 +171,8 @@ function ExpandedTable({
         </Table.DataCell>
         <Modal
           open={openConfirmations[i]}
+          onClose={() => toggleConfirmation(i)}
           aria-label={`Fjern deltaker ${name} fra arrangementet`}
-          aria-labelledby="Fjern deltaker modal"
         >
           <Modal.Body>
             <Heading spacing level="1" size="large" id="modal-heading">
@@ -289,8 +289,8 @@ function FullTable({
         </Table.DataCell>
         <Modal
           open={openConfirmations[i]}
+          onClose={() => toggleConfirmation(i)}
           aria-label={`Fjern deltaker ${name} fra arrangementet`}
-          aria-labelledby="Fjern deltaker modal"
         >
           <Modal.Body>
             <Heading spacing level="1" size="large" id="modal-heading">

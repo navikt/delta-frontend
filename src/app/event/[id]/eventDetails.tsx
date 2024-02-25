@@ -198,8 +198,8 @@ export default function EventDetails({
                     })()}
                     <Modal
                         open={openInterested}
+                        onClose={() => setOpenInterested(false)}
                         aria-label="Meld interesse"
-                        aria-labelledby="Meld interesse"
                     >
                         <Modal.Body>
                             <Heading spacing level="1" size="large" id="modal-heading">
@@ -233,8 +233,8 @@ export default function EventDetails({
                     </Modal>
                     <Modal
                         open={openConfirmation}
+                        onClose={() => setOpenConfirmation(false)}
                         aria-label="Meld av modal"
-                        aria-labelledby={isParticipant ? "Meld av modal" : "Bli med modal"}
                     >
                         <Modal.Body>
                             <Heading spacing level="1" size="large" id="modal-heading">
@@ -322,8 +322,8 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                     </div>
                     <Modal
                         open={openQR}
+                        onClose={() => setOpenQR(false)}
                         aria-label="Meld interesse"
-                        aria-labelledby="Meld interesse"
                     >
                         <Modal.Body>
                             <Heading spacing level="1" size="large" id="modal-heading">

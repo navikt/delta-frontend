@@ -199,7 +199,7 @@ export default function EventFilters({
               />
               <Tabs.Tab
                   value="mine"
-                  label="Arrangør"
+                  label="Admin"
                   onClick={() => getOnlyMine()}
               />
             </Tabs.List>

@@ -8,7 +8,7 @@ import {
     PersonCheckmarkIcon,
     PersonCircleIcon,
     HourglassBottomFilledIcon,
-    PinIcon,
+    LocationPinIcon,
 } from "@navikt/aksel-icons";
 import {useEffect, useRef, useState} from "react";
 import {Link, Modal, Search, Button} from "@navikt/ds-react";
@@ -113,7 +113,7 @@ export default function EventDescription({
             <div>
                 {event.location && (
                     <span className="flex flex-row justify-start gap-2 items-center pb-1">
-            <PinIcon aria-label="sted"/>
+            <LocationPinIcon aria-label="sted"/>
                         {convertTextToLinks(event.location)}
           </span>
                 )}

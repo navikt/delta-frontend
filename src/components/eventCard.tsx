@@ -8,6 +8,7 @@ import {
     ClockIcon,
     HourglassBottomFilledIcon,
     PersonCheckmarkIcon,
+    LocationPinIcon,
 } from "@navikt/aksel-icons";
 import Link from "next/link";
 import {
@@ -71,6 +72,14 @@ export function EventCard({
                                     Varighet: {formatEventDuration(event.event)}
                                 </Detail>
                             )}</>)}
+                    {event.event.location.length <= 50 && (
+                        <Detail className="leading-normal">
+              <span className="flex items-center gap-1 pb-1">
+                <LocationPinIcon title="lokasjon"/>
+                {event.event.location}
+              </span>
+                        </Detail>
+                    )}
                     {event.event.signupDeadline && (
                         <Detail className="leading-normal">
               <span className="flex items-center gap-1 pb-1">

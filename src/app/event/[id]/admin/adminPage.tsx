@@ -52,36 +52,36 @@ export default function AdminPage({
           </Button>
         </span>
       </span>
-      <Modal
-        open={openConfirmation}
-        aria-label="Slett arrangement modal"
-        aria-labelledby="Slett arrangement modal"
-        className="w-4/5 max-w-[30rem] max-h-[50rem]"
-      >
-        <Modal.Body>
-          <Heading spacing level="1" size="large" id="modal-heading">
-            {`Slett: "${event?.title}?"`}
-          </Heading>
-          <BodyLong spacing>
-            {`Er du sikker på at du vil slette "${event?.title}"? Dette kan ikke angres.`}
-          </BodyLong>
-        </Modal.Body>
-        <Modal.Footer>
-            <Button
-              variant="secondary"
-              onClick={async () => setOpenConfirmation((x) => !x)}
-            >
-              Avbryt
-            </Button>
-            <Button
-              variant="danger"
-              className="w-fit h-fit font-bold"
-              onClick={() => deleteAndRedirect(event?.id!!)}
-            >
-              Ja, jeg vil slette arrangementet
-            </Button>
-        </Modal.Footer>
-      </Modal>
+        <Modal
+            open={openConfirmation}
+            onClose={() => setOpenConfirmation(false)}
+            aria-label="Slett arrangement modal"
+            className="w-4/5 max-w-[30rem] max-h-[50rem]"
+        >
+            <Modal.Body>
+                <Heading spacing level="1" size="large">
+                    {`Slett: "${event?.title}?"`}
+                </Heading>
+                <BodyLong spacing>
+                    {`Er du sikker på at du vil slette "${event?.title}"? Dette kan ikke angres.`}
+                </BodyLong>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button
+                    variant="secondary"
+                    onClick={async () => setOpenConfirmation((x) => !x)}
+                >
+                    Avbryt
+                </Button>
+                <Button
+                    variant="danger"
+                    className="w-fit h-fit font-bold"
+                    onClick={() => deleteAndRedirect(event?.id!!)}
+                >
+                    Ja, jeg vil slette arrangementet
+                </Button>
+            </Modal.Footer>
+        </Modal>
         <form>
             <Search
                 className="pt-2 -mb-2 sm:w-64"

@@ -194,12 +194,12 @@ export default function EventFilters({
               />
               <Tabs.Tab
                   value="tidligere"
-                  label="Påmeldte"
+                  label="Mine påmeldinger"
                   onClick={() => getOnlyJoined()}
               />
               <Tabs.Tab
                   value="mine"
-                  label="Mine"
+                  label="Admin"
                   onClick={() => getOnlyMine()}
               />
             </Tabs.List>

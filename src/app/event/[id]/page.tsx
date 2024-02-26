@@ -45,6 +45,7 @@ export default async function Page({ params }: EventPageProps) {
       color="bg-blue-200"
       title={event.title}
       home
+      backText="Arrangementer"
       backLink="/"
     >
       <EventDetails

@@ -15,9 +15,9 @@ export default function SearchArticles({ articles }: { articles: Article[] }) {
     const [searchQuery, setSearchQuery] = useState('');
 
     const filteredArticles = articles.filter((article) => {
-        const normalizedQuery = searchQuery.toLowerCase();
+        const normalizedQuery = searchQuery ? searchQuery.toLowerCase() : '';
         // Only search by title (remove other conditions)
-        return article.title.toLowerCase().includes(normalizedQuery);
+        return article.title ? article.title.toLowerCase().includes(normalizedQuery) : false;
     });
 
     return (

@@ -1,7 +1,7 @@
 "use client"
 import { Category, FullDeltaEvent } from "@/types/event";
 import { Search, Tabs, UNSAFE_Combobox, CheckboxGroup, Checkbox } from "@navikt/ds-react";
-import EventList from "./fagfestival/eventList";
+import EventList from "./eventList";
 import { useEffect, useState } from "react";
 import { getEvents } from "@/service/eventActions";
 import { FunnelIcon } from "@navikt/aksel-icons";

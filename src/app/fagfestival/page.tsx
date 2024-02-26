@@ -1,6 +1,7 @@
 import { checkToken } from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
-import EventFiltersFagFest from "@/components/eventFiltersFagFest";
+import CardWithBackgroundFagfestival from "@/components/fagfestival/cardWithBackground";
+import EventFilters from "@/components/fagfestival/eventFilters";
 import {getAllCategories, getEvents} from "@/service/eventActions";
 
 import { Metadata } from "next";
@@ -17,7 +18,7 @@ export default async function Fagfestival() {
         <>
             <div className="flex flex-col w-full">
                 <div className="w-full">
-                    <CardWithBackground
+                    <CardWithBackgroundFagfestival
                         color="bg-blue-200"
                         title="Velkommen til felles fagfestival 🎉"
                         backLink="/"
@@ -29,17 +30,17 @@ export default async function Fagfestival() {
                             <p className="mb-4 leading-normal">
                                 Elleville foredrag - grensesprengende workshops - sprø aktiviteter - tidenes fest</p>
                         </div>
-                    </CardWithBackground>
+                    </CardWithBackgroundFagfestival>
                 </div>
 
                 <div className="w-full -mt-28">
-                    <CardWithBackground
+                    <CardWithBackgroundFagfestival
                         color="bg-blue-200"
                         title=""
                         newEvent
                     >
-                        <EventFiltersFagFest categories={allCategories} searchName homeTabs />
-                    </CardWithBackground>
+                        <EventFilters categories={allCategories} searchName homeTabs />
+                    </CardWithBackgroundFagfestival>
                 </div>
             </div>
         </>

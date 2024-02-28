@@ -1,7 +1,7 @@
 ---
 title: Frontendforum
 when: Hver fagtorsdag
-target_audience: Utviklere
+audience: Utviklere
 ---
 
 # Frontendforum

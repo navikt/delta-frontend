@@ -1,7 +1,7 @@
 ---
 title: DE-forum
 when: Hver fagtorsdag
-target_audience: Åpen for alle
+audience: Åpen for alle
 ---
 
 # Data Engineering Forum

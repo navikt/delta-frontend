@@ -1,7 +1,7 @@
 ---
 title: Leesah Game
 when: Tidspunkt annonseres på Slack
-target_audience: Utviklere
+audience: Utviklere
 ---
 
 # Leesah Game

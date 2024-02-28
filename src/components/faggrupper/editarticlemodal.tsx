@@ -15,7 +15,7 @@ function EditArticleModal({ articlepath }) {
             <Modal ref={ref} header={{ heading: "Rediger faggruppe" }}>
                 <Modal.Body>
                         <div className="my-1">
-                            <h2 className="text-2xl  font-bold text-deepblue-500 mb-4">Vi gjør det sammen 😃</h2>
+                            <h2 className="text-2xl  font-bold text-deepblue-500 mb-4">A) Vi gjør det sammen 😃</h2>
                             <Link target="_blank" href="https://forms.office.com/e/LyKPTdaRw5"
                                   className="text-deepblue-500 underline hover:no-underline">
                                 Skjema for å redigere faggruppe.
@@ -29,7 +29,7 @@ function EditArticleModal({ articlepath }) {
                                 <li className="pt-1">Ønsket endring</li>
                             </ul>
 
-                            <h2 className="text-2xl  mt-8 mb-4 font-bold text-deepblue-500">Gjør det selv 🛠️</h2>
+                            <h2 className="text-2xl  mt-8 mb-4 font-bold text-deepblue-500">B) Gjør det selv 🛠️</h2>
                             <Link href={`https://github.com/navikt/delta-frontend/tree/main/public/faggrupper/${articlepath}.md`}
                                   className="text-deepblue-500 underline hover:no-underline">
                                 Rediger på Github.

@@ -1,8 +1,7 @@
 ---
 title: Observability
 when: Annenhver fagtorsdag (første)
-audience: Åpen for alle
-target_audience: Utviklere
+audience: Utviklere
 ---
 
 # Observability (o11y)

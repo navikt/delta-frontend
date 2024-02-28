@@ -1,7 +1,7 @@
 ---
 title: Security Champions
 when: En gang i måneden
-target_audience: Utviklere
+audience: Utviklere
 ---
 
 # Security Champions

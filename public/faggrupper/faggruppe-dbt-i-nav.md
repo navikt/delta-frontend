@@ -5,6 +5,7 @@ audience: Folk som driver med datatransformasjon
 ---
 
 # \#dbt-i-nav
+**d**ata **b**uild **t**ool
 
 ## Kontaktpersoner
 

@@ -5,6 +5,7 @@ audience: Utviklere
 ---
 
 # Hack / CTF
+**C**apture **T**he **F**lag
 
 ## Kontaktpersoner
 

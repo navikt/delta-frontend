@@ -1,5 +1,5 @@
 ---
-title: \#dbt-i-nav
+title: dbt i nav
 when: Hver fagtorsdag
 target_audience: Folk som driver med datatransformasjon
 ---

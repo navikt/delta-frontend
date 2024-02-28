@@ -5,7 +5,7 @@ import matter from 'gray-matter';
 import { remark } from 'remark'; // Correct import
 import html from 'remark-html';
 import CardWithBackground from "@/components/cardWithBackground";
-import EditArticleModal from "@/components/editarticlemodal";
+import EditArticleModal from "@/components/faggrupper/editarticlemodal";
 
 // Server component for fetching and processing article content
 // @ts-ignore

@@ -2,7 +2,7 @@ import { checkToken } from "@/auth/token";
 import fs from 'fs';
 import path from 'path';
 import CardWithBackground from '@/components/cardWithBackground';
-import SearchArticles from '@/components/SearchArticles';
+import SearchArticles from '@/components/faggrupper/SearchArticles';
 import matter from "gray-matter";
 import Link from "next/link";
 // Server component using server-side rendering (SSR)
@@ -15,12 +15,12 @@ export default async function ArticlesPage() {
         filenames.map(async (filename) => {
             const filePath = path.join(articleDirectory, filename);
             const fileContent = fs.readFileSync(filePath, 'utf8');
-            const { data: { title, when, target_audience } } = matter(fileContent); // Extract title from front matter
+            const { data: { title, when, audience } } = matter(fileContent); // Extract title from front matter
 
             return {
                 title,
                 when,
-                target_audience,
+                audience,
                 href: `/faggrupper/${filename.replace(/\.md$/, '')}`,
             };
         })

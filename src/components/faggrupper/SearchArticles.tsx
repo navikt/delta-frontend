@@ -7,7 +7,7 @@ import {CalendarIcon, PersonGroupIcon} from "@navikt/aksel-icons";
 interface Article {
     title: string;
     when?: string;
-    target_audience?: string;
+    audience?: string;
     href: string;
 }
 
@@ -41,7 +41,7 @@ export default function SearchArticles({ articles }: { articles: Article[] }) {
                     <Link key={article.title} href={article.href}>
                         <div className="flex flex-col h-full p-4 border rounded-xl text-text-default border-gray-300 transition-all hover:-translate-y-1 hover:scale-105 hover:text-surface-action-selected-hover hover:border-border-action event-card">
                             <Heading level="2" size="small">{article.title}</Heading>
-                            <div className="flex pt-2 flex-col gap-2 h-full justify-between">
+                            <div className="flex pt-2 flex-col gap-2 h-full">
                                 {article.when && (
                                     <Detail className="leading-normal">
                     <span className="flex items-center gap-1">
@@ -49,10 +49,10 @@ export default function SearchArticles({ articles }: { articles: Article[] }) {
                     </span>
                                 </Detail>
                                 )}
-                                {article.target_audience && (
+                                {article.audience && (
                                     <Detail className="leading-normal">
                                         <span className="flex items-center gap-1">
-                                          <PersonGroupIcon title="person" /> Målgruppe: {article.target_audience}
+                                          <PersonGroupIcon title="person" /> Målgruppe: {article.audience}
                                         </span>
                                     </Detail>
                                 )}

@@ -1,5 +1,5 @@
 ---
-title: DE-forum
+title: Data Engineering Forum
 when: Hver fagtorsdag
 audience: Åpen for alle
 ---

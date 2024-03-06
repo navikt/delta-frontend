@@ -1,6 +1,6 @@
 ---
 title: Observability
-when: Annenhver fagtorsdag (første)
+when: Annenhver fagtorsdag kl 10-11 (første)
 audience: Utviklere
 ---
 

@@ -12,6 +12,7 @@ audience: Utviklere
 - [Øydis Kind Refsum](https://nav-it.slack.com/team/U025P2PGW2W)
 - [Helene Arnesen](https://nav-it.slack.com/team/U03KX96MT39)
 - [Kyrre Havik](https://nav-it.slack.com/team/U8PL7CR4K)
+- [Emil Elton Nilsen](https://nav-it.slack.com/team/U026BMLJ67J)
 
 ## Beskrivelse
 

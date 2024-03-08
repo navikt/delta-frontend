@@ -1,7 +1,4 @@
-import {
-  grantAzureOboToken,
-  validateAzureToken,
-} from "@navikt/next-auth-wonderwall";
+import { requestOboToken, validateToken, getToken } from "@navikt/oasis";
 import type { User } from "@/types/user";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -9,17 +6,17 @@ import { redirect } from "next/navigation";
 export async function checkToken(redirectTo?: string) {
   if (process.env.NODE_ENV === "development") return;
 
-  const authHeader = headers().get("Authorization");
-  if (!authHeader) {
+  const token = getToken(headers());
+  if (!token) {
     if (redirectTo) {
       redirect(`/oauth2/login?redirect=${redirectTo}`);
     }
     redirect("/oauth2/login");
   }
 
-  const result = await validateAzureToken(authHeader);
-  if (result !== "valid") {
-    console.log(`Tokenvalidering gikk galt: ${result.message}`);
+  const result = await validateToken(token);
+  if (!result.ok) {
+    console.log(`Tokenvalidering gikk galt: ${result.error.message}`);
     redirectTo
       ? redirect(`/oauth2/login?redirect=${redirectTo}`)
       : redirect("/oauth2/login");
@@ -59,22 +56,19 @@ export async function getAccessToken(
 ): Promise<string | null> {
   if (process.env.NODE_ENV === "development") return null;
 
-  const authHeader = headers().get("Authorization");
-  if (!authHeader) {
+  const token = getToken(headers());
+  if (!token) {
     throw new Error("No access token, please log in...");
   }
 
-  const result = await grantAzureOboToken(
-    authHeader.replace("Bearer ", ""),
-    scope,
-  );
+  const result = await requestOboToken(token, scope);
 
-  if (typeof result !== "string") {
-    console.log(`Grant azure obo token failed: ${result.message}`);
+  if (!result.ok) {
+    console.log(`Grant azure obo token failed: ${result.error.message}`);
     return null;
   }
 
-  return result;
+  return result.token;
 }
 
 export async function getDeltaBackendAccessToken(): Promise<string | null> {

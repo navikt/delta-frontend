@@ -15,7 +15,7 @@
     "@navikt/ds-css": "^6.1.0",
     "@navikt/ds-react": "^6.1.0",
     "@navikt/ds-tailwind": "^6.1.0",
-    "@navikt/next-auth-wonderwall": "^1.6.0",
+    "@navikt/oasis": "^3.2.2",
     "@next/mdx": "^14.1.0",
     "@types/node": "20.11.20",
     "@types/react": "18.2.58",

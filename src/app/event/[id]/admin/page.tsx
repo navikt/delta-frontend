@@ -32,14 +32,24 @@ export default async function ParticipantsPage({
     );
   } else {
     return (
+        <>
       <CardWithBackground
         title="Ingen tilgang"
         color="bg-red-300"
         backLink={`/event/${params.id}`}
       >
-        Du har ikke tilgang til denne siden.
+        Du har egentlig ikke tilgang til denne siden.
         <Link href={`/event/${params.id}`}>Tilbake til arrangementet</Link>
       </CardWithBackground>
+    <CardWithBackground
+        title={`Administrer: ${fullEvent.event.title}`}
+        color="bg-green-200"
+        home
+        backLink={`/event/${params.id}`}
+    >
+      <AdminPage fullEvent={fullEvent} user={user} />
+    </CardWithBackground>
+        </>
     );
   }
 }

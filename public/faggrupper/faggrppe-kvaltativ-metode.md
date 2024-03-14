@@ -1,5 +1,5 @@
 ---
-title: Faggruppe kvalitativ metode
+title: Kvalitativ metode
 when: Tidspunkt annonseres på Slack
 audience: Kun for produktdesignere
 ---

@@ -17,6 +17,9 @@ Faggruppen tenker blant annet å se på hvordan man kommer igang med CTF & pente
 
 Vi spenderer fagtorsdager på å læra mer om sikkerhet & hacking med hjelp av f.eks. TryHackMe, PicoCTF, HackTheBox etc etc. 
 
+Vi sitter som regel ett sted i Fyrstikkalleen fra 12-16 på fagtorsdager men til og fra er det digitalt og zoom. 
+Si ifra på slack om du tenkte bli med så finner vi ett plass.
+
 ## Slack-gruppe
 
 [\#faggruppe-hack](https://nav-it.slack.com/archives/C045XD7KV32)

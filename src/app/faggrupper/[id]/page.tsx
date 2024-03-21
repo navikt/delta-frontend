@@ -10,7 +10,7 @@ import EditArticleModal from "@/components/faggrupper/editarticlemodal";
 // Server component for fetching and processing article content
 // @ts-ignore
 export default async function ArticlePage({ params }) {
-    await checkToken("/faggrupper/${params.id}");
+    await checkToken(`/faggrupper/${params.id}`);
     const filePath = path.join(process.cwd(), `public/faggrupper/${params.id}.md`);
     const fileContent = fs.readFileSync(filePath, 'utf8');
     const { content, data: { title } } = matter(fileContent); // Extract title

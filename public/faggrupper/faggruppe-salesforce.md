@@ -14,7 +14,7 @@ Kristian Bjerck
 
 ## Beskrivelse
 
-Vi er en dedikert Slack-kanal for alle Salesforce-entusiaster, uansett om du er nybegynner eller en erfaren Salesforce-bruker. Her kan vi dele kunnskap, stille spørsmål og diskutere alt relatert til Salesforce-plattformen.
+Vi er en dedikert faggruppe med en Slack-kanal for alle Salesforce-entusiaster, uansett om du er nybegynner eller en erfaren Salesforce-bruker. Her kan vi dele kunnskap, stille spørsmål og diskutere alt relatert til Salesforce-plattformen.
 
 ### Hva kan du forvente:
 
@@ -24,7 +24,7 @@ Vi er en dedikert Slack-kanal for alle Salesforce-entusiaster, uansett om du er 
 
 **Bli med oss i Faggruppe Salesforce, og la oss sammen bygge et sterkt og kunnskapsrikt fellesskap!**
 
-### Noen retningslinjer for Faggruppe Salesforce-kanalen
+### Noen retningslinjer for Faggruppe Salesforce-kanalen (på slack)
 
 1. Vennlig og respektfull kommunikasjon: Vi oppfordrer til en positiv og høflig tone. Respekter andres meninger og vær åpen for diskusjon.
 2. Kunnskapsdeling: Del gjerne din kunnskap, men husk at vi alle er her for å lære. Bidra med relevante ressurser, lenker og tips.

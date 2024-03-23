@@ -38,6 +38,7 @@ export function EventCard({
     return (
 <>
     {/*logikken skjuler utløpte arrangementer fra "alle" fanen*/}
+    {categories.filter(category => category.name === "fagfestival").map((category) => (<>
     {isUtløpt && tabname == "alle" && showAll != 10 ? (<></>) : (<>
         <Link
             href={`/fagfestival/${event.event.id}`}
@@ -126,6 +127,7 @@ export function EventCard({
             </div>
         </Link>
         </>)}
+            </>))}
         </>
     );
 }

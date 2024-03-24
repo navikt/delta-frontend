@@ -1,5 +1,5 @@
 ---
-title: Universell Utforming
+title: Universell utforming
 when: Hver fagtorsdag
 audience: Alle som vil sertifseres
 ---

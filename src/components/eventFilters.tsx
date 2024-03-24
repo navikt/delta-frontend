@@ -76,10 +76,30 @@ export default function EventFilters({
   const [val, setVal] = useState([]);
   const [tabname, setTabname] = useState("alle");
 
+
   const [events, setEvents] = useState([] as FullDeltaEvent[]);
   const [loading, setLoading] = useState(true);
 
+  const [eventCategories, setEventCategories] = useState([]);
   const [isMobile, setIsMobile] = useState(false);
+
+  // Filter the events based on the search input
+  useEffect(() => {
+    const filtered = events.filter((fullEvent) =>
+        fullEvent.event.title.toLowerCase().includes(searchInput.toLowerCase()),
+    );
+    setFilterEvents(filtered);
+
+    // Get the categories of the filtered events
+    const categories = filtered.flatMap((event) => event.categories);
+
+    // Use a Set to remove duplicates
+    const uniqueCategories = Array.from(new Set(categories.map(category => category.name)))
+        .map(name => categories.find(category => category.name === name));
+
+    // Set the categories as a state
+    setEventCategories(uniqueCategories);
+  }, [events, searchInput]);
 
   useEffect(() => {
     getEvents({
@@ -246,8 +266,9 @@ export default function EventFilters({
                   size="small"
                   label="Filtrer på kategori"
                   hideLabel={!isMobile}
-                  options={allCategories
+                  options={eventCategories
                       .map((category) => category.name)
+                      .filter((categoryName) => categoryName !== "fagfestival")
                       .sort((a, b) => a.localeCompare(b))}
                   selectedOptions={selectedCategories
                       .map((category) => category.name)
@@ -256,7 +277,7 @@ export default function EventFilters({
                     if (isSelected) {
                       setSelectedCategories((categories) => [
                         ...categories,
-                        allCategories.find((category) => category.name === categoryName)!,
+                        eventCategories.find((category) => category.name === categoryName)!,
                       ]);
                     } else {
                       setSelectedCategories((categories) =>

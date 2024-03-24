@@ -8,8 +8,8 @@ audience: Åpen for alle
 
 ## Kontaktpersoner
 
-Ole Olsen  
-Kari Karlsen
+- Ole Olsen  
+- Kari Karlsen
 
 ## Beskrivelse
 

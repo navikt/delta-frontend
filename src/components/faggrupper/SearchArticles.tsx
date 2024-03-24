@@ -36,7 +36,7 @@ export default function SearchArticles({ articles }: { articles: Article[] }) {
                 />
             </div>
 
-            <p className="px-4 pb-4">{filteredArticles.length} {filteredArticles.length == 1 ? (<>faggruppe</>) : (<>fagrupper</>)}</p>
+            <p className="px-4 pb-4">{filteredArticles.length} {filteredArticles.length == 1 ? (<>faggruppe</>) : (<>faggrupper</>)}</p>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 px-4 pb-4">
                 {filteredArticles.map((article) => (

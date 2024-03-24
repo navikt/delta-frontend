@@ -2,7 +2,7 @@
 import "./eventCard.css";
 import {Category, FullDeltaEvent} from "@/types/event";
 import {format} from "date-fns";
-import {Detail, Heading,  Tag} from "@navikt/ds-react";
+import {Detail, Heading, Tag} from "@navikt/ds-react";
 import {
     CalendarIcon,
     ClockIcon,
@@ -35,55 +35,62 @@ export function EventCard({
             ? true
             : false;
 
-    return (
-<>
-    {/*logikken skjuler utløpte arrangementer fra "alle" fanen*/}
+    // Check if the tab is "alle" and the event has a category named "fagfestival"
+    const shouldHide = tabname === "alle" && event.categories.some(category => category.name === "fagfestival");
 
-    {categories.filter(category => !(tabname === "alle" && category.name === "fagfestival")).map((category)  => category.name !== "fagfestival" ).map((category) => (<>
-    {isUtløpt && tabname == "alle" && showAll != 10 ? (<></>) : (<>
-        <Link
-            href={`/event/${event.event.id}`}
-            key={`event-${event.event.id}`}
-            className="flex flex-col h-full p-4 border rounded-xl text-text-default border-gray-300 transition-all hover:-translate-y-1 hover:scale-105 hover:text-surface-action-selected-hover hover:border-border-action event-card"
-        >
-            <Heading level="2" size="small">{event.event.title}</Heading>
-            <div className="flex flex-col gap-2 h-full justify-between">
-                <div>
-                    {format(new Date(event.event.startTime), "MMMd") ===
-                    format(new Date(event.event.endTime), "MMMd") ? (
-                        <><Detail className="flex gap-1 items-center pb-1 pt-1 leading-normal">
-                            <CalendarIcon title="dato"/>
-                            {formatEventDates(event.event)}
-                        </Detail>
-                            {formatEventDuration(event.event) !== "" && (
-                                <Detail className="flex gap-1 items-center pb-1 leading-normal">
-                                    <ClockIcon title="tid"/>
-                                    {`${event.event.startTime.substring(11, 16)} – ${event.event.endTime.substring(
-                                        11,
-                                        16,
-                                    )}`}
+    // If the condition is true, do not render the event
+    if (shouldHide) {
+        return null;
+    }
+
+    return (
+        <>
+            {isUtløpt && tabname == "alle" && showAll != 10 ? (
+                <></>
+            ) : (
+                <Link
+                    href={`/fagfestival/${event.event.id}`}
+                    key={`event-${event.event.id}`}
+                    className="flex flex-col h-full p-4 border rounded-xl text-text-default border-gray-300 transition-all hover:-translate-y-1 hover:scale-105 hover:text-surface-action-selected-hover hover:border-border-action event-card"
+                >
+                    <Heading level="2" size="small">{event.event.title}</Heading>
+                    <div className="flex flex-col gap-2 h-full justify-between">
+                        <div>
+                            {format(new Date(event.event.startTime), "MMMd") ===
+                            format(new Date(event.event.endTime), "MMMd") ? (
+                                <><Detail className="flex gap-1 items-center pb-1 pt-1 leading-normal">
+                                    <CalendarIcon title="dato"/>
+                                    {formatEventDates(event.event)}
                                 </Detail>
-                            )}</>) : (
-                        <><Detail className="flex gap-1 items-center pb-1 pt-1 leading-normal">
-                            <CalendarIcon title="dato"/>
-                            {formatEventTimes(event.event)}
-                        </Detail>
-                            {formatEventDuration(event.event) !== "" && (
-                                <Detail className="flex gap-1 items-center pb-1 leading-normal">
-                                    <ClockIcon aria-hidden/>
-                                    Varighet: {formatEventDuration(event.event)}
+                                    {formatEventDuration(event.event) !== "" && (
+                                        <Detail className="flex gap-1 items-center pb-1 leading-normal">
+                                            <ClockIcon title="tid"/>
+                                            {`${event.event.startTime.substring(11, 16)} – ${event.event.endTime.substring(
+                                                11,
+                                                16,
+                                            )}`}
+                                        </Detail>
+                                    )}</>) : (
+                                <><Detail className="flex gap-1 items-center pb-1 pt-1 leading-normal">
+                                    <CalendarIcon title="dato"/>
+                                    {formatEventTimes(event.event)}
                                 </Detail>
-                            )}</>)}
-                    {event.event.location.length <= 50 && (
-                        <Detail className="leading-normal">
+                                    {formatEventDuration(event.event) !== "" && (
+                                        <Detail className="flex gap-1 items-center pb-1 leading-normal">
+                                            <ClockIcon aria-hidden/>
+                                            Varighet: {formatEventDuration(event.event)}
+                                        </Detail>
+                                    )}</>)}
+                            {event.event.location.length <= 50 && (
+                                <Detail className="leading-normal">
               <span className="flex items-center gap-1 pb-1">
                 <LocationPinIcon title="lokasjon"/>
-                {event.event.location}
+                  {event.event.location}
               </span>
-                        </Detail>
-                    )}
-                    {event.event.signupDeadline && (
-                        <Detail className="leading-normal">
+                                </Detail>
+                            )}
+                            {event.event.signupDeadline && (
+                                <Detail className="leading-normal">
               <span className="flex items-center gap-1 pb-1">
                 <HourglassBottomFilledIcon title="timeglass"/>
                 Påmeldingsfrist:{" "}
@@ -95,11 +102,11 @@ export function EventCard({
                       formatDeadline(event.event)
                   )}
               </span>
-                        </Detail>
-                    )}
-                    {event.event.participantLimit > 0 && (
-                        <>
-                            <Detail className="leading-normal">
+                                </Detail>
+                            )}
+                            {event.event.participantLimit > 0 && (
+                                <>
+                                    <Detail className="leading-normal">
                 <span className="flex items-center gap-1 pb-1 leading-normal">
                   <PersonCheckmarkIcon title="person"/>
                     {/*Maks {event.participants.length + event.hosts.length} av*/}
@@ -109,26 +116,25 @@ export function EventCard({
                       Arrangementet er fullt
                     </span>
                     ) : (<>
-                         {event.event.participantLimit - event.participants.length - event.hosts.length > 9 ? (
-                             <>Maks {event.event.participantLimit} deltakere</>):(<>Kun {event.event.participantLimit - event.participants.length - event.hosts.length} plasser igjen</>)}
+                        {event.event.participantLimit - event.participants.length - event.hosts.length > 9 ? (
+                            <>Maks {event.event.participantLimit} deltakere</>):(<>Kun {event.event.participantLimit - event.participants.length - event.hosts.length} plasser igjen</>)}
                     </>)}
 
                 </span>
-                            </Detail>
-                        </>
-                    )}
-                </div>
-                <div className="flex gap-2 flex-wrap items-end w-full">
-                    {categories.map((category) => (
-                        <Tag variant="alt1" size="small" key={category.id}>
-                            {category.name}
-                        </Tag>
-                    ))}
-                </div>
-            </div>
-        </Link>
-        </>)}
-            </>))}
+                                    </Detail>
+                                </>
+                            )}
+                        </div>
+                        <div className="flex gap-2 flex-wrap items-end w-full">
+                            {categories.map((category) => (
+                                <Tag variant="alt1" size="small" key={category.id}>
+                                    {category.name}
+                                </Tag>
+                            ))}
+                        </div>
+                    </div>
+                </Link>
+            )}
         </>
     );
 }

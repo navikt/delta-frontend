@@ -8,9 +8,9 @@ audience: Åpen for alle
 
 ## Kontaktpersoner
 
-Kenneth Sørensen  
-Tor Håkon Sigurdsen
-Kristian Bjerck
+- [Kenneth Sørensen](https://nav-it.slack.com/team/U04578943UZ)  
+- [Tor Håkon Sigurdsen](https://nav-it.slack.com/team/U01CL60KPV5)
+- [Kristian Bjerck](https://nav-it.slack.com/team/U03ST5JNSDA)
 
 ## Beskrivelse
 

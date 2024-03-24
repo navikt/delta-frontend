@@ -1,7 +1,7 @@
 ---
 title: Visuell Kommunikasjon
 when: En gang i måneden
-audience: Alle
+audience: Åpen for alle
 ---
 
 # Visuell kommunikasjon

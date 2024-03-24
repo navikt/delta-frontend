@@ -1,6 +1,6 @@
 ---
 title: Data Science Forum
-when: Hver uke. Fredager på fagtorsdaguker og torsdager ellers.
+when: Fredager i fagtorsdaguker og torsdager ellers.
 audience: Åpen for alle
 ---
 

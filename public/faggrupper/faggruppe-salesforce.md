@@ -1,6 +1,6 @@
 ---
 title: Salesforce
-when: Onsdager i uker  fagtorsdag arrangeres
+when: Onsdager i fagtorsdagsuker
 audience: Åpen for alle
 ---
 

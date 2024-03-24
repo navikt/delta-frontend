@@ -98,6 +98,7 @@ export default function EventFilters({
         .map(name => categories.find(category => category.name === name));
 
     // Set the categories as a state
+    // @ts-ignore
     setEventCategories(uniqueCategories);
   }, [events, searchInput]);
 

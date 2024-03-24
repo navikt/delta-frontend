@@ -19,4 +19,4 @@ audience: Kun for produktdesignere
 
 ## Slack-gruppe
 
-Kontakt Peter Havgar for tilgang til privat Slack-kanal.
+[Kontakt Peter Havgar](https://nav-it.slack.com/team/U023M55112N) for tilgang til privat Slack-kanal.

@@ -25,4 +25,4 @@ Formatet er hybrid, og møteseriene sendes ut i starten av hver vår/høst.
 
 ## Slack-gruppe
 
-[\#slackgruppe](https://nav-it.slack.com/archives/C6WB7DXNC)
+[\#data-science](https://nav-it.slack.com/archives/C6WB7DXNC)

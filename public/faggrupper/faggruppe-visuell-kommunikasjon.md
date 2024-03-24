@@ -18,4 +18,4 @@ Dette er lavterskeltilbud, alle kan bli med. Du trenger ingen forkunnskaper, bar
 
 ## Slack-gruppe
 
-[faggr-visuell-kommunikasjon](https://nav-it.slack.com/archives/CPW2JRPB9)
+[\#faggr-visuell-kommunikasjon](https://nav-it.slack.com/archives/CPW2JRPB9)

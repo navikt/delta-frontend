@@ -80,7 +80,7 @@ export default function EventFilters({
   const [events, setEvents] = useState([] as FullDeltaEvent[]);
   const [loading, setLoading] = useState(true);
 
-  const [eventCategories, setEventCategories] = useState([]);
+  const [eventCategories, setEventCategories] = useState<Category[]>([]);
   const [isMobile, setIsMobile] = useState(false);
 
   // Filter the events based on the search input

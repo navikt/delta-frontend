@@ -1,7 +1,8 @@
 import { init } from "@amplitude/analytics-browser";
 
 export const initAmplitude = () => {
-    if (typeof window === 'undefined' || window.location.hostname === 'localhost') {
+    if ( typeof window !== "undefined" &&
+        window.location.hostname === "delta.nav.no") {
         return;
     }
 

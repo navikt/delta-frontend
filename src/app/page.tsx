@@ -10,9 +10,9 @@ export const metadata: Metadata = {
   description: "Påmeldingsapp",
 };
 export default async function Home(context: any) {
+  initAmplitude();
   await checkToken("/");
   const allCategories = await getAllCategories();
-  initAmplitude();
 
   return (
     <CardWithBackground

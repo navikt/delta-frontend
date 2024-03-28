@@ -3,6 +3,7 @@ import CardWithBackground from "@/components/cardWithBackground";
 import EventFilters from "@/components/eventFilters";
 import { getAllCategories } from "@/service/eventActions";
 import { Metadata } from "next";
+import initAmplitude from "@/components/amplitude/amplitude";
 
 export const metadata: Metadata = {
   title: "Delta Δ NAV",
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
 export default async function Home(context: any) {
   await checkToken("/");
   const allCategories = await getAllCategories();
+  initAmplitude();
 
   return (
     <CardWithBackground

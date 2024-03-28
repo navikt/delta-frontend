@@ -2,12 +2,14 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import ScrollToTop from "@/components/ScrollToTop";
 import "./globals.css";
+import initAmplitude from "@/components/amplitude/amplitude";
 
 type RootLayoutProps = {
     children: React.ReactNode;
 };
 
 export default async function RootLayout({ children }: RootLayoutProps) {
+    initAmplitude();
     return (
         <html lang="no" className="min-h-screen">
         <body>

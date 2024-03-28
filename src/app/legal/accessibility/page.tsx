@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "Universell utforming Δ Delta",
 };
 
+
 export default async function Accessibility() {
   await checkToken("/legal/accessibility");
   const events = await getEvents({ onlyMine: true });

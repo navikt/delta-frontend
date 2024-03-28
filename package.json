@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@amplitude/analytics-browser": "^2.6.1",
+    "@amplitude/analytics-browser": "^1.10.4",
     "@hookform/resolvers": "^3.3.4",
     "@mdx-js/loader": "^3.0.1",
     "@navikt/aksel-icons": "^6.1.1",

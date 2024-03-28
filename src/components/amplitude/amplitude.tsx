@@ -1,8 +1,7 @@
 import { init } from "@amplitude/analytics-browser";
 
 export const initAmplitude = () => {
-    // @ts-ignore
-    if (window.location.hostname === 'localhost') {
+    if (typeof window === 'undefined' || window.location.hostname === 'localhost') {
         return;
     }
 

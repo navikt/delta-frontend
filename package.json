@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@amplitude/analytics-browser": "^2.6.1",
+    "@amplitude/plugin-user-agent-enrichment-browser": "^1.0.1",
     "@hookform/resolvers": "^3.3.4",
     "@mdx-js/loader": "^3.0.1",
     "@navikt/aksel-icons": "^6.1.1",

@@ -38,13 +38,19 @@ export function EventCard({
     return (
 <>
     {/*logikken skjuler utløpte arrangementer fra "alle" fanen*/}
-    {categories.filter(category => category.name === "fagfestival").map((category) => (<>
-    {isUtløpt && tabname == "alle" && showAll != 10 ? (<></>) : (<>
-        <Link
-            href={`/fagfestival/${event.event.id}`}
-            key={`event-${event.event.id}`}
-            className="flex flex-col h-full p-4 border rounded-xl text-text-default border-gray-300 transition-all hover:-translate-y-1 hover:scale-105 hover:text-surface-action-selected-hover hover:border-border-action event-card"
-        >
+    {categories.filter(category => category.name === "fagfestival").map((category) => (
+        <>
+            {isUtløpt && tabname == "alle" && showAll != 10 ? (
+                <></>
+            ) : (
+                <>
+                    {/* @ts-ignore  */}
+                    {format(new Date(event.event.startTime), "dd").includes(tabname  || tabname == "alle"  || tabname == "påmeldte")   && (
+                        <Link
+                            href={`/fagfestival/${event.event.id}`}
+                            key={`event-${event.event.id}`}
+                            className="flex flex-col h-full p-4 border rounded-xl text-text-default border-gray-300 transition-all hover:-translate-y-1 hover:scale-105 hover:text-surface-action-selected-hover hover:border-border-action event-card"
+                        >
             <Heading level="2" size="small">{event.event.title}</Heading>
             <div className="flex flex-col gap-2 h-full justify-between">
                 <div>
@@ -126,8 +132,11 @@ export function EventCard({
                 </div>
             </div>
         </Link>
-        </>)}
-            </>))}
+                    )}
+                </>
+            )}
         </>
+    ))}
+</>
     );
 }

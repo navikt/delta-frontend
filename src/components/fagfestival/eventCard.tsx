@@ -41,7 +41,7 @@ export function EventCard({
     {categories.filter(category => category.name === "fagfestival").map((category) => (
         <>
                     {/* @ts-ignore  */}
-                    {format(new Date(event.event.startTime), "dd").includes(tabname) && tabname !== "påmeldte" && (
+            {((format(new Date(event.event.startTime), "dd").includes(tabname) && tabname !== "påmeldte") || (tabname === "påmeldte")) && (
                         <Link
                             href={`/fagfestival/${event.event.id}`}
                             key={`event-${event.event.id}`}

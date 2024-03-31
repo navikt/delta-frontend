@@ -26,7 +26,7 @@ export async function checkToken(redirectTo?: string) {
 export function getUser(): User {
   if (process.env.NODE_ENV === "development") {
     return {
-      firstName: "Ola",
+      firstName: "Ola Kari",
       lastName: "Nordmann",
       email: "dev@localhost",
     };

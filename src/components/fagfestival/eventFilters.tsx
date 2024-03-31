@@ -239,7 +239,7 @@ export default function EventFiltersFagFest({
                   onClick={() => get25()}
               />
               <Tabs.Tab
-                  value="tidligere"
+                  value="påmeldte"
                   label="Mine påmeldinger"
                   onClick={() => getOnlyJoined()}
               />

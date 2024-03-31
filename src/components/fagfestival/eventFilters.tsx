@@ -333,8 +333,7 @@ export default function EventFiltersFagFest({
       )}
 
       <div className="w-full p-4">
-
-        {(tabname == "23" || tabname == "alle") && (
+        {tabname == "23" && (
             <div className="pb-10 prose">
               <h3>Første dag!</h3>
               <p>Fagfestivalen starter 🚀</p>
@@ -355,7 +354,7 @@ export default function EventFiltersFagFest({
             </div>
         )}
 
-        <EventList fullEvents={filterEvents} loading={loading}  showAll={val} tabname={tabname } />
+        <EventList fullEvents={filterEvents} loading={loading} showAll={val} tabname={tabname}/>
       </div>
       {ctaLink && (
           <div className="px-4 mb-4">

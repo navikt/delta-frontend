@@ -40,10 +40,6 @@ export function EventCard({
     {/*logikken skjuler utløpte arrangementer fra "alle" fanen*/}
     {categories.filter(category => category.name === "fagfestival").map((category) => (
         <>
-            {isUtløpt && tabname == "alle" && showAll != 10 ? (
-                <></>
-            ) : (
-                <>
                     {/* @ts-ignore  */}
                     {format(new Date(event.event.startTime), "dd").includes(tabname) && tabname !== "påmeldte" && (
                         <Link
@@ -132,8 +128,6 @@ export function EventCard({
                 </div>
             </div>
         </Link>
-                    )}
-                </>
             )}
         </>
     ))}

@@ -24,8 +24,7 @@ export default async function Fagfestival() {
                         backLink="/"
                     >
                         <div className="m-4 max-w-2xl font-serif">
-                            <h2 className="pb-4 text-2xl">Felles fagfestival for direktoratet!
-                            </h2>
+                            <h2 className="pb-4 text-2xl">Felles fagfestival for direktoratet!</h2>
                             <p className="mb-4 leading-normal">23.-25. april arrangeres det fagfestival i Fyrstikkalléen.</p>
                             <p className="mb-4 leading-normal">
                                 Elleville foredrag - grensesprengende workshops - sprø aktiviteter - tidenes fest</p>

@@ -165,6 +165,42 @@ export default function EventFiltersFagFest({
         .then(() => setLoading(false));
   }
 
+  function get23() {
+    setLoading(true);
+    setTabname("23")
+    setVal([])
+    getEvents({
+      categories: selectedCategories,
+      onlyFuture: true,
+    })
+        .then(setEvents)
+        .then(() => setLoading(false));
+  }
+
+  function get24() {
+    setLoading(true);
+    setTabname("24")
+    setVal([])
+    getEvents({
+      categories: selectedCategories,
+      onlyFuture: true,
+    })
+        .then(setEvents)
+        .then(() => setLoading(false));
+  }
+
+  function get25() {
+    setLoading(true);
+    setTabname("25")
+    setVal([])
+    getEvents({
+      categories: selectedCategories,
+      onlyFuture: true,
+    })
+        .then(setEvents)
+        .then(() => setLoading(false));
+  }
+
   function getAllPrev() {
     setLoading(true);
     getEvents({
@@ -190,17 +226,17 @@ export default function EventFiltersFagFest({
               <Tabs.Tab
                   value="23"
                   label="23. april"
-                  onClick={() => getAll()}
+                  onClick={() => get23()}
               />
               <Tabs.Tab
                   value="24"
                   label="24. april"
-                  onClick={() => getAll()}
+                  onClick={() => get24()}
               />
               <Tabs.Tab
                   value="25"
                   label="25. april"
-                  onClick={() => getAll()}
+                  onClick={() => get25()}
               />
               <Tabs.Tab
                   value="tidligere"
@@ -295,7 +331,30 @@ export default function EventFiltersFagFest({
         </Link>
       </div>
       )}
+
       <div className="w-full p-4">
+
+        {(tabname == "23" || tabname == "alle") && (
+            <div className="pb-8 prose">
+              <h3>Første dag!</h3>
+              <p>Fagfestivalen starter 🚀</p>
+            </div>
+        )}
+
+        {tabname == "24" && (
+            <div className="pb-8 prose">
+              <h3>Andre dag!</h3>
+              <p>Fagfestivalen fortsetter 🚚</p>
+            </div>
+        )}
+
+        {tabname == "25" && (
+            <div className="pb-8 prose">
+              <h3>Siste dag!</h3>
+              <p>Fagfestivalen avslutter med en fest 🎉</p>
+            </div>
+        )}
+
         <EventList fullEvents={filterEvents} loading={loading}  showAll={val} tabname={tabname } />
       </div>
       {ctaLink && (

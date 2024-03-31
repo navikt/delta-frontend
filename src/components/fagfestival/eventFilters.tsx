@@ -94,7 +94,7 @@ export default function EventFiltersFagFest({
   }, [selectedCategories, onlyFuture, onlyPast, onlyJoined]);
 
   useEffect(() => {
-    getAll()
+    get23()
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
     };
@@ -221,7 +221,7 @@ export default function EventFiltersFagFest({
   return (
     <div className="flex flex-col w-full gap-6 items-start">
       {homeTabs && (
-          <Tabs className="self-start w-full" defaultValue="fremtidige">
+          <Tabs className="self-start w-full" defaultValue="23">
             <Tabs.List>
               <Tabs.Tab
                   value="23"

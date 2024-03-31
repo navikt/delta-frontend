@@ -45,7 +45,7 @@ export function EventCard({
             ) : (
                 <>
                     {/* @ts-ignore  */}
-                    {format(new Date(event.event.startTime), "dd").includes(tabname  || tabname == "alle"  || tabname == "påmeldte")   && (
+                    {format(new Date(event.event.startTime), "dd").includes(tabname) && tabname !== "påmeldte" && (
                         <Link
                             href={`/fagfestival/${event.event.id}`}
                             key={`event-${event.event.id}`}

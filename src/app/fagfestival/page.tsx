@@ -20,7 +20,7 @@ export default async function Fagfestival() {
                 <div className="w-full">
                     <CardWithBackgroundFagfestival
                         color="bg-blue-200"
-                        title="Felles fagfestival ✨"
+                        title="Felles fagfestival 🎉"
                         backLink="/"
                     >
                         <div className="m-4 max-w-2xl font-serif">

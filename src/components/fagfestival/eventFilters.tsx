@@ -335,21 +335,21 @@ export default function EventFiltersFagFest({
       <div className="w-full p-4">
 
         {(tabname == "23" || tabname == "alle") && (
-            <div className="pb-8 prose">
+            <div className="pb-10 prose">
               <h3>Første dag!</h3>
               <p>Fagfestivalen starter 🚀</p>
             </div>
         )}
 
         {tabname == "24" && (
-            <div className="pb-8 prose">
+            <div className="pb-10 prose">
               <h3>Andre dag!</h3>
               <p>Fagfestivalen fortsetter 🚚</p>
             </div>
         )}
 
         {tabname == "25" && (
-            <div className="pb-8 prose">
+            <div className="pb-10 prose">
               <h3>Siste dag!</h3>
               <p>Fagfestivalen avslutter med en fest 🎉</p>
             </div>

@@ -189,7 +189,6 @@ export default function EventFilters({
   function getAllPrev() {
     setLoading(true);
     getEvents({
-      categories: selectedCategories,
       onlyPast
     })
         .then(setEvents)

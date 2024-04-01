@@ -26,7 +26,7 @@ export default async function Fagfestival() {
                         <div className="m-4 max-w-2xl font-serif">
                             <h2 className="pb-4 text-2xl">Felles fagfestival for direktoratet 23.-25. april</h2>
                             <p className="leading-normal">
-                                På denne siden finner du programmet, og kan melde deg på ulike aktiviteter!</p>
+                                På denne siden finner du programmet og kan melde deg på aktiviteter.</p>
                         </div>
                     </CardWithBackgroundFagfestival>
                 </div>

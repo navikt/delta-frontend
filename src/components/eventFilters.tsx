@@ -292,7 +292,7 @@ export default function EventFilters({
           )}
         </div>
       )}
-      {selectTimeRadio && (
+      {(selectTimeRadio && tabname != "alle") && (
           <>
             {/*<Switch className={"-mt-5 -mb-2 ml-4"}>Vis tidligere</Switch>*/}
             <CheckboxGroup

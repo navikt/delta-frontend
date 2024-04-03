@@ -66,8 +66,12 @@ export default async function Privacy() {
 
                 <h2 className="pb-4 pt-4 text-2xl">Feil, mangler og forbedringsforslag</h2>
                 <p className="leading-normal">Hvis du opplever problemer eller har forslag til forbedringer hører vi
-                    veldig gjerne fra deg! Feil og mangler kan rapporteres til eilif.johansen@nav.no, eller #delta på
-                    Slack.</p>
+                    veldig gjerne fra deg! Feil og mangler kan rapporteres til <Link
+                        href="mailto:eilif.johansen@nav.no"
+                        className="text-deepblue-500 underline hover:no-underline">eilif.johansen@nav.no</Link>, eller <Link
+                        href="https://nav-it.slack.com/archives/C05E0NJ6Z0C"
+                        className="text-deepblue-500 underline hover:no-underline">#delta  på
+                        Slack</Link>.</p>
             </div>
         </CardWithBackground>
     );

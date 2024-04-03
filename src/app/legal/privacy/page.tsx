@@ -20,6 +20,7 @@ export default async function Privacy() {
           <div className="m-4 max-w-2xl font-serif">
               <h2 className="pb-4 text-2xl">Personvern og sikkerhet på delta.nav.no</h2>
               <p className="mb-4 leading-normal">Delta er en nettside NAV Arbeids- og velferdsdirektoratet. Denne personvernerklæringen er knyttet til behandlingen av personopplysninger på dette nettstedet. For utfyllende informasjon om hvordan NAV behandler personopplysninger, kan du lese mer i <Link href="https://www.nav.no/no/nav-og-samfunn/om-nav/personvern-i-arbeids-og-velferdsetaten" className="text-deepblue-500 underline hover:no-underline">NAVs generelle personvernerklæring.</Link></p>
+              <Link className="mb-4 leading-normal text-deepblue-500 underline hover:no-underline" href="https://etterlevelse.intern.nav.no/dokumentasjon/935f99be-82b1-4833-b9d7-5ccdc2623025">For mer info se Delta sin oppføring i Etterlevelse i NAV</Link>
 
 
               <h2 className="pb-4 pt-4 text-2xl">Hvilke personopplysninger vi samler inn og hvorfor</h2>
@@ -27,6 +28,7 @@ export default async function Privacy() {
                   Ved påmelding på arrangementer i Delta lagrer vi Navn og E-postadresse. Vi trenger disse opplysningene for at arrangøren skal vite hvem som er påmeldt, og hvilken e-post kalenderinvitasjonen skal sendes til.
               Delta ber om samtykke før personopplysninger lagres tilknyttet påmelding til et event.
               </p>
+              <Link className="mb-4 leading-normal text-deepblue-500 underline hover:no-underline" href="https://behandlingskatalog.intern.nav.no/process/purpose/KOMPETANSEUTVIKLING/b2d74c2c-8d0b-4bdc-a21a-4ca9e265bc85">For mer info se  Deltas oppføring i Behandlerkatalogen</Link>
 
               <h2 className="pb-4 pt-4 text-2xl">Sletting av personopplysninger</h2>
               <p className="mb-4 leading-normal">

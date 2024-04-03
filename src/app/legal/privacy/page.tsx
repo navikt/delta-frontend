@@ -24,7 +24,7 @@ export default async function Privacy() {
                         personvernerklæring.</Link></p>
                 <Link className="mb-4 leading-normal text-deepblue-500 underline hover:no-underline"
                       href="https://etterlevelse.intern.nav.no/dokumentasjon/935f99be-82b1-4833-b9d7-5ccdc2623025">For
-                    mer info se Delta sin oppføring i Etterlevelse i NAV</Link>
+                    detaljer se Deltas oppføring i Etterlevelse i NAV.</Link>
 
                 <h2 className="pb-4 pt-4 text-2xl">Hvilke personopplysninger vi samler inn og hvorfor</h2>
                 <p className="mb-4 leading-normal">
@@ -35,7 +35,7 @@ export default async function Privacy() {
                 </p>
                 <Link className="mb-4 leading-normal text-deepblue-500 underline hover:no-underline"
                       href="https://behandlingskatalog.intern.nav.no/process/purpose/KOMPETANSEUTVIKLING/b2d74c2c-8d0b-4bdc-a21a-4ca9e265bc85">For
-                    mer info se Deltas oppføring i Behandlerkatalogen</Link>
+                    detaljer se Deltas oppføring i Behandlerkatalogen.</Link>
 
                 <h2 className="pb-4 pt-4 text-2xl">Sletting av personopplysninger</h2>
                 <p className="mb-4 leading-normal">

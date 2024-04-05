@@ -37,7 +37,7 @@ export default async function Fagfestival() {
                         title=""
                         newEvent
                     >
-                        <EventFilters categories={allCategories} selectCategory homeTabs />
+                        <EventFilters categories={allCategories} selectCategory searchName homeTabs />
                     </CardWithBackgroundFagfestival>
                 </div>
             </div>

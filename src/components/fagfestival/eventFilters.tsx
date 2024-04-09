@@ -84,7 +84,8 @@ export default function EventFiltersFagFest({
 
   useEffect(() => {
     const filtered = events.filter((fullEvent) =>
-        fullEvent.event.title.toLowerCase().includes(searchInput.toLowerCase()),
+        fullEvent.event.title.toLowerCase().includes(searchInput.toLowerCase()) &&
+        fullEvent.categories.some(category => category.name === 'fagfestival')
     );
     setFilterEvents(filtered);
 
@@ -295,7 +296,7 @@ export default function EventFiltersFagFest({
               }}
             />
           )}
-          {selectCategory && tabname == "alle" && (
+          {selectCategory  && (
             <div className="w-full md:w-fit flex items-center flex-wrap flex-row-reverse md:flex-row gap-2">
               <span className="gap-2 items-center hidden md:flex">
                 <FunnelIcon title="trakt" />
@@ -308,7 +309,7 @@ export default function EventFiltersFagFest({
                   hideLabel={!isMobile}
                   options={eventCategories
                       .map((category) => category.name)
-                      .filter((categoryName) =>  categoryName !== "biljard")
+                      .filter((categoryName) =>  categoryName !== "fagfestival")
                       .sort((a, b) => a.localeCompare(b))}
                   selectedOptions={selectedCategories
                       .map((category) => category.name)

@@ -1,7 +1,7 @@
 import { checkToken } from "@/auth/token";
 import CardWithBackgroundFagfestival from "@/components/fagfestival/cardWithBackground";
 import EventFilters from "@/components/fagfestival/eventFilters";
-import {getAllCategories, getEvents} from "@/service/eventActions";
+import {getEvents} from "@/service/eventActions";
 
 import { Metadata } from "next";
 import Intro from "@/components/fagfestival/intro";
@@ -13,7 +13,6 @@ export const metadata: Metadata = {
 export default async function Fagfestival() {
     await checkToken("/fagfestival");
     const events = await getEvents({ onlyMine: true });
-    const allCategories = await getAllCategories();
     return (
         <>
             <div className="flex flex-col w-full" >
@@ -35,7 +34,7 @@ export default async function Fagfestival() {
                         title=""
                         newEvent
                     >
-                        <EventFilters categories={allCategories} selectCategory searchName homeTabs/>
+                        <EventFilters  searchName homeTabs/>
                     </CardWithBackgroundFagfestival>
                 </div>
             </div>

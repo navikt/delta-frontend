@@ -25,9 +25,9 @@ export default function Intro() {
             </Accordion.Header>
             <Accordion.Content>
               <div className="prose">
-                <p>Videre oppfordrer vi deg til å bruke «Bli med»-knappen som du finner øverst
+                <p>Du kan  bruke «Bli med»-knappen som du finner øverst
                   til høyre
-                  hjørne på hvert arrangement. Da vil du automatisk få tilsendt en
+                  hjørne på hvert arrangement for å melde deg på. Da vil du automatisk få tilsendt en
                   kalenderinvitasjon
                   til din innboks. I tillegg vil du enkelt kunne holde oversikten over dine
                   påmeldinger under «Mine påmeldinger» her på Delta.</p>

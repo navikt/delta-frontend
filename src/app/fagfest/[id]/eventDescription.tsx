@@ -135,17 +135,15 @@ export default function EventDescription({
                     Arrangeres av:
                 </label>
                 <ul>
-                    {hosts.map((host) => (
-                        <li className="flex ml-[0.2rem] pl-6 gap-2" key={host.email}>
+                        <li className="flex ml-[0.2rem] pl-6 gap-2">
                             <Link
-                                title={`Send e-post til ${host.name.split(", ").reverse().join(" ")}`}
-                                href={`mailto:${host.email}`}
+                                title={`Send e-post til fagfestival@nav.no`}
+                                href={`mailto:fagfestival@nav.no`}
                                 className="leading-relaxed"
                             >
-                                {host.name.split(", ").reverse().join(" ")}
+                              Fagfest 2004
                             </Link>
                         </li>
-                    ))}
                 </ul>
             </div>
             <span className="flex flex-row justify-start gap-2 items-center cursor-pointer">

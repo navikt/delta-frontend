@@ -15,7 +15,7 @@ export default async function Fagfestival() {
     const events = await getEvents({ onlyMine: true });
     return (
         <>
-            <div className="flex flex-col w-full" >
+            <div className="flex flex-col w-full bg-fagfestival  pb-10" >
                 <div className="w-full">
                     <CardWithBackgroundFagfestival
                         color="bg-blue-200"

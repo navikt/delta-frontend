@@ -3,6 +3,14 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+.bg-fagfestival {
+    background-color: #131136;
+}
+
+.color-fagfestival {
+    color: #ec38a7;
+}
+
 .mb-6 {
     margin-bottom: 0 !important;
 }

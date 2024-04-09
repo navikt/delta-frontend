@@ -15,7 +15,7 @@ export default async function Fagfestival() {
     const allCategories = await getAllCategories();
     return (
         <>
-            <div className="flex flex-col w-full">
+            <div className="flex flex-col w-full" >
                 <div className="w-full">
                     <CardWithBackgroundFagfestival
                         color="bg-blue-200"

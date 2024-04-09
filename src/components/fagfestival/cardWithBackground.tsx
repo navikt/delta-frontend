@@ -14,7 +14,7 @@ type CardWithBackgroundProps = {
 };
 export default function CardWithBackground(props: CardWithBackgroundProps) {
   return (
-    <div className={`w-full flex flex-col align-center items-center -mt-20`}>
+    <div className={`w-full flex flex-col align-center items-center -mt-20 bg-fagfestival`}>
         {/*${props.color}*/}
         <div className={`w-full header-animated-bg relative max-w-[100vw] overflow-hidden animation-stop`}>
             <div className="z-20 pb-24">
@@ -23,7 +23,7 @@ export default function CardWithBackground(props: CardWithBackgroundProps) {
                     {props.title && (
                     <Heading
                         className="first-letter:uppercase mt-8"
-                        style={{color: "rgba(0, 80, 119, 1)"}}
+                        style={{color: "#ec38a7"}}
                         level="1"
                         size="xlarge"
                     >

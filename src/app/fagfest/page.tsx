@@ -2,6 +2,7 @@ import { checkToken } from "@/auth/token";
 import CardWithBackgroundFagfestival from "@/components/fagfestival/cardWithBackground";
 import EventFilters from "@/components/fagfestival/eventFilters";
 import {getEvents} from "@/service/eventActions";
+import "./fagfestival.css";
 
 import { Metadata } from "next";
 import Intro from "@/components/fagfestival/intro";

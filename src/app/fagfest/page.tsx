@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Fagfestival() {
-    await checkToken("/fagfestival");
+    await checkToken("/fagfest");
     const events = await getEvents({ onlyMine: true });
     return (
         <>

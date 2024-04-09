@@ -34,7 +34,7 @@ export async function generateMetadata(
 }
 
 export default async function Page({ params }: EventPageProps) {
-  await checkToken(`/fagfestival/${params.id}`);
+  await checkToken(`/fagfest/${params.id}`);
   const hostname = process.env.NEXT_PUBLIC_HOSTNAME;
 
   const user = getUser();
@@ -46,8 +46,8 @@ export default async function Page({ params }: EventPageProps) {
       color="bg-blue-200"
       title={event.title}
       home
-      backText={"Fagfestival"}
-      backLink={"/fagfestival"}
+      backText={"Fagfest"}
+      backLink={"/fagfest"}
     >
       <EventDetails
         event={event}

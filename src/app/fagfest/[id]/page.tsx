@@ -41,6 +41,7 @@ export default async function Page({ params }: EventPageProps) {
     await getEvent(params.id);
 
   return (
+      <div  className="w-full bg-fagfestival pb-10">
     <CardWithBackgroundFagfestival
       color="bg-blue-200"
       title={event.title}
@@ -57,5 +58,6 @@ export default async function Page({ params }: EventPageProps) {
         hostname={hostname}
       />
     </CardWithBackgroundFagfestival>
+      </div>
   );
 }

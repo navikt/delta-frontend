@@ -59,16 +59,19 @@ export default function Intro() {
                                     href="https://nav-it.slack.com/archives/C06LR875SF7"
                                     className="text-deepblue-500 underline hover:no-underline">#fagfestival-direktoratet-2024
                                     (Slack)</Link>.</p>
-                            <p>Fagfesten samler Mind the Gap, Juridisk fagdag og husfesten til en felles
-                                kompetanseutviklingsfest for alle i direktoratet. Mulighetskonferansen går også
-                                parallelt med fagfesten, og vil være mulig å få med seg i våre lokaler. </p>
-                            <p>Målet er å gi alle dere kompetansepåfyll og inspirasjon, og bidra til styrket
-                                samarbeidskultur. Vi vil at alle skal lære om andres fagområder og få til et bedre med
-                                tverrfaglig samarbeid i direktoratet.</p>
-                            <p>For mer info <Link
+
+                            <p>For detaljer <Link
                                 href="https://navno.sharepoint.com/sites/enhet-arbeids-og-velferdsdirektoratet/SitePages/Fagfest.aspx"
                                 className="text-deepblue-500 underline hover:no-underline">se fagfestivalens side på
                                 Navet</Link>.</p>
+
+                            <p>Fagfesten samler Mind the Gap, Juridisk fagdag og husfesten til en felles
+                                kompetanseutviklingsfest for alle i direktoratet. Mulighetskonferansen går også
+                                parallelt med fagfesten, og vil være mulig å få med seg i våre lokaler.</p>
+
+                            <p>Målet er å gi alle dere kompetansepåfyll og inspirasjon, og bidra til styrket
+                                samarbeidskultur. Vi vil at alle skal lære om andres fagområder og få til et bedre med
+                                tverrfaglig samarbeid i direktoratet.</p>
                         </div>
                     </Accordion.Content>
                 </Accordion.Item>

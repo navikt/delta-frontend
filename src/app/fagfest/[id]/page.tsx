@@ -1,7 +1,6 @@
 import type { FullDeltaEvent } from "@/types/event";
 import { checkToken, getUser } from "@/auth/token";
 import EventDetails from "./eventDetails";
-import CardWithBackground from "@/components/cardWithBackground";
 import CardWithBackgroundFagfestival from "@/components/fagfestival/cardWithBackground";
 import { getEvent } from "@/service/eventActions";
 import { Metadata, ResolvingMetadata } from "next";

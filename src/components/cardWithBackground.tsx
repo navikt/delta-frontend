@@ -23,7 +23,7 @@ export default function CardWithBackground(props: CardWithBackgroundProps) {
                     {props.title && (
                     <Heading
                         className="first-letter:uppercase mt-8"
-                        style={{color: "rgba(0, 80, 119, 1)"}}
+                        style={{color: "#131136"}}
                         level="1"
                         size="xlarge"
                     >

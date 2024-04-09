@@ -2,6 +2,7 @@ import type { FullDeltaEvent } from "@/types/event";
 import { checkToken, getUser } from "@/auth/token";
 import EventDetails from "./eventDetails";
 import CardWithBackground from "@/components/cardWithBackground";
+import CardWithBackgroundFagfestival from "@/components/fagfestival/cardWithBackground";
 import { getEvent } from "@/service/eventActions";
 import { Metadata, ResolvingMetadata } from "next";
 
@@ -41,7 +42,7 @@ export default async function Page({ params }: EventPageProps) {
     await getEvent(params.id);
 
   return (
-    <CardWithBackground
+    <CardWithBackgroundFagfestival
       color="bg-blue-200"
       title={event.title}
       home
@@ -56,6 +57,6 @@ export default async function Page({ params }: EventPageProps) {
         user={user}
         hostname={hostname}
       />
-    </CardWithBackground>
+    </CardWithBackgroundFagfestival>
   );
 }

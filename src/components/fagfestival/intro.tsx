@@ -4,7 +4,7 @@ import {ExpansionCard, Accordion } from "@navikt/ds-react";
 export default function Intro() {
   return (
       <>
-        <Accordion>
+        <Accordion className="mb-0">
           <Accordion.Item>
             <Accordion.Header>
               Hvordan navigere i programmet?

@@ -21,7 +21,7 @@ export default function Intro() {
           </Accordion.Item>
           <Accordion.Item>
             <Accordion.Header>
-              Hvordan melde meg på arrangementer?
+              Hvordan melde meg på aktiviteter?
             </Accordion.Header>
             <Accordion.Content>
               <div className="prose">

@@ -29,12 +29,6 @@ export default function Header() {
         <Link className={linkButton} href="/">
           <span className="text-2xl whitespace-nowrap text-white">Δ Delta</span>
         </Link>
-{/*        {!isMobile && (
-          <>
-            <div className="w-1 border-r-[1px] border-border-subtle border-solid"></div>
-            <div className="w-1 border-l-[1px] border-border-subtle border-solid"></div>
-          </>
-        )}*/}
       </div>
       {isMobile ? (
         <Dropdown>
@@ -43,18 +37,6 @@ export default function Header() {
           </Button>
           <Dropdown.Menu className="w-auto">
             <Dropdown.Menu.List>
-              {/*<Dropdown.Menu.List.Item as={Link} href="/joined-events">
-                <CheckmarkCircleIcon aria-hidden fontSize="1.5rem" />
-                <span>Påmeldte</span>
-              </Dropdown.Menu.List.Item>
-              <Dropdown.Menu.List.Item as={Link} href="/my-events">
-                <PencilIcon aria-hidden fontSize="1.5rem" />
-                <span className="whitespace-nowrap">Arrangert av meg</span>
-              </Dropdown.Menu.List.Item>*/}
-  {/*            <Dropdown.Menu.List.Item as={Link} href="/my-events">
-                <CalendarIcon aria-hidden fontSize="1.5rem" />
-                <span className="whitespace-nowrap">Alle arrangementer</span>
-              </Dropdown.Menu.List.Item>*/}
               <Dropdown.Menu.List.Item as={Link} href="/faggrupper">
                 <PersonGroupIcon aria-hidden fontSize="1.5rem" />
                 <span className="whitespace-nowrap">Faggrupper</span>
@@ -72,20 +54,7 @@ export default function Header() {
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center w-full"></div>
           <div className="flex flex-grow">
-  {/*          <Link href="/joined-events" className={linkButton}>
-              <CheckmarkCircleIcon aria-hidden fontSize="1.5rem" />
-              Påmeldte
-            </Link>
-            <Link href="/my-events" className={linkButton}>
-              <PencilIcon aria-hidden fontSize="1.5rem" />
-              <span className="whitespace-nowrap">Arrangert av meg</span>
-            </Link>*/}
-{/*            <Link href="." className={linkButton}>
-              <CalendarIcon aria-hidden fontSize="1.5rem" />
-              <span className="whitespace-nowrap">Alle arrangementer</span>
-            </Link>*/}
            <Link href="/faggrupper" className={linkButton}>
-             {/*<PersonGroupIcon aria-hidden fontSize="1.5rem" />*/}
               <span className="whitespace-nowrap">Faggrupper</span>
             </Link>
             <Link className={linkButton} href="/event/new">

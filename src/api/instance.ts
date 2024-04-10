@@ -12,7 +12,7 @@ export async function getApi() {
 
   const client = axios.create({
     baseURL: backendUrl(),
-    timeout: 1000,
+    timeout: 15000,
     headers,
   });
   client.interceptors.response.use(

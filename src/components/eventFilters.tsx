@@ -97,9 +97,13 @@ export default function EventFilters({
     const uniqueCategories = Array.from(new Set(categories.map(category => category.name)))
         .map(name => categories.find(category => category.name === name));
 
+    // Filter out the "fagfestival" tag
+    // @ts-ignore
+    const filteredCategories = uniqueCategories.filter(category => category.name !== "fagfestival");
+
     // Set the categories as a state
     // @ts-ignore
-    setEventCategories(uniqueCategories);
+    setEventCategories(filteredCategories);
   }, [events, searchInput]);
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 "use client"
 import { Category, FullDeltaEvent } from "@/types/event";
-import { Search, Tabs, UNSAFE_Combobox, CheckboxGroup, Checkbox } from "@navikt/ds-react";
+import { Search, Tabs, UNSAFE_Combobox, CheckboxGroup, Checkbox, LinkPanel } from "@navikt/ds-react";
 import EventList from "./eventList";
 import { useEffect, useState } from "react";
 import { getEvents } from "@/service/eventActions";
@@ -241,6 +241,20 @@ export default function EventFilters({
           </Tabs.List>
         </Tabs>
       )}
+      {tabname == "alle" && (
+          <>
+            {joinedLink && (
+                <div className="px-4 inline-block">
+                  <LinkPanel  href="/fagfest" border>
+                    <LinkPanel.Title>FAGFEST 2024</LinkPanel.Title>
+                    <LinkPanel.Description>
+                      Programmet til fagfestivalen
+                    </LinkPanel.Description>
+                  </LinkPanel>
+                </div>
+            )}
+          </>
+      )}
       {(searchName || selectCategory) && (
         <div className="flex flex-col-reverse gap-2 items-start md:flex-row justify-between w-full md:items-center px-4">
           {searchName && (
@@ -303,13 +317,6 @@ export default function EventFilters({
               <Checkbox value="10">Vis tidligere</Checkbox>
             </CheckboxGroup>
           </>
-      )}
-      {joinedLink && (
-      <div className="px-4">
-        <Link href="/joined-events" className="text-deepblue-500 underline hover:no-underline">
-          Påmeldte arrangementer
-        </Link>
-      </div>
       )}
       <div className="w-full p-4">
         <EventList fullEvents={filterEvents} loading={loading}  showAll={val} tabname={tabname } />

@@ -16,7 +16,7 @@ export default async function Home(context: any) {
       title="Arrangementer"
       newEvent
     >
-      <EventFilters selectCategory searchName homeTabs ctaLink selectTimeRadio />
+      <EventFilters selectCategory searchName homeTabs ctaLink joinedLink selectTimeRadio />
     </CardWithBackground>
   );
 }

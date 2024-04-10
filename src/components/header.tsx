@@ -39,7 +39,7 @@ export default function Header() {
             <Dropdown.Menu.List>
               <Dropdown.Menu.List.Item as={Link} href="/fagfest">
                 <PersonGroupIcon aria-hidden fontSize="1.5rem" />
-                <span className="whitespace-nowrap">Fagfest 2024</span>
+                <span className="whitespace-nowrap">FAGFEST 2024</span>
               </Dropdown.Menu.List.Item>
               <Dropdown.Menu.List.Item as={Link} href="/faggrupper">
                 <PersonGroupIcon aria-hidden fontSize="1.5rem" />
@@ -59,7 +59,7 @@ export default function Header() {
           <div className="flex items-center w-full"></div>
           <div className="flex flex-grow">
             <Link href="/fagfest" className={linkButton}>
-              <span className="whitespace-nowrap">Fagfest 2024</span>
+              <span className="whitespace-nowrap">FAGFEST 2024</span>
             </Link>
            <Link href="/faggrupper" className={linkButton}>
               <span className="whitespace-nowrap">Faggrupper</span>

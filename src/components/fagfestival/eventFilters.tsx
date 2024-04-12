@@ -371,7 +371,7 @@ export default function EventFiltersFagFest({
  )}*/}
         {tabname == "25" && (
             <div className="pb-10 prose">
-              <p>Husk og meld deg på <Link
+              <p>Husk å meld deg på <Link
                   href="https://delta.nav.no/fagfest/38d6e0a2-8b13-4c4d-b398-d73116331e14"
                   className="text-deepblue-500 underline hover:no-underline">felles avslutning</Link> og <Link
                   href="https://delta.nav.no/fagfest/168e3338-0a9b-4755-8d12-1f176fd8c7ed"

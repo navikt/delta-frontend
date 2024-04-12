@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default async function Fagfestival() {
     await checkToken("/fagfest");
-    const events = await getEvents({ onlyMine: true });
+
     return (
         <>
             <div className="flex flex-col w-full bg-fagfestival  pb-10" >

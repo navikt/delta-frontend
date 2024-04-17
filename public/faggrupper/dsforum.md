@@ -20,7 +20,7 @@ Data Science forum er en lavterskel møteplass for data scientistene i NAV med v
 innholdet av en presentasjon eller en diskusjon om dagsaktuelle temaer, eller en runde rundt bordet. Dette er et forum for å knytte 
 fagmiljøet tettere sammen og for å utforske nye og spennende temaer i data science, både i og utenfor NAV. Ukens tema blir annonsert 
 i slack-kanalen, og en oppdatert oversikt over de planlagte temaene framover finner du på 
-[dataseksjonens hjemmeside](https://dataseksjonen.intern.nav.no/kompetanse/delingsarenaer/data_science_forum.html)
+[dataseksjonens hjemmeside](https://dataseksjonen.ansatt.nav.no/kompetanse/delingsarenaer/data_science_forum.html)
 Formatet er hybrid, og møteseriene sendes ut i starten av hver vår/høst. 
 
 ## Slack-gruppe

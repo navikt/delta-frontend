@@ -1,10 +1,10 @@
 ---
-title: Kvalitativ metode
+title: Kvalitativ innsiktsmetode
 when: Tidspunkt annonseres på Slack
 audience: Kun for produktdesignere
 ---
 
-# Kvalitativ metode og innsikt i produktdesign
+# Faggruppe for kvalitativ innsiktsmetode i design
 
 ## Kontaktpersoner
 - [Peter Havgar](https://nav-it.slack.com/team/U023M55112N)

@@ -1,6 +1,6 @@
 "use client";
 import "./eventCard.css";
-import {Category, FullDeltaEvent} from "@/types/event";
+import {Category, FilterOption, FullDeltaEvent} from "@/types/event";
 import {format} from "date-fns";
 import {Detail, Heading,  Tag} from "@navikt/ds-react";
 import {
@@ -21,12 +21,12 @@ import {
 export function EventCard({
                               event,
                               categories,
-                              showAll,
+                              filterOptions,
                               tabname,
                           }: {
     event: FullDeltaEvent;
     categories: Category[];
-    showAll?: any;
+    filterOptions?: FilterOption[];
     tabname?: string;
 }) {
     const isUtløpt =

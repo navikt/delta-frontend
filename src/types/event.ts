@@ -56,3 +56,10 @@ export type Category = {
   id: number;
   name: string;
 };
+
+export type FilterOption = "vis-tidligere" | "vis-programoversikt";
+
+export enum TimeSelector {
+  PAST,
+  FUTURE,
+}

@@ -269,7 +269,7 @@ export default function EventFiltersFagFest({
         value={filterOptions}
         onChange={(newValues: FilterOption[]) => handleChange(newValues)}
       >
-        <Checkbox value="vis-programoversikt">Programoversikt</Checkbox>
+        <Checkbox value="vis-programoversikt">Programoversikt (beta)</Checkbox>
       </CheckboxGroup>
 
       {selectTimeRadio && (

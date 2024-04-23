@@ -169,7 +169,7 @@ export default function EventFiltersFagFest({
   return (
     <div className="flex flex-col w-full gap-6 items-start">
       {homeTabs && (
-          <Tabs className="self-start w-full" defaultValue="23">
+          <Tabs className="self-start w-full" defaultValue="24">
             <Tabs.List>
 {/*              <Tabs.Tab
                   value="23"

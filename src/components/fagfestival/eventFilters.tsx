@@ -51,7 +51,7 @@ export default function EventFiltersFagFest({
     }
   };
 
-  const [tabname, setTabname] = useState("23");
+  const [tabname, setTabname] = useState("24");
 
   const [events, setEvents] = useState([] as FullDeltaEvent[]);
   const [loading, setLoading] = useState(true);
@@ -171,11 +171,11 @@ export default function EventFiltersFagFest({
       {homeTabs && (
           <Tabs className="self-start w-full" defaultValue="23">
             <Tabs.List>
-              <Tabs.Tab
+{/*              <Tabs.Tab
                   value="23"
                   label="23. april"
                   onClick={() => get23()}
-              />
+              />*/}
               <Tabs.Tab
                   value="24"
                   label="24. april"

@@ -27,7 +27,9 @@ export default function EventProgramOverview({
   filterOptions,
   tabname,
 }: EventListProps) {
-  const filteredEvents = fullEvents.filter(event => event.categories.includes("fagfestival"));
+  const filteredEvents = fullEvents.filter(event =>
+    event.categories.some(category => category.name === "fagfestival")
+  );
 
   if (filteredEvents.length === 0) {
     return <div>Fant ingen arrangementer :--(</div>;

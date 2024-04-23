@@ -1,15 +1,15 @@
 "use client";
-import { FullDeltaEvent } from "@/types/event";
+import { FilterOption, FullDeltaEvent } from "@/types/event";
 import { EventCard } from "@/components/fagfestival/eventCard";
 import { Skeleton } from "@navikt/ds-react";
 
 type EventListProps = {
   fullEvents: FullDeltaEvent[];
   loading: boolean;
-  showAll?: any;
+  filterOptions?: FilterOption[];
   tabname?: string;
 };
-export default function EventList({ fullEvents, loading, showAll, tabname}: EventListProps) {
+export default function EventList({ fullEvents, loading, filterOptions, tabname}: EventListProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       {loading ? (
@@ -23,7 +23,7 @@ export default function EventList({ fullEvents, loading, showAll, tabname}: Even
         fullEvents.map((fullEvent) => (
           <EventCard
             event={fullEvent}
-            showAll={showAll}
+            filterOptions={filterOptions}
             tabname={tabname}
             categories={fullEvent.categories}
             key={`event-${fullEvent.event.id}`}

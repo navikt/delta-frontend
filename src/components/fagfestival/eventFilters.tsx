@@ -1,16 +1,12 @@
 "use client"
-import { Category, FullDeltaEvent } from "@/types/event";
+import { Category, FilterOption, FullDeltaEvent, TimeSelector } from "@/types/event";
 import { Search, Tabs, UNSAFE_Combobox, CheckboxGroup, Checkbox } from "@navikt/ds-react";
 import EventList from "./eventList";
 import { useEffect, useState } from "react";
 import { getEvents } from "@/service/eventActions";
 import { FunnelIcon } from "@navikt/aksel-icons";
 import Link from "next/link";
-
-enum TimeSelector {
-  PAST,
-  FUTURE,
-}
+import EventProgramOverview from "@/components/fagfestival/eventProgramOverview";
 
 export default function EventFiltersFagFest({
   categories: allCategories = [],
@@ -38,43 +34,24 @@ export default function EventFiltersFagFest({
   const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
   const [searchInput, setSearchInput] = useState("");
   const [filterEvents, setFilterEvents] = useState<FullDeltaEvent[]>([]);
-
+  const [filterOptions, setFilterOptions] = useState<FilterOption[]>([]);
   const [selectedTime, setSelectedTime] = useState(TimeSelector.FUTURE);
   const onlyFuture = selectedTime === TimeSelector.FUTURE;
   const onlyPast = selectedTime === TimeSelector.PAST;
 
-  const handleChange = (val: any) => {
-    if (tabname == "alle") {
-      if (val.length == 0) {
-        setVal(val);
-        getAll()
-      } else {
-        setVal(val);
-        getAllPrev()
-      }
-    }
-    if (tabname == "påmeldte") {
-      if (val.length == 0) {
-        setVal(val);
-        getOnlyJoined()
-      } else {
-        setVal(val);
-        getOnlyJoinedPrev()
-      }
-    }
-    if (tabname == "mine") {
-      if (val.length == 0) {
-        setVal(val);
-        getOnlyMine()
-      } else {
-        setVal(val);
-        getOnlyMinePrev()
-      }
-    }
-  }
+  const handleChange = (newValues: FilterOption[]) => {
+    setFilterOptions(newValues);
 
-  const [val, setVal] = useState([]);
-  const [tabname, setTabname] = useState("alle");
+    if (tabname === "påmeldte") {
+      if (newValues.includes("vis-tidligere")) {
+        getOnlyJoinedPrev();
+      } else {
+        getOnlyJoined();
+      }
+    }
+  };
+
+  const [tabname, setTabname] = useState("23");
 
   const [events, setEvents] = useState([] as FullDeltaEvent[]);
   const [loading, setLoading] = useState(true);
@@ -129,7 +106,6 @@ export default function EventFiltersFagFest({
   function getOnlyJoined() {
     setLoading(true);
     setTabname("påmeldte")
-    setVal([])
     getEvents({
       categories: selectedCategories,
       onlyFuture,
@@ -150,46 +126,9 @@ export default function EventFiltersFagFest({
         .then(() => setLoading(false));
   }
 
-  function getOnlyMine() {
-    setLoading(true);
-    setTabname("mine")
-    setVal([])
-    getEvents({
-      categories: selectedCategories,
-      onlyFuture,
-      onlyMine: true,
-    })
-        .then(setEvents)
-        .then(() => setLoading(false));
-  }
-
-  function getOnlyMinePrev() {
-    setLoading(true);
-    getEvents({
-      categories: selectedCategories,
-      onlyPast,
-      onlyMine: true,
-    })
-        .then(setEvents)
-        .then(() => setLoading(false));
-  }
-
-  function getAll() {
-    setLoading(true);
-    setTabname("alle")
-    setVal([])
-    getEvents({
-      categories: selectedCategories,
-      onlyFuture: true,
-    })
-        .then(setEvents)
-        .then(() => setLoading(false));
-  }
-
   function get23() {
     setLoading(true);
     setTabname("23")
-    setVal([])
     getEvents({
       categories: selectedCategories,
       onlyFuture: true,
@@ -201,7 +140,6 @@ export default function EventFiltersFagFest({
   function get24() {
     setLoading(true);
     setTabname("24")
-    setVal([])
     getEvents({
       categories: selectedCategories,
       onlyFuture: true,
@@ -213,20 +151,9 @@ export default function EventFiltersFagFest({
   function get25() {
     setLoading(true);
     setTabname("25")
-    setVal([])
     getEvents({
       categories: selectedCategories,
       onlyFuture: true,
-    })
-        .then(setEvents)
-        .then(() => setLoading(false));
-  }
-
-  function getAllPrev() {
-    setLoading(true);
-    getEvents({
-      categories: selectedCategories,
-      onlyPast
     })
         .then(setEvents)
         .then(() => setLoading(false));
@@ -334,18 +261,29 @@ export default function EventFiltersFagFest({
           )}
         </div>
       )}
+
+      <CheckboxGroup
+        legend="Vis programoversikt"
+        hideLegend
+        className="-mt-5 -mb-2 ml-4"
+        value={filterOptions}
+        onChange={(newValues: FilterOption[]) => handleChange(newValues)}
+      >
+        <Checkbox value="vis-programoversikt">Programoversikt</Checkbox>
+      </CheckboxGroup>
+
       {selectTimeRadio && (
-          <>
-            {/*<Switch className={"-mt-5 -mb-2 ml-4"}>Vis tidligere</Switch>*/}
-            <CheckboxGroup
-                legend={"Vis"} hideLegend className={"-mt-5 -mb-2 ml-4"}
-                onChange={(val: any[]) => handleChange(val)}
-                value={val}
-            >
-              <Checkbox value="10">Vis tidligere</Checkbox>
-            </CheckboxGroup>
-          </>
+        <CheckboxGroup
+          legend="Vis"
+          hideLegend
+          className="-mt-5 -mb-2 ml-4"
+          value={filterOptions}
+          onChange={(newValues: FilterOption[]) => handleChange(newValues)}
+        >
+          <Checkbox value="vis-tidligere">Vis tidligere</Checkbox>
+        </CheckboxGroup>
       )}
+
       {joinedLink && (
       <div className="px-4">
         <Link href="/joined-events" className="text-deepblue-500 underline hover:no-underline">
@@ -379,7 +317,25 @@ export default function EventFiltersFagFest({
             </div>
             )}
 
-        <EventList fullEvents={filterEvents} loading={loading} showAll={val} tabname={tabname}/>
+        {filterOptions.includes("vis-programoversikt") ? (
+          <div className="w-full p-4">
+            <EventProgramOverview
+              fullEvents={filterEvents}
+              loading={loading}
+              filterOptions={filterOptions}
+              tabname={tabname}
+            />
+          </div>
+        ) : (
+          <div className="w-full p-4">
+            <EventList
+              fullEvents={filterEvents}
+              loading={loading}
+              filterOptions={filterOptions}
+              tabname={tabname}
+            />
+          </div>
+          )}
       </div>
       {ctaLink && (
           <div className="px-4 mb-4">

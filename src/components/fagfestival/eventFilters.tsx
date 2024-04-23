@@ -92,7 +92,7 @@ export default function EventFiltersFagFest({
   }, [selectedCategories, onlyFuture, onlyPast, onlyJoined]);
 
   useEffect(() => {
-    get23()
+    get24()
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
     };

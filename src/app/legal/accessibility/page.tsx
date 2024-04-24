@@ -12,7 +12,6 @@ export default async function Accessibility() {
 
     return (
         <CardWithBackground
-            color="bg-blue-200"
             title="Tilgjengelighetserklæring"
             backLink="/"
         >

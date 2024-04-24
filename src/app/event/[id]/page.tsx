@@ -42,7 +42,6 @@ export default async function Page({ params }: EventPageProps) {
 
   return (
     <CardWithBackground
-      color="bg-blue-200"
       title={event.title}
       home
       backText="Arrangementer"

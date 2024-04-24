@@ -19,7 +19,6 @@ export default async function EditEvent({
   return (
     <CardWithBackground
       title="Rediger arrangement"
-      color="bg-green-200"
       home
       backLink={`/event/${params.id}/admin`}
     >

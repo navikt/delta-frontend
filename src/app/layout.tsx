@@ -3,10 +3,39 @@ import Footer from "@/components/footer";
 import ScrollToTop from "@/components/ScrollToTop";
 import "./globals.css";
 import AmplitudeContextProvider from "@/context/AmplitudeContext";
+import { Metadata } from "next";
 
 type RootLayoutProps = {
     children: React.ReactNode;
 };
+
+export const metadata: Metadata = {
+    icons: [
+      {
+        rel: "icon",
+        type: "image/x-icon",
+        sizes: "16x16",
+        url: "/favicon/favicon.ico",
+      },
+      {
+        rel: "icon",
+        type: "image/png",
+        sizes: "32x32",
+        url: "/favicon/favicon-32x32.png",
+      },
+      {
+        rel: "icon",
+        type: "image/png",
+        sizes: "16x16",
+        url: "/favicon/favicon-16x16.png",
+      },
+      {
+        rel: "apple-touch-icon",
+        sizes: "180x180",
+        url: "/favicon/apple-touch-icon.png",
+      },
+    ],
+  };
 
 export default async function RootLayout({ children }: RootLayoutProps) {
     return (

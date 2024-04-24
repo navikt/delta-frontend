@@ -26,7 +26,6 @@ export default async function Page({ params }: CategoryPageProps) {
             <main className="flex flex-grow">
                 {theCategory ? (
                     <CardWithBackground
-                        color="bg-blue-200"
                         title={title}
                         newEvent
                         home

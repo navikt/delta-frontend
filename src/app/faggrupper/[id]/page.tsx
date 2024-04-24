@@ -21,7 +21,6 @@ export default async function ArticlePage({ params }) {
 
     return (
         <CardWithBackground
-            color="bg-blue-200"
             title="" // Use extracted title
             backLink="/faggrupper"
             backText={"Faggrupper"}

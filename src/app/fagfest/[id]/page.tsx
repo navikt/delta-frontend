@@ -1,9 +1,9 @@
 import type { FullDeltaEvent } from "@/types/event";
 import { checkToken, getUser } from "@/auth/token";
 import EventDetails from "./eventDetails";
-import CardWithBackgroundFagfestival from "@/components/fagfestival/cardWithBackground";
 import { getEvent } from "@/service/eventActions";
 import { Metadata, ResolvingMetadata } from "next";
+import CardWithBackground from "@/components/cardWithBackground";
 
 type EventPageProps = { params: { id: string } };
 
@@ -23,7 +23,7 @@ export async function generateMetadata(
   const event = await getOptionalEventFromId(params.id);
   if (!event) {
     return {
-      title: "Delta Δ"
+      title: "Delta Δ",
     };
   }
 
@@ -37,27 +37,27 @@ export default async function Page({ params }: EventPageProps) {
   const hostname = process.env.NEXT_PUBLIC_HOSTNAME;
 
   const user = getUser();
-  const { event, participants, hosts, categories }: FullDeltaEvent =
-    await getEvent(params.id);
+  const { event, participants, hosts, categories }: FullDeltaEvent = await getEvent(params.id);
 
   return (
-      <div  className="w-full bg-fagfestival pb-10">
-    <CardWithBackgroundFagfestival
-      color="bg-blue-200"
-      title={event.title}
-      home
-      backText={"FAGFEST"}
-      backLink={"/fagfest"}
-    >
-      <EventDetails
-        event={event}
-        participants={participants}
-        hosts={hosts}
-        categories={categories}
-        user={user}
-        hostname={hostname}
-      />
-    </CardWithBackgroundFagfestival>
-      </div>
+    <div className="w-full bg-fagfestival pb-10">
+      <CardWithBackground
+        title={event.title}
+        titleColor="#ec38a7"
+        className="bg-fagfestival"
+        home
+        backText={"FAGFEST"}
+        backLink={"/fagfest"}
+      >
+        <EventDetails
+          event={event}
+          participants={participants}
+          hosts={hosts}
+          categories={categories}
+          user={user}
+          hostname={hostname}
+        />
+      </CardWithBackground>
+    </div>
   );
 }

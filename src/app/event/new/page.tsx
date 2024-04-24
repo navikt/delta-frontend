@@ -26,7 +26,6 @@ export default async function NewEvent({
 
   return (
     <CardWithBackground
-      color="bg-green-200"
       title="Opprett nytt arrangement"
       home
       backLink="/"

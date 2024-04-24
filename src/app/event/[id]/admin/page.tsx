@@ -23,7 +23,6 @@ export default async function ParticipantsPage({
     return (
       <CardWithBackground
         title={`Administrer: ${fullEvent.event.title}`}
-        color="bg-green-200"
         home
         backLink={`/event/${params.id}`}
       >

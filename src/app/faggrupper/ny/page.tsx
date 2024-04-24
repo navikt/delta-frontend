@@ -9,7 +9,6 @@ export default async function NewArticlesPage() {
         <div className="flex flex-col w-full">
             <div className="w-full">
                 <CardWithBackground
-                    color="bg-blue-200"
                     title="Opprett ny faggruppe"
                     backLink="/faggrupper"
                 >

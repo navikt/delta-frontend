@@ -30,7 +30,6 @@ export default async function ArticlesPage() {
         <div className="flex flex-col w-full">
             <div className="w-full">
                 <CardWithBackground
-                    color="bg-blue-200"
                     title="Faggrupper"
                     backLink="/"
                 >

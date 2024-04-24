@@ -10,6 +10,13 @@ import React, { useEffect, useRef, useState } from "react";
 
 const fagfestivalCategory = "fagfestival";
 const activeDays = ["23", "24", "25"];
+const fagfestivalMonth = "April"
+
+const getRemainingActiveDays = () => {
+  const today = new Date();
+  const dayOfMonth = today.getDate();
+  return activeDays.filter(day => parseInt(day) >= dayOfMonth);
+};
 
 const getCurrentDayAsString = () => {
   const today = new Date();
@@ -124,8 +131,9 @@ const FagfestivalEvents = () => {
     <div className="flex flex-col w-full gap-6 items-start">
       <Tabs className="self-start w-full" defaultValue="24">
         <Tabs.List>
-          <Tabs.Tab value="24" label="24. april" onClick={() => setTabName("24")} />
-          <Tabs.Tab value="25" label="25. april" onClick={() => setTabName("25")} />
+          {getRemainingActiveDays().map((day, index) => {
+            return <Tabs.Tab key={index} value={day} label={`${day}. ${fagfestivalMonth}`} onClick={() => setTabName(day)} />
+          })}
           <Tabs.Tab
             value="påmeldte"
             label="Mine påmeldinger"

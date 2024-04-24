@@ -50,10 +50,10 @@ export default function EventProgramOverview({
   const timeSlots = generateTimeSlots(filteredEvents);
 
   return (
-    <table className="w-full h-full table-fixed ">
+    <table className="w-full h-full table-fixed">
       <thead>
         <tr>
-          <th className="w-14"></th>
+          <th className="w-12 md:w-14 lg:w-16"></th>
           {days.map((day) => (
             <th key={day}>{new Date(day).toLocaleDateString()}</th>
           ))}
@@ -62,7 +62,7 @@ export default function EventProgramOverview({
       <tbody>
         {timeSlots.map((time, idx) => (
           <tr key={idx}>
-            <td className="text-center align-top pt-4">{time}</td>
+            <td className="align-top pt-4">{time}</td>
             {days.map((day) => (
               <td key={`${time}-${day}`}>
                 <div className="flex flex-col h-full p-0">

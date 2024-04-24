@@ -3,6 +3,7 @@ import Footer from "@/components/footer";
 import ScrollToTop from "@/components/ScrollToTop";
 import "./globals.css";
 import AmplitudeContextProvider from "@/context/AmplitudeContext";
+import { Metadata } from "next";
 
 type RootLayoutProps = {
     children: React.ReactNode;

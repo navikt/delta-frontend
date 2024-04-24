@@ -10,7 +10,6 @@ export default async function Privacy() {
     await checkToken("/legal/privacy");
     return (
         <CardWithBackground
-            color="bg-blue-200"
             title="Personvernerærklæring"
             backLink="/"
         >

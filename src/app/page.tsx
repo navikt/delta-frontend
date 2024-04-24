@@ -12,7 +12,6 @@ export default async function Home(context: any) {
 
   return (
     <CardWithBackground
-      color="bg-blue-200"
       title="Arrangementer"
       newEvent
     >

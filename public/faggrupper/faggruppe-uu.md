@@ -1,7 +1,7 @@
 ---
 title: Universell utforming
 when: Hver fagtorsdag
-audience: Alle som vil sertifseres
+audience: Åpen for alle
 ---
 
 # Universell utforming
@@ -12,9 +12,9 @@ audience: Alle som vil sertifseres
 
 ## Beskrivelse
 
-Faggruppen er dannet med formål om å gå gjennom pensum til Web Accessibility Specialist (WAS) sertifiseringen hos IAAP, er åpen for alle.
+Faggruppen gjør dypdykk i det meste relatert til universell utforming av nettsider. Gruppen ble opprinnelig dannet med formål om å gå gjennom pensum til Web Accessibility Specialist (WAS) sertifiseringen hos IAAP, men er åpen for alle.
 
-Temaene vi går gjennom er blant annet WCAG (dypdykk i de forskjellige prinsippene og suksesskritriene), ATAG (Authoring Tool Accessibility Guidelines), ARIA, med mer.
+Temaene vi går gjennom er blant annet WCAG (dypdykk i de forskjellige prinsippene og suksesskritriene), ATAG (Authoring Tool Accessibility Guidelines), ARIA, skjermleserbruk, med mer.
 
 Hver fagtorsdag går vi gjennom et nytt tema, der en av oss presenterer tema og så diskuterer vi i fellesskap.
 

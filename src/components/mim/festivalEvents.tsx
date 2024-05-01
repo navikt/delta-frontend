@@ -131,7 +131,7 @@ const FestivalEvents = () => {
 
   return (
     <div className="flex flex-col w-full gap-6 items-start">
-      <Tabs className="self-start w-full" defaultValue="24">
+      <Tabs className="self-start w-full" defaultValue={activeDays[0]}>
         <Tabs.List>
           {getRemainingActiveDays().map((day, index) => {
             return <Tabs.Tab key={index} value={day} label={`${day}. ${fagfestivalMonth}`} onClick={() => setTabName(day)} />

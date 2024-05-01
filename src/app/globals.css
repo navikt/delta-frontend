@@ -7,6 +7,11 @@
     background-color: #131136;
 }
 
+.colorful, .site-header, .site-footer::before {
+    background-image: linear-gradient(-60deg, #F9D2CC, #FFC166, #99DEAD, #0067C5, #A18DBB);
+    background-size: 100%;
+}
+
 .color-fagfestival {
     color: #ec38a7;
 }

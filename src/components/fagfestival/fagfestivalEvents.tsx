@@ -191,7 +191,7 @@ const FagfestivalEvents = () => {
             </p>
           </div>
         )}
-        <div className="w-full p-4">
+        <div className="w-full">
           {filterOptions.includes("vis-programoversikt") ? (
             <EventProgramOverview filteredEvents={filterEvents} loading={loading} />
           ) : (

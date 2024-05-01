@@ -245,20 +245,20 @@ export default function EventFilters({
           </Tabs.List>
         </Tabs>
       )}
-{/*      {tabname == "alle" && (
+    {tabname == "alle" && (
           <>
             {joinedLink && (
                 <div className="px-4 inline-block">
-                  <LinkPanel  href="/fagfest" border>
-                    <LinkPanel.Title>FAGFEST 2024</LinkPanel.Title>
+                  <LinkPanel  href="/mim" border>
+                    <LinkPanel.Title>Magnfold i mai 2024</LinkPanel.Title>
                     <LinkPanel.Description>
-                      Programmet til fagfestivalen
+                      Programmet 3. - 16. mai
                     </LinkPanel.Description>
                   </LinkPanel>
                 </div>
             )}
           </>
-      )}*/}
+      )}
       {(searchName || selectCategory) && (
         <div className="flex flex-col-reverse gap-2 items-start md:flex-row justify-between w-full md:items-center px-4">
           {searchName && (

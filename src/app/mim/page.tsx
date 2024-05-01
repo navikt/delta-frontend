@@ -16,11 +16,12 @@ export default async function Fagfestival() {
 
   return (
     <>
-      <div className="flex flex-col w-full  pb-10 ">
-        <div >
+      <div className="flex flex-col w-full  pb-10 colorful">
+        <div>
           <CardWithBackground
             title="Mangfold i mai"
             backLink="/"
+            titleColor={"#021841"}
           >
             <div className="m-4  font-serif">
               <Intro />

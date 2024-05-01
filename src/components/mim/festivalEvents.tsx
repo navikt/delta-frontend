@@ -1,7 +1,7 @@
 "use client";
 
-import EventList from "@/components/fagfestival/views/eventList";
-import EventProgramOverview from "@/components/fagfestival/views/eventProgramOverview";
+import EventList from "@/components/mim/views/eventList";
+import EventProgramOverview from "@/components/mim/views/eventProgramOverview";
 import { getEvents } from "@/service/eventActions";
 import { FilterOption, FullDeltaEvent } from "@/types/event";
 import { Checkbox, CheckboxGroup, Search, Tabs } from "@navikt/ds-react";
@@ -9,7 +9,7 @@ import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 
 const fagfestivalCategory = "mim24";
-const activeDays = ["8", "13", "15", "16"];
+const activeDays = ["3", "8", "13", "15", "16"];
 const fagfestivalMonth = "Mai"
 
 const getRemainingActiveDays = () => {
@@ -23,6 +23,8 @@ const getCurrentDayAsString = () => {
   const dayOfMonth = today.getDate().toString();
   if (activeDays.includes(dayOfMonth)) {
     return dayOfMonth;
+  } else if (parseInt(activeDays[0]) > today.getDate()) {
+    return activeDays[0];
   } else {
     return "påmeldte";
   }

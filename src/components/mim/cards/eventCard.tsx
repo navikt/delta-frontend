@@ -32,7 +32,7 @@ export function EventCard({ event }: EventCardProps) {
 
   return (
     <Link
-      href={`/fagfest/${event.event.id}`}
+      href={`/mim/${event.event.id}`}
       key={`event-${event.event.id}`}
       className="flex flex-col h-full p-4 border rounded-xl text-text-default border-gray-300 transition-all hover:-translate-y-1 hover:scale-105 hover:text-surface-action-selected-hover hover:border-border-action event-card"
     >

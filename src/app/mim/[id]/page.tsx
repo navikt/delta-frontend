@@ -33,21 +33,20 @@ export async function generateMetadata(
 }
 
 export default async function Page({ params }: EventPageProps) {
-  await checkToken(`/fagfest/${params.id}`);
+  await checkToken(`/mim/${params.id}`);
   const hostname = process.env.NEXT_PUBLIC_HOSTNAME;
 
   const user = getUser();
   const { event, participants, hosts, categories }: FullDeltaEvent = await getEvent(params.id);
 
   return (
-    <div className="w-full bg-fagfestival pb-10">
+    <div className="w-full colorful pb-10">
       <CardWithBackground
         title={event.title}
-        titleColor="#ec38a7"
-        className="bg-fagfestival"
+        titleColor="#021841"
         home
-        backText={"FAGFEST"}
-        backLink={"/fagfest"}
+        backText={"MIM24"}
+        backLink={"/mim"}
       >
         <EventDetails
           event={event}

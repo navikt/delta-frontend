@@ -1,5 +1,5 @@
 "use client";
-import { EventCard } from "@/components/fagfestival/cards/eventCard";
+import { EventCard } from "@/components/mim/cards/eventCard";
 import { FullDeltaEvent } from "@/types/event";
 import { Skeleton } from "@navikt/ds-react";
 

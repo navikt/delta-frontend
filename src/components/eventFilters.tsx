@@ -249,7 +249,7 @@ export default function EventFilters({
           <>
             {joinedLink && (
                 <div className="px-4 inline-block">
-                  <LinkPanel  href="/mim" border>
+                  <LinkPanel  href="/mim" border className={"colorfulbg"}>
                     <LinkPanel.Title>Mangfold i mai 2024</LinkPanel.Title>
                     <LinkPanel.Description>
                       Programmet 3. - 16. mai

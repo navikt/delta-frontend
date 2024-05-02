@@ -10,7 +10,7 @@ import React, { useEffect, useRef, useState } from "react";
 
 const fagfestivalCategory = "mim24";
 const activeDays = ["3", "8", "13", "15", "16"];
-const fagfestivalMonth = "Mai"
+const fagfestivalMonth = "mai"
 
 const getRemainingActiveDays = () => {
   const today = new Date();

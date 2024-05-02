@@ -2,7 +2,7 @@
 import React from "react";
 import { FullDeltaEvent } from "@/types/event";
 import { Skeleton } from "@navikt/ds-react";
-import { EventCard } from "@/components/fagfestival/cards/eventCard";
+import { EventCard } from "@/components/mim/cards/eventCard";
 
 type EventProgramOverviewProps = {
   filteredEvents: FullDeltaEvent[];

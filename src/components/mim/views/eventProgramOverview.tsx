@@ -50,45 +50,45 @@ export default function EventProgramOverview({
   const timeSlots = generateTimeSlots(filteredEvents);
 
   return (
-    <table className="w-full h-full table-fixed">
-      <thead>
-        <tr>
-          <th className="w-12 md:w-14 lg:w-16"></th>
-          {days.map((day) => (
-            <th key={day}>{new Date(day).toLocaleDateString()}</th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {timeSlots.map((time, idx) => (
-          <tr key={idx}>
-            <td className="align-top pt-4">{time}</td>
-            {days.map((day) => (
-              <td key={`${time}-${day}`}>
-                <div className="flex flex-col h-full p-0">
-                  {filteredEvents
-                    .filter((event) => {
-                      const eventStartTime = new Date(event.event.startTime);
-                      const eventDay = eventStartTime.toISOString().split("T")[0];
-                      const eventHour =
-                        eventStartTime.getHours().toString().padStart(2, "0") + ":00";
-                      return eventDay === day && eventHour === time;
-                    })
-                    .map((event) => (
-                      <div
-                        key={event.event.id}
-                        className="h-full flex-1 flex flex-col p-1"
-                        title={`${event.event.title} - ${event.event.description}`}
-                      >
-                        <EventCard event={event} key={`event-${event.event.id}`} />
-                      </div>
-                    ))}
-                </div>
-              </td>
-            ))}
+      <table className="w-full h-full table-fixed">
+          <thead>
+          <tr>
+              <th className="w-12 md:w-14 lg:w-16"></th>
+              {days.length > 1 && days.map((day) => (
+                  <th key={day}>{new Date(day).toLocaleDateString()}</th>
+              ))}
           </tr>
-        ))}
-      </tbody>
-    </table>
+          </thead>
+          <tbody>
+          {timeSlots.map((time, idx) => (
+              <tr key={idx}>
+                  <td className="align-top pt-4">{time}</td>
+                  {days.map((day) => (
+                      <td key={`${time}-${day}`}>
+                          <div className="flex flex-col h-full p-0">
+                              {filteredEvents
+                                  .filter((event) => {
+                                      const eventStartTime = new Date(event.event.startTime);
+                                      const eventDay = eventStartTime.toISOString().split("T")[0];
+                                      const eventHour =
+                                          eventStartTime.getHours().toString().padStart(2, "0") + ":00";
+                                      return eventDay === day && eventHour === time;
+                                  })
+                                  .map((event) => (
+                                      <div
+                                          key={event.event.id}
+                                          className="h-full flex-1 flex flex-col p-1"
+                                          title={`${event.event.title} - ${event.event.description}`}
+                                      >
+                                          <EventCard event={event} key={`event-${event.event.id}`}/>
+                                      </div>
+                                  ))}
+                          </div>
+                      </td>
+                  ))}
+              </tr>
+          ))}
+          </tbody>
+      </table>
   );
 }

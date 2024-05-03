@@ -5,7 +5,6 @@ import EventProgramOverview from "@/components/mim/views/eventProgramOverview";
 import { getEvents } from "@/service/eventActions";
 import { FilterOption, FullDeltaEvent } from "@/types/event";
 import { Checkbox, CheckboxGroup, Search, Tabs } from "@navikt/ds-react";
-import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 
 const fagfestivalCategory = "mim24";
@@ -33,7 +32,7 @@ const getCurrentDayAsString = () => {
 const FestivalEvents = () => {
   const [searchInput, setSearchInput] = useState("");
   const [filterEvents, setFilterEvents] = useState<FullDeltaEvent[]>([]);
-  const [filterOptions, setFilterOptions] = useState<FilterOption[]>([]);
+  const [filterOptions, setFilterOptions] = useState<FilterOption[]>(["vis-programoversikt"]);
   const [tabName, setTabName] = useState(getCurrentDayAsString());
   const [events, setEvents] = useState([] as FullDeltaEvent[]);
   const [loading, setLoading] = useState(true);
@@ -157,7 +156,7 @@ const FestivalEvents = () => {
         />
       </div>
 
-      {showProgramoversiktFilterOption && (
+{/*      {showProgramoversiktFilterOption && (
         <CheckboxGroup
           legend="Vis programoversikt"
           hideLegend
@@ -167,30 +166,9 @@ const FestivalEvents = () => {
         >
           <Checkbox value="vis-programoversikt">Programoversikt</Checkbox>
         </CheckboxGroup>
-      )}
+      )}*/}
 
       <div className="w-full p-4">
-        {tabName == "25" && (
-          <div className="pb-10 prose">
-            <p>
-              Husk å meld deg på{" "}
-              <Link
-                href="https://delta.nav.no/fagfest/38d6e0a2-8b13-4c4d-b398-d73116331e14"
-                className="text-deepblue-500 underline hover:no-underline"
-              >
-                felles avslutning
-              </Link>{" "}
-              og{" "}
-              <Link
-                href="https://delta.nav.no/fagfest/168e3338-0a9b-4755-8d12-1f176fd8c7ed"
-                className="text-deepblue-500 underline hover:no-underline"
-              >
-                husfest etter fagfestival
-              </Link>{" "}
-              💃🕺
-            </p>
-          </div>
-        )}
         <div className="w-full">
           {filterOptions.includes("vis-programoversikt") ? (
             <EventProgramOverview filteredEvents={filterEvents} loading={loading} />

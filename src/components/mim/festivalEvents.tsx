@@ -22,10 +22,11 @@ const getCurrentDayAsString = () => {
   const dayOfMonth = today.getDate().toString();
   if (activeDays.includes(dayOfMonth)) {
     return dayOfMonth;
-  } else if (parseInt(activeDays[0]) > today.getDate()) {
-    return activeDays[0];
   } else {
-    return "påmeldte";
+    // Find the closest upcoming active day (including today if applicable)
+    // @ts-ignore
+    const upcomingActiveDays = activeDays.filter((day) => parseInt(day) >= dayOfMonth);
+    return upcomingActiveDays.length > 0 ? upcomingActiveDays[0] : "påmeldte";
   }
 };
 
@@ -130,7 +131,7 @@ const FestivalEvents = () => {
 
   return (
     <div className="flex flex-col w-full gap-6 items-start">
-      <Tabs className="self-start w-full" defaultValue={activeDays[0]}>
+      <Tabs className="self-start w-full" value={tabName}>
         <Tabs.List>
           {getRemainingActiveDays().map((day, index) => {
             return <Tabs.Tab key={index} value={day} label={`${day}. ${fagfestivalMonth}`} onClick={() => setTabName(day)} />

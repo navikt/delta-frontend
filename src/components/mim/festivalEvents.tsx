@@ -88,6 +88,11 @@ const FestivalEvents = () => {
     if (tabName === "påmeldte" && isMobile) {
       const filteredOptions = filterOptions.filter((option) => option !== "vis-programoversikt");
       setFilterOptions(filteredOptions);
+    } else {
+      // If the tab is not "påmeldte" or the device is not mobile, revert the filterOptions to its original state
+      if (!filterOptions.includes("vis-programoversikt")) {
+        setFilterOptions([...filterOptions, "vis-programoversikt"]);
+      }
     }
   }, [isMobile, tabName]);
 

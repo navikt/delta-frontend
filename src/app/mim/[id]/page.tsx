@@ -45,7 +45,7 @@ export default async function Page({ params }: EventPageProps) {
         title={event.title}
         titleColor="#021841"
         home
-        backText={"MIM 24"}
+        backText={"MIM24"}
         backLink={"/mim"}
       >
         <EventDetails

@@ -1,6 +1,6 @@
 ---
 title: Data Engineering Forum
-when: Hver fagtorsdag
+when: Hver fagtorsdag kl 10:00
 audience: Åpen for alle
 ---
 
@@ -8,9 +8,9 @@ audience: Åpen for alle
 
 ## Kontaktpersoner
 
-- [Caroline Winther](https://nav-it.slack.com/team/U017URKMH0S)
+- [Martina Lund](https://nav-it.slack.com/team/U0417596ETG)
 - [Eivind Holen](https://nav-it.slack.com/team/U8STCA37A)
-- [Julie Skøyen](https://nav-it.slack.com/team/U04SHAG4FSL)
+- [Julie Skøien](https://nav-it.slack.com/team/U04SHAG4FSL)
 - [Patrick Pedersen](https://nav-it.slack.com/team/UQ7AUADHN)
 
 
@@ -18,7 +18,7 @@ audience: Åpen for alle
 
 Data Engineering Forum er en arena for alle med interesse for faget Data Engineering, for å dele erfaringer og skape samhold i miljøet. Det blir annenhver uke en time langt møte, der det er en agenda for ca første 30 minutter, og åpen diskusjon etter det. Formatet blir hybrid, innkallinger kommer fortløpende.
 
-Du finner mer informasjon fremtidig agenda på [dataseksjonens hjemmeside](https://dataseksjonen.intern.nav.no/kompetanse/delingsarenaer/data_enigneering_forum.html)
+Du finner mer informasjon fremtidig agenda på [dataseksjonens hjemmeside](https://dataseksjonen.ansatt.nav.no/kompetanse/delingsarenaer/data_enigneering_forum.html)
 
 ## Slack-gruppe
 

@@ -137,11 +137,11 @@ export default function EventDescription({
                 <ul>
                         <li className="flex ml-[0.2rem] pl-6 gap-2">
                             <Link
-                                title={`Send e-post til fagfestival@nav.no`}
-                                href={`mailto:fagfestival@nav.no`}
+                                title={`Send e-post til uu@nav.no`}
+                                href={`mailto:uul@nav.no`}
                                 className="leading-relaxed"
                             >
-                              FAGFEST 2024
+                              MIM 24
                             </Link>
                         </li>
                 </ul>

@@ -8,7 +8,7 @@ import { Checkbox, CheckboxGroup, Search, Tabs } from "@navikt/ds-react";
 import React, { useEffect, useRef, useState } from "react";
 
 const fagfestivalCategory = "mim24";
-const activeDays = ["3", "8", "13", "15", "16"];
+const activeDays = ["3", "8", "13", "14", "15", "16"];
 const fagfestivalMonth = "mai"
 
 const getRemainingActiveDays = () => {

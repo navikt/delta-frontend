@@ -1,7 +1,7 @@
 ---
 title: Design av fagsystemer
 when: Oppstart august/september
-audience: Designere
+audience: Designere (alle typer designere som jobber med fagsystemer)
 ---
 
 # Design av fagsystemer
@@ -16,8 +16,9 @@ audience: Designere
 ## Beskrivelse
 
 Faggruppen har som mål å bidra til bedre brukeropplevelse i fagsystemer for NAV-ansatte gjennom å:
-- Dele og diskutere eksempler på design av fagsystemer i NAV
+- Dele og diskutere innsiktsarbeid og design av fagsystemer i NAV
 - Identifisere og lage designmønstre som kan benyttes i flere fagsystemer
+- Bidra til god praksis for innsiktsarbeid med NAV-ansatte
 - Bidra til komponenter og god praksis for fagsystemer i Aksel
 
 ## Slack-gruppe

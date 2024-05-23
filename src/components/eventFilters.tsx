@@ -245,20 +245,20 @@ export default function EventFilters({
           </Tabs.List>
         </Tabs>
       )}
-{/*    {tabname == "alle" && (
+    {tabname == "alle" && (
           <>
             {joinedLink && (
                 <div className="px-4 inline-block">
-                  <LinkPanel  href="/mim" border className={"colorfulbg"}>
-                    <LinkPanel.Title>Mangfold i mai 2024</LinkPanel.Title>
+                  <LinkPanel  href="/fagdag_utvikling_og_data" border className={"colorful_fagdag_utvikling_og_data"}>
+                    <LinkPanel.Title>Fagdag Utvikling og Data</LinkPanel.Title>
                     <LinkPanel.Description>
-                      Programmet 3. - 16. mai
+                      Programmet 6. juni for utvikling og data
                     </LinkPanel.Description>
                   </LinkPanel>
                 </div>
             )}
           </>
-      )}*/}
+      )}
       {(searchName || selectCategory) && (
         <div className="flex flex-col-reverse gap-2 items-start md:flex-row justify-between w-full md:items-center px-4">
           {searchName && (

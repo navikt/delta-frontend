@@ -64,7 +64,7 @@ jobs:
         CLUSTER: dev-gcp 
         RESOURCE: nais-dev.yaml
         IMAGE: ${{ needs.build.outputs.image }}
-    - uses: nais/deploy/actions/deploy@v1
+    - uses: nais/deploy/actions/deploy@v2
       if: github.ref == 'refs/heads/main'
       env:
         CLUSTER: prod-gcp 

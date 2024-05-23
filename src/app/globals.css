@@ -7,6 +7,11 @@
     background-color: #131136;
 }
 
+.colorful_fagdag_utvikling_og_data, .site-header, .site-footer::before {
+    background-image: linear-gradient(-60deg, rgba(255, 255, 102, 0.25), rgba(255, 255, 153, 0.25), rgba(255, 228, 181, 0.25), rgba(255, 182, 193, 0.25), rgba(255, 192, 203, 0.25));
+    background-size: 100%;
+}
+
 .colorful, .site-header, .site-footer::before {
     background-image: linear-gradient(-60deg, rgba(249, 210, 204, 0.25), rgba(255, 193, 102, 0.25), rgba(153, 222, 173, 0.25), rgba(0, 103, 197, 0.25), rgba(161, 141, 187, 0.25));
     background-size: 100%;

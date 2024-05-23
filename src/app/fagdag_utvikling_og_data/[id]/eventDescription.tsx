@@ -137,11 +137,11 @@ export default function EventDescription({
                 <ul>
                         <li className="flex ml-[0.2rem] pl-6 gap-2">
                             <Link
-                                title={`Send e-post til uu@nav.no`}
-                                href={`mailto:uu@nav.no`}
+                                title={`Send e-post til einar.bjerve@nav.no`}
+                                href={`mailto:einar.bjerve@nav.no`}
                                 className="leading-relaxed"
                             >
-                              MIM 25
+                              Fagdag Utvikling og Data
                             </Link>
                         </li>
                 </ul>

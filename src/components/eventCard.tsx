@@ -36,8 +36,10 @@ export function EventCard({
             : false;
 
     // Check if the tab is "alle" and the event has a category named "fagfestival"
-    const shouldHide = tabname === "alle" && event.categories.some(category => category.name === "fagfestival");
-
+    const shouldHide = tabname === "alle" && event.categories.some(category =>
+        category.name === "fagfestival" || category.name === "fagdag_utvikling_og_data"
+    );
+    
     // If the condition is true, do not render the event
     if (shouldHide) {
         return null;

@@ -286,7 +286,7 @@ export default function EventFilters({
                   hideLabel={!isMobile}
                   options={eventCategories
                       .map((category) => category.name)
-                      .filter((categoryName) =>  categoryName !== "fagfestival" && categoryName !== "biljard")
+                      .filter((categoryName) =>  categoryName !== "fagfestival" && categoryName !== "biljard" && categoryName !== "fagdag_utvikling_og_data" )
                       .sort((a, b) => a.localeCompare(b))}
                   selectedOptions={selectedCategories
                       .map((category) => category.name)

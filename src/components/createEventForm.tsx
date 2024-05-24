@@ -392,7 +392,7 @@ function InternalCreateEventForm({
               }
           </div>
           <Checkbox {...register("public")}>
-              Gjør arrangementet synlig på forsiden
+              Publiser arrangementet på forsiden
           </Checkbox>
           <div className="flex flex-col max-w-[21rem]">
               <Checkbox

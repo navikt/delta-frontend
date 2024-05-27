@@ -1,7 +1,7 @@
 ---
 title: Visuell design og merkevare
 when: Hver fagtorsdag
-audience: Åpen for alle
+audience: Visuelle designere
 ---
 
 # Visuell design og merkevare

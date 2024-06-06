@@ -10,6 +10,10 @@ Du kan sende spørsmål til [eilif.johansen@nav.no](mailto:eilif.johansen@nav.no
 
 Du kan sende spørsmål i [#delta](https://nav-it.slack.com/archives/C05E0NJ6Z0C) på Slack, eller til [eilif.johansen@nav.no](mailto:eilif.johansen@nav.no)
 
+## Hvorfor ar dette repoet lukket?
+
+Etter vi la til faggrupper som inneholder navn og kontaktopplysninger til ansatte, ble det bestemt at repoet skulle lukkes av hensyn til ansattes personvern. 
+
 ## Delta backend
 
 Kode på Github: [delta-backend](https://github.com/navikt/delta-backend)

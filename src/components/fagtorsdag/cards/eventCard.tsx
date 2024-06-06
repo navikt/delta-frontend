@@ -132,7 +132,7 @@ export function EventCard({ event }: EventCardProps) {
 
         <div className="flex gap-2 flex-wrap items-end w-full">
           {event.categories.map((category) => {
-            if (category.name !== "fagtorsdag" && category.name !== "mangfold i mai") {
+            if (category.name !== "fagtorsdag") {
               return (
                   <Tag variant="alt1" size="small" key={category.id}>
                     {category.name}

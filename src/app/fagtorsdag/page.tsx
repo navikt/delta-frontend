@@ -3,20 +3,20 @@ import CardWithBackground from "@/components/cardWithBackground";
 import "./fagfestival.css";
 
 import { Metadata } from "next";
-import Intro from "@/components/fagdag_utvikling_og_data/intro";
-import FestivalEvents from "@/components/fagdag_utvikling_og_data/festivalEvents";
+import Intro from "@/components/fagtorsdag/intro";
+import FestivalEvents from "@/components/fagtorsdag/festivalEvents";
 
 export const metadata: Metadata = {
-  title: "Fagdag Utvikling og Data Δ Delta",
+  title: "Fagtorsdag Δ Delta",
   description: "Påmeldingsapp",
 };
 
 export default async function Fagfestival() {
-  await checkToken("/fagdag_utvikling_og_data");
+  await checkToken("/fagtorsdag");
 
   return (
     <>
-<div className="flex flex-col w-full  pb-10 colorful_fagdag_utvikling_og_data">
+<div className="flex flex-col w-full  pb-10 colorful_fagtorsdag">
   {/*      <div>
           <CardWithBackground
             title="Fagdag Utvikling og Data"
@@ -32,7 +32,7 @@ export default async function Fagfestival() {
         <div className="w-full">
           <CardWithBackground
               newEvent
-              title="Fagdag Utvikling og Data"
+              title="Fagtorsdag"
               backLink="/"
               titleColor={"#021841"}
           >

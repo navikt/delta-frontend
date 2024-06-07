@@ -249,12 +249,12 @@ export default function EventFilters({
           <>
             {joinedLink && (
                 <div className="px-4 inline-block">
-                  <LinkPanel  href="/fagdag_utvikling_og_data" border className={"colorful_fagdag_utvikling_og_data"}>
+  {/*                <LinkPanel  href="/fagdag_utvikling_og_data" border className={"colorful_fagdag_utvikling_og_data"}>
                     <LinkPanel.Title>Fagdag Utvikling og Data</LinkPanel.Title>
                     <LinkPanel.Description>
                       Programmet 6. juni for utvikling og data
                     </LinkPanel.Description>
-                  </LinkPanel>
+                  </LinkPanel>*/}
                 </div>
             )}
           </>

@@ -247,14 +247,14 @@ export default function EventFilters({
       )}
     {tabname == "alle" && (
           <>
-            {joinedLink && (
+            {joinedLink && new Date() < new Date('2024-06-14') && (
                 <div className="px-4 inline-block">
-  {/*                <LinkPanel  href="/fagdag_utvikling_og_data" border className={"colorful_fagdag_utvikling_og_data"}>
-                    <LinkPanel.Title>Fagdag Utvikling og Data</LinkPanel.Title>
+                  <LinkPanel  href="https://fagtorsdag.ansatt.nav.no/" border className={"colorful_fagdag_utvikling_og_data"}>
+                    <LinkPanel.Title>Fagtorsdag</LinkPanel.Title>
                     <LinkPanel.Description>
-                      Programmet 6. juni for utvikling og data
+                      Programmet 13. juni
                     </LinkPanel.Description>
-                  </LinkPanel>*/}
+                  </LinkPanel>
                 </div>
             )}
           </>

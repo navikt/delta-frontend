@@ -15,14 +15,14 @@ export default async function ArticlesPage() {
         filenames.map(async (filename) => {
             const filePath = path.join(articleDirectory, filename);
             const fileContent = fs.readFileSync(filePath, 'utf8');
-            const { data: { title, when, audience, startingtime, endingtime } } = matter(fileContent); // Extract title from front matter
+            const { data: { title, when, audience, starttime, endtime } } = matter(fileContent); // Extract title from front matter
 
             return {
                 title,
                 when,
                 audience,
-                startingtime,
-                endingtime,
+                starttime,
+                endtime,
                 href: `/faggrupper/${filename.replace(/\.md$/, '')}`,
             };
         })

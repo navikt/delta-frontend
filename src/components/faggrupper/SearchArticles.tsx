@@ -9,7 +9,7 @@ interface Article {
     when?: string;
     audience?: string;
     startingtime?: string;
-    endtime?: string;
+    endingtime?: string;
     href: string;
 }
 
@@ -58,7 +58,7 @@ export default function SearchArticles({articles}: { articles: Article[] }) {
                                 {article.startingtime && (
                                     <Detail className="leading-normal">
                     <span className="flex items-center gap-1">
-                      <ClockIcon aria-label="tid" /> {article.startingtime && `${article.endtime}`} {article.endtime && `-  ${article.startingtime}`}
+                      <ClockIcon aria-label="tid" /> {article.startingtime && `${article.startingtime}`} {article.endingtime && `-  ${article.endingtime}`}
                     </span>
                                     </Detail>
                                 )}

@@ -1,6 +1,8 @@
 ---
 title: Faggruppe tittel
 when: Hver fagtorsdag
+startingtime: 13:00
+endingtime: 16:00
 audience: Åpen for alle
 ---
 

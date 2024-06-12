@@ -8,6 +8,7 @@ interface Article {
     title: string;
     when?: string;
     audience?: string;
+    startingtime?: string;
     href: string;
 }
 
@@ -48,7 +49,7 @@ export default function SearchArticles({ articles }: { articles: Article[] }) {
                                 {article.when && (
                                     <Detail className="leading-normal">
                     <span className="flex items-center gap-1">
-                      <CalendarIcon title="person"/> {article.when}
+                      <CalendarIcon title="person"/> {article.when} {article.startingtime && `kl. ${article.startingtime}`}
                     </span>
                                     </Detail>
                                 )}

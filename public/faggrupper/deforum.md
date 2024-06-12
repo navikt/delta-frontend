@@ -1,6 +1,8 @@
 ---
 title: Data Engineering Forum
-when: Hver fagtorsdag kl 10:00
+when: Hver fagtorsdag
+startingtime: 10:00
+endingtime: 11:00
 audience: Åpen for alle
 ---
 

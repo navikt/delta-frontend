@@ -1,6 +1,8 @@
 ---
 title: Hack / CTF
 when: Hver fagtorsdag
+startingtime: 12:00
+endingtime: 16:00
 audience: Utviklere
 ---
 

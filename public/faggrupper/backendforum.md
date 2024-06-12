@@ -1,8 +1,8 @@
 ---
 title: Backendforum
 when:  Hver fagtorsdag
-startingtime: "13:00"
-endingtime: "13:50"
+starttime: "13:00"
+endtime: "13:50"
 audience: Utviklere
 ---
 

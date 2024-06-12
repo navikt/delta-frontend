@@ -1,8 +1,8 @@
 ---
 title:  dbt i nav
 when: Hver fagtorsdag
-startingtime: "12:00"
-endingtime: "13:50"
+starttime: "12:00"
+endtime: "13:50"
 audience: Folk som driver med datatransformasjon
 ---
 

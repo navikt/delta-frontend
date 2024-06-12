@@ -1,8 +1,8 @@
 ---
 title: Data Engineering Forum
 when: Hver fagtorsdag
-startingtime: "10:00"
-endingtime: "11:00"
+starttime: "10:00"
+endtime: "11:00"
 audience: Åpen for alle
 ---
 

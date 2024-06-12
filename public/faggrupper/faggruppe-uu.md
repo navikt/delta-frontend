@@ -1,8 +1,8 @@
 ---
 title: Universell utforming
 when: Hver fagtorsdag
-startingtime: "13:00"
-endingtime: "13:55"
+starttime: "13:00"
+endtime: "13:55"
 audience: Åpen for alle
 ---
 

@@ -17,7 +17,7 @@ audience: Utviklere
 
 ## Beskrivelse
 
-Frontendforum er møteplassen for frontendfagmiljøet i Nav. Vi møtes for å prate fag hver fagtorsdag kl. 14, på Zoom og i Speakers Corner.
+Frontendforum er møteplassen for frontendfagmiljøet i Nav. Vi møtes for å prate fag hver fagtorsdag kl. 14, på Teams og i Speakers Corner.
 
 ## Slack-gruppe
 

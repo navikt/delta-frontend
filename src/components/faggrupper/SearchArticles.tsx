@@ -1,18 +1,19 @@
 "use client"
-import { useState } from 'react';
+import {useState} from 'react';
 import Link from 'next/link';
 import {Detail, Heading, Search} from "@navikt/ds-react";
-import {CalendarIcon, PersonGroupIcon} from "@navikt/aksel-icons";
+import {CalendarIcon, PersonGroupIcon, ClockIcon} from "@navikt/aksel-icons";
 
 interface Article {
     title: string;
     when?: string;
     audience?: string;
     startingtime?: string;
+    endtime?: string;
     href: string;
 }
 
-export default function SearchArticles({ articles }: { articles: Article[] }) {
+export default function SearchArticles({articles}: { articles: Article[] }) {
     const [searchQuery, setSearchQuery] = useState('');
 
     const filteredArticles = articles.filter((article) => {
@@ -49,7 +50,15 @@ export default function SearchArticles({ articles }: { articles: Article[] }) {
                                 {article.when && (
                                     <Detail className="leading-normal">
                     <span className="flex items-center gap-1">
-                      <CalendarIcon title="person"/> {article.when} {article.startingtime && `kl. ${article.startingtime}`}
+                      <CalendarIcon
+                          title="person"/> {article.when}
+                    </span>
+                                    </Detail>
+                                )}
+                                {article.startingtime && (
+                                    <Detail className="leading-normal">
+                    <span className="flex items-center gap-1">
+                      <ClockIcon aria-label="tid" /> {article.startingtime && `${article.endtime}`} {article.endtime && `-  ${article.startingtime}`}
                     </span>
                                     </Detail>
                                 )}

@@ -49,7 +49,7 @@ export default function SearchArticles({ articles }: { articles: Article[] }) {
                                 {article.when && (
                                     <Detail className="leading-normal">
                     <span className="flex items-center gap-1">
-                      <CalendarIcon title="person" /> {article.when} {article.startingtime && `kl. ${Number(article.startingtime)}`}
+                      <CalendarIcon title="person"/> {article.when} {article.startingtime && `kl. ${article.startingtime}`}
                     </span>
                                     </Detail>
                                 )}

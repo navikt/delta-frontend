@@ -1,8 +1,8 @@
 ---
 title: Frontendforum
 when: Hver fagtorsdag
-startingtime: 14:00
-endingtime: 15:00
+startingtime: "14:00"
+endingtime: "15:00"
 audience: Utviklere
 ---
 

@@ -1,8 +1,8 @@
 ---
 title: Observability
 when: Annenhver fagtorsdag (første)
-starttime: "10:00"
-endtime: "11:00"
+starttime: "12:00"
+endtime: "12:45"
 audience: Utviklere
 ---
 

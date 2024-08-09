@@ -10,6 +10,7 @@ import EditArticleModal from "@/components/faggrupper/editarticlemodal";
 import { Detail } from "@navikt/ds-react";
 import { PersonGroupIcon, CalendarIcon, ClockIcon } from "@navikt/aksel-icons";
 
+// @ts-ignore
 export default async function ArticlePage({ params }) {
     await checkToken(`/faggrupper/${params.id}`);
     const filePath = path.join(process.cwd(), `public/faggrupper/${params.id}.md`);

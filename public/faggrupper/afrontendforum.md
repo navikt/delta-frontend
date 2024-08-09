@@ -6,8 +6,6 @@ endtime: "15:00"
 audience: Utviklere
 ---
 
-# Frontendforum
-
 ## Kontaktpersoner
 
 - [Andreas Nordahl](https://nav-it.slack.com/team/U018Y6BG0DN)

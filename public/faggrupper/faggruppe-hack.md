@@ -1,13 +1,11 @@
 ---
 title: Hack / CTF
+subtitle: "**C**apture **T**he **F**lag"
 when: Hver fagtorsdag
 starttime: "12:00"
 endtime: "16:00"
 audience: Utviklere
 ---
-
-# Hack / CTF
-**C**apture **T**he **F**lag
 
 ## Kontaktpersoner
 

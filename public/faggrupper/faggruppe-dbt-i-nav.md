@@ -1,13 +1,11 @@
 ---
-title:  dbt i nav
+title:  "DBT i NAV"
+subtitle: "#dbt-i-nav, **d**ata **b**uild **t**ool"
 when: Hver fagtorsdag
 starttime: "12:00"
 endtime: "13:50"
 audience: Folk som driver med datatransformasjon
 ---
-
-# \#dbt-i-nav
-**d**ata **b**uild **t**ool
 
 ## Kontaktpersoner
 

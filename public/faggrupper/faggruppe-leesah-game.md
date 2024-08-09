@@ -4,8 +4,6 @@ when: Tidspunkt annonseres på Slack
 audience: Utviklere
 ---
 
-# Leesah Game
-
 ## Kontaktpersoner
 
 - [Tania Holst](https://nav-it.slack.com/team/ULQQR8658)

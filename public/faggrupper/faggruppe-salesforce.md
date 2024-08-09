@@ -4,8 +4,6 @@ when: Onsdager i fagtorsdagsuker
 audience: Åpen for alle
 ---
 
-# Faggruppe Salesforce
-
 ## Kontaktpersoner
 
 - [Kenneth Sørensen](https://nav-it.slack.com/team/U04578943UZ)  

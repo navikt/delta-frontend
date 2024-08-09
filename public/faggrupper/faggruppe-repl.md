@@ -1,11 +1,9 @@
 ---
 title: REPL
+subtitle: "_**R**eproducible **E**ngineering-**P**rogramming **L**ifecycles_"
 when: Tidspunkt annonseres på Slack
 audience: Utviklere
 ---
-
-# REPL
-_**R**eproducible **E**ngineering-**P**rogramming **L**ifecycles_
 
 ## Kontaktpersoner
 - [Christian Chavez](https://nav-it.slack.com/team/U01A8737M1P)

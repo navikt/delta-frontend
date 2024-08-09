@@ -6,8 +6,6 @@ endtime: "11:00"
 audience: Åpen for alle
 ---
 
-# Data Engineering Forum
-
 ## Kontaktpersoner
 
 - [Martina Lund](https://nav-it.slack.com/team/U0417596ETG)

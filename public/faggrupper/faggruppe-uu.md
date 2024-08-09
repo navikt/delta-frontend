@@ -6,8 +6,6 @@ endtime: "13:55"
 audience: Åpen for alle
 ---
 
-# Universell utforming
-
 ## Kontaktpersoner
 
 [Vegard Haugstvedt](https://nav-it.slack.com/team/U01AM2P9LFP)

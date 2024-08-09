@@ -6,8 +6,6 @@ endtime: "13:50"
 audience: Utviklere
 ---
 
-# Backendforum
-
 ## Kontaktpersoner
 - [Einar Bjerve](https://nav-it.slack.com/team/UAJJ5JZ2A)
 - [Tia Firing](https://nav-it.slack.com/team/U6V6HCLGM)

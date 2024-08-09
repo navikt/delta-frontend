@@ -1,12 +1,11 @@
 ---
 title: Observability
+subtitle: (o11y)
 when: Annenhver fagtorsdag (første)
 starttime: "10:00"
 endtime: "10:45"
 audience: Utviklere
 ---
-
-# Observability (o11y)
 
 ## Kontaktpersoner
 

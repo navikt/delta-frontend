@@ -4,8 +4,6 @@ when: 1 gang i måneden
 audience: Åpen for alle, spesielt jurister
 ---
 
-# Juridisk møteplass
-
 ## Kontaktpersoner
 
 - [Emilie Mellbye Rytter-Ingebrigtsen](https://nav-it.slack.com/team/U046WP6R8PJ)

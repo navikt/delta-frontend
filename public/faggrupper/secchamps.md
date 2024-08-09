@@ -4,8 +4,6 @@ when: En gang i måneden
 audience: Utviklere
 ---
 
-# Security Champions
-
 ## Kontaktpersoner
 
 - [Emil Albrektsson](https://nav-it.slack.com/team/UTTQH7RD1)

@@ -22,6 +22,9 @@ export default function SearchArticles({articles}: { articles: Article[] }) {
         return article.title ? article.title.toLowerCase().includes(normalizedQuery) : false;
     });
 
+    // Sort articles alphabetically by title
+    const sortedArticles = filteredArticles.sort((a, b) => a.title.localeCompare(b.title));
+
     return (
         <div className="flex flex-col w-full">
             <div
@@ -38,10 +41,10 @@ export default function SearchArticles({articles}: { articles: Article[] }) {
                 />
             </div>
 
-            <p className="px-4 pb-4">{filteredArticles.length} {filteredArticles.length == 1 ? (<>faggruppe</>) : (<>faggrupper</>)}</p>
+            <p className="px-4 pb-4">{sortedArticles.length} {sortedArticles.length == 1 ? (<>faggruppe</>) : (<>faggrupper</>)}</p>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 px-4 pb-4">
-                {filteredArticles.map((article) => (
+                {sortedArticles.map((article) => (
                     <Link key={article.title} href={article.href}>
                         <div
                             className="flex flex-col h-full p-4 border rounded-xl text-text-default border-gray-300 transition-all hover:-translate-y-1 hover:scale-105 hover:text-surface-action-selected-hover hover:border-border-action event-card">

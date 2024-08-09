@@ -1,10 +1,8 @@
 ---
-title: Visuell Kommunikasjon
+title: Visuell kommunikasjon
 when: En gang i måneden
 audience: Åpen for alle
 ---
-
-# Visuell kommunikasjon
 
 ## Kontaktpersoner
 

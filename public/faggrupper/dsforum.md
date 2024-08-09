@@ -4,9 +4,6 @@ when: Fredager i fagtorsdaguker og torsdager ellers.
 audience: Åpen for alle
 ---
 
-# Data Science Forum
-
-
 ## Kontaktpersoner
 
 - [Eirik Gallefoss](https://nav-it.slack.com/team/U029VUUS1CJ)

@@ -4,8 +4,6 @@ when: Tidspunkt annonseres på Slack
 audience: Utviklere
 ---
 
-# Krypto(logi)
-
 ## Kontaktpersoner
 
 - [Roy Andre Gundersen](https://nav-it.slack.com/team/UCKHRV9GR)

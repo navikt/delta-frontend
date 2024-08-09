@@ -1,10 +1,10 @@
 ---
 title: Design av fagsystemer
 when: Oppstart august/september
-audience: Designere (alle typer designere som jobber med fagsystemer)
+audience: Designere som jobber med fagsystemer
 ---
 
-# Design av fagsystemer
+## Under etablering
 - Oppstart: Medio august - begynnelsen av september
 - Frekvens og tidspunkt for møter: På fagtorsdag (sannsynligvis 13 - 14), i utgangspunktet hver fagtorsdag
 

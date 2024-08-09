@@ -4,8 +4,6 @@ when: Hver fagtorsdag
 audience: Visuelle designere
 ---
 
-# Visuell design og merkevare
-
 ## Kontaktpersoner
 
 - [Alexander Flammier Muskaug](https://nav-it.slack.com/team/U7LPDG3AQ)

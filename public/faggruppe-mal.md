@@ -1,12 +1,11 @@
 ---
 title: Faggruppe tittel
+subtitle: Faggruppe undertittel (valgfritt)
 when: Hver fagtorsdag
 starttime: "13:00"
 endtime: "16:00"
 audience: Åpen for alle
 ---
-
-# Tittel
 
 ## Kontaktpersoner
 

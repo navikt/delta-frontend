@@ -12,9 +12,7 @@ audience: Åpen for alle
 
 Hva er arkitektur? Trenger vi arkitektur? Hvordan jobbe med arkitektur?
 
-Dette er tema vi tenker å ta opp i Arkitekturprat som vi setter opp som en fast aktivitet på fagtorsdager. 
-
-Målet er at vi sammen finner ut hvordan vi kan jobbe godt med arkitekturen i NAV.
+Dette er tema vi tenker å ta opp i Arkitekturprat som vi setter opp som en fast aktivitet på fagtorsdager. Målet er at vi sammen finner ut hvordan vi kan jobbe godt med arkitekturen i NAV.
 
 
 ## Slack-gruppe

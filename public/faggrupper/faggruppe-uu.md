@@ -1,5 +1,6 @@
 ---
-title: Universell utforming
+title: UU-forum
+subtitle: Faggruppe universell utforming
 when: Hver fagtorsdag
 starttime: "13:00"
 endtime: "13:55"

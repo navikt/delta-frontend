@@ -30,7 +30,7 @@ export default function SearchArticles({articles}: { articles: Article[] }) {
             <div
                 className="flex flex-col-reverse gap-2 items-start md:flex-row justify-between w-full md:items-center px-4">
                 <Search
-                    label="Søk etter faggrupper"
+                    label="Søk etter grupper"
                     variant="simple"
                     value={searchQuery}
                     size="small"
@@ -41,7 +41,7 @@ export default function SearchArticles({articles}: { articles: Article[] }) {
                 />
             </div>
 
-            <p className="px-4 pb-4">{sortedArticles.length} {sortedArticles.length == 1 ? (<>faggruppe</>) : (<>faggrupper</>)}</p>
+            <p className="px-4 pb-4">{sortedArticles.length} {sortedArticles.length == 1 ? (<>gruppe</>) : (<>grupper</>)}</p>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 px-4 pb-4">
                 {sortedArticles.map((article) => (

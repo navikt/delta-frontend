@@ -8,6 +8,9 @@ import {
   Switch,
   Skeleton,
   UNSAFE_Combobox,
+  Radio,
+  RadioGroup,
+  Alert,
 } from "@navikt/ds-react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import {
@@ -269,6 +272,12 @@ function InternalCreateEventForm({
   const [mobilvisning, setMobilvisning] = useState(true)
   const [dvalue, setDvalue] = useState("")
 
+  // Location related fields
+  const [showAlert, setShowAlert] = useState(false);
+  const [showLocationField, setShowLocationField] = useState(false);
+  const [showPlatformField, setShowPlatformField] = useState(false);
+
+
   return (
       <form
           action={async () => {
@@ -290,6 +299,7 @@ function InternalCreateEventForm({
               label="Tittel"
               {...register("title")}
               error={errors.title?.message}
+              className="max-w-prose"
           />
           <div className="flex flex-row flex-wrap justify-left gap-4 pb-0 items-end">
               <EventDatepicker
@@ -345,11 +355,75 @@ function InternalCreateEventForm({
                   )}
               </div>
           </div>
-          <TextField
-              label="Sted"
-              {...register("location")}
-              error={errors.location?.message}
-          />
+
+          {richEvent.type !== EditTypeEnum.EDIT ? (
+              <>
+          <RadioGroup
+              legend="Type arrangement"
+              onChange={(value) => {
+                  setShowLocationField(value === "fysisk" || value === "hybrid");
+                  setShowPlatformField(value === "digitalt");
+                  if (value === "digitalt") {
+                      setSelected([...selectedOptions, "digitalt"]);
+                  } else if (value === "hybrid") {
+                      setSelected([...selectedOptions, "hybrid"]);
+                      setShowAlert(true);
+                  } else if (value === "fysisk") {
+                      setSelected([...selectedOptions, "fysisk"]);
+                  }
+              }}
+          >
+              <Radio value="fysisk">Fysisk</Radio>
+              <Radio value="digitalt">Digitalt</Radio>
+              <Radio value="hybrid">Hybrid</Radio>
+          </RadioGroup>
+
+          {showPlatformField && (
+          <RadioGroup
+              legend="Platform"
+              onChange={(value) => {
+                  setShowAlert(true);
+                  if (value === "Teams") {
+                      setValue("location", "Teams");
+                  } else if (value === "Zoom") {
+                      setValue("location", "Zoom");
+                  } else if (value === "Vimeo") {
+                      setValue("location", "Vimeo");
+                  } else if (value === "Annet") {
+                      setValue("location", "Digitalt");
+                  }
+              }}
+          >
+              <Radio value="Teams">Teams</Radio>
+              <Radio value="Zoom">Zoom</Radio>
+              <Radio value="Vimeo">Vimeo</Radio>
+              <Radio value="Annet">Annet</Radio>
+          </RadioGroup>
+        )}
+
+          {showAlert && (
+              <Alert className="max-w-prose" variant="info">Vi anbefaler at du limer inn lenken til Teams/Zoom/etc. på bunnen av beskrivelsen til dette arrangementet.</Alert>
+          )}
+
+          {showLocationField && (
+              <TextField
+                  label="Sted"
+                  {...register("location")}
+                  error={errors.location?.message}
+                  className="max-w-prose"
+              />
+          )}
+          </>
+              ) :(
+                  <>
+                      <TextField
+                          label="Sted"
+                          {...register("location")}
+                          error={errors.location?.message}
+                      />
+                  </>
+              )}
+
           <div
               onKeyDown={(e) => {
                   if (e.key === "Enter") {
@@ -360,6 +434,7 @@ function InternalCreateEventForm({
           >
               <UNSAFE_Combobox
                   label="Kategorier (valgfritt)"
+                  className="max-w-prose"
                   shouldAutocomplete
                   allowNewValues
                   isMultiSelect
@@ -372,6 +447,7 @@ function InternalCreateEventForm({
                   }}
               />
           </div>
+          <div className="max-w-prose">
           <Textarea
               label="Beskrivelse"
               {...register("description")}
@@ -379,7 +455,7 @@ function InternalCreateEventForm({
               onChange={(e) => setDvalue(e.target.value)}
           />
           <div style={{display: "block", marginBottom: "0px"}}>
-              <div style={{marginTop: "-20px", float: "right"}}>
+              <div style={{marginTop: "0px", float: "right"}}>
                   <Switch onChange={() => setMobilvisning(!mobilvisning)}
                           checked={mobilvisning}>Språkhjelp</Switch>
               </div>
@@ -391,6 +467,7 @@ function InternalCreateEventForm({
                   </>)
               }
           </div>
+        </div>
           <Checkbox {...register("public")}>
               Publiser arrangementet på forsiden
           </Checkbox>
@@ -461,8 +538,8 @@ function InternalCreateEventForm({
                   </div>
               </div>
           </div>
-          <div className="flex items-center justify-end gap-4">
-              <Link
+          <div className="mt-6 mb-12 flex items-center gap-4">
+{/*              <Link
                   className="w-fit h-fit"
                   href={
                       richEvent.type === EditTypeEnum.EDIT
@@ -471,7 +548,7 @@ function InternalCreateEventForm({
                   }
               >
                   Avbryt
-              </Link>
+              </Link>*/}
               <Button type="submit">
                   {richEvent.type === EditTypeEnum.EDIT ? "Oppdater" : "Opprett"}
               </Button>

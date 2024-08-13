@@ -10,6 +10,7 @@ import {
   UNSAFE_Combobox,
   Radio,
   RadioGroup,
+  CheckboxGroup,
   Alert,
 } from "@navikt/ds-react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
@@ -277,8 +278,10 @@ function InternalCreateEventForm({
   const [showLocationField, setShowLocationField] = useState(false);
   const [showPlatformField, setShowPlatformField] = useState(false);
 
+  const [selectedType, setSelectedType] = useState<string | null>(null);
 
-  return (
+
+    return (
       <form
           action={async () => {
               const valid = await trigger();
@@ -359,7 +362,7 @@ function InternalCreateEventForm({
           {richEvent.type !== EditTypeEnum.EDIT ? (
               <>
           <RadioGroup
-              legend="Type arrangement"
+              legend="Oppmøte"
               onChange={(value) => {
                   setShowLocationField(value === "fysisk" || value === "hybrid");
                   setShowPlatformField(value === "digitalt");
@@ -423,6 +426,41 @@ function InternalCreateEventForm({
                       />
                   </>
               )}
+
+          {richEvent.type !== EditTypeEnum.EDIT && (
+              <>
+                  <RadioGroup
+                      legend="Type arrangement"
+                      onChange={(value) => {
+                          setSelectedType(value);
+                          if (value === "Sosialt") {
+                              setSelected([...selectedOptions, "sosialt"]);
+                          } else if (value === "Kompetanse") {
+                              setSelected([...selectedOptions, "kompetanse"]);
+                          } else if (value === "Bedriftidrettslaget") {
+                              setSelected([...selectedOptions, "bedriftidrettslaget"]);
+                          }
+                      }}
+                  >
+                      <Radio value="Sosialt">Sosialt</Radio>
+                      <Radio value="Kompetanse">Kompetanse</Radio>
+                      <Radio value="Bedriftidrettslaget">Bedriftidrettslaget</Radio>
+                  </RadioGroup>
+
+                  {selectedType === "Kompetanse" && (
+                      <CheckboxGroup
+                          legend="Tilknyttet Fagtorsdag?"
+                          onChange={(values: string[]) => {
+                              if (values.includes("Fagtorsdag")) {
+                                  setSelected([...selectedOptions, "fagtorsdag"]);
+                              }
+                          }}
+                      >
+                          <Checkbox value="Fagtorsdag">Ja, tilknyttet Fagtorsdag</Checkbox>
+                      </CheckboxGroup>
+                  )}
+              </>
+          )}
 
           <div
               onKeyDown={(e) => {

@@ -402,7 +402,7 @@ function InternalCreateEventForm({
         )}
 
           {showAlert && (
-              <Alert className="max-w-prose" variant="info">Vi anbefaler at du limer inn lenken til Teams/Zoom/etc. på bunnen av beskrivelsen til dette arrangementet.</Alert>
+              <Alert className="max-w-prose" variant="info">Vi anbefaler at du limer inn lenken til Teams/Zoom/etc. på bunnen av beskrivelsen til arrangementet.</Alert>
           )}
 
           {showLocationField && (

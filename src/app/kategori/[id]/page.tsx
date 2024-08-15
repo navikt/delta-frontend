@@ -10,16 +10,16 @@ export function generateMetadata(
     { params }: CategoryPageProps
   ): Metadata {
     return {
-        title: `${params.id}-arrangementer Δ Delta`
+        title: `${params.id} Δ Delta`
     }
   }
 
 export default async function Page({ params }: CategoryPageProps) {
-    await checkToken(`/category/${params.id}`);
+    await checkToken(`/kategori/${params.id}`);
     const allCategories = await getAllCategories();
     const category = params.id
     const theCategory = allCategories.find(item => item.name === category);
-    const title = category + "-arrangementer"
+    const title = category.charAt(0).toUpperCase() + category.slice(1);
 
     return (
         <>

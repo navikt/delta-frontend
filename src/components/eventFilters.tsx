@@ -322,8 +322,43 @@ export default function EventFilters({
             </CheckboxGroup>
           </>
       )}
+      {(selectTimeRadio && tabname == "alle") && (
+          <>
+            {/*<Switch className={"-mt-5 -mb-2 ml-4"}>Vis tidligere</Switch>*/}
+            <CheckboxGroup
+                legend={"Vis"} hideLegend className={"-mt-5 -mb-2 ml-4"}
+                onChange={(values: string[]) => {
+                  if (values.includes("kompetanse")) {
+                    setSelectedCategories((prevCategories) => [
+                      ...prevCategories,
+                      eventCategories.find((category) => category.name === "kompetanse")!,
+                    ]);
+                  } else {
+                    setSelectedCategories((prevCategories) =>
+                        prevCategories.filter((category) => category.name !== "kompetanse")
+                    );
+                  }
+                  if (values.includes("bedriftidrettslaget")) {
+                    setSelectedCategories((prevCategories) => [
+                      ...prevCategories,
+                      eventCategories.find((category) => category.name === "bedriftidrettslaget")!,
+                    ]);
+                  } else {
+                    setSelectedCategories((prevCategories) =>
+                        prevCategories.filter((category) => category.name !== "bedriftidrettslaget")
+                    );
+                  }
+                }}
+            >
+              <div className="mt-1 flex flex-col sm:flex-row gap-0 sm:gap-4">
+                <Checkbox value="kompetanse">Kompetanse</Checkbox>
+                <Checkbox value="bedriftidrettslaget">Bedriftidrettslaget</Checkbox>
+              </div>
+            </CheckboxGroup>
+          </>
+      )}
       <div className="w-full p-4">
-        <EventList fullEvents={filterEvents} loading={loading}  showAll={val} tabname={tabname } />
+        <EventList fullEvents={filterEvents} loading={loading} showAll={val} tabname={tabname}/>
       </div>
       {ctaLink && (
           <div className="px-4 mb-4">

@@ -333,26 +333,25 @@ export default function EventFilters({
                       ...prevCategories,
                       eventCategories.find((category) => category.name === "kompetanse")!,
                     ]);
-                  } else {
                     setSelectedCategories((prevCategories) =>
-                        prevCategories.filter((category) => category.name !== "kompetanse")
+                        prevCategories.filter((category) => category.name !== "bedriftidrettslaget")
                     );
-                  }
-                  if (values.includes("bedriftidrettslaget")) {
+                  } else if (values.includes("bedriftidrettslaget")) {
                     setSelectedCategories((prevCategories) => [
                       ...prevCategories,
                       eventCategories.find((category) => category.name === "bedriftidrettslaget")!,
                     ]);
-                  } else {
                     setSelectedCategories((prevCategories) =>
-                        prevCategories.filter((category) => category.name !== "bedriftidrettslaget")
+                        prevCategories.filter((category) => category.name !== "kompetanse")
                     );
+                  } else {
+                    setSelectedCategories([]);
                   }
                 }}
             >
               <div className="mt-1 flex flex-col sm:flex-row gap-0 sm:gap-4">
-                <Checkbox value="kompetanse">Kompetanse</Checkbox>
-                <Checkbox value="bedriftidrettslaget">Bedriftidrettslaget</Checkbox>
+                <Checkbox value="kompetanse" disabled={selectedCategories.some(category => category.name === "bedriftidrettslaget")}>Kompetanse</Checkbox>
+                <Checkbox value="bedriftidrettslaget" disabled={selectedCategories.some(category => category.name === "kompetanse")}>Bedriftidrettslaget</Checkbox>
               </div>
             </CheckboxGroup>
           </>

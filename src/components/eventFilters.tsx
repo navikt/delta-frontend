@@ -357,6 +357,7 @@ export default function EventFilters({
           </>
       )}
       <div className="w-full p-4">
+        {filterEvents.length > 0 && (<p className="pb-4">{filterEvents.length} {filterEvents.length == 1 ? (<>arrangement</>) : (<>arrangementer</>)}</p>)}
         <EventList fullEvents={filterEvents} loading={loading} showAll={val} tabname={tabname}/>
       </div>
       {ctaLink && (

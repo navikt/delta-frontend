@@ -265,55 +265,57 @@ export default function EventFilters({
           </>
       )}
       {(searchName || selectCategory) && (
-        <div className="flex flex-col-reverse gap-2 items-start md:flex-row justify-between w-full md:items-center px-4">
-          {searchName && (
-            <Search
-              label="Søk alle kommende arrangementer"
-              variant="simple"
-              value={searchInput}
-              size="small"
-              className="border-[#000] w-full md:w-auto"
-              onChange={(e) => {
-                setSearchInput(e);
-              }}
-            />
-          )}
-          {selectCategory && tabname == "alle" && (
-            <div className="w-full md:w-fit flex items-center flex-wrap flex-row-reverse md:flex-row gap-2">
-              <span className="gap-2 items-center hidden md:flex">
-                <FunnelIcon title="trakt" />
-                <label className="font-bold">Filtrer på kategori</label>
-              </span>
-              <UNSAFE_Combobox
-                  className="w-full md:w-fit"
-                  size="small"
-                  label="Filtrer på kategori"
-                  hideLabel={!isMobile}
-                  options={eventCategories
-                      .map((category) => category.name)
-                      .filter((categoryName) =>  categoryName !== "fagfestival" && categoryName !== "biljard" && categoryName !== "fagdag_utvikling_og_data" )
-                      .sort((a, b) => a.localeCompare(b))}
-                  selectedOptions={selectedCategories
-                      .map((category) => category.name)
-                      .sort((a, b) => a.localeCompare(b))}
-                  onToggleSelected={(categoryName, isSelected) => {
-                    if (isSelected) {
-                      setSelectedCategories((categories) => [
-                        ...categories,
-                        eventCategories.find((category) => category.name === categoryName)!,
-                      ]);
-                    } else {
-                      setSelectedCategories((categories) =>
-                          categories.filter((category) => category.name !== categoryName)
-                      );
-                    }
-                  }}
-                  isMultiSelect
-                  shouldAutocomplete
-              />
-            </div>
-          )}
-        </div>
+          <div
+              className="flex flex-col-reverse gap-2 items-start md:flex-row justify-between w-full md:items-center px-4">
+            {searchName && (
+                <Search
+                    label="Søk alle kommende arrangementer"
+                    variant="simple"
+                    value={searchInput}
+                    size="small"
+                    className="border-[#000] w-full md:w-auto order-2 md:order-1"
+                    onChange={(e) => {
+                      setSearchInput(e);
+                    }}
+                />
+            )}
+            {selectCategory && tabname == "alle" && (
+                <div
+                    className="mt-5 md:mt-0 w-full md:w-fit flex items-center flex-wrap flex-row-reverse md:flex-row gap-2 order-1 md:order-2">
+      <span className="gap-2 items-center hidden md:flex">
+        <FunnelIcon title="trakt"/>
+        <label className="font-bold">Filtrer på kategori</label>
+      </span>
+                  <UNSAFE_Combobox
+                      className="w-full md:w-fit"
+                      size="small"
+                      label="Filtrer på kategori"
+                      hideLabel={!isMobile}
+                      options={eventCategories
+                          .map((category) => category.name)
+                          .filter((categoryName) => categoryName !== "fagfestival" && categoryName !== "biljard" && categoryName !== "fagdag_utvikling_og_data")
+                          .sort((a, b) => a.localeCompare(b))}
+                      selectedOptions={selectedCategories
+                          .map((category) => category.name)
+                          .sort((a, b) => a.localeCompare(b))}
+                      onToggleSelected={(categoryName, isSelected) => {
+                        if (isSelected) {
+                          setSelectedCategories((categories) => [
+                            ...categories,
+                            eventCategories.find((category) => category.name === categoryName)!,
+                          ]);
+                        } else {
+                          setSelectedCategories((categories) =>
+                              categories.filter((category) => category.name !== categoryName)
+                          );
+                        }
+                      }}
+                      isMultiSelect
+                      shouldAutocomplete
+                  />
+                </div>
+            )}
+          </div>
       )}
       {(selectTimeRadio && tabname != "alle") && (
           <>

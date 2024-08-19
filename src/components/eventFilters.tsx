@@ -328,22 +328,16 @@ export default function EventFilters({
             <CheckboxGroup
                 legend={"Vis"} hideLegend className={"-mt-5 -mb-2 ml-4"}
                 onChange={(values: string[]) => {
-                  if (values.includes("kompetanse")) {
+                  if (values.includes("kompetanse") && !values.includes("bedriftidrettslaget")) {
                     setSelectedCategories((prevCategories) => [
-                      ...prevCategories,
+                      ...prevCategories.filter((category) => category.name !== "bedriftidrettslaget"),
                       eventCategories.find((category) => category.name === "kompetanse")!,
                     ]);
-                    setSelectedCategories((prevCategories) =>
-                        prevCategories.filter((category) => category.name !== "bedriftidrettslaget")
-                    );
-                  } else if (values.includes("bedriftidrettslaget")) {
+                  } else if (values.includes("bedriftidrettslaget") && !values.includes("kompetanse")) {
                     setSelectedCategories((prevCategories) => [
-                      ...prevCategories,
+                      ...prevCategories.filter((category) => category.name !== "kompetanse"),
                       eventCategories.find((category) => category.name === "bedriftidrettslaget")!,
                     ]);
-                    setSelectedCategories((prevCategories) =>
-                        prevCategories.filter((category) => category.name !== "kompetanse")
-                    );
                   } else {
                     setSelectedCategories([]);
                   }

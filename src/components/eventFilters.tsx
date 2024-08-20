@@ -252,12 +252,12 @@ export default function EventFilters({
       )}
     {tabname == "alle" && (
           <>
-            {joinedLink && new Date() < new Date('2024-08-09') && (
+            {joinedLink && new Date() < new Date('2024-08-23') && (
                 <div className="px-4 inline-block">
                   <LinkPanel  href="https://fagtorsdag.ansatt.nav.no/" border className={"colorful_fagdag_utvikling_og_data"}>
                     <LinkPanel.Title>Fagtorsdag</LinkPanel.Title>
                     <LinkPanel.Description>
-                      Programmet 8. august
+                      Programmet 22. august
                     </LinkPanel.Description>
                   </LinkPanel>
                 </div>

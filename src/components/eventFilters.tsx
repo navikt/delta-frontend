@@ -336,7 +336,7 @@ export default function EventFilters({
                   legend={"Vis"} hideLegend className={"-mt-5 -mb-2 ml-4"}
                   onChange={(values: string[]) => {
                     const validValues = values.filter(value =>
-                        ["kompetanse", "bedriftidrettslaget"].includes(value)
+                        ["kompetanse", "bedriftidrettslaget", "sosialt"].includes(value)
                     );
 
                     if (validValues.includes("kompetanse") && validValues.includes("bedriftidrettslaget")) {
@@ -354,6 +354,11 @@ export default function EventFilters({
                         ...prevCategories.filter((category) => category.name !== "kompetanse"),
                         eventCategories.find((category) => category.name === "bedriftidrettslaget")!,
                       ].filter(category => category !== undefined));
+                    } else if (validValues.includes("sosialt")) {
+                      setSelectedCategories((prevCategories) => [
+                        ...prevCategories.filter((category) => category.name.toLowerCase() !== "sosialt"),
+                        eventCategories.find((category) => category.name.toLowerCase() === "sosialt")!,
+                      ].filter(category => category !== undefined));
                     } else {
                       setSelectedCategories([]);
                     }
@@ -362,6 +367,7 @@ export default function EventFilters({
                 <div className="mt-1 flex flex-col sm:flex-row gap-0 sm:gap-4">
                   <Checkbox value="kompetanse" disabled={selectedCategories.some(category => category.name === "bedriftidrettslaget")}>Kompetanse</Checkbox>
                   <Checkbox value="bedriftidrettslaget" disabled={selectedCategories.some(category => category.name === "kompetanse")}>Bedriftidrettslaget</Checkbox>
+                  <Checkbox value="sosialt" disabled={selectedCategories.some(category => category.name.toLowerCase() === "sosialt")}>Sosialt</Checkbox>
                 </div>
               </CheckboxGroup>
           </>

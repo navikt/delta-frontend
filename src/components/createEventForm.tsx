@@ -434,7 +434,7 @@ function InternalCreateEventForm({
                       onChange={(value) => {
                           setSelectedType(value);
                           if (value === "Sosialt") {
-                              setSelected([...selectedOptions, "sosialt"]);
+                              setSelected([...selectedOptions, "sosialt "]);
                           } else if (value === "Kompetanse") {
                               setSelected([...selectedOptions, "kompetanse"]);
                           } else if (value === "Bedriftidrettslaget") {

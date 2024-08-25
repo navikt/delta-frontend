@@ -358,17 +358,19 @@ export default function EventFilters({
                       setSelectedCategories((prevCategories) => [
                         ...prevCategories.filter((category) => category.name.toLowerCase() !== "sosialt"),
                         eventCategories.find((category) => category.name.toLowerCase() === "sosialt")!,
-                        eventCategories.find((category) => category.name === "Sosialt")!,
+                        eventCategories.find((category) => category.name === "sosialt ")!,
                       ].filter(category => category !== undefined));
                     } else {
-                      setSelectedCategories([]);
+                      setSelectedCategories((prevCategories) =>
+                          prevCategories.filter((category) => !["sosialt", "sosialt "].includes(category.name))
+                      );
                     }
                   }}
               >
                 <div className="mt-1 flex flex-col sm:flex-row gap-0 sm:gap-4">
                   <Checkbox value="kompetanse" disabled={selectedCategories.some(category => category.name === "bedriftidrettslaget")}>Kompetanse</Checkbox>
                   <Checkbox value="bedriftidrettslaget" disabled={selectedCategories.some(category => category.name === "kompetanse")}>Bedriftidrettslaget</Checkbox>
-                  <Checkbox value="sosialt" disabled={selectedCategories.some(category => category.name.toLowerCase() === "sosialt")}>Sosialt</Checkbox>
+                  <Checkbox value="sosialt" disabled={selectedCategories.some(category => ["sosialt", "sosialt "].includes(category.name))}>Sosialt</Checkbox>
                 </div>
               </CheckboxGroup>
           </>

@@ -356,13 +356,12 @@ export default function EventFilters({
                       ].filter(category => category !== undefined));
                     } else if (validValues.includes("sosialt")) {
                       setSelectedCategories((prevCategories) => [
-                        ...prevCategories.filter((category) => category.name.toLowerCase() !== "sosialt"),
-                        eventCategories.find((category) => category.name.toLowerCase() === "sosialt")!,
+                        ...prevCategories.filter((category) => category.name !== "sosialt "),
                         eventCategories.find((category) => category.name === "sosialt ")!,
                       ].filter(category => category !== undefined));
                     } else {
                       setSelectedCategories((prevCategories) =>
-                          prevCategories.filter((category) => !["sosialt", "sosialt "].includes(category.name))
+                          prevCategories.filter((category) => !["sosialt "].includes(category.name))
                       );
                     }
                   }}
@@ -370,7 +369,7 @@ export default function EventFilters({
                 <div className="mt-1 flex flex-col sm:flex-row gap-0 sm:gap-4">
                   <Checkbox value="kompetanse" disabled={selectedCategories.some(category => category.name === "bedriftidrettslaget")}>Kompetanse</Checkbox>
                   <Checkbox value="bedriftidrettslaget" disabled={selectedCategories.some(category => category.name === "kompetanse")}>Bedriftidrettslaget</Checkbox>
-                  <Checkbox value="sosialt" disabled={selectedCategories.some(category => ["sosialt", "sosialt "].includes(category.name))}>Sosialt</Checkbox>
+                  <Checkbox value="sosialt" disabled={selectedCategories.some(category => category.name === "sosialt ")}>Sosialt</Checkbox>
                 </div>
               </CheckboxGroup>
           </>

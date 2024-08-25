@@ -332,46 +332,44 @@ export default function EventFilters({
       {(selectTimeRadio && tabname == "alle") && (
           <>
             {/*<Switch className={"-mt-5 -mb-2 ml-4"}>Vis tidligere</Switch>*/}
-              <CheckboxGroup
-                  legend={"Vis"} hideLegend className={"-mt-5 -mb-2 ml-4"}
-                  onChange={(values: string[]) => {
-                    const validValues = values.filter(value =>
-                        ["kompetanse", "bedriftidrettslaget", "sosialt"].includes(value)
-                    );
+            <CheckboxGroup
+                legend={"Vis"} hideLegend className={"-mt-5 -mb-2 ml-4"}
+                onChange={(values: string[]) => {
+                  const validValues = values.filter(value =>
+                      ["kompetanse", "bedriftidrettslaget", "sosialt"].includes(value)
+                  );
 
-                    if (validValues.includes("kompetanse") && validValues.includes("bedriftidrettslaget")) {
-                      // If both are selected, do nothing or handle the error gracefully
-                      return;
-                    }
+                  if (validValues.includes("kompetanse") && validValues.includes("bedriftidrettslaget")) {
+                    // If both are selected, do nothing or handle the error gracefully
+                    return;
+                  }
 
-                    if (validValues.includes("kompetanse")) {
-                      setSelectedCategories((prevCategories) => [
-                        ...prevCategories.filter((category) => category.name !== "bedriftidrettslaget"),
-                        eventCategories.find((category) => category.name === "kompetanse")!,
-                      ].filter(category => category !== undefined));
-                    } else if (validValues.includes("bedriftidrettslaget")) {
-                      setSelectedCategories((prevCategories) => [
-                        ...prevCategories.filter((category) => category.name !== "kompetanse"),
-                        eventCategories.find((category) => category.name === "bedriftidrettslaget")!,
-                      ].filter(category => category !== undefined));
-                    } else if (validValues.includes("sosialt")) {
-                      setSelectedCategories((prevCategories) => [
-                        ...prevCategories.filter((category) => category.name !== "sosialt "),
-                        eventCategories.find((category) => category.name === "sosialt ")!,
-                      ].filter(category => category !== undefined));
-                    } else {
-                      setSelectedCategories((prevCategories) =>
-                          prevCategories.filter((category) => !["sosialt "].includes(category.name))
-                      );
-                    }
-                  }}
-              >
-                <div className="mt-1 flex flex-col sm:flex-row gap-0 sm:gap-4">
-                  <Checkbox value="kompetanse" disabled={selectedCategories.some(category => category.name === "bedriftidrettslaget")}>Kompetanse</Checkbox>
-                  <Checkbox value="bedriftidrettslaget" disabled={selectedCategories.some(category => category.name === "kompetanse")}>Bedriftidrettslaget</Checkbox>
-                  <Checkbox value="sosialt" disabled={selectedCategories.some(category => category.name === "sosialt ")}>Sosialt</Checkbox>
-                </div>
-              </CheckboxGroup>
+                  if (validValues.includes("kompetanse")) {
+                    setSelectedCategories((prevCategories) => [
+                      ...prevCategories.filter((category) => category.name !== "bedriftidrettslaget" && category.name !== "sosialt"),
+                      eventCategories.find((category) => category.name === "kompetanse")!,
+                    ].filter(category => category !== undefined));
+                  } else if (validValues.includes("bedriftidrettslaget")) {
+                    setSelectedCategories((prevCategories) => [
+                      ...prevCategories.filter((category) => category.name !== "kompetanse" && category.name !== "sosialt"),
+                      eventCategories.find((category) => category.name === "bedriftidrettslaget")!,
+                    ].filter(category => category !== undefined));
+                  } else if (validValues.includes("sosialt")) {
+                    setSelectedCategories((prevCategories) => [
+                      ...prevCategories.filter((category) => category.name !== "kompetanse" && category.name !== "bedriftidrettslaget"),
+                      eventCategories.find((category) => category.name === "sosialt ")!,
+                    ].filter(category => category !== undefined));
+                  } else {
+                    setSelectedCategories([]);
+                  }
+                }}
+            >
+              <div className="mt-1 flex flex-col sm:flex-row gap-0 sm:gap-4">
+                <Checkbox value="kompetanse" disabled={selectedCategories.some(category => category.name === "bedriftidrettslaget" || category.name === "sosialt")}>Kompetanse</Checkbox>
+                <Checkbox value="bedriftidrettslaget" disabled={selectedCategories.some(category => category.name === "kompetanse" || category.name === "sosialt")}>Bedriftidrettslaget</Checkbox>
+                <Checkbox value="sosialt" disabled={selectedCategories.some(category => category.name === "kompetanse" || category.name === "bedriftidrettslaget")}>Sosialt</Checkbox>
+              </div>
+            </CheckboxGroup>
           </>
       )}
       <div className="w-full p-4">

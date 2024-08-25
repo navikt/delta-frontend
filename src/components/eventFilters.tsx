@@ -85,17 +85,14 @@ export default function EventFilters({
 
   // Filter the events based on the search input
   useEffect(() => {
-    const filtered = events.filter((fullEvent) => {
-      const hasSosialt = selectedCategories.some(category => category.name === "sosialt");
-      const hasBedriftidrettslaget = fullEvent.categories.some(category => category.name === "bedriftidrettslaget");
+    const filtered = events.filter((fullEvent) =>
+        fullEvent.event.title.toLowerCase().includes(searchInput.toLowerCase())
+    );
 
-      // Exclude events with "bedriftidrettslaget" if "sosialt" is selected
-      if (hasSosialt && hasBedriftidrettslaget) {
-        return false;
-      }
-
-      return fullEvent.event.title.toLowerCase().includes(searchInput.toLowerCase());
-    });
+    // Ensure selectedCategories only includes valid categories
+    const validSelectedCategories = selectedCategories.filter(category =>
+        eventCategories.some(eventCategory => eventCategory.name === category.name)
+    );
 
     setFilterEvents(filtered);
 

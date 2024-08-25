@@ -358,6 +358,7 @@ export default function EventFilters({
                       setSelectedCategories((prevCategories) => [
                         ...prevCategories.filter((category) => category.name.toLowerCase() !== "sosialt"),
                         eventCategories.find((category) => category.name.toLowerCase() === "sosialt")!,
+                        eventCategories.find((category) => category.name === "Sosialt")!,
                       ].filter(category => category !== undefined));
                     } else {
                       setSelectedCategories([]);

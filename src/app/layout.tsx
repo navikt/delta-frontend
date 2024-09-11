@@ -41,7 +41,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
     return (
         <html lang="no" className="min-h-screen">
         <head>
-            <script data-domains="delta.nav.no" defer src="https://umami.nav.no/script.js"
+            <script data-domains="delta.nav.no" defer src="https://cdn.nav.no/team-researchops/sporing/sporing.js" data-host-url="https://umami.nav.no"
                     data-website-id="efe951d8-ebbb-4fad-938e-91eee190f6aa"></script>
         </head>
         <body>

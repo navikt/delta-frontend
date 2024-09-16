@@ -7,6 +7,7 @@ export type CreateDeltaEvent = {
   public: boolean;
   participantLimit: number;
   signupDeadline?: string;
+  sendNotificationEmail?: boolean;
 };
 
 export type FullDeltaEvent = {

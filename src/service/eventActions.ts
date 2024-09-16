@@ -139,6 +139,8 @@ function createDeltaEventFromFormData(
       )}T${formData.signupDeadlineTime}:00Z`
     : undefined;
 
+  const sendNotificationEmail = formData.sendNotificationEmail;
+
   return {
     title: formData.title,
     description: formData.description,
@@ -151,5 +153,6 @@ function createDeltaEventFromFormData(
     startTime: start,
     endTime: end,
     signupDeadline: formData.hasSignupDeadline ? deadline : undefined,
+    sendNotificationEmail: sendNotificationEmail,
   };
 }

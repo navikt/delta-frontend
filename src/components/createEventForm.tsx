@@ -60,6 +60,7 @@ const createEventSchema = z
     hasParticipantLimit: z.boolean(),
     participantLimit: z.string().optional(),
     hasSignupDeadline: z.boolean(),
+    sendNotificationEmail: z.boolean().optional(),
     signupDeadlineDate: z.optional(z.date()),
     signupDeadlineTime: z.string().regex(/(?:^$)|(?:^[0-9]{2}:[0-9]{2}$)/, {
       message: "Verdien må være et gyldig tidspunkt",
@@ -245,6 +246,7 @@ function InternalCreateEventForm({
             hasSignupDeadline: hasDeadline,
             signupDeadlineDate: undefined,
             signupDeadlineTime: "",
+            sendNotificationEmail: true
           }
         : {
             title: richEvent.event.title,
@@ -266,6 +268,7 @@ function InternalCreateEventForm({
             signupDeadlineTime: richEvent.event.signupDeadline
               ? format(new Date(richEvent.event.signupDeadline), "HH:mm")
               : "",
+            sendNotificationEmail: true
           },
     resolver: zodResolver(createEventSchema),
   });
@@ -576,6 +579,13 @@ function InternalCreateEventForm({
                   </div>
               </div>
           </div>
+          {richEvent.type === EditTypeEnum.EDIT && (
+            <div>
+                <Checkbox {...register("sendNotificationEmail")}>
+                    Send e-post til deltakere ved endringer
+                </Checkbox>
+            </div>
+        )}
           <div className="mt-6 mb-12 flex items-center gap-4">
 {/*              <Link
                   className="w-fit h-fit"

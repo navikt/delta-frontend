@@ -4,8 +4,8 @@ when: Oppstart august/september
 audience: Designere som jobber med fagsystemer
 ---
 
-## Under etablering
-- Oppstart: 19. september 2024 kl. 13
+## Møtetidspunkt
+- Neste møte: 17. oktober 2024 kl. 13
 - Frekvens og tidspunkt for møter: På fagtorsdag (13 - 14), i utgangspunktet hver fagtorsdag. Innkalling sendes til medlemmer i faggruppe-Slack. 
 
 ## Kontaktpersoner

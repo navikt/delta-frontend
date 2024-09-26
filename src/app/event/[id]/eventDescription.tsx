@@ -137,7 +137,7 @@ export default function EventDescription({
                 <ul>
                     {hosts.map((host) => (
                         <li className="flex ml-[0.2rem] pl-6 gap-2" key={host.email}>
-                            <Link
+                            <Link data-umami-event="kontaker arrangør"
                                 title={`Send e-post til ${host.name.split(", ").reverse().join(" ")}`}
                                 href={`mailto:${host.email}`}
                                 className="leading-relaxed"
@@ -163,7 +163,7 @@ export default function EventDescription({
                         Vis deltakere
                     </Link>
                 </>) : (<>
-                    <Button
+                    <Button data-umami-event="deltakerliste åpnet"
                         variant="secondary"
                         onClick={() => setOpenParticipantList(true)}
                         className="mb-4"

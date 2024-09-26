@@ -106,13 +106,13 @@ export default function EventDetails({
                         if (hosts.map((h) => h.email).includes(user.email)) {
                             return (
                                 <>
-                                    <Link
+                                    <Link data-umami-event="administrer besøkt"
                                         className="w-full h-fit navds-button navds-button--primary navds-label"
                                         href={`/event/${event.id}/admin`}
                                     >
                                         Administrer
                                     </Link>
-                                    <Link
+                                    <Link data-umami-event="webtatistikk besøkt"
                                         className="w-full h-fit navds-button navds-button--secondary navds-label"
                                         href={`https://umami.ansatt.nav.no/share/0zuLlyzpFMQPwxfW/delta.nav.no?view=country&url=/event/${event.id}`}
                                     >
@@ -132,7 +132,7 @@ export default function EventDetails({
                                         Arrangementet er avsluttet
                                     </Alert>
                                     {isParticipant && (
-                                    <Button
+                                    <Button data-umami-event="sletter deltakelse"
                                         variant={isParticipant ? "danger" : "primary"}
                                         className="w-full h-fit"
                                         onClick={() => setOpenConfirmation((x) => !x)}
@@ -158,7 +158,7 @@ export default function EventDetails({
                                     >
                                         Påmeldingsfristen er utløpt
                                     </Alert>
-                                    <Button
+                                    <Button data-umami-event="melder interesse"
                                         variant="primary"
                                         className="w-full h-fit"
                                         onClick={() => setOpenInterested((x) => !x)}
@@ -182,7 +182,7 @@ export default function EventDetails({
                                     >
                                         Arrangementet er fullt
                                     </Alert>
-                                    <Button
+                                    <Button data-umami-event="melder interesse"
                                         variant="primary"
                                         className="w-full h-fit"
                                         onClick={() => setOpenInterested((x) => !x)}
@@ -193,7 +193,7 @@ export default function EventDetails({
                             );
                         }
                         return (
-                            <Button
+                            <Button data-umami-event={isParticipant ? "avmeldingmodal åpnet" : "påmeldingmodal åpnet"}
                                 variant={isParticipant ? "danger" : "primary"}
                                 className="w-full h-fit"
                                 onClick={() => setOpenConfirmation((x) => !x)}
@@ -229,7 +229,7 @@ export default function EventDetails({
                             </ul>
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button
+                            <Button data-umami-event="modal lukket"
                                 variant="secondary"
                                 onClick={async () => setOpenInterested((x) => !x)}
                             >
@@ -254,13 +254,13 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                             </BodyLong>
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button
+                            <Button data-umami-event={isParticipant ? "avbryter avmelding" : "avbryter påmelding"}
                                 variant="secondary"
                                 onClick={async () => setOpenConfirmation((x) => !x)}
                             >
                                 Avbryt
                             </Button>
-                            <Button
+                            <Button data-umami-event={isParticipant ? "avmelding" : "påmelding"}
                                 variant={isParticipant ? "danger" : "primary"}
                                 className="w-fit h-fit font-bold"
                                 onClick={() =>
@@ -275,7 +275,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                             </Button>
                         </Modal.Footer>
                     </Modal>
-                    <CopyButton
+                    <CopyButton data-umami-event="kopierer eventlenke"
                         className="navds-button navds-button--secondary md:whitespace-nowrap w-full"
                         copyText={`${hostname}/event/${event.id}`}
                         text="Kopier lenke"
@@ -311,13 +311,13 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                         Del arrangementet
                     </Heading>
                     <div className="flex gap-3 mt-2 mb-6">
-                        <CopyButton
+                        <CopyButton data-umami-event="kopierer eventlenke"
                             className="navds-button navds-button--secondary md:whitespace-nowrap w-fit h-fit"
                             copyText={`${hostname}/event/${event.id}`}
                             text="Kopier lenke"
                             size="small"
                         />
-                        <Button
+                        <Button data-umami-event="viser qr"
                             variant="secondary"
                             onClick={async () => setOpenQR((x) => !x)}
                             className="mb-4 w-fit"

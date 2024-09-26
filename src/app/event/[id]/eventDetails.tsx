@@ -112,6 +112,12 @@ export default function EventDetails({
                                     >
                                         Administrer
                                     </Link>
+                                    <Link
+                                        className="w-full h-fit navds-button navds-button--secondary navds-label"
+                                        href={`https://umami.ansatt.nav.no/share/0zuLlyzpFMQPwxfW/delta.nav.no?view=country&url=/event/${event.id}`}
+                                    >
+                                        Webstatistikk
+                                    </Link>
                                 </>
                             );
                         }

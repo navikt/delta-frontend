@@ -9,6 +9,7 @@ audience: Utviklere
 ## Kontaktpersoner
 - [Einar Bjerve](https://nav-it.slack.com/team/UAJJ5JZ2A)
 - [Tia Firing](https://nav-it.slack.com/team/U6V6HCLGM)
+- [Kim André Næss](https://nav-it.slack.com/team/USCEPN5DM)
 - [John Martin Lindseth](https://nav-it.slack.com/team/UB39RE3MW)
 
 

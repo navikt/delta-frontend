@@ -16,12 +16,13 @@ export async function checkToken(redirectTo?: string) {
 
   const result = await validateToken(token);
   if (!result.ok) {
-    console.log(`Tokenvalidering gikk galt: ${result.error.message}`);
+    console.log(`Tokenvalidering gikk galt`);
     redirectTo
       ? redirect(`/oauth2/login?redirect=${redirectTo}`)
       : redirect("/oauth2/login");
   }
 }
+// fjernet : ${result.error.message}
 
 export function getUser(): User {
   if (process.env.NODE_ENV === "development") {
@@ -64,9 +65,10 @@ export async function getAccessToken(
   const result = await requestOboToken(token, scope);
 
   if (!result.ok) {
-    console.log(`Grant azure obo token failed: ${result.error.message}`);
+    console.log(`Grant azure obo token failed`);
     return null;
   }
+  // fjernet : ${result.error.message}
 
   return result.token;
 }

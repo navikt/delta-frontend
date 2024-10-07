@@ -18,8 +18,6 @@ export async function getApi() {
   client.interceptors.response.use(
     (response) => response,
     (error) => {
-      if (process.env.NODE_ENV !== "production")
-        console.log(JSON.stringify(error, null, 2));
       return Promise.reject(error);
     },
   );

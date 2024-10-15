@@ -13,7 +13,7 @@
     "@amplitude/plugin-user-agent-enrichment-browser": "^1.0.1",
     "@hookform/resolvers": "^3.9.0",
     "@mdx-js/loader": "^3.0.1",
-    "@navikt/aksel-icons": "^7.2.0",
+    "@navikt/aksel-icons": "^7.2.1",
     "@navikt/ds-css": "^7.2.0",
     "@navikt/ds-react": "^7.2.0",
     "@navikt/ds-tailwind": "^7.2.0",

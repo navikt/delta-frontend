@@ -44,9 +44,6 @@ export default async function RootLayout({ children }: RootLayoutProps) {
             <script data-domains="delta.nav.no" defer src="https://cdn.nav.no/team-researchops/sporing/sporing.js"
                     data-host-url="https://umami.nav.no"
                     data-website-id="efe951d8-ebbb-4fad-938e-91eee190f6aa"></script>
-            <script defer src="https://cdn.nav.no/team-researchops/sporing/umamisporing.js"
-                    data-host-url="https://umamiproxy.nav.no"
-                    data-website-id="d63b28b5-31d9-44e8-a91d-6ca06d472a04"></script>
         </head>
         <body>
         <div id="main" className="flex flex-col min-h-screen" style={{background: "rgba(19,17,54)"}}>

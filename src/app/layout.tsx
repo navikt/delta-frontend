@@ -45,7 +45,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
             <Script data-domains="delta.nav.no" defer src="https://cdn.nav.no/team-researchops/sporing/sporing.js"
                     data-host-url="https://umami.nav.no"
                     data-website-id="efe951d8-ebbb-4fad-938e-91eee190f6aa"
-                    strategy="afterInteractive"
+                    strategy="lazyOnload"
             />
         </head>
         <body>

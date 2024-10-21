@@ -4,7 +4,7 @@ import EventFilters from "@/components/eventFilters";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Delta Δ NAV",
+  title: "Delta Δ Nav",
   description: "Påmeldingsapp",
 };
 export default async function Home(context: any) {

@@ -26,7 +26,7 @@ function LogoBlock() {
     return (
         <div>
             <span className="mt-4 text-2xl whitespace-nowrap">Δ Delta</span>
-            <p className="mt-3 leading-normal">&copy; {new Date().getFullYear()} NAV</p>
+            <p className="mt-3 leading-normal">&copy; {new Date().getFullYear()} Nav</p>
             <p className="leading-normal">Arbeids- og velferdsetaten</p>
         </div>
     );

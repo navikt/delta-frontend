@@ -14,7 +14,7 @@
     "@hookform/resolvers": "^3.9.0",
     "@mdx-js/loader": "^3.0.1",
     "@navikt/aksel-icons": "^7.2.0",
-    "@navikt/ds-css": "^7.2.0",
+    "@navikt/ds-css": "^7.4.0",
     "@navikt/ds-react": "^7.2.0",
     "@navikt/ds-tailwind": "^7.2.0",
     "@navikt/oasis": "^3.4.0",

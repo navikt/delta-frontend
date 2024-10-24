@@ -1,12 +1,12 @@
 ---
 title: Design av fagsystemer
-when: Oppstart august/september
+when: Vanligvis under fagtorsdager kl. 13
 audience: Designere som jobber med fagsystemer
 ---
 
 ## Møtetidspunkt
-- Neste møte: 17. oktober 2024 kl. 13
-- Frekvens og tidspunkt for møter: På fagtorsdag (13 - 14), i utgangspunktet hver fagtorsdag. Innkalling sendes til medlemmer i faggruppe-Slack. 
+- Neste møte: Fredag 1. november kl. 10.30
+- Frekvens og tidspunkt for møter: Vanligvis på fagtorsdag (13 - 14), i utgangspunktet hver fagtorsdag. Innkalling sendes til medlemmer i faggruppe-Slack. 
 
 ## Kontaktpersoner
 

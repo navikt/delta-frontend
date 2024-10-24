@@ -16,7 +16,7 @@
     "@navikt/aksel-icons": "^7.2.0",
     "@navikt/ds-css": "^7.2.0",
     "@navikt/ds-react": "^7.2.0",
-    "@navikt/ds-tailwind": "^7.2.0",
+    "@navikt/ds-tailwind": "^7.4.0",
     "@navikt/oasis": "^3.4.0",
     "@next/mdx": "^14.2.15",
     "@types/jsdom": "^21.1.7",

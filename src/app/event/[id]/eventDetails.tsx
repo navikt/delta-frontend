@@ -15,9 +15,10 @@ import {
 import Link from "next/link";
 import {useQRCode} from 'next-qrcode';
 import {FullDeltaEvent, DeltaParticipant} from "@/types/event";
-import {getEvent, joinEvent, leaveEvent} from "@/service/eventActions";
+import {deleteEvent, getEvent, joinEvent, leaveEvent} from "@/service/eventActions";
 import {format} from "date-fns";
 import Calendar from "@/components/calendar";
+import {TrashIcon, PencilIcon} from "@navikt/aksel-icons";
 
 export default function EventDetails({
      event,
@@ -38,6 +39,7 @@ export default function EventDetails({
     const [showRegistration, setRegistration] = useState(false);
     const [showUnregistration, setUnregistration] = useState(false);
     const [openConfirmation, setOpenConfirmation] = useState(false);
+    const [openConfirmationDelete, setOpenConfirmationDelete] = useState(false);
     const [openInterested, setOpenInterested] = useState(false);
     const [openQR, setOpenQR] = useState(false);
     const {Canvas} = useQRCode();
@@ -108,16 +110,26 @@ export default function EventDetails({
                                 <>
                                     <Link data-umami-event="administrer besøkt"
                                         className="w-full h-fit navds-button navds-button--primary navds-label"
-                                        href={`/event/${event.id}/admin`}
+                                        href={`/event/${event.id}/edit`}
                                     >
-                                        Administrer
+                                        <PencilIcon/> Rediger
                                     </Link>
-                                    <Link data-umami-event="webtatistikk besøkt"
+                                    <Button
+                                        type="submit"
+                                        variant="danger"
+                                        className="w-full h-fit font-bold"
+                                        onClick={() => setOpenConfirmationDelete((x) => !x)}
+                                    >
+                                    <span className="flex items-center gap-1">
+                                      <TrashIcon/> Slett
+                                    </span>
+                                    </Button>
+{/*                                    <Link data-umami-event="webtatistikk besøkt"
                                         className="w-full h-fit navds-button navds-button--secondary navds-label"
                                         href={`https://umami.ansatt.nav.no/share/0zuLlyzpFMQPwxfW/delta.nav.no?view=country&url=/event/${event.id}`}
                                     >
                                         Webstatistikk
-                                    </Link>
+                                    </Link>*/}
                                 </>
                             );
                         }
@@ -234,6 +246,36 @@ export default function EventDetails({
                                 onClick={async () => setOpenInterested((x) => !x)}
                             >
                                 Lukk
+                            </Button>
+                        </Modal.Footer>
+                    </Modal>
+                    <Modal
+                        open={openConfirmationDelete}
+                        onClose={() => setOpenConfirmationDelete(false)}
+                        aria-label="Slett arrangement modal"
+                        className="w-4/5 max-w-[30rem] max-h-[50rem]"
+                    >
+                        <Modal.Body>
+                            <Heading spacing level="1" size="large">
+                                {`Slett: "${event?.title}"?`}
+                            </Heading>
+                            <BodyLong spacing>
+                                {`Er du sikker på at du vil slette "${event?.title}"? Alle deltakere og påmeldte vil også bli slettet. Dette kan ikke angres.`}
+                            </BodyLong>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button
+                                variant="secondary"
+                                onClick={async () => setOpenConfirmationDelete((x) => !x)}
+                            >
+                                Avbryt
+                            </Button>
+                            <Button
+                                variant="danger"
+                                className="w-fit h-fit font-bold"
+                                onClick={() => deleteAndRedirect(event?.id!!)}
+                            >
+                                Ja, jeg vil slette arrangementet
                             </Button>
                         </Modal.Footer>
                     </Modal>
@@ -363,6 +405,12 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
         </div>
     );
 }
+
+async function deleteAndRedirect(eventId: string) {
+    await deleteEvent(eventId);
+    window.location.href = "/";
+}
+
 
 async function toggleEventStatus(
     eventId: string,

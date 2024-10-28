@@ -41,7 +41,7 @@ export default function ParticipantTable({
   // @ts-ignore
   return (
       <>
-    <div className="flex flex-col gap-5 rounded px-2 pb-2">
+    <div className="flex flex-col gap-5 rounded pb-2">
       <Table size="small" zebraStripes>
         <Table.Header>
           <Table.Row>
@@ -76,7 +76,7 @@ export default function ParticipantTable({
         </Table.Body>
       </Table>
       {!participants.length && (
-        <p className="w-full italic ml-3 mt-4 mb-5">Ingen deltakere ennå — husk å markedsføre arrangementet!</p>
+        <p className="w-full italic  mt-4 mb-5">Ingen deltakere ennå — husk å markedsføre arrangementet!</p>
       )}
     </div>
       </>

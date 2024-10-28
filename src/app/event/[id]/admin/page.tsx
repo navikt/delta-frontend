@@ -1,6 +1,6 @@
 import { checkToken, getUser } from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
-import AdminPage from "./adminPage";
+import ParticipantPage from "./participantPage";
 import Link from "next/link";
 import { getEvent } from "@/service/eventActions";
 import { Metadata } from "next";
@@ -22,11 +22,12 @@ export default async function ParticipantsPage({
   if (fullEvent.hosts.some((host) => host.email === user.email)) {
     return (
       <CardWithBackground
-        title={`Administrer: ${fullEvent.event.title}`}
+        title={`Deltakerliste: ${fullEvent.event.title}`}
         home
+        backText="Arrangementet"
         backLink={`/event/${params.id}`}
       >
-        <AdminPage fullEvent={fullEvent} user={user} />
+        <ParticipantPage fullEvent={fullEvent} user={user} />
       </CardWithBackground>
     );
   } else {

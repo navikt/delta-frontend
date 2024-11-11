@@ -509,7 +509,7 @@ function InternalCreateEventForm({
               }
           </div>
         </div>
-          <Checkbox {...register("public")}>
+          <Checkbox {...register("public")} defaultChecked>
               Publiser arrangementet på forsiden til Delta
           </Checkbox>
           <div className="flex flex-col max-w-[21rem]">

@@ -378,7 +378,7 @@ export default function EventFilters({
       </div>
       {ctaLink && (
           <div className="px-4 mb-4">
-            <Link href="/event/new" className="text-deepblue-500 underline hover:no-underline">
+            <Link data-umami-event="Opprett event besøkt" data-umami-event-placement="Oversiktmodul" href="/event/new" className="text-deepblue-500 underline hover:no-underline">
               Opprett nytt arrangement
             </Link>
           </div>

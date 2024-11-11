@@ -27,7 +27,7 @@ export default function Header() {
   return (
     <header className="flex py-1 z-10 items-center w-5/6 max-w-[80rem] m-auto justify-between">
       <div className="flex items-stretch">
-        <Link data-umami-event="Delta-logo klikk" className={linkButton} href="/">
+        <Link data-umami-event="Delta-logo besøkt" className={linkButton} href="/">
           <span className="text-2xl whitespace-nowrap text-white">Δ Delta</span>
         </Link>
       </div>

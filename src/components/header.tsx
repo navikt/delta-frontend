@@ -3,6 +3,7 @@ import {
   MenuHamburgerIcon,
   PersonGroupIcon,
   PlusIcon,
+  HatSchoolIcon
 } from "@navikt/aksel-icons";
 import { Button, Dropdown } from "@navikt/ds-react";
 import Link from "next/link";
@@ -26,7 +27,7 @@ export default function Header() {
   return (
     <header className="flex py-1 z-10 items-center w-5/6 max-w-[80rem] m-auto justify-between">
       <div className="flex items-stretch">
-        <Link className={linkButton} href="/">
+        <Link data-umami-event="Delta-logo klikk" className={linkButton} href="/">
           <span className="text-2xl whitespace-nowrap text-white">Δ Delta</span>
         </Link>
       </div>
@@ -37,11 +38,15 @@ export default function Header() {
           </Button>
           <Dropdown.Menu className="w-auto">
             <Dropdown.Menu.List>
-              <Dropdown.Menu.List.Item as={Link} href="/faggrupper">
+              <Dropdown.Menu.List.Item data-umami-event="Hovedmeny-snarvei besøkt" data-umami-event-lenke="Kompasset" as={Link} href="https://nav.grade.no/LuvitPortal/activitycentre/activitycentre.aspx">
+                <HatSchoolIcon aria-hidden fontSize="1.5rem" />
+                <span className="whitespace-nowrap">Kompasset</span>
+              </Dropdown.Menu.List.Item>
+              <Dropdown.Menu.List.Item data-umami-event="Hovedmeny-snarvei besøkt" data-umami-event-lenke="Faggruppe" as={Link} href="/faggrupper">
                 <PersonGroupIcon aria-hidden fontSize="1.5rem" />
                 <span className="whitespace-nowrap">Faggrupper</span>
               </Dropdown.Menu.List.Item>
-              <Dropdown.Menu.List.Item as={Link} href="/event/new">
+              <Dropdown.Menu.List.Item data-umami-event="Opprett event besøkt" data-umami-event-placement="Header" as={Link} href="/event/new">
                 <PlusIcon aria-hidden fontSize="1.5rem" />
                 <span className="whitespace-nowrap">
                   Opprett arrangement
@@ -54,10 +59,15 @@ export default function Header() {
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center w-full"></div>
           <div className="flex flex-grow">
-           <Link href="/faggrupper" className={linkButton}>
+            <Link data-umami-event="Hovedmeny-snarvei besøkt" data-umami-event-lenke="Kompasset" href="https://nav.grade.no/LuvitPortal/activitycentre/activitycentre.aspx" className={linkButton}>
+              <HatSchoolIcon aria-hidden fontSize="1.5rem" />
+              <span className="whitespace-nowrap">Kompasset</span>
+            </Link>
+           <Link data-umami-event="Hovedmeny-snarvei besøkt" data-umami-event-lenke="Faggruppe" href="/faggrupper" className={linkButton}>
+              <PersonGroupIcon aria-hidden fontSize="1.5rem" />
               <span className="whitespace-nowrap">Faggrupper</span>
             </Link>
-            <Link className={linkButton} href="/event/new">
+            <Link className={linkButton} data-umami-event="Opprett event besøkt" data-umami-event-placement="Header" href="/event/new">
               <PlusIcon aria-hidden fontSize="1.5rem" />
               <span className="whitespace-nowrap">
                 Opprett arrangement

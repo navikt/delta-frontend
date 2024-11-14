@@ -252,12 +252,12 @@ export default function EventFilters({
       )}
     {tabname == "alle" && (
           <>
-            {joinedLink && new Date() < new Date('2024-11-01') && (
+            {joinedLink && new Date() < new Date('2024-11-15') && (
                 <div className="px-4 inline-block">
                   <LinkPanel data-umami-event="Fagtorsdag CTA" href="https://fagtorsdag.ansatt.nav.no/" border className={"colorful_fagdag_utvikling_og_data"}>
                     <LinkPanel.Title>Fagtorsdag</LinkPanel.Title>
                     <LinkPanel.Description>
-                      Programmet 31. oktober
+                      Programmet 14. november
                     </LinkPanel.Description>
                   </LinkPanel>
                 </div>

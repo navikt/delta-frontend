@@ -70,19 +70,7 @@ export default function EventFilters({
 
   return (
       <div className="flex flex-col w-full gap-6 items-start">
-        <pre>
-          {JSON.stringify(
-              filterEvents.map(({event, ...rest}) => ({
-                ...rest,
-                event: {
-                  ...event,
-                  participants: undefined,
-                },
-              })),
-              null,
-              2
-          )}
-        </pre>
+        <pre>{JSON.stringify(filterEvents, null, 2)}</pre>
       </div>
   );
 }

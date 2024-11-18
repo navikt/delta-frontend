@@ -68,17 +68,9 @@ export default function EventFilters({
     setFilterEvents(filtered);
   }, [events, searchInput]);
 
-  const filteredEventsWithoutParticipants = filterEvents.map(({ event, ...rest }) => ({
-    ...rest,
-    event: {
-      ...event,
-      participants: undefined,
-    },
-  }));
-
   return (
       <div className="flex flex-col w-full gap-6 items-start">
-        <pre>{JSON.stringify(filteredEventsWithoutParticipants, null, 2)}</pre>
+        <pre>{JSON.stringify(filterEvents, null, 2)}</pre>
       </div>
   );
 }

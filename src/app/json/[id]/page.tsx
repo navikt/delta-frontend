@@ -23,7 +23,7 @@ export default async function Page({ params }: CategoryPageProps) {
     return (
         <>
             {theCategory ? (
-                <EventJSONFilters categories={[{id: theCategory.id, name: theCategory.name}]} searchName/>
+                <EventJSONFilters categories={[{id: theCategory.id, name: theCategory.name}]} />
             ) : (<section className="w-screen flex-grow flex justify-center items-center">
                 404 - Kategorien ble ikke funnet
             </section>)}

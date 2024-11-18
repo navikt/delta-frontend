@@ -69,20 +69,20 @@ export default function EventFilters({
   }, [events, searchInput]);
 
   return (
-      <>
+      <div className="flex flex-col w-full gap-6 items-start">
         <pre>
-  {JSON.stringify(
-      filterEvents.map(({event, ...rest}) => ({
-        ...rest,
-        event: {
-          ...event,
-          participants: undefined,
-        },
-      })),
-      null,
-      2
-  )}
-</pre>
-      </>
+          {JSON.stringify(
+              filterEvents.map(({event, ...rest}) => ({
+                ...rest,
+                event: {
+                  ...event,
+                  participants: undefined,
+                },
+              })),
+              null,
+              2
+          )}
+        </pre>
+      </div>
   );
 }

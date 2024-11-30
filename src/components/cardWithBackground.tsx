@@ -38,12 +38,12 @@ export default function CardWithBackground(props: CardWithBackgroundProps) {
         <div className="bg-white border-gray-200 border-2 w-full rounded-2xl relative top-[-2.5rem] flex flex-col px-4 py-5 h-fit max-w-[80rem]">
           {props.backLink && props.backText && (
             <span className="relative mb-2 top-[-4rem] w-0 h-0">
-              <Link
+              <a
                 href={props.backLink}
                 className="flex items-center no-underline font-bold border w-fit p-1 bg-bg-subtle rounded drop-shadow-sm text-sm hover:bg-bg-subtle-hover hover:text-text-default tracking-wide"
               >
                 <ArrowLeftIcon aria-hidden /> {props.backText}
-              </Link>
+              </a>
             </span>
           )}
           {props.children}

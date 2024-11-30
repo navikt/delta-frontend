@@ -10,6 +10,7 @@ import EditArticleModal from "@/components/faggrupper/editarticlemodal";
 import { Detail } from "@navikt/ds-react";
 import { PersonGroupIcon, CalendarIcon, ClockIcon } from "@navikt/aksel-icons";
 
+
 // @ts-ignore
 export default async function ArticlePage({ params }) {
     await checkToken(`/faggrupper/${params.id}`);
@@ -34,10 +35,14 @@ export default async function ArticlePage({ params }) {
     const subtitleHtml = processedSubtitle.toString();
 
     return (
-        <CardWithBackground
-            title=""
-            backLink="/faggrupper"
-            backText={"Faggrupper"}
+        <>
+    <head>
+        <title>Faggruoppe Δ Delta</title>
+    </head>
+    <CardWithBackground
+        title=""
+        backLink="/faggrupper"
+        backText={"Faggrupper"}
         >
             <div className="prose mx-4 mt-4 mb-2">
                 <h1 className="pb-1">{title}</h1>
@@ -69,5 +74,6 @@ export default async function ArticlePage({ params }) {
             </div>
             <EditArticleModal articlepath={params.id} />
         </CardWithBackground>
+        </>
     );
 }

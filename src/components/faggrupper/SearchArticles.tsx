@@ -45,7 +45,7 @@ export default function SearchArticles({articles}: { articles: Article[] }) {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 px-4 pb-4">
                 {sortedArticles.map((article) => (
-                    <Link key={article.title} href={article.href}>
+                    <a key={article.title} href={article.href}>
                         <div
                             className="flex flex-col h-full p-4 border rounded-xl text-text-default border-gray-300 transition-all hover:-translate-y-1 hover:scale-105 hover:text-surface-action-selected-hover hover:border-border-action event-card">
                             <Heading level="2" size="small">{article.title}</Heading>
@@ -75,7 +75,7 @@ export default function SearchArticles({articles}: { articles: Article[] }) {
                                 )}
                             </div>
                         </div>
-                    </Link>
+                    </a>
                 ))}
             </div>
         </div>

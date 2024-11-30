@@ -5,6 +5,8 @@ import CardWithBackground from '@/components/cardWithBackground';
 import SearchArticles from '@/components/faggrupper/SearchArticles';
 import matter from "gray-matter";
 import Link from "next/link";
+import Head from "next/head";
+
 // Server component using server-side rendering (SSR)
 export default async function ArticlesPage() {
     await checkToken("/faggrupper");
@@ -29,20 +31,25 @@ export default async function ArticlesPage() {
     );
 
     return (
-        <div className="flex flex-col w-full">
-            <div className="w-full">
-                <CardWithBackground
-                    title="Faggrupper og møteplasser"
-                    backLink="/"
-                >
-                    <SearchArticles articles={articles}/>
-                    <div className="px-4 mb-5 pt-5">
-                        <Link href="/faggrupper/ny" className="text-deepblue-500 underline hover:no-underline">
-                            Opprett ny faggruppe eller møteplass
-                        </Link>
-                    </div>
-                </CardWithBackground>
+        <>
+            <head>
+                <title>Faggrupper Δ Delta</title>
+            </head>
+            <div className="flex flex-col w-full">
+                <div className="w-full">
+                    <CardWithBackground
+                        title="Faggrupper og møteplasser"
+                        backLink="/"
+                    >
+                        <SearchArticles articles={articles}/>
+                        <div className="px-4 mb-5 pt-5">
+                            <Link href="/faggrupper/ny" className="text-deepblue-500 underline hover:no-underline">
+                                Opprett ny faggruppe eller møteplass
+                            </Link>
+                        </div>
+                    </CardWithBackground>
+                </div>
             </div>
-        </div>
+        </>
     );
 }

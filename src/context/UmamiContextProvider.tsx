@@ -1,6 +1,8 @@
+"use client"; // Mark this file as a Client Component
+
 import React, { createContext, useEffect, ReactNode } from "react";
 
-// Define the context type if needed (can be empty if not used)
+// Define the context type (if needed, keep it empty if not used yet)
 interface UmamiContextProps {}
 
 // Create the context
@@ -10,7 +12,7 @@ interface UmamiProviderProps {
     children: ReactNode;
 }
 
-export const UmamiProvider: React.FC<UmamiProviderProps> = ({ children }) => {
+export const UmamiContextProvider: React.FC<UmamiProviderProps> = ({ children }) => {
     useEffect(() => {
         // Dynamically create and append the script
         const script = document.createElement("script");
@@ -23,7 +25,7 @@ export const UmamiProvider: React.FC<UmamiProviderProps> = ({ children }) => {
         document.body.appendChild(script);
 
         return () => {
-            // Cleanup script when component unmounts
+            // Cleanup the script when the component unmounts
             document.body.removeChild(script);
         };
     }, []);

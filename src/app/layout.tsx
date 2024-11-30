@@ -2,10 +2,7 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import ScrollToTop from "@/components/ScrollToTop";
 import "./globals.css";
-/* import AmplitudeContextProvider from "@/context/AmplitudeContext"; */
-/* import { UmamiContextProvider } from "@/context/UmamiContextProvider"; */
 import { Metadata } from "next";
-/* import {UmamiTracker} from "@/components/umami/umami"; */
 import Script from 'next/script';
 
 type RootLayoutProps = {
@@ -44,7 +41,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
     return (
         <html lang="no" className="min-h-screen">
         <head>
-            <Script strategy="afterInteractive" defer src="https://cdn.nav.no/team-researchops/sporing/sporing.js"
+            <Script strategy="afterInteractive" data-domains="delta.nav.no" defer src="https://cdn.nav.no/team-researchops/sporing/sporing.js"
                     data-host-url="https://umami.nav.no"
                     data-website-id="efe951d8-ebbb-4fad-938e-91eee190f6aa"></Script>
         </head>

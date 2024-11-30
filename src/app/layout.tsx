@@ -4,6 +4,7 @@ import ScrollToTop from "@/components/ScrollToTop";
 import "./globals.css";
 import AmplitudeContextProvider from "@/context/AmplitudeContext";
 import { Metadata } from "next";
+import Head from "next/head";
 
 type RootLayoutProps = {
     children: React.ReactNode;
@@ -40,11 +41,11 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: RootLayoutProps) {
     return (
         <html lang="no" className="min-h-screen">
-        <head>
+        <Head>
             <script data-domains="delta.nav.no" defer src="/sporing.js"
                     data-host-url="https://umami.nav.no"
                     data-website-id="efe951d8-ebbb-4fad-938e-91eee190f6aa"></script>
-        </head>
+        </Head>
         <body>
         <div id="main" className="flex flex-col min-h-screen" style={{background: "rgba(19,17,54)"}}>
             <Header/>

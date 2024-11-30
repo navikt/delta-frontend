@@ -1,69 +1,54 @@
-'use client'
+'use client';
 
-import React, { createContext, useContext, useEffect, useState } from 'react'
-import { usePathname, useSearchParams } from 'next/navigation'
+import React, { createContext, useContext, useEffect } from 'react';
+import Script from 'next/script';
+import { usePathname } from 'next/navigation';
 
-interface UmamiContextType {
-    trackView: (url: string) => void
-    trackEvent: (eventName: string, eventData?: any) => void
-}
+// Define the context type
+type UmamiContextType = {
+    track: (eventName: string, properties?: Record<string, any>) => void;
+};
 
-const UmamiContext = createContext<UmamiContextType | undefined>(undefined)
+// Create the context with a default empty implementation
+const UmamiContext = createContext<UmamiContextType>({
+    track: () => {},
+});
 
+// Provider component
 export const UmamiContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [isLoaded, setIsLoaded] = useState(false)
-    const pathname = usePathname()
-    const searchParams = useSearchParams()
+    const pathname = usePathname();
 
     useEffect(() => {
-        if (typeof window !== 'undefined' && !isLoaded) {
-            const script = document.createElement('script')
-            script.async = true
-            script.src = 'https://cdn.nav.no/team-researchops/sporing/sporing.js'
-            script.setAttribute('data-website-id', 'efe951d8-ebbb-4fad-938e-91eee190f6aa')
-            script.setAttribute('data-host-url', 'https://umami.nav.no')
-            script.setAttribute('data-domains', 'delta.nav.no')
-            script.onload = () => setIsLoaded(true)
-            document.body.appendChild(script)
-        }
-    }, [isLoaded])
-
-    useEffect(() => {
-        // @ts-ignore
-        if (isLoaded && window.umami) {
-            // @ts-ignore
-            window.umami.trackView(pathname + (searchParams.toString() ? `?${searchParams.toString()}` : ''))
-        }
-    }, [isLoaded, pathname, searchParams])
-
-    const trackView = (url: string) => {
+        // Track initial page load
         // @ts-ignore
         if (window.umami) {
             // @ts-ignore
-            window.umami.trackView(url)
+            window.umami.track(pathname);
         }
-    }
+    }, [pathname]);
 
-    const trackEvent = (eventName: string, eventData?: any) => {
+    const track = (eventName: string, properties?: Record<string, any>) => {
         // @ts-ignore
         if (window.umami) {
             // @ts-ignore
-            window.umami.trackEvent(eventName, eventData)
+            window.umami.track(eventName, properties);
         }
-    }
+    };
 
     return (
-        <UmamiContext.Provider value={{ trackView, trackEvent }}>
+        <UmamiContext.Provider value={{ track }}>
+            <Script
+                strategy="afterInteractive"
+                src="https://cdn.nav.no/team-researchops/sporing/sporing.js"
+                data-domains="delta.nav.no"
+                data-host-url="https://umami.nav.no"
+                data-website-id="efe951d8-ebbb-4fad-938e-91eee190f6aa"
+                defer
+            />
             {children}
         </UmamiContext.Provider>
-    )
-}
+    );
+};
 
-export const useUmami = () => {
-    const context = useContext(UmamiContext)
-    if (context === undefined) {
-        throw new Error('useUmami must be used within a UmamiContextProvider')
-    }
-    return context
-}
-
+// Custom hook to use Umami analytics
+export const useUmami = () => useContext(UmamiContext);

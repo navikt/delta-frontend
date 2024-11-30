@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect } from 'react';
 import Script from 'next/script';
-import { usePathname } from 'next/navigation';
+import { useRouter } from 'next/router';
 
 // Define the context type
 type UmamiContextType = {
@@ -16,16 +16,22 @@ const UmamiContext = createContext<UmamiContextType>({
 
 // Provider component
 export const UmamiContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const pathname = usePathname();
+    const router = useRouter();
 
     useEffect(() => {
-        // Track initial page load
-        // @ts-ignore
-        if (window.umami) {
+        const handleRouteChange = (url: any) => {
             // @ts-ignore
-            window.umami.track(pathname);
-        }
-    }, [pathname]);
+            if (window.umami) {
+                // @ts-ignore
+                window.umami.trackView(url);
+            }
+        };
+
+        router.events.on('routeChangeComplete', handleRouteChange);
+
+        // Cleanup function to remove event listener on unmount
+        return () => router.events.off('routeChangeComplete', handleRouteChange);
+    }, [router.events]);
 
     const track = (eventName: string, properties?: Record<string, any>) => {
         // @ts-ignore

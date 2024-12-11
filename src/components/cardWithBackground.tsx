@@ -15,9 +15,11 @@ type CardWithBackgroundProps = {
   className?: string; 
 };
 
+// ${props.color} ${props.className}
+
 export default function CardWithBackground(props: CardWithBackgroundProps) {
   return (
-    <div className={`w-full flex flex-col align-center items-center -mt-20 ${props.color} ${props.className}`}>
+    <div className={`w-full flex flex-col align-center items-center -mt-20`}>
       <div className="w-full header-animated-bg relative max-w-[100vw] overflow-hidden animation-stop">
         <div className="z-20 pb-24">
           <div className="relative mt-28 mx-auto grid w-full place-items-center px-4 text-center sm:max-w-[632px] sm:px-6">

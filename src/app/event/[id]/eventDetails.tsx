@@ -18,7 +18,7 @@ import {FullDeltaEvent, DeltaParticipant} from "@/types/event";
 import {deleteEvent, getEvent, joinEvent, leaveEvent} from "@/service/eventActions";
 import {format} from "date-fns";
 import Calendar from "@/components/calendar";
-import {TrashIcon, PencilIcon, BarChartIcon} from "@navikt/aksel-icons";
+import {TrashIcon, PencilIcon, BarChartIcon, LayersPlusIcon} from "@navikt/aksel-icons";
 
 export default function EventDetails({
      event,
@@ -124,6 +124,12 @@ export default function EventDetails({
                                       <TrashIcon/> Slett
                                     </span>
                                     </Button>
+                                    <Link data-umami-event="bruk som mal"
+                                        href={`/event/new?template=${event.id}`}
+                                        className="w-full h-fit navds-button navds-button--secondary navds-label"
+                                    >
+                                        <LayersPlusIcon /> Bruk som mal
+                                    </Link>
                                     <Link data-umami-event="webtatistikk besøkt"
                                         className="w-full h-fit navds-button navds-button--secondary navds-label"
                                         href={`https://umami.ansatt.nav.no/share/0zuLlyzpFMQPwxfW/delta.nav.no?view=country&url=/event/${event.id}`}

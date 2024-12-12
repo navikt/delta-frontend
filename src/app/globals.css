@@ -7,7 +7,7 @@
 .svelte-reugtu {
     min-height: 100vh;
     padding-bottom: 1rem;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(230, 241, 248, 1) 100%);
+    background: linear-gradient(135deg, rgba(230, 241, 248, 1) 0%, rgba(255, 255, 255, 1) 100%);
 }
 
 .bg-fagfestival {

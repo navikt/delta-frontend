@@ -128,7 +128,7 @@ export default function EventDetails({
                                         href={`/event/new?template=${event.id}`}
                                         className="w-full h-fit navds-button navds-button--secondary navds-label"
                                     >
-                                        <LayersPlusIcon /> Bruk som mal
+                                        <LayersPlusIcon /> Dupliser
                                     </Link>
                                     <Link data-umami-event="webtatistikk besøkt"
                                         className="w-full h-fit navds-button navds-button--secondary navds-label"

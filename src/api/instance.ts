@@ -18,6 +18,9 @@ export async function getApi() {
   client.interceptors.response.use(
     (response) => response,
     (error) => {
+      delete error.config;
+      delete error.response;
+      delete error.request;
       return Promise.reject(error);
     },
   );

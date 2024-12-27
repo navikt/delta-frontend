@@ -26,6 +26,8 @@ spec:
     outbound:
       rules:
         - application: delta-backend
+        - application: reops-fastapi
+        - host: fastapi.nav.no
   env:
     - name: NEXT_PUBLIC_CLUSTER
       value: prod

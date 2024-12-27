@@ -1,13 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  async middleware() {
-    return [
-      {
-        source: '/:path*',
-        destination: '/middleware',
-      },
-    ];
-  },
   output: 'standalone',
   i18n: {
     locales: ["nb-NO"],

@@ -27,6 +27,7 @@ spec:
       rules:
         - application: delta-backend
         - application: reops-fastapi
+      external:
         - host: fastapi.nav.no
   env:
     - name: NEXT_PUBLIC_CLUSTER

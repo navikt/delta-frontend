@@ -8,6 +8,11 @@ export async function middleware(req) {
         return NextResponse.next();
     }
 
+    // Only trigger middleware for GET requests
+    if (req.method !== 'GET') {
+        return NextResponse.next();
+    }
+
     // console.log(`Middleware triggered for: ${url.pathname}`);
 
     const event = {

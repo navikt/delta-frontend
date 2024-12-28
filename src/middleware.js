@@ -2,6 +2,12 @@ import { NextResponse } from 'next/server';
 
 export async function middleware(req) {
     const url = req.nextUrl.clone();
+
+    // Do not trigger middleware for /internal paths
+    if (url.pathname.startsWith('/internal')) {
+        return NextResponse.next();
+    }
+
     console.log(`Middleware triggered for: ${url.pathname}`);
 
     const event = {

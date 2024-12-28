@@ -42,11 +42,11 @@ export default function Header() {
                 <HatSchoolIcon aria-hidden fontSize="1.5rem" />
                 <span className="whitespace-nowrap">Kompasset</span>
               </Dropdown.Menu.List.Item>
-              <Dropdown.Menu.List.Item data-umami-event="Hovedmeny-snarvei besøkt" data-umami-event-lenke="Faggruppe" as={Link} href="/faggrupper">
+              <Dropdown.Menu.List.Item prefetch={false} data-umami-event="Hovedmeny-snarvei besøkt" data-umami-event-lenke="Faggruppe" as={Link} href="/faggrupper">
                 <PersonGroupIcon aria-hidden fontSize="1.5rem" />
                 <span className="whitespace-nowrap">Faggrupper</span>
               </Dropdown.Menu.List.Item>
-              <Dropdown.Menu.List.Item data-umami-event="Opprett event besøkt" data-umami-event-placement="Header" as={Link} href="/event/new">
+              <Dropdown.Menu.List.Item prefetch={false} data-umami-event="Opprett event besøkt" data-umami-event-placement="Header" as={Link} href="/event/new">
                 <PlusIcon aria-hidden fontSize="1.5rem" />
                 <span className="whitespace-nowrap">
                   Opprett arrangement
@@ -63,11 +63,11 @@ export default function Header() {
               <HatSchoolIcon aria-hidden fontSize="1.5rem" />
               <span className="whitespace-nowrap">Kompasset</span>
             </Link>
-           <Link data-umami-event="Hovedmeny-snarvei besøkt" data-umami-event-lenke="Faggruppe" href="/faggrupper" className={linkButton}>
+           <Link data-umami-event="Hovedmeny-snarvei besøkt" prefetch={false} data-umami-event-lenke="Faggruppe" href="/faggrupper" className={linkButton}>
               <PersonGroupIcon aria-hidden fontSize="1.5rem" />
               <span className="whitespace-nowrap">Faggrupper</span>
             </Link>
-            <Link className={linkButton} data-umami-event="Opprett event besøkt" data-umami-event-placement="Header" href="/event/new">
+            <Link className={linkButton} prefetch={false} data-umami-event="Opprett event besøkt" data-umami-event-placement="Header" href="/event/new">
               <PlusIcon aria-hidden fontSize="1.5rem" />
               <span className="whitespace-nowrap">
                 Opprett arrangement

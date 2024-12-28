@@ -13,8 +13,9 @@ export async function middleware(req) {
         return NextResponse.next();
     }
 
-    console.log(`URL: ${url}`);
-    console.log(`Headers: ${req.headers}`);
+    console.log(`URL: ${JSON.stringify(url, null, 2)}`);
+    console.log(`Headers: ${JSON.stringify(Object.fromEntries(req.headers), null, 2)}`);
+
 
     const event = {
         app_id: "65faca38-5cd7-492f-aebe-52674521f66c",

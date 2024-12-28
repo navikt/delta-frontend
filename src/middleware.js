@@ -4,7 +4,7 @@ export async function middleware(req) {
     const url = req.nextUrl.clone();
 
     // Do not trigger middleware for /internal, /favicon, /_next paths, prefetching requests, or URLs containing ?_rsc=
-    if (url.pathname.startsWith('/internal') || url.pathname.startsWith('/favicon') || url.pathname.startsWith('/_next') || req.headers.get('x-middleware-prefetch') || req.headers.get('next-router-prefetch') === '1' || url.search.includes('_rsc')) {
+    if (url.pathname.startsWith('/internal') || url.pathname.startsWith('/favicon') || url.pathname.startsWith('/_next') || req.headers.get('next-url')) {
         return NextResponse.next();
     }
 
@@ -12,10 +12,6 @@ export async function middleware(req) {
     if (req.method !== 'GET') {
         return NextResponse.next();
     }
-
-    console.log(`URL: ${JSON.stringify(url, null, 2)}`);
-    console.log(`Headers: ${JSON.stringify(Object.fromEntries(req.headers), null, 2)}`);
-
 
     const event = {
         app_id: "65faca38-5cd7-492f-aebe-52674521f66c",

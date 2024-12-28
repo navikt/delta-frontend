@@ -3,8 +3,8 @@ import { NextResponse } from 'next/server';
 export async function middleware(req) {
     const url = req.nextUrl.clone();
 
-    // Do not trigger middleware for /internal, /favicon, or /_next paths
-    if (url.pathname.startsWith('/internal') || url.pathname.startsWith('/favicon') || url.pathname.startsWith('/_next')) {
+    // Do not trigger middleware for /internal, /favicon, /_next paths, or prefetching requests
+    if (url.pathname.startsWith('/internal') || url.pathname.startsWith('/favicon') || url.pathname.startsWith('/_next') || req.headers.get('x-middleware-prefetch')) {
         return NextResponse.next();
     }
 

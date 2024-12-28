@@ -13,7 +13,8 @@ export async function middleware(req) {
         return NextResponse.next();
     }
 
-    // console.log(`Middleware triggered for: ${url.pathname}`);
+    console.log(`URL: ${url}`);
+    console.log(`Headers: ${req.headers}`);
 
     const event = {
         app_id: "65faca38-5cd7-492f-aebe-52674521f66c",

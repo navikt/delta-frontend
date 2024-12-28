@@ -3,12 +3,12 @@ import { NextResponse } from 'next/server';
 export async function middleware(req) {
     const url = req.nextUrl.clone();
 
-    // Do not trigger middleware for /internal paths
-    if (url.pathname.startsWith('/internal')) {
+    // Do not trigger middleware for /internal or /favicon paths
+    if (url.pathname.startsWith('/internal') || url.pathname.startsWith('/favicon')) {
         return NextResponse.next();
     }
 
-    console.log(`Middleware triggered for: ${url.pathname}`);
+    // console.log(`Middleware triggered for: ${url.pathname}`);
 
     const event = {
         app_id: "65faca38-5cd7-492f-aebe-52674521f66c",
@@ -29,7 +29,7 @@ export async function middleware(req) {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        console.log('Event sent successfully');
+        // console.log('Event sent successfully');
     } catch (error) {
         console.error('Failed to send event:', error);
     }

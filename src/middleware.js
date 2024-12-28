@@ -30,8 +30,3 @@ export async function middleware(req) {
 
     return NextResponse.next();
 }
-
-// Run middleware on all paths
-export const config = {
-    matcher: '/:path*',
-}

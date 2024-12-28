@@ -90,13 +90,12 @@ function SideLenker() {
 function FooterLink({ children, href }) {
     return (
         <li>
-            <Link
-                prefetch={false}
+            <a
                 className="text-white hover:text-white focus:shadow-focus focus:text-text-default flex w-fit items-center gap-1 underline hover:no-underline focus:bg-blue-100 focus:shadow-blue-100"
                 href={href}
             >
                 {children}
-            </Link>
+            </a>
         </li>
     );
 }

@@ -91,6 +91,7 @@ function FooterLink({ children, href }) {
     return (
         <li>
             <Link
+                prefetch={false}
                 className="text-white hover:text-white focus:shadow-focus focus:text-text-default flex w-fit items-center gap-1 underline hover:no-underline focus:bg-blue-100 focus:shadow-blue-100"
                 href={href}
             >

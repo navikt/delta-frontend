@@ -15,27 +15,26 @@ export async function middleware(req) {
 
     const event = {
         app_id: "65faca38-5cd7-492f-aebe-52674521f66c",
-        url_host: url.host,
+        url_host: "delta.ansatt.nav.no",
         url_path: url.pathname,
         url_query: url.search,
         event_name: "pageview"
     };
 
-    try {
-        const response = await fetch('https://fastapi.nav.no/api/send', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(event)
-        });
+    // Send the analytics event without waiting for the response
+    fetch('https://fastapi.nav.no/api/send', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(event)
+    }).then(response => {
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            console.error(`HTTP error! status: ${response.status}`);
         }
-        // console.log('Event sent successfully');
-    } catch (error) {
+    }).catch(error => {
         console.error('Failed to send event:', error);
-    }
+    });
 
     return NextResponse.next();
 }

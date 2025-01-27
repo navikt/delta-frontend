@@ -6,6 +6,7 @@ audience: Åpen for alle
 
 ## Kontaktpersoner
 
+- [Robindra Prabhu](https://nav-it.slack.com/team/U62UQPU6M)
 - [Eirik Gallefoss](https://nav-it.slack.com/team/U029VUUS1CJ)
 - [Jacob Sjødin](https://nav-it.slack.com/team/U02SH0K4C8K)
 - [Jørgen Halvorsen Nordmoen](https://nav-it.slack.com/team/U053H4NBVQT)

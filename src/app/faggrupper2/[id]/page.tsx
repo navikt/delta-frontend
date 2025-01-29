@@ -2,6 +2,7 @@ import CardWithBackground from "@/components/cardWithBackground";
 import EditArticleModal from "@/components/faggrupper/editarticlemodal";
 import { Detail } from "@navikt/ds-react";
 import { PersonGroupIcon, CalendarIcon, ClockIcon } from "@navikt/aksel-icons";
+import {checkToken} from "@/auth/token";
 
 interface Props {
     params: {
@@ -10,7 +11,8 @@ interface Props {
 }
 
 export default async function ArticlePage({ params }: Props) {
-    const response = await fetch(`http://localhost:3000/api/hentfaggruppe2/${params.id}`, {
+    await checkToken(`/faggrupper2/${params.id}`);
+    const response = await fetch(`http://localhost:3000/api/hentfaggruppe/${params.id}`, {
         cache: 'no-store'
     });
     if (!response.ok) {

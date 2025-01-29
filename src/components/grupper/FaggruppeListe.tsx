@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { Search, Heading, Detail, Skeleton} from "@navikt/ds-react";
 import Link from 'next/link';
-import {CalendarIcon} from "@navikt/aksel-icons";
+import {CalendarIcon, ClockIcon} from "@navikt/aksel-icons";
 
 interface Group {
     group_id: string;
@@ -96,7 +96,7 @@ export default function FaggruppeListe() {
                                             )}
                                             {group.default_meeting_start && group.default_meeting_end && (
                                                 <Detail className="leading-normal">
-                                                    Tid: {group.default_meeting_start} - {group.default_meeting_end}
+                                                    <ClockIcon aria-label="tid"/> {group.default_meeting_start} - {group.default_meeting_end}
                                                 </Detail>
                                             )}
                                         </div>

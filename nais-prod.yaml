@@ -27,7 +27,7 @@ spec:
     outbound:
       rules:
         - application: delta-backend
-        - application: reops-fastapi
+        - application: delta-fastapi
           namespace: team-researchops
       external:
         - host: fastapi.nav.no

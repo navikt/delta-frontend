@@ -86,7 +86,7 @@ export default function GroupDetails({ id }: { id: string }) {
                 {group.has_private_slack ? (
                     <>
                         <Heading size="medium" as="h2">
-                            Kanal
+                            Gruppekanal
                         </Heading>
                         <BodyLong className="whitespace-pre-line break-words max-w-prose">
                             <a href={group.slack_channel_url} target="_blank" rel="noopener noreferrer">

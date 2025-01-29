@@ -39,11 +39,11 @@ export default function GroupDetails({ id }: { id: string }) {
     }, [id]);
 
     if (loading) {
-        return <div>Loading...</div>;
+        return null;
     }
 
     if (!group) {
-        return <div>Group not found</div>;
+        return null;
     }
 
     return (

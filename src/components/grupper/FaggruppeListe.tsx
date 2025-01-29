@@ -77,7 +77,7 @@ export default function FaggruppeListe() {
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 px-4 pb-4">
                             {sortedGroups.map((group) => (
-                                <Link key={group.group_id} href={`/faggrupper2/${group.group_id}`}>
+                                <Link key={group.group_id} href={`/grupper/${group.group_id}`}>
                                     <div
                                         className="flex flex-col h-full p-4 border rounded-xl text-text-default border-gray-300 transition-all hover:-translate-y-1 hover:scale-105 hover:text-surface-action-selected-hover hover:border-border-action event-card">
                                         <Heading level="2" size="small">{group.name}</Heading>

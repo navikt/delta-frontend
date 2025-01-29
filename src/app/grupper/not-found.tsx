@@ -2,7 +2,7 @@ export default async function NotFound() {
   return (
     <main className="flex flex-grow">
       <section className="w-screen flex-grow flex justify-center items-center">
-        404 - Faggruppen finnes ikke
+        404 - Gruppen finnes ikke
       </section>
     </main>
   );

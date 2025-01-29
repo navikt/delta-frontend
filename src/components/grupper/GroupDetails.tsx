@@ -47,8 +47,8 @@ export default function GroupDetails({ id }: { id: string }) {
     return (
         <CardWithBackground
             title=""
-            backLink="/faggrupper2"
-            backText={"Faggrupper"}
+            backLink="/grupper"
+            backText={"Grupper"}
         >
             <div className="prose mx-4 mt-4 mb-2">
                 <h1 className="pb-1">{group.name}</h1>

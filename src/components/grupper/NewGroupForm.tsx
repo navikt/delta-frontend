@@ -52,7 +52,7 @@ export default function NewGroupForm() {
                 throw new Error(`Failed to create group: ${JSON.stringify(responseData)}`);
             }
 
-            router.push('/faggrupper2');
+            router.push('/grupper');
             router.refresh();
         } catch (error) {
             console.error('Error:', error);
@@ -64,7 +64,7 @@ export default function NewGroupForm() {
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
             <TextField 
-                label="Navn på faggruppe"
+                label="Navn på gruppe"
                 value={formData.name}
                 onChange={(e) => setFormData({...formData, name: e.target.value})}
                 required
@@ -110,7 +110,7 @@ export default function NewGroupForm() {
                         onChange={(e) => setFormData({...formData, meeting_frequency: e.target.value})}
                         required
                     >
-                        <option value="Weekly">Ukentlig</option>
+                        <option value="Weekly">Hver fagtorsdag</option>
                         <option value="Biweekly">Annenhver uke</option>
                         <option value="Monthly">Månedlig</option>
                     </Select>
@@ -170,7 +170,7 @@ export default function NewGroupForm() {
 */}
             
             <Button variant="primary" type="submit" loading={loading}>
-                Opprett faggruppe
+                Opprett gruppe
             </Button>
         </form>
     );

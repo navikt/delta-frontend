@@ -28,7 +28,6 @@ spec:
       rules:
         - application: delta-backend
         - application: delta-fastapi
-          namespace: team-researchops
       external:
         - host: fastapi.nav.no
   env:

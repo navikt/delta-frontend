@@ -37,13 +37,13 @@ export default async function ArticlesPage() {
             <div className="flex flex-col w-full">
                 <div className="w-full">
                     <CardWithBackground
-                        title="Faggrupper og møteplasser"
+                        title="Grupper"
                         backLink="/"
                     >
                         <SearchArticles articles={articles}/>
                         <div className="px-4 mb-5 pt-5">
-                            <Link href="/faggrupper/ny" className="text-deepblue-500 underline hover:no-underline">
-                                Opprett ny faggruppe eller møteplass
+                            <Link href="/grupper/ny" className="text-deepblue-500 underline hover:no-underline">
+                                Opprett ny gruppe
                             </Link>
                         </div>
                     </CardWithBackground>

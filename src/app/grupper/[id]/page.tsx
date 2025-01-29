@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import GroupDetails from '@/components/faggrupper/GroupDetails';
+import GroupDetails from '@/components/grupper/GroupDetails';
 import { checkToken } from "@/auth/token";
 
 interface Props {
@@ -9,10 +9,10 @@ interface Props {
 }
 
 export const metadata: Metadata = {
-    title: 'Faggruppe Δ Delta',
+    title: 'Gruppe Δ Delta',
 };
 
 export default async function ArticlePage({ params }: Props) {
-    await checkToken(`/faggrupper2/${params.id}`);
+    await checkToken(`/grupper/${params.id}`);
     return <GroupDetails id={params.id} />;
 }

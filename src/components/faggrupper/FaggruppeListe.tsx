@@ -1,6 +1,6 @@
 "use client"
 import { useEffect, useState } from 'react';
-import { Search, Heading, Detail } from "@navikt/ds-react";
+import { Search, Heading, Detail, Skeleton} from "@navikt/ds-react";
 import Link from 'next/link';
 
 interface Group {
@@ -59,6 +59,15 @@ export default function FaggruppeListe() {
                         }}
                     />
                 </div>
+
+                 {loading && (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 px-4 pb-4">
+                        <Skeleton width="100%" height="3rem" />
+                        <Skeleton width="100%" height="3rem" />
+                        <Skeleton width="100%" height="3rem" />
+                        <Skeleton width="100%" height="3rem" />
+                    </div>
+                )}
 
                 {!loading && (
                     <>

@@ -21,7 +21,7 @@ export default async function ArticlesPage() {
                         <FaggruppeListe />
                         <div className="px-4 mb-5 pt-5">
                             <Link href="/grupper/ny" className="text-deepblue-500 underline hover:no-underline">
-                                Opprett ny faggruppe eller møteplass
+                                Opprett ny gruppe
                             </Link>
                         </div>
                     </CardWithBackground>

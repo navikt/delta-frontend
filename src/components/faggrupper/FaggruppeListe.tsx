@@ -73,12 +73,16 @@ export default function FaggruppeListe() {
                                         className="flex flex-col h-full p-4 border rounded-xl text-text-default border-gray-300 transition-all hover:-translate-y-1 hover:scale-105 hover:text-surface-action-selected-hover hover:border-border-action event-card">
                                         <Heading level="2" size="small">{group.name}</Heading>
                                         <div className="flex pt-2 flex-col gap-2 h-full">
-                                            <Detail className="leading-normal">
-                                                Møtefrekvens: {group.meeting_frequency}
-                                            </Detail>
-                                            <Detail className="leading-normal">
-                                                Tid: {group.default_meeting_start} - {group.default_meeting_end}
-                                            </Detail>
+                                            {group.meeting_frequency && (
+                                                <Detail className="leading-normal">
+                                                    Møtefrekvens: {group.meeting_frequency}
+                                                </Detail>
+                                            )}
+                                            {group.default_meeting_start && group.default_meeting_end && (
+                                                <Detail className="leading-normal">
+                                                    Tid: {group.default_meeting_start} - {group.default_meeting_end}
+                                                </Detail>
+                                            )}
                                         </div>
                                     </div>
                                 </Link>

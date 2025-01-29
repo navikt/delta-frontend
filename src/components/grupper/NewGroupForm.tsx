@@ -93,7 +93,8 @@ export default function NewGroupForm() {
             >
                 <option value="faggruppe">Faggruppe</option>
                 <option value="møteplass">Møteplass</option>
-                <option value="bedriftidrettslag">bedriftidrettslag</option>
+                <option value="bedriftidrettslag">Bedriftidrettslag</option>
+                <option value="annet">Annet</option>
             </Select>
 
             <Switch 

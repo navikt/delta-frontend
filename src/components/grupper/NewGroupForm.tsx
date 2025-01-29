@@ -64,7 +64,7 @@ export default function NewGroupForm() {
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
             <TextField 
-                label="Navn på gruppe"
+                label="Gruppenavn"
                 value={formData.name}
                 onChange={(e) => setFormData({...formData, name: e.target.value})}
                 required
@@ -86,13 +86,14 @@ export default function NewGroupForm() {
             />
             
             <Select 
-                label="Gruppe type"
+                label="Gruppetype"
                 value={formData.group_type}
                 onChange={(e) => setFormData({...formData, group_type: e.target.value})}
                 required
             >
                 <option value="faggruppe">Faggruppe</option>
                 <option value="møteplass">Møteplass</option>
+                <option value="bedriftidrettslag">bedriftidrettslag</option>
             </Select>
 
             <Switch 
@@ -139,20 +140,20 @@ export default function NewGroupForm() {
                 checked={formData.has_private_slack}
                 onChange={(e) => setFormData({...formData, has_private_slack: e.target.checked})}
             >
-                Åpen Slack-kanal
+                Åpen Slack eller Teams-kanal
             </Switch>
             
             {formData.has_private_slack && (
                 <>
                     <TextField 
-                        label="Slack kanal navn"
+                        label="Kanalnavn"
                         value={formData.slack_channel_name}
                         onChange={(e) => setFormData({...formData, slack_channel_name: e.target.value})}
                         required={formData.has_private_slack}
                     />
                     
                     <TextField 
-                        label="Slack kanal URL"
+                        label="URL til kanal"
                         value={formData.slack_channel_url}
                         onChange={(e) => setFormData({...formData, slack_channel_url: e.target.value})}
                         required={formData.has_private_slack}

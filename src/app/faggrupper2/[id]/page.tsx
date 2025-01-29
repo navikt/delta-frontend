@@ -10,7 +10,7 @@ interface Props {
 }
 
 export default async function ArticlePage({ params }: Props) {
-    const response = await fetch(`http://localhost:3000/api/hentfaggruppe/${params.id}`, {
+    const response = await fetch(`http://localhost:3000/api/hentfaggruppe2/${params.id}`, {
         cache: 'no-store'
     });
     if (!response.ok) {

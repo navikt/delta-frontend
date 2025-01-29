@@ -1,6 +1,6 @@
 # delta-frontend
 
-[Delta](https://delta.nav.no) er en påmeldingsapp for NAVs interne arrangementer.
+[Delta](https://delta.nav.no) er en påmeldingsapp for Navs interne arrangementer.
 
 ## Henvendelser
 
@@ -12,7 +12,7 @@ Du kan sende spørsmål i [#delta](https://nav-it.slack.com/archives/C05E0NJ6Z0C
 
 ## Hvorfor ar dette repoet lukket?
 
-Etter vi la til faggrupper som inneholder navn og kontaktopplysninger til ansatte, ble det bestemt at repoet skulle lukkes av hensyn til ansattes personvern. 
+Etter vi la til faggrupper som inneholder navn og kontaktopplysninger til ansatte, ble det bestemt at repoet skulle lukkes av hensyn til ansattes personvern.
 
 ## Delta backend
 

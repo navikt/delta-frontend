@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Search, Heading, Detail, Skeleton} from "@navikt/ds-react";
 import Link from 'next/link';
 import {CalendarIcon, ClockIcon} from "@navikt/aksel-icons";
+import { useRouter } from 'next/navigation';
 
 interface Group {
     group_id: string;
@@ -19,24 +20,38 @@ export default function FaggruppeListe() {
         const [groups, setGroups] = useState<Group[]>([]);
         const [loading, setLoading] = useState(true);
         const [searchQuery, setSearchQuery] = useState('');
+        const router = useRouter();
 
         useEffect(() => {
+            let isMounted = true;
+
             const fetchGroups = async () => {
                 try {
-                    const response = await fetch('/api/hentfaggrupper');
+                    const response = await fetch('/api/hentfaggrupper', {
+                        cache: 'no-store',
+                        next: { revalidate: 0 }
+                    });
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
                     }
                     const data: Group[] = await response.json();
-                    setGroups(data);
+                    if (isMounted) {
+                        setGroups(data);
+                    }
                 } catch (error) {
                     console.error('Failed to fetch groups:', error);
                 } finally {
-                    setLoading(false);
+                    if (isMounted) {
+                        setLoading(false);
+                    }
                 }
             };
 
             fetchGroups();
+
+            return () => {
+                isMounted = false;
+            };
         }, []);
 
         const filteredGroups = groups.filter((group) => {

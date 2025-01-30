@@ -96,7 +96,11 @@ export default function NewGroupForm() {
 
             <Switch 
                 checked={formData.is_regular_meeting}
-                onChange={(e) => setFormData({...formData, is_regular_meeting: e.target.checked})}
+                onChange={(e) => setFormData({
+                    ...formData, 
+                    is_regular_meeting: e.target.checked,
+                    meeting_frequency: e.target.checked ? 'Hver fagtorsdag' : ''
+                })}
             >
                 Regelmessige møter
             </Switch>

@@ -85,7 +85,9 @@ export default function FaggruppeListe() {
                                         <div className="flex pt-2 flex-col gap-2 h-full">
                                             {group.meeting_frequency ? (
                                                 <Detail className="leading-normal">
-                                                    <CalendarIcon title="person"/>  {group.meeting_frequency}
+                                                    <span className="flex items-center gap-1">
+                                                        <CalendarIcon title="person"/>  {group.meeting_frequency}
+                                                    </span>
                                                 </Detail>
                                             ) : (
                                                 <Detail className="leading-normal">
@@ -96,7 +98,9 @@ export default function FaggruppeListe() {
                                             )}
                                             {group.default_meeting_start && group.default_meeting_end && (
                                                 <Detail className="leading-normal">
-                                                    <ClockIcon aria-label="tid"/> {group.default_meeting_start} - {group.default_meeting_end}
+                                                    <span className="flex items-center gap-1">
+                                                        <ClockIcon aria-label="tid"/> {group.default_meeting_start} - {group.default_meeting_end}
+                                                    </span>
                                                 </Detail>
                                             )}
                                         </div>

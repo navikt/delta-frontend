@@ -67,7 +67,6 @@ export default function NewGroupForm() {
                 label="Gruppenavn"
                 value={formData.name}
                 onChange={(e) => setFormData({...formData, name: e.target.value})}
-                required
             />
             
             {/* Temporarily commented out announcement field
@@ -82,14 +81,12 @@ export default function NewGroupForm() {
                 label="Beskrivelse"
                 value={formData.description}
                 onChange={(e) => setFormData({...formData, description: e.target.value})}
-                required
             />
             
             <Select 
                 label="Gruppetype"
                 value={formData.group_type}
                 onChange={(e) => setFormData({...formData, group_type: e.target.value})}
-                required
             >
                 <option value="faggruppe">Faggruppe</option>
                 <option value="møteplass">Møteplass</option>
@@ -110,11 +107,10 @@ export default function NewGroupForm() {
                         label="Møtefrekvens"
                         value={formData.meeting_frequency}
                         onChange={(e) => setFormData({...formData, meeting_frequency: e.target.value})}
-                        required
                     >
-                        <option value="Weekly">Hver fagtorsdag</option>
-                        <option value="Biweekly">Annenhver uke</option>
-                        <option value="Monthly">Månedlig</option>
+                        <option value="Hver fagtorsdag">Hver fagtorsdag</option>
+                        <option value="Annenhver uke">Annenhver uke</option>
+                        <option value="Månedlig">Månedlig</option>
                     </Select>
                     
                     <div className="flex gap-4">
@@ -123,7 +119,6 @@ export default function NewGroupForm() {
                             type="time"
                             value={formData.default_meeting_start}
                             onChange={(e) => setFormData({...formData, default_meeting_start: e.target.value})}
-                            required={formData.is_regular_meeting}
                         />
                         
                         <TextField 
@@ -131,7 +126,6 @@ export default function NewGroupForm() {
                             type="time"
                             value={formData.default_meeting_end}
                             onChange={(e) => setFormData({...formData, default_meeting_end: e.target.value})}
-                            required={formData.is_regular_meeting}
                         />
                     </div>
                 </>
@@ -150,14 +144,12 @@ export default function NewGroupForm() {
                         label="Kanalnavn"
                         value={formData.slack_channel_name}
                         onChange={(e) => setFormData({...formData, slack_channel_name: e.target.value})}
-                        required={formData.has_private_slack}
                     />
                     
                     <TextField 
                         label="URL til kanal"
                         value={formData.slack_channel_url}
                         onChange={(e) => setFormData({...formData, slack_channel_url: e.target.value})}
-                        required={formData.has_private_slack}
                     />
                 </>
             )}

@@ -73,6 +73,10 @@ export default function FaggruppeListe() {
         };
     }, []); // Empty dependency array ensures this runs only once
 
+    const formatTime = (time: string) => {
+        return time.split(':').slice(0, 2).join(':');  // Only take hours and minutes
+    };
+
     const filteredGroups = groups.filter((group) => {
         const normalizedQuery = searchQuery ? searchQuery.toLowerCase() : '';
         return group.name ? group.name.toLowerCase().includes(normalizedQuery) : false;
@@ -127,7 +131,8 @@ export default function FaggruppeListe() {
                                             {group.default_meeting_start && group.default_meeting_end && (
                                                 <Detail className="leading-normal">
                                                     <span className="flex items-center gap-1">
-                                                        <ClockIcon aria-label="tid"/> {group.default_meeting_start} - {group.default_meeting_end}
+                                                        <ClockIcon aria-label="tid"/> 
+                                                        {`${formatTime(group.default_meeting_start)} - ${formatTime(group.default_meeting_end)}`}
                                                     </span>
                                                 </Detail>
                                             )}

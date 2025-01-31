@@ -2,6 +2,7 @@
 import { ArrowLeftIcon } from "@navikt/aksel-icons";
 import { Heading } from "@navikt/ds-react";
 import Link from "next/link";
+import { useEffect, useRef } from "react";
 
 type CardWithBackgroundProps = {
   title?: string;
@@ -18,8 +19,16 @@ type CardWithBackgroundProps = {
 // ${props.color} ${props.className}
 
 export default function CardWithBackground(props: CardWithBackgroundProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollIntoView({ behavior: "instant" });
+    }
+  }, []);
+
   return (
-    <div className={`w-full flex flex-col align-center items-center -mt-20`}>
+    <div ref={containerRef} className={`w-full flex flex-col align-center items-center -mt-20`}>
       <div className="w-full header-animated-bg relative max-w-[100vw] overflow-hidden animation-stop">
         <div className="z-20 pb-24">
           <div className="relative mt-28 mx-auto grid w-full place-items-center px-4 text-center sm:max-w-[632px] sm:px-6">

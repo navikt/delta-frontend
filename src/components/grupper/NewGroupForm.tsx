@@ -57,8 +57,10 @@ export default function NewGroupForm() {
                 throw new Error(`Failed to create group: ${JSON.stringify(responseData)}`);
             }
 
-            // Redirect to the newly created group's page
+            // Just navigate to the new group page
+            router.refresh();
             router.push(`/grupper/${responseData.group_id}`);
+
         } catch (error) {
             console.error('Error:', error);
         } finally {

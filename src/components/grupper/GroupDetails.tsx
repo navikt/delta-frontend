@@ -45,6 +45,10 @@ export default function GroupDetails({ id }: { id: string }) {
         fetchGroup();
     }, [id]);
 
+    const formatTime = (time: string) => {
+        return time.split(':').slice(0, 2).join(':');  // Only take hours and minutes
+    };
+
     if (loading) {
         return null;
     }
@@ -78,7 +82,7 @@ export default function GroupDetails({ id }: { id: string }) {
                     <Detail className="leading-normal">
                         <span className="flex items-center gap-1">
                             <ClockIcon aria-label="tid"/>
-                            {`${group.default_meeting_start} - ${group.default_meeting_end}`}
+                            {`${formatTime(group.default_meeting_start)} - ${formatTime(group.default_meeting_end || '')}`}
                         </span>
                     </Detail>
                 )}

@@ -104,17 +104,17 @@ export default function FaggruppeListe() {
                                                         <CalendarIcon title="person"/>  {group.meeting_frequency}
                                                     </span>
                                                 </Detail>
+                                                {group.default_meeting_start && group.default_meeting_end && (
+                                                    <Detail className="leading-normal">
+                                                        <span className="flex items-center gap-1">
+                                                            <ClockIcon aria-label="tid"/> {group.default_meeting_start} - {group.default_meeting_end}
+                                                        </span>
+                                                    </Detail>
+                                                )}
                                             ) : (
                                                 <Detail className="leading-normal">
                                                     <span className="flex items-center gap-1">
                                                         <CalendarIcon title="person"/> Tidspunkt annonseres
-                                                    </span>
-                                                </Detail>
-                                            )}
-                                            {group.default_meeting_start && group.default_meeting_end && (
-                                                <Detail className="leading-normal">
-                                                    <span className="flex items-center gap-1">
-                                                        <ClockIcon aria-label="tid"/> {group.default_meeting_start} - {group.default_meeting_end}
                                                     </span>
                                                 </Detail>
                                             )}

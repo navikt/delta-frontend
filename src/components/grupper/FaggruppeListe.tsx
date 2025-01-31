@@ -99,6 +99,7 @@ export default function FaggruppeListe() {
                                         <Heading level="2" size="small">{group.name}</Heading>
                                         <div className="flex pt-2 flex-col gap-2 h-full">
                                             {group.meeting_frequency ? (
+                                                <>
                                                 <Detail className="leading-normal">
                                                     <span className="flex items-center gap-1">
                                                         <CalendarIcon title="person"/>  {group.meeting_frequency}
@@ -111,6 +112,7 @@ export default function FaggruppeListe() {
                                                         </span>
                                                     </Detail>
                                                 )}
+                                                </>
                                             ) : (
                                                 <Detail className="leading-normal">
                                                     <span className="flex items-center gap-1">

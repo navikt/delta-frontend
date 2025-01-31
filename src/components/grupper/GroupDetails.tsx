@@ -25,6 +25,7 @@ export default function GroupDetails({ id }: { id: string }) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        window.scrollTo(0, 0);
         const fetchGroup = async () => {
             try {
                 const response = await fetch(`/api/hentfaggruppe/${id}`);

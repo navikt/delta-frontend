@@ -1,6 +1,6 @@
 "use client"
 import { useEffect, useState } from 'react';
-import {Detail, Heading, BodyLong} from "@navikt/ds-react";
+import {Detail, Heading, BodyLong, List} from "@navikt/ds-react";
 import { PersonGroupIcon, CalendarIcon, ClockIcon } from "@navikt/aksel-icons";
 import CardWithBackground from "@/components/cardWithBackground";
 
@@ -13,6 +13,11 @@ interface Group {
     meeting_frequency?: string;
     default_meeting_start?: string;
     default_meeting_end?: string;
+    owners: {
+        name: string;
+        email: string;
+        role: string;
+    }[];
 }
 
 export default function GroupDetails({ id }: { id: string }) {
@@ -28,6 +33,7 @@ export default function GroupDetails({ id }: { id: string }) {
                 }
                 const data = await response.json();
                 setGroup(data);
+                console.log(data);
             } catch (error) {
                 console.error('Error:', error);
             } finally {
@@ -75,6 +81,33 @@ export default function GroupDetails({ id }: { id: string }) {
                         </span>
                     </Detail>
                 )}
+                <Heading size="medium" as="h2">
+                    Kontaktpersoner
+                </Heading>
+                <BodyLong className="whitespace-pre-line break-words max-w-prose">
+                <List as="ul">
+                    {group.owners && group.owners.map((owner, index) => {
+                        // Handle reversed names (e.g., "Person, Test" -> "Test Person")
+                        const formattedName = owner.name
+                            .split(',')                           // Split on comma if present
+                            .map(part => part.trim())            // Remove whitespace
+                            .reverse()                           // Reverse parts to get correct order
+                            .join(' ')                           // Join with space
+                            .split(' ')                          // Split into words
+                            .map(part => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())  // Capitalize each word
+                            .join(' ');
+                            
+                        return (
+                            <List.Item key={index} className="mb-2">
+                                <a href={`mailto:${owner.email}`} className="text-deepblue-500 hover:underline">
+                                    {formattedName}
+                                </a>
+                            </List.Item>
+                        );
+                    })}
+                </List>
+                </BodyLong>
+                
                 <Heading size="medium" as="h2">
                     Detaljer
                 </Heading>

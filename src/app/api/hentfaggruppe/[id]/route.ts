@@ -42,10 +42,12 @@ export async function GET(
         });
 
         if (!response.ok) {
+            console.error('API response not OK:', response.status, await response.text());
             throw new Error(`Failed to fetch group: ${response.status}`);
         }
 
         const data = await response.json();
+        console.log('API response data:', JSON.stringify(data, null, 2));
         return NextResponse.json(data);
     } catch (error) {
         console.error('Error fetching group:', error);

@@ -18,7 +18,12 @@ export default function NewGroupForm() {
         has_private_slack: false,
         slack_channel_name: '',
         slack_channel_url: '',
-        is_active: true
+        is_active: true,
+        owners: [{
+            email: '',  // This will be filled automatically by the backend
+            name: '',   // This will be filled automatically by the backend
+            role: 'owner'
+        }]
     });
 
     const handleSubmit = async (e: React.FormEvent) => {

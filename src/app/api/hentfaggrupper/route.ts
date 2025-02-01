@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getToken, validateToken, requestOboToken } from '@navikt/oasis';
 
-console.log(`Hello`);
-
 export async function GET(request: Request) {
     const apiUrl = process.env.NODE_ENV === 'production'
         ? 'http://delta-fastapi/api/groups'

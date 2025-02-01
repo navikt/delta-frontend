@@ -99,7 +99,6 @@ export default function GroupDetails({ id }: { id: string }) {
                 <Heading size="medium" as="h2">
                     Kontaktpersoner
                 </Heading>
-                <BodyLong className="whitespace-pre-line break-words max-w-prose">
                 <List as="ul">
                     {group.owners && group.owners.map((owner, index) => {
                         // Handle reversed names (e.g., "Person, Test" -> "Test Person")
@@ -121,7 +120,6 @@ export default function GroupDetails({ id }: { id: string }) {
                         );
                     })}
                 </List>
-                </BodyLong>
                 
                 <Heading size="medium" as="h2">
                     Detaljer

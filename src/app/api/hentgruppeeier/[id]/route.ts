@@ -6,25 +6,25 @@ export async function GET(
     { params }: { params: { id: string } }
 ) {
     const apiUrl = process.env.NODE_ENV === 'production'
-        ? `http://delta-fastapi/api/groups/${params.id}/owners`
-        : `http://0.0.0.0:8087/api/groups/${params.id}/owners`;
+        ? `http://delta-fastapi/api/groups/${params.id}/is-owner`
+        : `http://0.0.0.0:8087/api/groups/${params.id}/is-owner`;
 
     try {
         let token: string | null;
         if (process.env.NODE_ENV === 'production') {
             token = getToken(request);
             if (!token) {
-                return NextResponse.json({ isOwner: false }, { status: 401 });
+                return NextResponse.json({ isOwner: false });
             }
 
             const validation = await validateToken(token);
             if (!validation.ok) {
-                return NextResponse.json({ isOwner: false }, { status: 401 });
+                return NextResponse.json({ isOwner: false });
             }
 
             const obo = await requestOboToken(token, 'api://prod-gcp.delta.delta-fastapi/.default');
             if (!obo.ok) {
-                return NextResponse.json({ isOwner: false }, { status: 401 });
+                return NextResponse.json({ isOwner: false });
             }
 
             token = obo.token;
@@ -42,10 +42,9 @@ export async function GET(
             return NextResponse.json({ isOwner: false });
         }
 
-        const userData = await response.json();
-        const userEmail = userData.email; // Assuming the API returns the user's email
-        
-        return NextResponse.json({ isOwner: true });
+        // Just pass through the response from the API
+        const data = await response.json();
+        return NextResponse.json(data);
 
     } catch (error) {
         console.error('Error checking ownership:', error);

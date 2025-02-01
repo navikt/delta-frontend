@@ -54,6 +54,13 @@ export default async function RootLayout({ children }: RootLayoutProps) {
             <Footer/>
             <ScrollToTop/>
         </div>
+        <script>
+          {`
+            if (typeof window !== 'undefined') {
+              window.history.scrollRestoration = 'auto';
+            }
+          `}
+        </script>
         </body>
         </html>
     );

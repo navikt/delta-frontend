@@ -112,6 +112,26 @@ export default function EventFilters({
   }, [events, searchInput, selectedCategories]);
 
   useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        setLoading(true);
+        const eventsData = await getEvents({
+          categories: selectedCategories,
+          onlyFuture: true,
+        });
+        setEvents(eventsData);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+        setEvents([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
+  useEffect(() => {
     getEvents({
       categories: selectedCategories,
       onlyFuture,
@@ -135,73 +155,109 @@ export default function EventFilters({
     };
   }, []);
 
-  function getOnlyJoined() {
-    setLoading(true);
-    setTabname("påmeldte")
-    setVal([])
-    getEvents({
-      categories: selectedCategories,
-      onlyFuture,
-      onlyJoined: true,
-    })
-        .then(setEvents)
-        .then(() => setLoading(false));
+  async function getOnlyJoined() {
+    try {
+      setLoading(true);
+      setTabname("påmeldte");
+      setVal([]);
+      const eventsData = await getEvents({
+        categories: selectedCategories,
+        onlyFuture,
+        onlyJoined: true,
+      });
+      setEvents(eventsData);
+    } catch (error) {
+      console.error('Error fetching events:', error);
+      setEvents([]);
+    } finally {
+      setLoading(false);
+    }
   }
 
-  function getOnlyJoinedPrev() {
-    setLoading(true);
-    getEvents({
-      categories: selectedCategories,
-      onlyPast,
-      onlyJoined: true,
-    })
-        .then(setEvents)
-        .then(() => setLoading(false));
+  async function getOnlyJoinedPrev() {
+    try {
+      setLoading(true);
+      const eventsData = await getEvents({
+        categories: selectedCategories,
+        onlyPast,
+        onlyJoined: true,
+      });
+      setEvents(eventsData);
+    } catch (error) {
+      console.error('Error fetching events:', error);
+      setEvents([]);
+    } finally {
+      setLoading(false);
+    }
   }
 
-  function getOnlyMine() {
-    setLoading(true);
-    setTabname("mine")
-    setVal([])
-    getEvents({
-      categories: selectedCategories,
-      onlyFuture,
-      onlyMine: true,
-    })
-        .then(setEvents)
-        .then(() => setLoading(false));
+  async function getOnlyMine() {
+    try {
+      setLoading(true);
+      setTabname("mine");
+      setVal([]);
+      const eventsData = await getEvents({
+        categories: selectedCategories,
+        onlyFuture,
+        onlyMine: true,
+      });
+      setEvents(eventsData);
+    } catch (error) {
+      console.error('Error fetching events:', error);
+      setEvents([]);
+    } finally {
+      setLoading(false);
+    }
   }
 
-  function getOnlyMinePrev() {
-    setLoading(true);
-    getEvents({
-      categories: selectedCategories,
-      onlyPast,
-      onlyMine: true,
-    })
-        .then(setEvents)
-        .then(() => setLoading(false));
+  async function getOnlyMinePrev() {
+    try {
+      setLoading(true);
+      const eventsData = await getEvents({
+        categories: selectedCategories,
+        onlyPast,
+        onlyMine: true,
+      });
+      setEvents(eventsData);
+    } catch (error) {
+      console.error('Error fetching events:', error);
+      setEvents([]);
+    } finally {
+      setLoading(false);
+    }
   }
 
-  function getAll() {
-    setLoading(true);
-    setTabname("alle")
-    setVal([])
-    getEvents({
-      categories: selectedCategories,
-      onlyFuture: true,
-    })
-        .then(setEvents)
-        .then(() => setLoading(false));
+  async function getAll() {
+    try {
+      setLoading(true);
+      setTabname("alle");
+      setVal([]);
+      const eventsData = await getEvents({
+        categories: selectedCategories,
+        onlyFuture: true,
+      });
+      setEvents(eventsData);
+    } catch (error) {
+      console.error('Error fetching events:', error);
+      setEvents([]);
+    } finally {
+      setLoading(false);
+    }
   }
 
-  function getAllPrev() {
-    setLoading(true);
-    getEvents({
-      onlyPast
-    })
-        .then(setEvents)
-        .then(() => setLoading(false));
+  async function getAllPrev() {
+    try {
+      setLoading(true);
+      const eventsData = await getEvents({
+        onlyPast
+      });
+      setEvents(eventsData);
+    } catch (error) {
+      console.error('Error fetching events:', error);
+      setEvents([]);
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {

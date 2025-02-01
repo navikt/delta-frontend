@@ -9,54 +9,128 @@ import {
   FullDeltaEvent,
 } from "@/types/event";
 import { formatInTimeZone } from "date-fns-tz";
+import { AxiosError } from 'axios';
 
-export async function joinEvent(eventId: string) {
-  const api = await getApi();
-  const response = await api.post(`/user/event/${eventId}`);
+class ApiError extends Error {
+  constructor(
+    message: string,
+    public status?: number,
+    public data?: any
+  ) {
+    super(message);
+    this.name = 'ApiError';
+  }
 }
 
-export async function leaveEvent(eventId: string) {
-  const api = await getApi();
-  const response = await api.delete(`/user/event/${eventId}`);
+const handleApiError = (error: unknown): never => {
+  console.error('API Error:', error);
+  
+  if (error instanceof AxiosError) {
+    const status = error.response?.status;
+    const message = error.response?.data?.message || 'Ukjent feil';
+    
+    if (status === 500) {
+      throw new ApiError(
+        'Kunne ikke hente arrangementer. Vennligst prøv igjen senere.',
+        status,
+        error.response?.data
+      );
+    }
+
+    throw new ApiError(
+      `${message}`,
+      status,
+      error.response?.data
+    );
+  }
+  
+  throw new ApiError('Kunne ikke koble til serveren. Sjekk internettforbindelsen.');
+};
+
+export async function joinEvent(eventId: string): Promise<void> {
+  try {
+    const api = await getApi();
+    await api.post(`/user/event/${eventId}`);
+  } catch (error) {
+    if (error instanceof AxiosError && error.response?.status === 500) {
+      console.error('Server error while joining event:', error);
+      throw new ApiError('Kunne ikke melde deg på arrangementet. Vennligst prøv igjen senere.');
+    }
+    throw handleApiError(error);
+  }
 }
 
-export async function deleteEvent(eventId: string) {
-  const api = await getApi();
-  await api.delete(`/admin/event/${eventId}`);
+export async function leaveEvent(eventId: string): Promise<void> {
+  try {
+    const api = await getApi();
+    await api.delete(`/user/event/${eventId}`);
+  } catch (error) {
+    handleApiError(error);
+  }
 }
 
-export async function deleteParticipant(eventId: string, userEmail: string) {
-  const api = await getApi();
-  const payload = { email: userEmail };
-  await api.delete(`/admin/event/${eventId}/participant`, { data: payload });
+export async function deleteEvent(eventId: string): Promise<void> {
+  try {
+    const api = await getApi();
+    await api.delete(`/admin/event/${eventId}`);
+  } catch (error) {
+    handleApiError(error);
+  }
+}
+
+export async function deleteParticipant(eventId: string, userEmail: string): Promise<void> {
+  try {
+    const api = await getApi();
+    const payload = { email: userEmail };
+    await api.delete(`/admin/event/${eventId}/participant`, { data: payload });
+  } catch (error) {
+    handleApiError(error);
+  }
 }
 
 export async function changeParticipant(
   eventId: string,
   changeDeltaParticipant: ChangeDeltaParticipant,
-) {
-  const api = await getApi();
-  await api.post(`/admin/event/${eventId}/participant`, changeDeltaParticipant);
+): Promise<void> {
+  try {
+    const api = await getApi();
+    await api.post(`/admin/event/${eventId}/participant`, changeDeltaParticipant);
+  } catch (error) {
+    handleApiError(error);
+  }
 }
 
 export async function createCategory(category: string): Promise<Category> {
-  const api = await getApi();
-  const response = await api.put<Category>("/category", { name: category });
-  return response.data;
+  try {
+    const api = await getApi();
+    const response = await api.put<Category>("/category", { name: category });
+    return response.data;
+  } catch (error) {
+    return handleApiError(error);
+  }
 }
 
-export async function setCategories(eventId: string, categories: number[]) {
-  const api = await getApi();
-  const response = await api.post<string>(
-    `/admin/event/${eventId}/category`,
-    categories,
-  );
+export async function setCategories(eventId: string, categories: number[]): Promise<void> {
+  try {
+    const api = await getApi();
+    await api.post<string>(
+      `/admin/event/${eventId}/category`,
+      categories,
+    );
+  } catch (error) {
+    handleApiError(error);
+  }
 }
 
 export async function getAllCategories(): Promise<Category[]> {
-  const api = await getApi();
-  const response = await api.get<Category[]>("/category");
-  return response.data;
+  try {
+    const api = await getApi();
+    const response = await api.get<Category[]>("/category");
+    return response.data;
+  } catch (error) {
+    console.error('Failed to fetch categories:', error);
+    return [];
+  }
 }
 
 export async function getEvents({
@@ -72,48 +146,68 @@ export async function getEvents({
   onlyMine?: boolean;
   onlyJoined?: boolean;
 }): Promise<FullDeltaEvent[]> {
-  const api = await getApi();
-  const response = await api.get<FullDeltaEvent[]>("/event", {
-    params: {
-      categories: categories.length
-        ? categories.map((c) => c.id).join(",")
-        : undefined,
-      onlyFuture,
-      onlyPast,
-      onlyJoined,
-      onlyMine,
-    },
-  });
-  return response.data;
+  try {
+    const api = await getApi();
+    const response = await api.get<FullDeltaEvent[]>("/event", {
+      params: {
+        categories: categories.length
+          ? categories.map((c) => c.id).join(",")
+          : undefined,
+        onlyFuture,
+        onlyPast,
+        onlyJoined,
+        onlyMine,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Failed to fetch events:', error);
+    // Always return empty array instead of throwing
+    return [];
+  }
 }
 
 export async function getEvent(id: string): Promise<FullDeltaEvent> {
-  const api = await getApi();
-  const response = await api.get(`/event/${id}`);
-  return response.data;
+  try {
+    const api = await getApi();
+    const response = await api.get<FullDeltaEvent>(`/event/${id}`);
+    return response.data;
+  } catch (error) {
+    return handleApiError(error);
+  }
 }
 
 export async function createEvent(
   formData: CreateEventSchema,
 ): Promise<FullDeltaEvent> {
-  const api = await getApi();
+  try {
+    const api = await getApi();
 
-  const createEvent = createDeltaEventFromFormData(formData);
-  const response = await api.put("/admin/event", createEvent);
+    const createEvent = createDeltaEventFromFormData(formData);
+    const response = await api.put("/admin/event", createEvent);
 
-  return response.data;
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+    throw error;
+  }
 }
 
 export async function updateEvent(
   formData: CreateEventSchema,
   eventId: string,
 ): Promise<FullDeltaEvent> {
-  const api = await getApi();
+  try {
+    const api = await getApi();
 
-  const createEvent = createDeltaEventFromFormData(formData);
-  const response = await api.post(`/admin/event/${eventId}`, createEvent);
+    const createEvent = createDeltaEventFromFormData(formData);
+    const response = await api.post(`/admin/event/${eventId}`, createEvent);
 
-  return response.data;
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+    throw error;
+  }
 }
 
 function createDeltaEventFromFormData(

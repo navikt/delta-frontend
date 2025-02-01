@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState } from 'react';
-import {Detail, Heading, BodyLong, List} from "@navikt/ds-react";
-import { PersonGroupIcon, CalendarIcon, ClockIcon } from "@navikt/aksel-icons";
+import {Detail, Heading, BodyLong, List, Button} from "@navikt/ds-react";
+import { PersonGroupIcon, CalendarIcon, ClockIcon, PencilIcon } from "@navikt/aksel-icons";
 import CardWithBackground from "@/components/cardWithBackground";
 
 interface Group {
@@ -23,18 +23,28 @@ interface Group {
 export default function GroupDetails({ id }: { id: string }) {
     const [group, setGroup] = useState<Group | null>(null);
     const [loading, setLoading] = useState(true);
+    const [isOwner, setIsOwner] = useState(false);
 
     useEffect(() => {
         window.scrollTo(0, 0);
         const fetchGroup = async () => {
             try {
-                const response = await fetch(`/api/hentfaggruppe/${id}`);
-                if (!response.ok) {
+                const [groupResponse, ownerResponse] = await Promise.all([
+                    fetch(`/api/hentfaggruppe/${id}`),
+                    fetch(`/api/groups/${id}/is-owner`)
+                ]);
+
+                if (!groupResponse.ok) {
                     throw new Error('Failed to fetch group');
                 }
-                const data = await response.json();
-                setGroup(data);
-                console.log(data);
+
+                const groupData = await groupResponse.json();
+                setGroup(groupData);
+
+                if (ownerResponse.ok) {
+                    const { isOwner } = await ownerResponse.json();
+                    setIsOwner(isOwner);
+                }
             } catch (error) {
                 console.error('Error:', error);
             } finally {
@@ -134,6 +144,12 @@ export default function GroupDetails({ id }: { id: string }) {
                     </>
                 ) : null}
             </div>
+            
+            {isOwner && (
+                <Button className="mx-4 mt-8 mb-10" variant="secondary" size="small">
+                    <PencilIcon className="inline" title="rediger" fontSize="1.2rem" /> Rediger
+                </Button>
+            )}
         </CardWithBackground>
     );
 }

@@ -146,9 +146,11 @@ export default function GroupDetails({ id }: { id: string }) {
             </div>
             
             {isOwner && (
-                <Button className="mx-4 mt-8 mb-10" variant="secondary" size="small">
-                    <PencilIcon className="inline" title="rediger" fontSize="1.2rem" /> Rediger
-                </Button>
+                <div className="px-4 pb-10">
+                    <Button variant="secondary" size="small">
+                        <PencilIcon className="inline" title="rediger" fontSize="1.2rem" /> Rediger
+                    </Button>
+                </div>
             )}
         </CardWithBackground>
     );

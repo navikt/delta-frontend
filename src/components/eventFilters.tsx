@@ -340,7 +340,7 @@ export default function EventFilters({
                     className="mt-5 md:mt-0 w-full md:w-fit flex items-center flex-wrap flex-row-reverse md:flex-row gap-2 order-1 md:order-2">
       <span className="gap-2 items-center hidden md:flex">
         <FunnelIcon title="trakt"/>
-        <label className="font-bold">Filtrer på kategori</label>
+        <label className="font-bold">Kategorier</label>
       </span>
                   <UNSAFE_Combobox
                       className="w-full md:w-fit"

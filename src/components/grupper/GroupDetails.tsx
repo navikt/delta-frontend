@@ -31,7 +31,7 @@ export default function GroupDetails({ id }: { id: string }) {
             try {
                 const [groupResponse, ownerResponse] = await Promise.all([
                     fetch(`/api/hentfaggruppe/${id}`),
-                    fetch(`/api/groups/${id}/is-owner`)
+                    fetch(`/api/hentgruppeeier/${id}`)
                 ]);
 
                 if (!groupResponse.ok) {

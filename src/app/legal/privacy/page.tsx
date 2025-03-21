@@ -60,16 +60,38 @@ export default async function Privacy() {
                     forbedre flyten og opplevelsen for alle som bruker nettsiden.
                 </p>
                 <p className="mb-4 leading-normal">Opplysningene brukes til å kartlegge hvordan og hvor mye delta.nav.no
-                    brukes, uten å identifisere IP-adresser. Vi bruker verktøyet Amplitude i analysearbeidet.
+                    brukes, uten å identifisere IP-adresser. Vi bruker verktøyet Umami og Skyra i analysearbeidet.
+                </p>
+
+                <h3 className="pb-4 text-lg">skyra*</h3>
+                <p className="mb-4 leading-normal">
+                    Brukes av verktøyet Skyra for å lagre svarene du gir på en undersøkelse. Avhengig av oppsett på
+                    undersøkelsen er dette enten en sesjonskapsel eller en kapsel som slettes etter få timer. Kapselen
+                    slettes når en undersøkelse fullføres eller lukkes.
+                </p>
+
+                <h3 className="pb-4 text-lg">skyra.state</h3>
+                <p className="mb-4 leading-normal">
+                    Brukes av verktøyet Skyra for å huske brukeren og hvorvidt undersøkelser er åpnet, lukket eller
+                    fullført.
+                </p>
+
+                <h3 className="pb-4 text-lg">Umami</h3>
+                <p className="mb-4 leading-normal">
+                    Umami brukes til statistikk og analyse av hvordan nav.no brukes. Unami bruker ikke
+                    informasjonskapsler, men henter inn opplysninger om nettleseren din for å lage en unik ID. Denne
+                    ID-en brukes for å skille deg fra andre brukere. For å hindre identifisering, bruker vi en
+                    egenutviklet proxy som vasker bort deler av IP-adressen din før dataene sendes til verktøyet.
                 </p>
 
                 <h2 className="pb-4 pt-4 text-2xl">Feil, mangler og forbedringsforslag</h2>
                 <p className="leading-normal">Hvis du opplever problemer eller har forslag til forbedringer hører vi
                     veldig gjerne fra deg! Feil og mangler kan rapporteres til <Link
                         href="mailto:eilif.johansen@nav.no"
-                        className="text-deepblue-500 underline hover:no-underline">eilif.johansen@nav.no</Link>, eller <Link
+                        className="text-deepblue-500 underline hover:no-underline">eilif.johansen@nav.no</Link>,
+                    eller <Link
                         href="https://nav-it.slack.com/archives/C05E0NJ6Z0C"
-                        className="text-deepblue-500 underline hover:no-underline">#delta  på
+                        className="text-deepblue-500 underline hover:no-underline">#delta på
                         Slack</Link>.</p>
             </div>
         </CardWithBackground>

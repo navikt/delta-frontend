@@ -1,0 +1,48 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: delta-frontend
+  namespace: delta
+  labels:
+    team: delta
+spec:
+  image: {{ image }}
+  ingresses:
+    - https://delta.ekstern.dev.nav.no
+  port: 3000
+  resources:
+    limits:
+      cpu: 100m
+    requests:
+      cpu: 100m
+  azure:
+    application:
+      enabled: true
+      tenant: nav.no
+      allowAllUsers: true
+    sidecar:
+      enabled: true
+  accessPolicy:
+    outbound:
+      rules:
+        - application: delta-backend
+        - application: reops-fastapi
+          namespace: team-researchops
+      external:
+        - host: fastapi.nav.no
+  env:
+    - name: NEXT_PUBLIC_CLUSTER
+      value: dev
+    - name: NEXT_PUBLIC_HOSTNAME
+      value: https://delta.ekstern.dev.nav.no
+  liveness:
+    path: /internal/is-alive
+    initialDelay: 10
+    timeout: 5
+    periodSeconds: 5
+    failureThreshold: 30
+  readiness:
+    path: /internal/is-ready
+    initialDelay: 10
+    periodSeconds: 5
+    timeout: 5

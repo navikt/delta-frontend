@@ -5,7 +5,7 @@ audience: Designere som jobber med fagsystemer
 ---
 
 ## Møtetidspunkt
-- De neste møtene i 2025: Torsdag 6. mars kl. 13, torsdag 20. mars kl. 13, torsdag 3. april kl. 13.
+- De neste møtene i 2025: Torsdag 15. mai kl. 13, torsdag 12. juni kl. 13, torsdag 26. juni kl. 13 (mye fridager og mange OU-evenementer framover, derfor litt lange opphold mellom de neste møtene).
 - Frekvens og tidspunkt for møter: Vanligvis på fagtorsdag (13 - 14), i utgangspunktet hver fagtorsdag (annenhver uke). Innkalling sendes til medlemmer i faggruppe-Slack. 
 
 ## Kontaktpersoner

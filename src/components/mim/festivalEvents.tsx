@@ -7,8 +7,8 @@ import { FilterOption, FullDeltaEvent } from "@/types/event";
 import { Checkbox, CheckboxGroup, Search, Tabs } from "@navikt/ds-react";
 import React, { useEffect, useRef, useState } from "react";
 
-const fagfestivalCategory = "mim24";
-const activeDays = ["3", "8", "13", "14", "15", "16"];
+const fagfestivalCategory = "mangfold i mai";
+const activeDays = ["15"];
 const fagfestivalMonth = "mai"
 
 const getRemainingActiveDays = () => {

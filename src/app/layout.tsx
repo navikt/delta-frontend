@@ -41,9 +41,17 @@ export default async function RootLayout({ children }: RootLayoutProps) {
     return (
         <html lang="no" className="min-h-screen">
         <head>
-            <Script strategy="afterInteractive" data-domains="delta.nav.no" defer src="https://cdn.nav.no/team-researchops/sporing/sporing.js"
+            <Script id="umami" strategy="afterInteractive" data-domains="delta.nav.no" defer src="https://cdn.nav.no/team-researchops/sporing/sporing.js"
                     data-host-url="https://umami.nav.no"
                     data-website-id="efe951d8-ebbb-4fad-938e-91eee190f6aa"></Script>
+            <Script id="ping" strategy="afterInteractive" defer
+                    src="https://cdn.nav.no/team-researchops/ping/v1/ping.js"
+                    data-ping-endpoint="https://ping.nav.no/event"
+                    data-ping-team="delta"
+                    data-ping-app="delta-frontend"
+                    data-ping-environment="prod"
+                    data-ping-track-pageviews="true">
+            </Script>
         </head>
         <body>
         <div className="flex flex-col min-h-screen" style={{background: "rgba(19,17,54)"}}>

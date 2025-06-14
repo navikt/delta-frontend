@@ -30,6 +30,7 @@ spec:
         - application: delta-fastapi
       external:
         - host: fastapi.nav.no
+        - host: ping.nav.no
   env:
     - name: NEXT_PUBLIC_CLUSTER
       value: prod

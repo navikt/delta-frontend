@@ -132,7 +132,7 @@ export default function EventDetails({
                                     </Link>
                                     <Link data-umami-event="webtatistikk besøkt"
                                         className="w-full h-fit navds-button navds-button--secondary navds-label"
-                                        href={`https://umami.ansatt.nav.no/share/0zuLlyzpFMQPwxfW/delta.nav.no?view=country&url=/event/${event.id}`}
+                                        href={`https://metabase.ansatt.nav.no/dashboard/716-nav-webstatistikk?dato=past30days~&nettside=delta.nav.no&url-sti_er_lik=%2Fevent%2F${event.id}`}
                                     >
                                         <BarChartIcon/> Statistikk
                                     </Link>

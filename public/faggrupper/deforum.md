@@ -8,10 +8,10 @@ audience: Åpen for alle
 
 ## Kontaktpersoner
 
-- [Martina Lund](https://nav-it.slack.com/team/U0417596ETG)
-- [Eivind Holen](https://nav-it.slack.com/team/U8STCA37A)
-- [Julie Skøien](https://nav-it.slack.com/team/U04SHAG4FSL)
-- [Patrick Pedersen](https://nav-it.slack.com/team/UQ7AUADHN)
+- [Elisabeth Nes](https://nav-it.slack.com/team/UCCCVA1S4)
+- [Daniel Egelandsdal Osen](https://nav-it.slack.com/team/U013S5SF3J5)
+- [Anojan Skanthamany](https://nav-it.slack.com/team/U06NDU5UWKA)
+- [Matthias Nodeland](https://nav-it.slack.com/team/U06NE9GMZGQ)
 
 
 ## Beskrivelse

@@ -37,7 +37,7 @@ export default async function ArticlePage({ params }) {
     return (
         <>
     <head>
-        <title>Faggruoppe Δ Delta</title>
+        <title>Faggruppe Δ Delta</title>
     </head>
     <CardWithBackground
         title=""

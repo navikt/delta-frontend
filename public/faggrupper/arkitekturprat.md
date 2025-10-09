@@ -6,7 +6,7 @@ audience: Åpen for alle
 
 ## Kontaktpersoner
 
-- [Malin Strand Nilsen](https://nav-it.slack.com/team/UKC5PL716)
+- [Ida Kristine Dørum](https://nav-it.slack.com/archives/D083H28Q3HA)
 
 ## Beskrivelse
 

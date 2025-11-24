@@ -5,7 +5,7 @@ audience: Designere som jobber med fagsystemer
 ---
 
 ## Møtetidspunkt
-- Neste møte: Torsdag 13. november kl. 13.
+- Neste møte: Torsdag 11. desember kl. 13, som er siste faggruppemøte i 2025.
 - Frekvens og tidspunkt for møter: Vanligvis på fagtorsdag (13 - 14), i utgangspunktet hver fagtorsdag (annenhver uke). Innkalling sendes til medlemmer i faggruppe-Slack. 
 
 ## Kontaktpersoner

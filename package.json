@@ -22,7 +22,7 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "autoprefixer": "10.4.20",
-    "axios": "1.7.7",
+    "axios": "1.13.2",
     "date-fns": "^2.30.0",
     "date-fns-tz": "^2.0.1",
     "eslint": "^9.0.0",

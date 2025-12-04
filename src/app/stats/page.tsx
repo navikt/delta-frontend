@@ -99,22 +99,31 @@ export default async function StatsPage() {
                 subtitle={`${stats.eventsWithoutLimit} uten grense`}
               />
             </div>
-            {stats.mostPopularEvent && (
-              <div className="bg-white p-6 rounded-lg border-2 border-blue-300 hover:border-blue-400 transition-colors">
-                <div className="flex items-start gap-3">
+            {stats.mostPopularEvents.length > 0 && (
+              <div className="bg-white p-6 rounded-lg border-2 border-blue-300">
+                <div className="flex items-start gap-3 mb-4">
                   <TrendUpIcon className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
-                  <div>
-                    <h3 className="font-semibold text-lg mb-2 text-gray-900">Mest populære arrangement</h3>
-                    <Link
-                      href={`/event/${stats.mostPopularEvent.id}`}
-                      className="text-blue-700 hover:text-blue-800 hover:underline font-medium"
-                    >
-                      {stats.mostPopularEvent.title}
-                    </Link>
-                    <p className="text-sm text-gray-700 mt-1">
-                      {stats.mostPopularEvent.participants} påmeldte deltakere
-                    </p>
-                  </div>
+                  <h3 className="font-semibold text-lg text-gray-900">Mest populære arrangementer</h3>
+                </div>
+                <div className="space-y-4">
+                  {stats.mostPopularEvents.map((event, index) => (
+                    <div key={event.id} className="flex items-start gap-3 pb-4 last:pb-0 border-b last:border-b-0 border-gray-200">
+                      <span className="text-2xl font-bold text-blue-600 min-w-[2rem]">
+                        {index + 1}
+                      </span>
+                      <div className="flex-1">
+                        <Link
+                          href={`/event/${event.id}`}
+                          className="text-blue-700 hover:text-blue-800 hover:underline font-medium"
+                        >
+                          {event.title}
+                        </Link>
+                        <p className="text-sm text-gray-700 mt-1">
+                          {event.participants.toLocaleString('nb-NO')} påmeldte deltakere
+                        </p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
@@ -136,6 +145,8 @@ function StatCard({
   value: number;
   subtitle?: string;
 }) {
+  const formattedValue = value.toLocaleString('nb-NO');
+
   return (
     <div className="bg-white p-6 rounded-lg border-2 border-gray-200 hover:border-blue-300 transition-colors">
       {icon && (
@@ -147,7 +158,7 @@ function StatCard({
         {title}
       </h3>
       <p className="text-3xl font-bold text-gray-900">
-        {value}
+        {formattedValue}
       </p>
       {subtitle && (
         <p className="text-sm text-gray-600 mt-1">

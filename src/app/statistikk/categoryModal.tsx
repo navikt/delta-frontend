@@ -3,7 +3,7 @@
 import { Modal, Table, Pagination, Tabs, Search } from "@navikt/ds-react";
 import { ArrowUpIcon, ArrowDownIcon } from "@navikt/aksel-icons";
 import Link from "next/link";
-import { CategoryEvent } from "@/service/statsActions";
+import { CategoryEvent, CategoryStat } from "@/service/statsActions";
 import { format } from "date-fns";
 import { nb } from "date-fns/locale";
 import { useState } from "react";
@@ -15,11 +15,13 @@ export default function CategoryModal({
   onClose,
   categoryName,
   events,
+  categoryStats,
 }: {
   isOpen: boolean;
   onClose: () => void;
   categoryName: string;
   events: CategoryEvent[];
+  categoryStats?: CategoryStat[];
 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [activeTab, setActiveTab] = useState("detaljer");
@@ -85,6 +87,16 @@ export default function CategoryModal({
     (a, b) => a.date.getTime() - b.date.getTime()
   );
 
+  // Category stats sorted by total participants
+  const sortedCategoryStats = categoryStats
+    ? [...categoryStats]
+      .map((cat) => ({
+        ...cat,
+        totalParticipants: cat.events.reduce((sum, e) => sum + e.participants, 0),
+      }))
+      .sort((a, b) => b.totalParticipants - a.totalParticipants)
+    : [];
+
   const SortIcon = ({ column }: { column: string }) => {
     if (sortState.orderBy !== column) return null;
     return sortState.direction === "ascending" ? (
@@ -106,6 +118,9 @@ export default function CategoryModal({
           <Tabs.List>
             <Tabs.Tab value="detaljer" label="Detaljer" />
             <Tabs.Tab value="maaned" label="Antall arrangementer per måned" />
+            {categoryStats && categoryStats.length > 0 && (
+              <Tabs.Tab value="kategorier" label="Kategorier" />
+            )}
           </Tabs.List>
 
           <Tabs.Panel value="detaljer" className="pt-4">
@@ -123,9 +138,7 @@ export default function CategoryModal({
               <p className="text-gray-600">Ingen arrangementer funnet i denne kategorien.</p>
             ) : (
               <>
-                <Table
-                  size="small"
-                >
+                <Table size="small">
                   <Table.Header>
                     <Table.Row>
                       <Table.HeaderCell>Arrangement</Table.HeaderCell>
@@ -220,6 +233,33 @@ export default function CategoryModal({
               </Table.Body>
             </Table>
           </Tabs.Panel>
+
+          {categoryStats && categoryStats.length > 0 && (
+            <Tabs.Panel value="kategorier" className="pt-4">
+              <Table size="small">
+                <Table.Header>
+                  <Table.Row>
+                    <Table.HeaderCell>Kategori</Table.HeaderCell>
+                    <Table.HeaderCell align="right">Arrangementer</Table.HeaderCell>
+                    <Table.HeaderCell align="right">Totalt deltakere</Table.HeaderCell>
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                  {sortedCategoryStats.map((cat) => (
+                    <Table.Row key={cat.category}>
+                      <Table.DataCell>{cat.category}</Table.DataCell>
+                      <Table.DataCell align="right">
+                        {cat.count.toLocaleString("nb-NO")}
+                      </Table.DataCell>
+                      <Table.DataCell align="right">
+                        {cat.totalParticipants.toLocaleString("nb-NO")}
+                      </Table.DataCell>
+                    </Table.Row>
+                  ))}
+                </Table.Body>
+              </Table>
+            </Tabs.Panel>
+          )}
         </Tabs>
       </Modal.Body>
     </Modal>

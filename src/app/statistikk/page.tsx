@@ -3,15 +3,10 @@ import CardWithBackground from "@/components/cardWithBackground";
 import { getEventStatistics } from "@/service/statsActions";
 import { Metadata } from 'next';
 import Link from "next/link";
-import {
-  CalendarIcon,
-  PersonGroupIcon,
-  BarChartIcon,
-  TrendUpIcon,
-  LocationPinIcon,
-} from "@navikt/aksel-icons";
+import { TrendUpIcon } from "@navikt/aksel-icons";
 import YearSelector from "./yearSelector";
 import CategorySection from "./categorySection";
+import OverviewSection from "./overviewSection";
 
 export async function generateMetadata({
   searchParams,
@@ -47,38 +42,21 @@ export default async function StatsPage({
     >
       <YearSelector selectedYear={selectedYear} currentYear={currentYear} />
       <div className="space-y-8">
-        {/* Overview Section */}
-        <section>
-          <h2 className="text-2xl font-semibold mb-4">Oversikt for {selectedYear}</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <StatCard
-              icon={<CalendarIcon className="w-6 h-6" />}
-              title="Arrangementer i år"
-              value={stats.totalEventsThisYear}
-              subtitle={`${stats.totalEvents.toLocaleString('nb-NO')} totalt alle år`}
-            />
-            <StatCard
-              icon={<PersonGroupIcon className="w-6 h-6" />}
-              title="Totalt deltakere"
-              value={stats.totalParticipants}
-              subtitle={`${stats.uniqueParticipants.toLocaleString('nb-NO')} unike deltakere`}
-            />
-            <StatCard
-              icon={<PersonGroupIcon className="w-6 h-6" />}
-              title="Gjennomsnitt per arrangement"
-              value={stats.averageParticipants}
-              suffix="deltakere"
-              subtitle={`Median: ${stats.medianParticipants.toLocaleString('nb-NO')} deltakere`}
-            />
-            <StatCard
-              icon={<PersonGroupIcon className="w-6 h-6" />}
-              title="Gjennomsnitt per person"
-              value={stats.averageEventsPerPerson}
-              suffix="arrangementer"
-              subtitle={`Median: ${stats.medianEventsPerPerson.toLocaleString('nb-NO')} arrangementer`}
-            />
-          </div>
-        </section>
+        {/* Overview and Attendance Type Sections - Client Component */}
+        <OverviewSection
+          selectedYear={selectedYear}
+          totalEventsThisYear={stats.totalEventsThisYear}
+          totalEvents={stats.totalEvents}
+          totalParticipants={stats.totalParticipants}
+          uniqueParticipants={stats.uniqueParticipants}
+          averageParticipants={stats.averageParticipants}
+          medianParticipants={stats.medianParticipants}
+          averageEventsPerPerson={stats.averageEventsPerPerson}
+          medianEventsPerPerson={stats.medianEventsPerPerson}
+          allEventsThisYear={stats.allEventsThisYear}
+          allCategoryStats={stats.allCategoryStats}
+          attendanceTypeStats={stats.attendanceTypeStats}
+        />
 
         {/* Category Statistics */}
         <CategorySection
@@ -90,21 +68,6 @@ export default async function StatsPage({
           })).find(s => s.category === 'Fagtorsdag')}
           allCategoryStats={stats.allCategoryStats}
         />
-
-        {/* Attendance Type Statistics */}
-        <section>
-          <h2 className="text-2xl font-semibold mb-4">Oppmøtetype</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {stats.attendanceTypeStats.map((type) => (
-              <StatCard
-                key={type.type}
-                title={type.type}
-                value={type.count}
-                icon={<LocationPinIcon className="w-6 h-6" />}
-              />
-            ))}
-          </div>
-        </section>
 
         {/* Event Details */}
         <section>
@@ -169,67 +132,34 @@ function StatCard({
   value,
   suffix,
   subtitle,
-  details,
 }: {
   icon?: React.ReactNode;
   title: string;
   value: number;
   suffix?: string;
   subtitle?: string;
-  details?: React.ReactNode;
 }) {
   const formattedValue = value.toLocaleString('nb-NO');
 
-  if (!details) {
-    // Simple card without details
-    return (
-      <div className="bg-white p-6 rounded-lg border-2 border-gray-200">
-        {icon && (
-          <div className="text-blue-600 mb-3">
-            {icon}
-          </div>
-        )}
-        <h3 className="text-sm font-medium text-gray-700 mb-1">
-          {title}
-        </h3>
-        <p className="text-3xl font-bold text-gray-900">
-          {formattedValue}
-          {suffix && <span className="text-lg font-medium text-gray-600 ml-1">{suffix}</span>}
-        </p>
-        {subtitle && (
-          <p className="text-sm text-gray-600 mt-1">
-            {subtitle}
-          </p>
-        )}
-      </div>
-    );
-  }
-
-  // Expandable card with details
   return (
-    <details className="bg-white p-6 rounded-lg border-2 border-gray-200 hover:border-blue-300 transition-colors group">
-      <summary className="cursor-pointer list-none">
-        {icon && (
-          <div className="text-blue-600 mb-3">
-            {icon}
-          </div>
-        )}
-        <h3 className="text-sm font-medium text-gray-700 mb-1">
-          {title}
-        </h3>
-        <p className="text-3xl font-bold text-gray-900">
-          {formattedValue}
-          {suffix && <span className="text-lg font-medium text-gray-600 ml-1">{suffix}</span>}
+    <div className="bg-white p-6 rounded-lg border-2 border-gray-200">
+      {icon && (
+        <div className="text-blue-600 mb-3">
+          {icon}
+        </div>
+      )}
+      <h3 className="text-sm font-medium text-gray-700 mb-1">
+        {title}
+      </h3>
+      <p className="text-3xl font-bold text-gray-900">
+        {formattedValue}
+        {suffix && <span className="text-lg font-medium text-gray-600 ml-1">{suffix}</span>}
+      </p>
+      {subtitle && (
+        <p className="text-sm text-gray-600 mt-1">
+          {subtitle}
         </p>
-        {subtitle && (
-          <p className="text-sm text-gray-600 mt-1">
-            {subtitle}
-          </p>
-        )}
-      </summary>
-      <div className="mt-4 pt-4 border-t border-gray-200">
-        {details}
-      </div>
-    </details>
+      )}
+    </div>
   );
 }

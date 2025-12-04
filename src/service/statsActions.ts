@@ -11,6 +11,7 @@ export type EventStats = {
   averageParticipants: number;
   categoryStats: CategoryStat[];
   attendanceTypeStats: AttendanceTypeStat[];
+  arrangementTypeStats: ArrangementTypeStat[];
   upcomingEvents: number;
   pastEvents: number;
   publicEvents: number;
@@ -20,7 +21,9 @@ export type EventStats = {
   eventsWithDeadline: number;
   eventsWithoutDeadline: number;
   mostPopularEvents: MostPopularEvent[];
-  fagTorsdagEvents: number;
+  allCategories: string[];
+  medianParticipants: number;
+  allCategoryStats: CategoryStat[];
 };
 
 export type CategoryStat = {
@@ -40,6 +43,12 @@ export type CategoryEvent = {
 export type AttendanceTypeStat = {
   type: string;
   count: number;
+};
+
+export type ArrangementTypeStat = {
+  type: string;
+  count: number;
+  events: CategoryEvent[];
 };
 
 export type MostPopularEvent = {
@@ -72,8 +81,19 @@ export async function getEventStatistics(year?: number): Promise<EventStats> {
       ? Math.round(totalParticipants / eventsThisYear.length)
       : 0;
 
+    // Calculate median participants for selected year
+    let medianParticipants = 0;
+    if (eventsThisYear.length > 0) {
+      const sortedParticipants = eventsThisYear.map(e => e.participants.length).sort((a, b) => a - b);
+      const mid = Math.floor(sortedParticipants.length / 2);
+      medianParticipants = sortedParticipants.length % 2 !== 0
+        ? sortedParticipants[mid]
+        : (sortedParticipants[mid - 1] + sortedParticipants[mid]) / 2;
+    }
+
     // Calculate category stats for selected year
     const categoryEventsMap = new Map<string, CategoryEvent[]>();
+    // Initialize main categories to ensure they exist even if empty
     categoryEventsMap.set('kompetanse', []);
     categoryEventsMap.set('bedriftidrettslaget', []);
     categoryEventsMap.set('sosialt', []);
@@ -81,19 +101,27 @@ export async function getEventStatistics(year?: number): Promise<EventStats> {
     eventsThisYear.forEach(event => {
       event.categories.forEach(cat => {
         const categoryName = cat.name.toLowerCase().trim();
-        // Only count main categories
-        if (['kompetanse', 'bedriftidrettslaget', 'sosialt'].includes(categoryName)) {
-          const categoryEvent: CategoryEvent = {
-            id: event.event.id,
-            title: event.event.public ? event.event.title : 'Privat arrangement',
-            startTime: event.event.startTime,
-            participants: event.participants.length,
-            isPublic: event.event.public,
-          };
-          categoryEventsMap.get(categoryName)?.push(categoryEvent);
+
+        if (!categoryEventsMap.has(categoryName)) {
+          categoryEventsMap.set(categoryName, []);
         }
+
+        const categoryEvent: CategoryEvent = {
+          id: event.event.id,
+          title: event.event.public ? event.event.title : 'Privat arrangement',
+          startTime: event.event.startTime,
+          participants: event.participants.length,
+          isPublic: event.event.public,
+        };
+        categoryEventsMap.get(categoryName)?.push(categoryEvent);
       });
     });
+
+    const allCategoryStats: CategoryStat[] = Array.from(categoryEventsMap.entries()).map(([name, events]) => ({
+      category: name.charAt(0).toUpperCase() + name.slice(1), // Capitalize
+      count: events.length,
+      events: events,
+    })).sort((a, b) => b.count - a.count); // Sort by count desc
 
     const categoryStats: CategoryStat[] = [
       {
@@ -167,10 +195,41 @@ export async function getEventStatistics(year?: number): Promise<EventStats> {
       })));
     }
 
-    // Count Fagtorsdag events for selected year
-    const fagTorsdagEvents = eventsThisYear.filter(event =>
-      event.categories.some(cat => cat.name.toLowerCase().trim() === 'fagtorsdag')
-    ).length;
+    // Calculate arrangement type stats for selected year
+    const arrangementTypeEventsMap = new Map<string, CategoryEvent[]>();
+    const allCategoriesSet = new Set<string>();
+
+    eventsThisYear.forEach(event => {
+      event.categories.forEach(cat => {
+        const categoryName = cat.name.toLowerCase().trim();
+        allCategoriesSet.add(cat.name); // Collect all unique categories
+
+        // Track Fagtorsdag arrangement type
+        if (categoryName === 'fagtorsdag') {
+          if (!arrangementTypeEventsMap.has('fagtorsdag')) {
+            arrangementTypeEventsMap.set('fagtorsdag', []);
+          }
+          const categoryEvent: CategoryEvent = {
+            id: event.event.id,
+            title: event.event.public ? event.event.title : 'Privat arrangement',
+            startTime: event.event.startTime,
+            participants: event.participants.length,
+            isPublic: event.event.public,
+          };
+          arrangementTypeEventsMap.get('fagtorsdag')?.push(categoryEvent);
+        }
+      });
+    });
+
+    const arrangementTypeStats: ArrangementTypeStat[] = [
+      {
+        type: 'Fagtorsdag',
+        count: arrangementTypeEventsMap.get('fagtorsdag')?.length || 0,
+        events: arrangementTypeEventsMap.get('fagtorsdag') || [],
+      },
+    ];
+
+    const allCategories = Array.from(allCategoriesSet).sort();
 
     return {
       totalEvents: allEvents.length,
@@ -179,6 +238,7 @@ export async function getEventStatistics(year?: number): Promise<EventStats> {
       averageParticipants,
       categoryStats,
       attendanceTypeStats,
+      arrangementTypeStats,
       upcomingEvents,
       pastEvents,
       publicEvents,
@@ -188,7 +248,9 @@ export async function getEventStatistics(year?: number): Promise<EventStats> {
       eventsWithDeadline,
       eventsWithoutDeadline,
       mostPopularEvents,
-      fagTorsdagEvents,
+      allCategories,
+      medianParticipants,
+      allCategoryStats,
     };
   } catch (error) {
     console.error('Failed to fetch event statistics:', error);

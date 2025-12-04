@@ -38,7 +38,7 @@ export default async function StatsPage({
   return (
     <CardWithBackground
       title={`Statistikk ${selectedYear}`}
-      subtitle="Takk for at du deltar"
+      subtitle="Takk for at du deltar!"
     >
       <YearSelector selectedYear={selectedYear} currentYear={currentYear} />
       <div className="space-y-8">

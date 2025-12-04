@@ -51,12 +51,14 @@ export default function OverviewSection({
                         icon={<CalendarIcon className="w-6 h-6" />}
                         title="Arrangementer i år"
                         value={totalEventsThisYear}
+                        suffix="arrangementer"
                         subtitle={`${totalEvents.toLocaleString('nb-NO')} totalt alle år`}
                     />
                     <StatCard
                         icon={<PersonGroupIcon className="w-6 h-6" />}
                         title="Totalt deltakere"
                         value={totalParticipants}
+                        suffix="deltakere"
                         subtitle={`${uniqueParticipants.toLocaleString('nb-NO')} unike deltakere`}
                     />
                     <StatCard

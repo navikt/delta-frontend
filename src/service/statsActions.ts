@@ -10,6 +10,8 @@ export type EventStats = {
   totalParticipants: number;
   uniqueParticipants: number;
   averageParticipants: number;
+  averageEventsPerPerson: number;
+  medianEventsPerPerson: number;
   categoryStats: CategoryStat[];
   attendanceTypeStats: AttendanceTypeStat[];
   arrangementTypeStats: ArrangementTypeStat[];
@@ -118,14 +120,29 @@ export async function getEventStatistics(year?: number): Promise<EventStats> {
       });
     });
 
-    // Calculate unique participants for selected year
-    const uniqueParticipantsSet = new Set<string>();
+    // Calculate unique participants for selected year and count events per person
+    const participantEventCount = new Map<string, number>();
     eventsThisYear.forEach(event => {
       event.participants.forEach(participant => {
-        uniqueParticipantsSet.add(participant.email);
+        const count = participantEventCount.get(participant.email) || 0;
+        participantEventCount.set(participant.email, count + 1);
       });
     });
-    const uniqueParticipants = uniqueParticipantsSet.size;
+    const uniqueParticipants = participantEventCount.size;
+
+    // Calculate average and median events per person
+    let averageEventsPerPerson = 0;
+    let medianEventsPerPerson = 0;
+    if (uniqueParticipants > 0) {
+      const eventCounts = Array.from(participantEventCount.values());
+      averageEventsPerPerson = Math.round((eventCounts.reduce((sum, count) => sum + count, 0) / uniqueParticipants) * 10) / 10;
+
+      const sortedCounts = [...eventCounts].sort((a, b) => a - b);
+      const mid = Math.floor(sortedCounts.length / 2);
+      medianEventsPerPerson = sortedCounts.length % 2 !== 0
+        ? sortedCounts[mid]
+        : (sortedCounts[mid - 1] + sortedCounts[mid]) / 2;
+    }
 
     const allCategoryStats: CategoryStat[] = Array.from(categoryEventsMap.entries()).map(([name, events]) => ({
       category: name.charAt(0).toUpperCase() + name.slice(1), // Capitalize
@@ -247,6 +264,8 @@ export async function getEventStatistics(year?: number): Promise<EventStats> {
       totalParticipants,
       uniqueParticipants,
       averageParticipants,
+      averageEventsPerPerson,
+      medianEventsPerPerson,
       categoryStats,
       attendanceTypeStats,
       arrangementTypeStats,

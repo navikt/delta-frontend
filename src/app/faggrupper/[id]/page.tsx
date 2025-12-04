@@ -12,9 +12,10 @@ import { PersonGroupIcon, CalendarIcon, ClockIcon } from "@navikt/aksel-icons";
 
 
 // @ts-ignore
-export default async function ArticlePage({ params }) {
-    await checkToken(`/faggrupper/${params.id}`);
-    const filePath = path.join(process.cwd(), `public/faggrupper/${params.id}.md`);
+export default async function ArticlePage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
+    await checkToken(`/faggrupper/${id}`);
+    const filePath = path.join(process.cwd(), `public/faggrupper/${id}.md`);
     const fileContent = fs.readFileSync(filePath, 'utf8');
     const { content, data: { title, subtitle, audience, when, starttime, endtime } } = matter(fileContent);
 
@@ -36,44 +37,44 @@ export default async function ArticlePage({ params }) {
 
     return (
         <>
-    <head>
-        <title>Faggruppe Δ Delta</title>
-    </head>
-    <CardWithBackground
-        title=""
-        backLink="/faggrupper"
-        backText={"Faggrupper"}
-        >
-            <div className="prose mx-4 mt-4 mb-2">
-                <h1 className="pb-1">{title}</h1>
-                {subtitle && (
-                    <p className="-mt-7 mb-10" dangerouslySetInnerHTML={{ __html: subtitleHtml }} />
-                )}
-                {when && (
-                    <Detail className="leading-normal">
-                        <span className="flex items-center gap-1">
-                            <CalendarIcon title="person" /> {when}
-                        </span>
-                    </Detail>
-                )}
-                {starttime && endtime && (
-                    <Detail className="leading-normal">
-                        <span className="flex items-center gap-1">
-                            <ClockIcon aria-label="tid" /> {`${starttime} - ${endtime}`}
-                        </span>
-                    </Detail>
-                )}
-                {audience && (
-                    <Detail className="leading-normal">
-                        <span className="flex items-center gap-1">
-                            <PersonGroupIcon title="person" /> Målgruppe: {audience}
-                        </span>
-                    </Detail>
-                )}
-                <article dangerouslySetInnerHTML={{ __html: modifiedHtmlContent }} />
-            </div>
-            <EditArticleModal articlepath={params.id} />
-        </CardWithBackground>
+            <head>
+                <title>Faggruppe Δ Delta</title>
+            </head>
+            <CardWithBackground
+                title=""
+                backLink="/faggrupper"
+                backText={"Faggrupper"}
+            >
+                <div className="prose mx-4 mt-4 mb-2">
+                    <h1 className="pb-1">{title}</h1>
+                    {subtitle && (
+                        <p className="-mt-7 mb-10" dangerouslySetInnerHTML={{ __html: subtitleHtml }} />
+                    )}
+                    {when && (
+                        <Detail className="leading-normal">
+                            <span className="flex items-center gap-1">
+                                <CalendarIcon title="person" /> {when}
+                            </span>
+                        </Detail>
+                    )}
+                    {starttime && endtime && (
+                        <Detail className="leading-normal">
+                            <span className="flex items-center gap-1">
+                                <ClockIcon aria-label="tid" /> {`${starttime} - ${endtime}`}
+                            </span>
+                        </Detail>
+                    )}
+                    {audience && (
+                        <Detail className="leading-normal">
+                            <span className="flex items-center gap-1">
+                                <PersonGroupIcon title="person" /> Målgruppe: {audience}
+                            </span>
+                        </Detail>
+                    )}
+                    <article dangerouslySetInnerHTML={{ __html: modifiedHtmlContent }} />
+                </div>
+                <EditArticleModal articlepath={id} />
+            </CardWithBackground>
         </>
     );
 }

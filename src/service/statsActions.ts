@@ -37,33 +37,33 @@ export type MostPopularEvent = {
   id: string;
 };
 
-export async function getEventStatistics(): Promise<EventStats> {
+export async function getEventStatistics(year?: number): Promise<EventStats> {
   try {
     // Fetch all events
     const allEvents = await getEvents({});
 
     const now = new Date();
-    const currentYear = now.getFullYear();
+    const selectedYear = year ?? now.getFullYear();
 
-    // Filter events for this year
+    // Filter events for selected year
     const eventsThisYear = allEvents.filter(event => {
       const eventDate = new Date(event.event.startTime);
-      return eventDate.getFullYear() === currentYear;
+      return eventDate.getFullYear() === selectedYear;
     });
 
-    // Calculate total participants
-    const totalParticipants = allEvents.reduce((sum, event) =>
+    // Calculate total participants for selected year
+    const totalParticipants = eventsThisYear.reduce((sum, event) =>
       sum + event.participants.length, 0
     );
 
-    // Calculate average participants
-    const averageParticipants = allEvents.length > 0
-      ? Math.round(totalParticipants / allEvents.length)
+    // Calculate average participants for selected year
+    const averageParticipants = eventsThisYear.length > 0
+      ? Math.round(totalParticipants / eventsThisYear.length)
       : 0;
 
-    // Calculate category stats
+    // Calculate category stats for selected year
     const categoryMap = new Map<string, number>();
-    allEvents.forEach(event => {
+    eventsThisYear.forEach(event => {
       event.categories.forEach(cat => {
         const categoryName = cat.name.toLowerCase().trim();
         // Only count main categories
@@ -79,9 +79,9 @@ export async function getEventStatistics(): Promise<EventStats> {
       { category: 'Sosialt', count: categoryMap.get('sosialt') || 0 },
     ];
 
-    // Calculate attendance type stats
+    // Calculate attendance type stats for selected year
     const attendanceTypeMap = new Map<string, number>();
-    allEvents.forEach(event => {
+    eventsThisYear.forEach(event => {
       event.categories.forEach(cat => {
         const categoryName = cat.name.toLowerCase().trim();
         if (['fysisk', 'digitalt', 'hybrid'].includes(categoryName)) {
@@ -96,39 +96,39 @@ export async function getEventStatistics(): Promise<EventStats> {
       { type: 'Hybrid', count: attendanceTypeMap.get('hybrid') || 0 },
     ];
 
-    // Count upcoming and past events
-    const upcomingEvents = allEvents.filter(event =>
+    // Count upcoming and past events for selected year
+    const upcomingEvents = eventsThisYear.filter(event =>
       new Date(event.event.startTime) > now
     ).length;
 
-    const pastEvents = allEvents.length - upcomingEvents;
+    const pastEvents = eventsThisYear.length - upcomingEvents;
 
-    // Count public and private events
-    const publicEvents = allEvents.filter(event => event.event.public).length;
-    const privateEvents = allEvents.length - publicEvents;
+    // Count public and private events for selected year
+    const publicEvents = eventsThisYear.filter(event => event.event.public).length;
+    const privateEvents = eventsThisYear.length - publicEvents;
 
-    // Count events with/without participant limit
-    const eventsWithLimit = allEvents.filter(event =>
+    // Count events with/without participant limit for selected year
+    const eventsWithLimit = eventsThisYear.filter(event =>
       event.event.participantLimit > 0
     ).length;
-    const eventsWithoutLimit = allEvents.length - eventsWithLimit;
+    const eventsWithoutLimit = eventsThisYear.length - eventsWithLimit;
 
-    // Find top 3 most popular events
+    // Find top 3 most popular events for selected year, hide private event details
     const mostPopularEvents: MostPopularEvent[] = [];
-    if (allEvents.length > 0) {
-      const sortedByParticipants = [...allEvents].sort((a, b) =>
+    if (eventsThisYear.length > 0) {
+      const sortedByParticipants = [...eventsThisYear].sort((a, b) =>
         b.participants.length - a.participants.length
       );
       const topEvents = sortedByParticipants.slice(0, 3);
       mostPopularEvents.push(...topEvents.map(event => ({
-        title: event.event.title,
+        title: event.event.public ? event.event.title : 'Privat arrangement',
         participants: event.participants.length,
-        id: event.event.id,
+        id: event.event.public ? event.event.id : '',
       })));
     }
 
-    // Count Fagtorsdag events
-    const fagTorsdagEvents = allEvents.filter(event =>
+    // Count Fagtorsdag events for selected year
+    const fagTorsdagEvents = eventsThisYear.filter(event =>
       event.categories.some(cat => cat.name.toLowerCase().trim() === 'fagtorsdag')
     ).length;
 

@@ -49,3 +49,7 @@ spec:
     initialDelay: 10
     periodSeconds: 5
     timeout: 5
+  replicas:
+    min: 1
+    max: 4
+    cpuThresholdPercentage: 80

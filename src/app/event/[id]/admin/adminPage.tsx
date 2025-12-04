@@ -1,14 +1,14 @@
 "use client";
-import {FullDeltaEvent} from "@/types/event";
-import {BodyLong, Button, Heading, Modal, Search} from "@navikt/ds-react";
+import { FullDeltaEvent } from "@/types/event";
+import { BodyLong, Button, Heading, Modal, Search } from "@navikt/ds-react";
 import ParticipantTable from "./participantTable";
 import ExportParticipants from "../exportParticipants";
 import Link from "next/link";
-import {deleteEvent} from "@/service/eventActions";
-import {useState} from "react";
-import {CalendarIcon, ClockIcon, LocationPinIcon, TrashIcon} from "@navikt/aksel-icons";
-import {User} from "@/types/user";
-import {formatEventDates} from "@/service/format";
+import { deleteEvent } from "@/service/eventActions";
+import { useState } from "react";
+import { CalendarIcon, ClockIcon, LocationPinIcon, TrashIcon } from "@navikt/aksel-icons";
+import { User } from "@/types/user";
+import { formatEventDates } from "@/service/format";
 
 type ParticipantPageProps = {
     fullEvent: FullDeltaEvent;
@@ -16,43 +16,43 @@ type ParticipantPageProps = {
 };
 
 export default function AdminPage({
-                                      fullEvent: eventWithParticipants,
-                                      user,
-                                  }: ParticipantPageProps) {
+    fullEvent: eventWithParticipants,
+    user,
+}: ParticipantPageProps) {
     const [openConfirmation, setOpenConfirmation] = useState(false);
 
     const [searchInput, setSearchInput] = useState("");
-    const {event, participants, hosts}: FullDeltaEvent = eventWithParticipants;
+    const { event, participants, hosts }: FullDeltaEvent = eventWithParticipants;
 
     return (
         <div className="flex flex-col gap-10">
-      <span className="w-full flex flex-row justify-end">
-        <span className="flex w-full md:w-fit flex-col md:flex-row gap-4">
-          <Link
-              href={`/event/${event.id}/edit`}
-              className="w-full h-fit navds-button navds-button--primary whitespace-nowrap navds-label"
-          >
-            Rediger arrangement
-          </Link>
-          <Link
-              href={`/event/new?template=${event.id}`}
-              className="w-full h-fit navds-button navds-button--primary-neutral whitespace-nowrap navds-label"
-          >
-            Bruk som mal
-          </Link>
-          <ExportParticipants participants={participants}/>
-          <Button
-              type="submit"
-              variant="danger"
-              className="w-full h-fit font-bold"
-              onClick={() => setOpenConfirmation((x) => !x)}
-          >
-            <span className="flex items-center gap-1">
-              <TrashIcon/> Slett
+            <span className="w-full flex flex-row justify-end">
+                <span className="flex w-full md:w-fit flex-col md:flex-row gap-4">
+                    <Link
+                        href={`/event/${event.id}/edit`}
+                        className="w-full h-fit navds-button navds-button--primary whitespace-nowrap navds-label"
+                    >
+                        Rediger arrangement
+                    </Link>
+                    <Link
+                        href={`/event/new?template=${event.id}`}
+                        className="w-full h-fit navds-button navds-button--primary-neutral whitespace-nowrap navds-label"
+                    >
+                        Bruk som mal
+                    </Link>
+                    <ExportParticipants participants={participants} />
+                    <Button
+                        type="submit"
+                        variant="danger"
+                        className="w-full h-fit font-bold"
+                        onClick={() => setOpenConfirmation((x) => !x)}
+                    >
+                        <span className="flex items-center gap-1">
+                            <TrashIcon /> Slett
+                        </span>
+                    </Button>
+                </span>
             </span>
-          </Button>
-        </span>
-      </span>
             <Modal
                 open={openConfirmation}
                 onClose={() => setOpenConfirmation(false)}
@@ -85,20 +85,20 @@ export default function AdminPage({
             </Modal>
             <h2 className="navds-heading navds-heading--medium -mt-4">Detaljer</h2>
             <span className="flex flex-row justify-start gap-2 items-center -mt-5">
-            <CalendarIcon aria-label="dato"/>
+                <CalendarIcon aria-label="dato" />
                 {formatEventDates(event)}
             </span>
             <span className="flex flex-row justify-start gap-2 items-center -mt-8">
-          <ClockIcon aria-label="tid"/>
+                <ClockIcon aria-label="tid" />
                 {`${event.startTime.substring(11, 16)} – ${event.endTime.substring(
                     11,
                     16,
                 )}`}
-          </span>
+            </span>
             <span className="flex flex-row justify-start gap-2 items-center -mt-8">
-            <LocationPinIcon aria-label="sted"/>
+                <LocationPinIcon aria-label="sted" />
                 {event.location}
-          </span>
+            </span>
             <h2 className="navds-heading navds-heading--medium mt-1">Deltakerliste</h2>
             <form>
                 <Search

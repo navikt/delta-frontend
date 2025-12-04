@@ -77,11 +77,13 @@ export default async function StatsPage({
               <StatCard
                 title="Med påmeldingsfrist"
                 value={stats.eventsWithDeadline}
+                suffix="arrangementer"
                 subtitle={`${stats.eventsWithoutDeadline.toLocaleString('nb-NO')} uten frist`}
               />
               <StatCard
                 title="Med maks antall deltagere"
                 value={stats.eventsWithLimit}
+                suffix="arrangementer"
                 subtitle={`${stats.eventsWithoutLimit.toLocaleString('nb-NO')} uten grense`}
               />
             </div>

@@ -86,15 +86,20 @@ export default function OverviewSection({
             <section>
                 <h2 className="text-2xl font-semibold mb-4">Oppmøtetype</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {attendanceTypeStats.map((type) => (
-                        <ClickableStatCard
-                            key={type.type}
-                            title={type.type}
-                            value={type.count}
-                            icon={<LocationPinIcon className="w-6 h-6" />}
-                            onClick={() => setShowAttendanceModal(type)}
-                        />
-                    ))}
+                    {attendanceTypeStats.map((type) => {
+                        const totalParticipants = type.events.reduce((sum, e) => sum + e.participants, 0);
+                        return (
+                            <ClickableStatCard
+                                key={type.type}
+                                title={type.type}
+                                value={type.count}
+                                suffix="arrangementer"
+                                subtitle={`${totalParticipants.toLocaleString('nb-NO')} deltakere totalt`}
+                                icon={<LocationPinIcon className="w-6 h-6" />}
+                                onClick={() => setShowAttendanceModal(type)}
+                            />
+                        );
+                    })}
                 </div>
             </section>
 

@@ -61,40 +61,26 @@ export default async function StatsPage({
               icon={<PersonGroupIcon className="w-6 h-6" />}
               title="Totalt deltakere"
               value={stats.totalParticipants}
-              subtitle={`${stats.averageParticipants.toLocaleString('nb-NO')} gjennomsnitt per arrangement`}
             />
             <StatCard
-              icon={<TrendUpIcon className="w-6 h-6" />}
-              title="Kommende arrangementer"
-              value={stats.upcomingEvents}
-            />
-            <StatCard
-              icon={<BarChartIcon className="w-6 h-6" />}
-              title="Fagtorsdag arrangementer"
-              value={stats.fagTorsdagEvents}
-              details={
-                <div className="space-y-2">
-                  <p className="text-sm text-gray-600">
-                    Fagtorsdag er vår ukentlige kompetansedeling.
-                  </p>
-                  <p className="text-sm text-gray-700">
-                    {stats.fagTorsdagEvents > 0 && (
-                      <>
-                        Det er gjennomført {stats.fagTorsdagEvents.toLocaleString('nb-NO')} Fagtorsdag arrangementer i {selectedYear}.
-                      </>
-                    )}
-                    {stats.fagTorsdagEvents === 0 && (
-                      <>Ingen Fagtorsdag arrangementer registrert i {selectedYear}.</>
-                    )}
-                  </p>
-                </div>
-              }
+              icon={<PersonGroupIcon className="w-6 h-6" />}
+              title="Gjennomsnitt per arrangement"
+              value={stats.averageParticipants}
+              subtitle={`Median: ${stats.medianParticipants.toLocaleString('nb-NO')}`}
             />
           </div>
         </section>
 
         {/* Category Statistics */}
-        <CategorySection categoryStats={stats.categoryStats} />
+        <CategorySection
+          categoryStats={stats.categoryStats}
+          fagtorsdagStat={stats.arrangementTypeStats.map(s => ({
+            category: s.type,
+            count: s.count,
+            events: s.events
+          })).find(s => s.category === 'Fagtorsdag')}
+          allCategoryStats={stats.allCategoryStats}
+        />
 
         {/* Attendance Type Statistics */}
         <section>

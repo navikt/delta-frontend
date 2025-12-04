@@ -17,7 +17,7 @@ export type EventStats = {
   privateEvents: number;
   eventsWithLimit: number;
   eventsWithoutLimit: number;
-  mostPopularEvent: MostPopularEvent | null;
+  mostPopularEvents: MostPopularEvent[];
   fagTorsdagEvents: number;
 };
 
@@ -113,18 +113,18 @@ export async function getEventStatistics(): Promise<EventStats> {
     ).length;
     const eventsWithoutLimit = allEvents.length - eventsWithLimit;
 
-    // Find most popular event
-    let mostPopularEvent: MostPopularEvent | null = null;
+    // Find top 3 most popular events
+    const mostPopularEvents: MostPopularEvent[] = [];
     if (allEvents.length > 0) {
       const sortedByParticipants = [...allEvents].sort((a, b) =>
         b.participants.length - a.participants.length
       );
-      const topEvent = sortedByParticipants[0];
-      mostPopularEvent = {
-        title: topEvent.event.title,
-        participants: topEvent.participants.length,
-        id: topEvent.event.id,
-      };
+      const topEvents = sortedByParticipants.slice(0, 3);
+      mostPopularEvents.push(...topEvents.map(event => ({
+        title: event.event.title,
+        participants: event.participants.length,
+        id: event.event.id,
+      })));
     }
 
     // Count Fagtorsdag events
@@ -145,7 +145,7 @@ export async function getEventStatistics(): Promise<EventStats> {
       privateEvents,
       eventsWithLimit,
       eventsWithoutLimit,
-      mostPopularEvent,
+      mostPopularEvents,
       fagTorsdagEvents,
     };
   } catch (error) {

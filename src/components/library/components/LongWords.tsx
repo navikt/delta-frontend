@@ -1,6 +1,6 @@
 import { Accordion, Table, Pagination, Heading, Link } from '@navikt/ds-react';
 import { useState } from 'react';
-import { ReactComponent as ExternalLinkIcon } from './ExternalLink.svg';
+import ExternalLinkIcon from './ExternalLinkIcon';
 import checkLongWords from '../analysis/checkLongWords';
 
 interface Props {

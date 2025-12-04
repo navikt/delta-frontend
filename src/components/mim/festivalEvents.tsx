@@ -96,7 +96,7 @@ const FestivalEvents = () => {
     }
   }, [isMobile, tabName]);
 
-  const prevTabNameRef = useRef<string>();
+  const prevTabNameRef = useRef<string>(undefined);
 
   useEffect(() => {
     const hasNoNeedToReload = () => {
@@ -162,7 +162,7 @@ const FestivalEvents = () => {
         />
       </div>
 
-{/*      {showProgramoversiktFilterOption && (
+      {/*      {showProgramoversiktFilterOption && (
         <CheckboxGroup
           legend="Vis programoversikt"
           hideLegend

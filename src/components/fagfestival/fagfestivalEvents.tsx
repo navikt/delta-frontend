@@ -91,7 +91,7 @@ const FagfestivalEvents = () => {
     }
   }, [isMobile, tabName]);
 
-  const prevTabNameRef = useRef<string>();
+  const prevTabNameRef = useRef<string>(undefined);
 
   useEffect(() => {
     const hasNoNeedToReload = () => {

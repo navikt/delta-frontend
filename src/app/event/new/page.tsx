@@ -3,7 +3,6 @@ import CreateEventForm from "@/components/createEventForm";
 import CardWithBackground from "@/components/cardWithBackground";
 import { Metadata } from "next";
 import { getAllCategories } from "@/service/eventActions";
-import { useSearchParams } from "next/navigation";
 import { EditTypeEnum } from "@/types/event";
 
 export const metadata: Metadata = {

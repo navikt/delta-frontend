@@ -50,43 +50,57 @@ export default function CategorySection({
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Main Categories */}
-          {categoryStats.map((cat) => (
-            <button
-              key={cat.category}
-              onClick={() => handleCardClick(cat)}
-              className="bg-white p-6 rounded-lg border-2 border-gray-200 hover:border-blue-300 transition-colors text-left cursor-pointer"
-            >
-              <div className="text-blue-600 mb-3">
-                <BarChartIcon className="w-6 h-6" />
-              </div>
-              <h3 className="text-sm font-medium text-gray-700 mb-1">
-                {cat.category}
-              </h3>
-              <p className="text-3xl font-bold text-gray-900">
-                {cat.count.toLocaleString("nb-NO")}
-              </p>
-              <p className="text-xs text-blue-600 mt-2">Klikk for detaljer</p>
-            </button>
-          ))}
+          {categoryStats.map((cat) => {
+            const totalParticipants = cat.events.reduce((sum, e) => sum + e.participants, 0);
+            return (
+              <button
+                key={cat.category}
+                onClick={() => handleCardClick(cat)}
+                className="bg-white p-6 rounded-lg border-2 border-gray-200 hover:border-blue-300 transition-colors text-left cursor-pointer"
+              >
+                <div className="text-blue-600 mb-3">
+                  <BarChartIcon className="w-6 h-6" />
+                </div>
+                <h3 className="text-sm font-medium text-gray-700 mb-1">
+                  {cat.category}
+                </h3>
+                <p className="text-3xl font-bold text-gray-900">
+                  {cat.count.toLocaleString("nb-NO")}
+                  <span className="text-lg font-medium text-gray-600 ml-1">arrangementer</span>
+                </p>
+                <p className="text-sm text-gray-600 mt-1">
+                  {totalParticipants.toLocaleString("nb-NO")} deltakere totalt
+                </p>
+                <p className="text-xs text-blue-600 mt-2">Klikk for detaljer</p>
+              </button>
+            );
+          })}
 
           {/* Fagtorsdag */}
-          {fagtorsdagStat && (
-            <button
-              onClick={() => handleCardClick(fagtorsdagStat)}
-              className="bg-white p-6 rounded-lg border-2 border-gray-200 hover:border-blue-300 transition-colors text-left cursor-pointer"
-            >
-              <div className="text-blue-600 mb-3">
-                <BarChartIcon className="w-6 h-6" />
-              </div>
-              <h3 className="text-sm font-medium text-gray-700 mb-1">
-                {fagtorsdagStat.category}
-              </h3>
-              <p className="text-3xl font-bold text-gray-900">
-                {fagtorsdagStat.count.toLocaleString("nb-NO")}
-              </p>
-              <p className="text-xs text-blue-600 mt-2">Klikk for detaljer</p>
-            </button>
-          )}
+          {fagtorsdagStat && (() => {
+            const totalParticipants = fagtorsdagStat.events.reduce((sum, e) => sum + e.participants, 0);
+            return (
+              <button
+                onClick={() => handleCardClick(fagtorsdagStat)}
+                className="bg-white p-6 rounded-lg border-2 border-gray-200 hover:border-blue-300 transition-colors text-left cursor-pointer"
+              >
+                <div className="text-blue-600 mb-3">
+                  <BarChartIcon className="w-6 h-6" />
+                </div>
+                <h3 className="text-sm font-medium text-gray-700 mb-1">
+                  {fagtorsdagStat.category}
+                </h3>
+                <p className="text-3xl font-bold text-gray-900">
+                  {fagtorsdagStat.count.toLocaleString("nb-NO")}
+                  <span className="text-lg font-medium text-gray-600 ml-1">arrangementer</span>
+                </p>
+                <p className="text-sm text-gray-600 mt-1">
+                  {totalParticipants.toLocaleString("nb-NO")} deltakere totalt
+                </p>
+                <p className="text-xs text-blue-600 mt-2">Klikk for detaljer</p>
+              </button>
+            );
+          })()}
 
           {/* Custom Category Selector */}
           <div className="bg-white p-6 rounded-lg border-2 border-gray-200 flex flex-col">
@@ -106,19 +120,26 @@ export default function CategorySection({
               className="mb-3"
             />
 
-            {customCategoryStat ? (
-              <div
-                className="cursor-pointer group"
-                onClick={() => handleCardClick(customCategoryStat)}
-              >
-                <p className="text-3xl font-bold text-gray-900 group-hover:text-blue-700 transition-colors">
-                  {customCategoryStat.count.toLocaleString("nb-NO")}
-                </p>
-                <p className="text-xs text-blue-600 mt-2 group-hover:underline">
-                  Klikk for detaljer
-                </p>
-              </div>
-            ) : (
+            {customCategoryStat ? (() => {
+              const totalParticipants = customCategoryStat.events.reduce((sum, e) => sum + e.participants, 0);
+              return (
+                <div
+                  className="cursor-pointer group"
+                  onClick={() => handleCardClick(customCategoryStat)}
+                >
+                  <p className="text-3xl font-bold text-gray-900 group-hover:text-blue-700 transition-colors">
+                    {customCategoryStat.count.toLocaleString("nb-NO")}
+                    <span className="text-lg font-medium text-gray-600 ml-1 group-hover:text-blue-600">arrangementer</span>
+                  </p>
+                  <p className="text-sm text-gray-600 mt-1">
+                    {totalParticipants.toLocaleString("nb-NO")} deltakere totalt
+                  </p>
+                  <p className="text-xs text-blue-600 mt-2 group-hover:underline">
+                    Klikk for detaljer
+                  </p>
+                </div>
+              );
+            })() : (
               <p className="text-sm text-gray-500 italic mt-auto">
                 Velg en kategori for å se statistikk
               </p>

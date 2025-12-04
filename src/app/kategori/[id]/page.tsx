@@ -1,23 +1,25 @@
-import {checkToken} from "@/auth/token";
+import { checkToken } from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
 import EventFilters from "@/components/eventFiltersCategory";
-import {getAllCategories} from "@/service/eventActions";
-import {Metadata} from "next";
+import { getAllCategories } from "@/service/eventActions";
+import { Metadata } from "next";
 
-type CategoryPageProps = { params: { id: string } };
+type CategoryPageProps = { params: Promise<{ id: string }> };
 
-export function generateMetadata(
+export async function generateMetadata(
     { params }: CategoryPageProps
-  ): Metadata {
+): Promise<Metadata> {
+    const { id } = await params;
     return {
-        title: `${params.id} Δ Delta`
+        title: `${id} Δ Delta`
     }
-  }
+}
 
 export default async function Page({ params }: CategoryPageProps) {
-    await checkToken(`/kategori/${params.id}`);
+    const { id } = await params;
+    await checkToken(`/kategori/${id}`);
     const allCategories = await getAllCategories();
-    const category = params.id
+    const category = id
     const theCategory = allCategories.find(item => item.name === category);
     const title = category.charAt(0).toUpperCase() + category.slice(1);
 
@@ -30,7 +32,7 @@ export default async function Page({ params }: CategoryPageProps) {
                         newEvent
                         home
                     >
-                        <EventFilters categories={[{id: theCategory.id, name: theCategory.name}]} searchName/>
+                        <EventFilters categories={[{ id: theCategory.id, name: theCategory.name }]} searchName />
                     </CardWithBackground>
                 ) : (<section className="w-screen flex-grow flex justify-center items-center">
                     404 - Kategorien finnes ikke

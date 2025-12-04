@@ -12,11 +12,12 @@ export const metadata: Metadata = {
 export default async function ParticipantsPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  await checkToken(`/event/${params.id}/admin`);
+  const { id } = await params;
+  await checkToken(`/event/${id}/admin`);
 
-  const fullEvent = await getEvent(params.id);
+  const fullEvent = await getEvent(id);
   const user = await getUser();
 
   if (fullEvent.hosts.some((host) => host.email === user.email)) {
@@ -25,7 +26,7 @@ export default async function ParticipantsPage({
         title={`Deltakerliste: ${fullEvent.event.title}`}
         home
         backText="Arrangementet"
-        backLink={`/event/${params.id}`}
+        backLink={`/event/${id}`}
       >
         <ParticipantPage fullEvent={fullEvent} user={user} />
       </CardWithBackground>
@@ -35,10 +36,10 @@ export default async function ParticipantsPage({
       <CardWithBackground
         title="Ingen tilgang"
         color="bg-red-300"
-        backLink={`/event/${params.id}`}
+        backLink={`/event/${id}`}
       >
         Du har ikke tilgang til denne siden.
-        <Link href={`/event/${params.id}`}>Tilbake til arrangementet</Link>
+        <Link href={`/event/${id}`}>Tilbake til arrangementet</Link>
       </CardWithBackground>
     );
   }

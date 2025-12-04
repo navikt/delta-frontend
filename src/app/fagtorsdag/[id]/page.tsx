@@ -36,7 +36,7 @@ export default async function Page({ params }: EventPageProps) {
   await checkToken(`/fagtorsdag/${params.id}`);
   const hostname = process.env.NEXT_PUBLIC_HOSTNAME;
 
-  const user = getUser();
+  const user = await getUser();
   const { event, participants, hosts, categories }: FullDeltaEvent = await getEvent(params.id);
 
   return (

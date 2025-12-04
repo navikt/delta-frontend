@@ -3,11 +3,12 @@ import { getToken, validateToken, requestOboToken } from '@navikt/oasis';
 
 export async function GET(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
+    const { id } = await params;
     const apiUrl = process.env.NODE_ENV === 'production'
-        ? `http://delta-fastapi/api/groups/${params.id}`
-        : `http://0.0.0.0:8087/api/groups/${params.id}`;
+        ? `http://delta-fastapi/api/groups/${id}`
+        : `http://0.0.0.0:8087/api/groups/${id}`;
 
     console.log(`Fetching single group from API URL: ${apiUrl}`);
 

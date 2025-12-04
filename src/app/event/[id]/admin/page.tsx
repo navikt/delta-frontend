@@ -17,7 +17,7 @@ export default async function ParticipantsPage({
   await checkToken(`/event/${params.id}/admin`);
 
   const fullEvent = await getEvent(params.id);
-  const user = getUser();
+  const user = await getUser();
 
   if (fullEvent.hosts.some((host) => host.email === user.email)) {
     return (

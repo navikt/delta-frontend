@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 export async function checkToken(redirectTo?: string) {
   if (process.env.NODE_ENV === "development") return;
 
-  const token = getToken(headers());
+  const token = getToken(await headers());
   if (!token) {
     if (redirectTo) {
       redirect(`/oauth2/login?redirect=${redirectTo}`);
@@ -24,7 +24,7 @@ export async function checkToken(redirectTo?: string) {
 }
 // fjernet : ${result.error.message}
 
-export function getUser(): User {
+export async function getUser(): Promise<User> {
   if (process.env.NODE_ENV === "development") {
     return {
       firstName: "Ola Kari",
@@ -33,7 +33,7 @@ export function getUser(): User {
     };
   }
 
-  const authHeader = headers().get("Authorization");
+  const authHeader = (await headers()).get("Authorization");
   if (!authHeader) {
     redirect("/oauth2/login");
   }
@@ -57,7 +57,7 @@ export async function getAccessToken(
 ): Promise<string | null> {
   if (process.env.NODE_ENV === "development") return null;
 
-  const token = getToken(headers());
+  const token = getToken(await headers());
   if (!token) {
     throw new Error("No access token, please log in...");
   }

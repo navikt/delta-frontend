@@ -1,11 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
-  i18n: {
-    locales: ["nb-NO"],
-    defaultLocale: "nb-NO",
-    localeDetection: false,
-  },
   async redirects() {
     return [
       {
@@ -26,15 +21,13 @@ const nextConfig = {
       ],
     },
   ],
+  pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx'],
+  optimizePackageImports: ["@navikt/ds-react", "@navikt/aksel-icons"],
 };
 
 const withMDX = require('@next/mdx')({
   extension: /\.mdx?$/
 });
 
-module.exports = withMDX({
-  pageExtensions: ['js', 'jsx', 'md', 'mdx'],
-  optimizePackageImports: ["@navikt/ds-react", "@navikt/aksel-icons"]
-});
+module.exports = withMDX(nextConfig);
 
-module.exports = nextConfig;

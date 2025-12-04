@@ -18,8 +18,8 @@ async function getOptionalEventFromId(id: string) {
 }
 
 export async function generateMetadata(
-    { params }: EventPageProps,
-    parent: ResolvingMetadata,
+  { params }: EventPageProps,
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const event = await getOptionalEventFromId(params.id);
   if (!event) {
@@ -37,30 +37,30 @@ export default async function Page({ params }: EventPageProps) {
   await checkToken(`/event/${params.id}`);
   const hostname = process.env.NEXT_PUBLIC_HOSTNAME;
 
-  const user = getUser();
+  const user = await getUser();
   const { event, participants, hosts, categories }: FullDeltaEvent =
-      await getEvent(params.id);
+    await getEvent(params.id);
 
   return (
-      <>
-        <Head>
-          <title>{event.title} Δ Delta</title>
-        </Head>
-        <CardWithBackground
-            title={event.title}
-            home
-            backText="Arrangementer"
-            backLink="/"
-        >
-          <EventDetails
-              event={event}
-              participants={participants}
-              hosts={hosts}
-              categories={categories}
-              user={user}
-              hostname={hostname}
-          />
-        </CardWithBackground>
-      </>
+    <>
+      <Head>
+        <title>{event.title} Δ Delta</title>
+      </Head>
+      <CardWithBackground
+        title={event.title}
+        home
+        backText="Arrangementer"
+        backLink="/"
+      >
+        <EventDetails
+          event={event}
+          participants={participants}
+          hosts={hosts}
+          categories={categories}
+          user={user}
+          hostname={hostname}
+        />
+      </CardWithBackground>
+    </>
   );
 }

@@ -278,10 +278,41 @@ function InternalCreateEventForm({
 
   // Location related fields
   const [showAlert, setShowAlert] = useState(false);
-  const [showLocationField, setShowLocationField] = useState(false);
-  const [showPlatformField, setShowPlatformField] = useState(false);
 
-  const [selectedType, setSelectedType] = useState<string | null>(null);
+  // Initialize attendance type from categories for templates
+  const getInitialAttendanceType = () => {
+    if (richEvent.type === EditTypeEnum.TEMPLATE) {
+      const categoryNames = selectedCategories.map(c => c.name.toLowerCase());
+      if (categoryNames.includes("digitalt")) return "digitalt";
+      if (categoryNames.includes("hybrid")) return "hybrid";
+      if (categoryNames.includes("fysisk")) return "fysisk";
+    }
+    return null;
+  };
+
+  const [selectedAttendanceType, setSelectedAttendanceType] = useState<string | null>(getInitialAttendanceType());
+  const [showLocationField, setShowLocationField] = useState(
+    richEvent.type === EditTypeEnum.TEMPLATE &&
+    (selectedCategories.some(c => c.name.toLowerCase() === "fysisk") ||
+     selectedCategories.some(c => c.name.toLowerCase() === "hybrid"))
+  );
+  const [showPlatformField, setShowPlatformField] = useState(
+    richEvent.type === EditTypeEnum.TEMPLATE &&
+    selectedCategories.some(c => c.name.toLowerCase() === "digitalt")
+  );
+
+  // Initialize event type from categories for templates
+  const getInitialEventType = () => {
+    if (richEvent.type === EditTypeEnum.TEMPLATE) {
+      const categoryNames = selectedCategories.map(c => c.name.toLowerCase().trim());
+      if (categoryNames.includes("sosialt")) return "Sosialt";
+      if (categoryNames.includes("kompetanse")) return "Kompetanse";
+      if (categoryNames.includes("bedriftidrettslaget")) return "Bedriftidrettslaget";
+    }
+    return null;
+  };
+
+  const [selectedType, setSelectedType] = useState<string | null>(getInitialEventType());
 
 
     return (
@@ -316,6 +347,12 @@ function InternalCreateEventForm({
                   control={control}
                   errors={errors}
                   hideLabel={false}
+                  onDateSelected={(date) => {
+                      if (date) {
+                          console.log("Setting end date to:", date);
+                          setValue("endDate", date, { shouldValidate: true, shouldDirty: true });
+                      }
+                  }}
               />
               <div
                   className={`navds-form-field navds-form-field--medium ${
@@ -366,7 +403,9 @@ function InternalCreateEventForm({
               <>
           <RadioGroup
               legend="Oppmøte"
+              value={selectedAttendanceType ?? undefined}
               onChange={(value) => {
+                  setSelectedAttendanceType(value);
                   setShowLocationField(value === "fysisk" || value === "hybrid");
                   setShowPlatformField(value === "digitalt");
                   if (value === "digitalt") {
@@ -434,6 +473,7 @@ function InternalCreateEventForm({
               <>
                   <RadioGroup
                       legend="Type arrangement"
+                      value={selectedType ?? undefined}
                       onChange={(value) => {
                           setSelectedType(value);
                           if (value === "Sosialt") {

@@ -17,6 +17,8 @@ export type EventStats = {
   privateEvents: number;
   eventsWithLimit: number;
   eventsWithoutLimit: number;
+  eventsWithDeadline: number;
+  eventsWithoutDeadline: number;
   mostPopularEvents: MostPopularEvent[];
   fagTorsdagEvents: number;
 };
@@ -24,6 +26,15 @@ export type EventStats = {
 export type CategoryStat = {
   category: string;
   count: number;
+  events: CategoryEvent[];
+};
+
+export type CategoryEvent = {
+  id: string;
+  title: string;
+  startTime: string;
+  participants: number;
+  isPublic: boolean;
 };
 
 export type AttendanceTypeStat = {
@@ -62,21 +73,44 @@ export async function getEventStatistics(year?: number): Promise<EventStats> {
       : 0;
 
     // Calculate category stats for selected year
-    const categoryMap = new Map<string, number>();
+    const categoryEventsMap = new Map<string, CategoryEvent[]>();
+    categoryEventsMap.set('kompetanse', []);
+    categoryEventsMap.set('bedriftidrettslaget', []);
+    categoryEventsMap.set('sosialt', []);
+
     eventsThisYear.forEach(event => {
       event.categories.forEach(cat => {
         const categoryName = cat.name.toLowerCase().trim();
         // Only count main categories
         if (['kompetanse', 'bedriftidrettslaget', 'sosialt'].includes(categoryName)) {
-          categoryMap.set(categoryName, (categoryMap.get(categoryName) || 0) + 1);
+          const categoryEvent: CategoryEvent = {
+            id: event.event.id,
+            title: event.event.public ? event.event.title : 'Privat arrangement',
+            startTime: event.event.startTime,
+            participants: event.participants.length,
+            isPublic: event.event.public,
+          };
+          categoryEventsMap.get(categoryName)?.push(categoryEvent);
         }
       });
     });
 
     const categoryStats: CategoryStat[] = [
-      { category: 'Kompetanse', count: categoryMap.get('kompetanse') || 0 },
-      { category: 'Bedriftidrettslaget', count: categoryMap.get('bedriftidrettslaget') || 0 },
-      { category: 'Sosialt', count: categoryMap.get('sosialt') || 0 },
+      {
+        category: 'Kompetanse',
+        count: categoryEventsMap.get('kompetanse')?.length || 0,
+        events: categoryEventsMap.get('kompetanse') || [],
+      },
+      {
+        category: 'Bedriftidrettslaget',
+        count: categoryEventsMap.get('bedriftidrettslaget')?.length || 0,
+        events: categoryEventsMap.get('bedriftidrettslaget') || [],
+      },
+      {
+        category: 'Sosialt',
+        count: categoryEventsMap.get('sosialt')?.length || 0,
+        events: categoryEventsMap.get('sosialt') || [],
+      },
     ];
 
     // Calculate attendance type stats for selected year
@@ -113,6 +147,12 @@ export async function getEventStatistics(year?: number): Promise<EventStats> {
     ).length;
     const eventsWithoutLimit = eventsThisYear.length - eventsWithLimit;
 
+    // Count events with/without signup deadline for selected year
+    const eventsWithDeadline = eventsThisYear.filter(event =>
+      event.event.signupDeadline && event.event.signupDeadline.trim() !== ''
+    ).length;
+    const eventsWithoutDeadline = eventsThisYear.length - eventsWithDeadline;
+
     // Find top 3 most popular events for selected year, hide private event details
     const mostPopularEvents: MostPopularEvent[] = [];
     if (eventsThisYear.length > 0) {
@@ -145,6 +185,8 @@ export async function getEventStatistics(year?: number): Promise<EventStats> {
       privateEvents,
       eventsWithLimit,
       eventsWithoutLimit,
+      eventsWithDeadline,
+      eventsWithoutDeadline,
       mostPopularEvents,
       fagTorsdagEvents,
     };

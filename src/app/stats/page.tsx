@@ -11,10 +11,20 @@ import {
   LocationPinIcon,
 } from "@navikt/aksel-icons";
 import YearSelector from "./yearSelector";
+import CategorySection from "./categorySection";
 
-export const metadata: Metadata = {
-  title: 'Statistikk - Delta Δ Nav',
-};
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: { year?: string };
+}): Promise<Metadata> {
+  const currentYear = new Date().getFullYear();
+  const selectedYear = searchParams.year ? parseInt(searchParams.year) : currentYear;
+
+  return {
+    title: `Statistikk ${selectedYear} - Delta Δ Nav`,
+  };
+}
 
 export default async function StatsPage({
   searchParams,
@@ -29,7 +39,7 @@ export default async function StatsPage({
   const stats = await getEventStatistics(selectedYear);
 
   return (
-    <CardWithBackground title="Statistikk">
+    <CardWithBackground title={`Statistikk ${selectedYear}`}>
       <YearSelector selectedYear={selectedYear} currentYear={currentYear} />
       <div className="space-y-8">
         {/* Overview Section */}
@@ -116,19 +126,7 @@ export default async function StatsPage({
         </section>
 
         {/* Category Statistics */}
-        <section>
-          <h2 className="text-2xl font-semibold mb-4">Arrangementer per kategori</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {stats.categoryStats.map((cat) => (
-              <StatCard
-                key={cat.category}
-                title={cat.category}
-                value={cat.count}
-                icon={<BarChartIcon className="w-6 h-6" />}
-              />
-            ))}
-          </div>
-        </section>
+        <CategorySection categoryStats={stats.categoryStats} />
 
         {/* Attendance Type Statistics */}
         <section>
@@ -151,14 +149,14 @@ export default async function StatsPage({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-4">
               <StatCard
-                title="Offentlige arrangementer"
-                value={stats.publicEvents}
-                subtitle={`${stats.privateEvents} private`}
+                title="Med påmeldingsfrist"
+                value={stats.eventsWithDeadline}
+                subtitle={`${stats.eventsWithoutDeadline.toLocaleString('nb-NO')} uten frist`}
               />
               <StatCard
                 title="Med påmeldingsgrense"
                 value={stats.eventsWithLimit}
-                subtitle={`${stats.eventsWithoutLimit} uten grense`}
+                subtitle={`${stats.eventsWithoutLimit.toLocaleString('nb-NO')} uten grense`}
               />
             </div>
             {stats.mostPopularEvents.length > 0 && (
@@ -217,6 +215,31 @@ function StatCard({
 }) {
   const formattedValue = value.toLocaleString('nb-NO');
 
+  if (!details) {
+    // Simple card without details
+    return (
+      <div className="bg-white p-6 rounded-lg border-2 border-gray-200">
+        {icon && (
+          <div className="text-blue-600 mb-3">
+            {icon}
+          </div>
+        )}
+        <h3 className="text-sm font-medium text-gray-700 mb-1">
+          {title}
+        </h3>
+        <p className="text-3xl font-bold text-gray-900">
+          {formattedValue}
+        </p>
+        {subtitle && (
+          <p className="text-sm text-gray-600 mt-1">
+            {subtitle}
+          </p>
+        )}
+      </div>
+    );
+  }
+
+  // Expandable card with details
   return (
     <details className="bg-white p-6 rounded-lg border-2 border-gray-200 hover:border-blue-300 transition-colors group">
       <summary className="cursor-pointer list-none">
@@ -236,17 +259,10 @@ function StatCard({
             {subtitle}
           </p>
         )}
-        {details && (
-          <p className="text-xs text-blue-600 mt-2 group-open:hidden">
-            Klikk for mer info
-          </p>
-        )}
       </summary>
-      {details && (
-        <div className="mt-4 pt-4 border-t border-gray-200">
-          {details}
-        </div>
-      )}
+      <div className="mt-4 pt-4 border-t border-gray-200">
+        {details}
+      </div>
     </details>
   );
 }

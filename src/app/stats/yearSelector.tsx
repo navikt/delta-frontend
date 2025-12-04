@@ -1,7 +1,8 @@
 "use client";
 
-import { Select } from "@navikt/ds-react";
+import { Select, Loader } from "@navikt/ds-react";
 import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
 
 export default function YearSelector({
   selectedYear,
@@ -11,10 +12,13 @@ export default function YearSelector({
   currentYear: number;
 }) {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const year = event.target.value;
-    router.push(`/stats?year=${year}`);
+    startTransition(() => {
+      router.push(`/stats?year=${year}`);
+    });
   };
 
   // Generate years from 2024 to current year
@@ -24,19 +28,28 @@ export default function YearSelector({
   }
 
   return (
-    <div className="mb-6">
-      <Select
-        label="Velg år"
-        value={selectedYear.toString()}
-        onChange={handleYearChange}
-        className="max-w-xs"
-      >
-        {years.map((year) => (
-          <option key={year} value={year}>
-            {year}
-          </option>
-        ))}
-      </Select>
+    <div className="mb-8">
+      <div className="flex items-center gap-4">
+        <Select
+          label="Velg år"
+          value={selectedYear.toString()}
+          onChange={handleYearChange}
+          className="max-w-xs"
+          disabled={isPending}
+        >
+          {years.map((year) => (
+            <option key={year} value={year}>
+              {year}
+            </option>
+          ))}
+        </Select>
+        {isPending && (
+          <div className="flex items-center gap-2 mt-6">
+            <Loader size="small" title="Laster statistikk..." />
+            <span className="text-sm text-gray-600">Laster...</span>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

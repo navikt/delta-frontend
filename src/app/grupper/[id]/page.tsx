@@ -3,9 +3,9 @@ import GroupDetails from '@/components/grupper/GroupDetails';
 import { checkToken } from "@/auth/token";
 
 interface Props {
-    params: {
+    params: Promise<{
         id: string
-    }
+    }>
 }
 
 export const metadata: Metadata = {
@@ -13,6 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ArticlePage({ params }: Props) {
-    await checkToken(`/grupper/${params.id}`);
-    return <GroupDetails id={params.id} />;
+    const { id } = await params;
+    await checkToken(`/grupper/${id}`);
+    return <GroupDetails id={id} />;
 }

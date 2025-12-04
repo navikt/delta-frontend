@@ -77,14 +77,14 @@ export default async function StatsPage({
               <StatCard
                 title="Med påmeldingsfrist"
                 value={stats.eventsWithDeadline}
-                suffix="arrangementer"
-                subtitle={`${stats.eventsWithoutDeadline.toLocaleString('nb-NO')} uten frist`}
+                suffix={`arrangementer (${Math.round((stats.eventsWithDeadline / stats.totalEventsThisYear) * 100)}%)`}
+                subtitle={`${stats.eventsWithoutDeadline.toLocaleString('nb-NO')} uten frist (${Math.round((stats.eventsWithoutDeadline / stats.totalEventsThisYear) * 100)}%)`}
               />
               <StatCard
                 title="Med maks antall deltagere"
                 value={stats.eventsWithLimit}
-                suffix="arrangementer"
-                subtitle={`${stats.eventsWithoutLimit.toLocaleString('nb-NO')} uten grense`}
+                suffix={`arrangementer (${Math.round((stats.eventsWithLimit / stats.totalEventsThisYear) * 100)}%)`}
+                subtitle={`${stats.eventsWithoutLimit.toLocaleString('nb-NO')} uten grense (${Math.round((stats.eventsWithoutLimit / stats.totalEventsThisYear) * 100)}%)`}
               />
             </div>
             {stats.mostPopularEvents.length > 0 && (

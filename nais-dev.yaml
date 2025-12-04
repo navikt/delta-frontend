@@ -29,15 +29,13 @@ spec:
     outbound:
       rules:
         - application: delta-backend
-        - application: reops-fastapi
-          namespace: team-researchops
-      external:
-        - host: fastapi.nav.no
   env:
     - name: NEXT_PUBLIC_CLUSTER
       value: dev
     - name: NEXT_PUBLIC_HOSTNAME
       value: https://delta.ekstern.dev.nav.no
+    - name: NEXT_TELEMETRY_DISABLED
+      value: "1"
   liveness:
     path: /internal/is-alive
     initialDelay: 10

@@ -6,14 +6,15 @@ import { useEffect, useRef } from "react";
 
 type CardWithBackgroundProps = {
   title?: string;
+  subtitle?: string;
   children: React.ReactNode;
   home?: boolean;
   newEvent?: boolean;
   color?: "bg-green-200" | "bg-blue-200" | "bg-red-300" | "bg-violet-200";
   backLink?: string;
   backText?: string;
-  titleColor?: string; 
-  className?: string; 
+  titleColor?: string;
+  className?: string;
 };
 
 // ${props.color} ${props.className}
@@ -33,14 +34,21 @@ export default function CardWithBackground(props: CardWithBackgroundProps) {
         <div className="z-20 pb-24">
           <div className="relative mt-28 mx-auto grid w-full place-items-center px-4 text-center sm:max-w-[632px] sm:px-6">
             {props.title && (
-              <Heading
-                className="first-letter:uppercase mt-8"
-                style={{ color: props.titleColor || "#100d29" }}
-                level="1"
-                size="xlarge"
-              >
-                {props.title}
-              </Heading>
+              <>
+                <Heading
+                  className="first-letter:uppercase mt-8"
+                  style={{ color: props.titleColor || "#100d29" }}
+                  level="1"
+                  size="xlarge"
+                >
+                  {props.title}
+                </Heading>
+                {props.subtitle && (
+                  <p className="text-lg mt-2" style={{ color: props.titleColor || "#100d29" }}>
+                    {props.subtitle}
+                  </p>
+                )}
+              </>
             )}
           </div>
         </div>

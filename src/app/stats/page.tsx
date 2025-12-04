@@ -16,10 +16,11 @@ import CategorySection from "./categorySection";
 export async function generateMetadata({
   searchParams,
 }: {
-  searchParams: { year?: string };
+  searchParams: Promise<{ year?: string }>;
 }): Promise<Metadata> {
+  const params = await searchParams;
   const currentYear = new Date().getFullYear();
-  const selectedYear = searchParams.year ? parseInt(searchParams.year) : currentYear;
+  const selectedYear = params.year ? parseInt(params.year) : currentYear;
 
   return {
     title: `Statistikk ${selectedYear} - Delta Δ Nav`,
@@ -29,17 +30,21 @@ export async function generateMetadata({
 export default async function StatsPage({
   searchParams,
 }: {
-  searchParams: { year?: string };
+  searchParams: Promise<{ year?: string }>;
 }) {
   await checkToken("/stats");
 
+  const params = await searchParams;
   const currentYear = new Date().getFullYear();
-  const selectedYear = searchParams.year ? parseInt(searchParams.year) : currentYear;
+  const selectedYear = params.year ? parseInt(params.year) : currentYear;
 
   const stats = await getEventStatistics(selectedYear);
 
   return (
-    <CardWithBackground title={`Statistikk ${selectedYear}`}>
+    <CardWithBackground
+      title={`Statistikk ${selectedYear}`}
+      subtitle="Takk for at du deltar"
+    >
       <YearSelector selectedYear={selectedYear} currentYear={currentYear} />
       <div className="space-y-8">
         {/* Overview Section */}
@@ -51,54 +56,17 @@ export default async function StatsPage({
               title="Arrangementer i år"
               value={stats.totalEventsThisYear}
               subtitle={`${stats.totalEvents.toLocaleString('nb-NO')} totalt alle år`}
-              details={
-                <div className="space-y-2">
-                  <p className="text-sm text-gray-700">
-                    <strong>Offentlige:</strong> {stats.publicEvents.toLocaleString('nb-NO')}
-                  </p>
-                  <p className="text-sm text-gray-700">
-                    <strong>Private:</strong> {stats.privateEvents.toLocaleString('nb-NO')}
-                  </p>
-                  <p className="text-sm text-gray-700">
-                    <strong>Med påmeldingsgrense:</strong> {stats.eventsWithLimit.toLocaleString('nb-NO')}
-                  </p>
-                </div>
-              }
             />
             <StatCard
               icon={<PersonGroupIcon className="w-6 h-6" />}
               title="Totalt deltakere"
               value={stats.totalParticipants}
               subtitle={`${stats.averageParticipants.toLocaleString('nb-NO')} gjennomsnitt per arrangement`}
-              details={
-                <div className="space-y-2">
-                  <p className="text-sm text-gray-600">
-                    Dette er basert på {stats.totalEventsThisYear.toLocaleString('nb-NO')} arrangementer i {selectedYear}.
-                  </p>
-                  <p className="text-sm text-gray-700">
-                    Gjennomsnittet per arrangement er {stats.averageParticipants.toLocaleString('nb-NO')} deltakere.
-                  </p>
-                </div>
-              }
             />
             <StatCard
               icon={<TrendUpIcon className="w-6 h-6" />}
               title="Kommende arrangementer"
               value={stats.upcomingEvents}
-              subtitle={`${stats.pastEvents.toLocaleString('nb-NO')} tidligere`}
-              details={
-                <div className="space-y-2">
-                  <p className="text-sm text-gray-700">
-                    <strong>Fullførte:</strong> {stats.pastEvents.toLocaleString('nb-NO')} arrangementer
-                  </p>
-                  <p className="text-sm text-gray-700">
-                    <strong>Planlagt:</strong> {stats.upcomingEvents.toLocaleString('nb-NO')} arrangementer
-                  </p>
-                  <p className="text-sm text-gray-600 mt-2">
-                    Total: {stats.totalEventsThisYear.toLocaleString('nb-NO')} arrangementer i {selectedYear}
-                  </p>
-                </div>
-              }
             />
             <StatCard
               icon={<BarChartIcon className="w-6 h-6" />}
@@ -154,7 +122,7 @@ export default async function StatsPage({
                 subtitle={`${stats.eventsWithoutDeadline.toLocaleString('nb-NO')} uten frist`}
               />
               <StatCard
-                title="Med påmeldingsgrense"
+                title="Med maks antall deltagere"
                 value={stats.eventsWithLimit}
                 subtitle={`${stats.eventsWithoutLimit.toLocaleString('nb-NO')} uten grense`}
               />

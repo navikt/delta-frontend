@@ -12,18 +12,19 @@ export const metadata: Metadata = {
 export default async function EditEvent({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  checkToken(`/event/${params.id}/edit`);
+  const { id } = await params;
+  checkToken(`/event/${id}/edit`);
   const categories = await getAllCategories();
   return (
     <CardWithBackground
       title="Rediger arrangement"
       home
-      backLink={`/event/${params.id}/admin`}
+      backLink={`/event/${id}/admin`}
     >
       <CreateEventForm
-        editType={{ type: EditTypeEnum.EDIT, eventId: params.id }}
+        editType={{ type: EditTypeEnum.EDIT, eventId: id }}
         allCategories={categories}
       />
     </CardWithBackground>

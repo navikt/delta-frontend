@@ -1,29 +1,31 @@
-import {checkToken} from "@/auth/token";
+import { checkToken } from "@/auth/token";
 import EventJSONFilters from "@/components/eventJSONFilters";
-import {getAllCategories} from "@/service/eventActions";
-import {Metadata} from "next";
+import { getAllCategories } from "@/service/eventActions";
+import { Metadata } from "next";
 
-type CategoryPageProps = { params: { id: string } };
+type CategoryPageProps = { params: Promise<{ id: string }> };
 
-export function generateMetadata(
+export async function generateMetadata(
     { params }: CategoryPageProps
-  ): Metadata {
+): Promise<Metadata> {
+    const { id } = await params;
     return {
-        title: `${params.id} Δ Delta`
+        title: `${id} Δ Delta`
     }
-  }
+}
 
 export default async function Page({ params }: CategoryPageProps) {
-    await checkToken(`/json/${params.id}`);
+    const { id } = await params;
+    await checkToken(`/json/${id}`);
     const allCategories = await getAllCategories();
-    const category = params.id
+    const category = id
     const theCategory = allCategories.find(item => item.name === category);
     const title = category.charAt(0).toUpperCase() + category.slice(1);
 
     return (
         <>
             {theCategory ? (
-                <EventJSONFilters categories={[{id: theCategory.id, name: theCategory.name}]} />
+                <EventJSONFilters categories={[{ id: theCategory.id, name: theCategory.name }]} />
             ) : (<section className="w-screen flex-grow flex justify-center items-center">
                 404 - Kategorien ble ikke funnet
             </section>)}

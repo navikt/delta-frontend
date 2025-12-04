@@ -5,7 +5,7 @@ import { getEvent } from "@/service/eventActions";
 import { Metadata, ResolvingMetadata } from "next";
 import CardWithBackground from "@/components/cardWithBackground";
 
-type EventPageProps = { params: { id: string } };
+type EventPageProps = { params: Promise<{ id: string }> };
 
 async function getOptionalEventFromId(id: string) {
   try {
@@ -20,7 +20,8 @@ export async function generateMetadata(
   { params }: EventPageProps,
   parent: ResolvingMetadata,
 ): Promise<Metadata> {
-  const event = await getOptionalEventFromId(params.id);
+  const { id } = await params;
+  const event = await getOptionalEventFromId(id);
   if (!event) {
     return {
       title: "Delta Δ",
@@ -33,11 +34,12 @@ export async function generateMetadata(
 }
 
 export default async function Page({ params }: EventPageProps) {
-  await checkToken(`/fagfest/${params.id}`);
+  const { id } = await params;
+  await checkToken(`/fagfest/${id}`);
   const hostname = process.env.NEXT_PUBLIC_HOSTNAME;
 
   const user = await getUser();
-  const { event, participants, hosts, categories }: FullDeltaEvent = await getEvent(params.id);
+  const { event, participants, hosts, categories }: FullDeltaEvent = await getEvent(id);
 
   return (
     <div className="w-full bg-fagfestival pb-10">

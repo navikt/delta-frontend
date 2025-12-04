@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { BarChartIcon, MagnifyingGlassIcon } from "@navikt/aksel-icons";
-import { Select } from "@navikt/ds-react";
+import { UNSAFE_Combobox } from "@navikt/ds-react";
 import { CategoryStat } from "@/service/statsActions";
 import CategoryModal from "./categoryModal";
 
@@ -31,6 +31,16 @@ export default function CategorySection({
   const customCategoryStat = allCategoryStats.find(
     (c) => c.category === customCategoryName
   );
+
+  const categoryOptions = allCategoryStats.map((cat) => cat.category);
+
+  const handleCategorySelect = (option: string, isSelected: boolean) => {
+    if (isSelected) {
+      setCustomCategoryName(option);
+    } else {
+      setCustomCategoryName("");
+    }
+  };
 
   return (
     <>
@@ -86,21 +96,15 @@ export default function CategorySection({
             <h3 className="text-sm font-medium text-gray-700 mb-3">
               Velg kategori
             </h3>
-            <Select
-              label=""
+            <UNSAFE_Combobox
+              label="Velg kategori"
               hideLabel
               size="small"
+              options={categoryOptions}
+              selectedOptions={customCategoryName ? [customCategoryName] : []}
+              onToggleSelected={handleCategorySelect}
               className="mb-3"
-              value={customCategoryName}
-              onChange={(e) => setCustomCategoryName(e.target.value)}
-            >
-              <option value="">Velg...</option>
-              {allCategoryStats.map((cat) => (
-                <option key={cat.category} value={cat.category}>
-                  {cat.category}
-                </option>
-              ))}
-            </Select>
+            />
 
             {customCategoryStat ? (
               <div

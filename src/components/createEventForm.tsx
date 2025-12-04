@@ -33,7 +33,7 @@ import {
 } from "@/types/event";
 import { midnightDate } from "@/service/format";
 import { format } from "date-fns";
-import {Spraksjekk} from "@/components/library";
+import { Spraksjekk } from "@/components/library";
 
 function isValidParticipantLimit(limit?: string) {
   if (!limit) return false;
@@ -160,7 +160,7 @@ export default function CreateEventForm({
       .then(() => setLoading(false));
   }, [editType]);
 
-    return loading ? (
+  return loading ? (
     <>
       <Skeleton variant="text" className="w-full" />
       <Skeleton variant="text" className="w-full" />
@@ -228,9 +228,9 @@ function InternalCreateEventForm({
   } = useForm<CreateEventSchema>({
     defaultValues:
       richEvent.type === EditTypeEnum.NEW
-        ? undefined
+        ? { public: true }
         : richEvent.type === EditTypeEnum.TEMPLATE
-        ? {
+          ? {
             title: richEvent.event.title,
             description: richEvent.event.description,
             location: richEvent.event.location,
@@ -248,7 +248,7 @@ function InternalCreateEventForm({
             signupDeadlineTime: "",
             sendNotificationEmail: true
           }
-        : {
+          : {
             title: richEvent.event.title,
             description: richEvent.event.description,
             location: richEvent.event.location,
@@ -294,7 +294,7 @@ function InternalCreateEventForm({
   const [showLocationField, setShowLocationField] = useState(
     richEvent.type === EditTypeEnum.TEMPLATE &&
     (selectedCategories.some(c => c.name.toLowerCase() === "fysisk") ||
-     selectedCategories.some(c => c.name.toLowerCase() === "hybrid"))
+      selectedCategories.some(c => c.name.toLowerCase() === "hybrid"))
   );
   const [showPlatformField, setShowPlatformField] = useState(
     richEvent.type === EditTypeEnum.TEMPLATE &&
@@ -315,321 +315,317 @@ function InternalCreateEventForm({
   const [selectedType, setSelectedType] = useState<string | null>(getInitialEventType());
 
 
-    return (
-      <form
-          action={async () => {
-              const valid = await trigger();
-              const values = getValues();
-              if (!valid) return;
-              if (richEvent.type === EditTypeEnum.EDIT)
-                  updateAndRedirect(
-                      values,
-                      richEvent.event.id,
-                      newTags,
-                      selectedCategories,
-                  );
-              else createAndRedirect(values, newTags, selectedCategories);
+  return (
+    <form
+      action={async () => {
+        const valid = await trigger();
+        const values = getValues();
+        if (!valid) return;
+        if (richEvent.type === EditTypeEnum.EDIT)
+          updateAndRedirect(
+            values,
+            richEvent.event.id,
+            newTags,
+            selectedCategories,
+          );
+        else createAndRedirect(values, newTags, selectedCategories);
+      }}
+      className="flex flex-col gap-5"
+    >
+      <TextField
+        label="Tittel"
+        {...register("title")}
+        error={errors.title?.message}
+        className="max-w-prose"
+      />
+      <div className="flex flex-row flex-wrap justify-left gap-4 pb-0 items-end">
+        <EventDatepicker
+          name="startDate"
+          label="Fra"
+          invalidMessage="Du må fylle inn en gyldig startdato"
+          requiredMessage="Du må fylle inn en startdato"
+          control={control}
+          errors={errors}
+          hideLabel={false}
+          onDateSelected={(date) => {
+            if (date) {
+              console.log("Setting end date to:", date);
+              setValue("endDate", date, { shouldValidate: true, shouldDirty: true });
+            }
           }}
-          className="flex flex-col gap-5"
-      >
-          <TextField
-              label="Tittel"
-              {...register("title")}
-              error={errors.title?.message}
-              className="max-w-prose"
+        />
+        <div
+          className={`navds-form-field navds-form-field--medium ${errors.startTime && "navds-text-field--error"
+            }`}
+        >
+          <input
+            type="time"
+            className="navds-text-field__input w-28"
+            {...register("startTime")}
           />
-          <div className="flex flex-row flex-wrap justify-left gap-4 pb-0 items-end">
-              <EventDatepicker
-                  name="startDate"
-                  label="Fra"
-                  invalidMessage="Du må fylle inn en gyldig startdato"
-                  requiredMessage="Du må fylle inn en startdato"
-                  control={control}
-                  errors={errors}
-                  hideLabel={false}
-                  onDateSelected={(date) => {
-                      if (date) {
-                          console.log("Setting end date to:", date);
-                          setValue("endDate", date, { shouldValidate: true, shouldDirty: true });
-                      }
-                  }}
-              />
-              <div
-                  className={`navds-form-field navds-form-field--medium ${
-                      errors.startTime && "navds-text-field--error"
-                  }`}
-              >
-                  <input
-                      type="time"
-                      className="navds-text-field__input w-28"
-                      {...register("startTime")}
-                  />
-                  {errors.startTime && (
-                      <p className="navds-error-message navds-label">
-                          {errors.startTime.message}
-                      </p>
-                  )}
-              </div>
-          </div>
-          <div className="flex flex-row flex-wrap justify-left gap-4 pb-0 items-end">
-              <EventDatepicker
-                  name="endDate"
-                  label="Til"
-                  invalidMessage="Du må fylle inn en gyldig sluttdato"
-                  requiredMessage="Du må fylle inn en sluttdato"
-                  control={control}
-                  errors={errors}
-                  hideLabel={false}
-              />
-              <div
-                  className={`navds-form-field navds-form-field--medium ${
-                      errors.endTime && "navds-text-field--error"
-                  }`}
-              >
-                  <input
-                      type="time"
-                      className="navds-text-field__input w-28"
-                      {...register("endTime")}
-                  />
-                  {errors.endTime && (
-                      <p className="navds-error-message navds-label">
-                          {errors.endTime.message}
-                      </p>
-                  )}
-              </div>
-          </div>
+          {errors.startTime && (
+            <p className="navds-error-message navds-label">
+              {errors.startTime.message}
+            </p>
+          )}
+        </div>
+      </div>
+      <div className="flex flex-row flex-wrap justify-left gap-4 pb-0 items-end">
+        <EventDatepicker
+          name="endDate"
+          label="Til"
+          invalidMessage="Du må fylle inn en gyldig sluttdato"
+          requiredMessage="Du må fylle inn en sluttdato"
+          control={control}
+          errors={errors}
+          hideLabel={false}
+        />
+        <div
+          className={`navds-form-field navds-form-field--medium ${errors.endTime && "navds-text-field--error"
+            }`}
+        >
+          <input
+            type="time"
+            className="navds-text-field__input w-28"
+            {...register("endTime")}
+          />
+          {errors.endTime && (
+            <p className="navds-error-message navds-label">
+              {errors.endTime.message}
+            </p>
+          )}
+        </div>
+      </div>
 
-          {richEvent.type !== EditTypeEnum.EDIT ? (
-              <>
+      {richEvent.type !== EditTypeEnum.EDIT ? (
+        <>
           <RadioGroup
-              legend="Oppmøte"
-              value={selectedAttendanceType ?? undefined}
-              key={`attendance-${selectedAttendanceType || 'none'}`}
-              onChange={(value) => {
-                  setSelectedAttendanceType(value);
-                  setShowLocationField(value === "fysisk" || value === "hybrid");
-                  setShowPlatformField(value === "digitalt");
-                  if (value === "digitalt") {
-                      setSelected([...selectedOptions, "digitalt"]);
-                  } else if (value === "hybrid") {
-                      setSelected([...selectedOptions, "hybrid"]);
-                      setShowAlert(true);
-                  } else if (value === "fysisk") {
-                      setSelected([...selectedOptions, "fysisk"]);
-                  }
-              }}
+            legend="Oppmøte"
+            value={selectedAttendanceType ?? undefined}
+            key={`attendance-${selectedAttendanceType || 'none'}`}
+            onChange={(value) => {
+              setSelectedAttendanceType(value);
+              setShowLocationField(value === "fysisk" || value === "hybrid");
+              setShowPlatformField(value === "digitalt");
+              if (value === "digitalt") {
+                setSelected([...selectedOptions, "digitalt"]);
+              } else if (value === "hybrid") {
+                setSelected([...selectedOptions, "hybrid"]);
+                setShowAlert(true);
+              } else if (value === "fysisk") {
+                setSelected([...selectedOptions, "fysisk"]);
+              }
+            }}
           >
-              <Radio value="fysisk">Fysisk</Radio>
-              <Radio value="digitalt">Digitalt</Radio>
-              <Radio value="hybrid">Hybrid</Radio>
+            <Radio value="fysisk">Fysisk</Radio>
+            <Radio value="digitalt">Digitalt</Radio>
+            <Radio value="hybrid">Hybrid</Radio>
           </RadioGroup>
 
           {showPlatformField && (
-          <RadioGroup
+            <RadioGroup
               legend="Platform"
               onChange={(value) => {
-                  setShowAlert(true);
-                  if (value === "Teams") {
-                      setValue("location", "Teams");
-                  } else if (value === "Zoom") {
-                      setValue("location", "Zoom");
-                  } else if (value === "Vimeo") {
-                      setValue("location", "Vimeo");
-                  } else if (value === "Annet") {
-                      setValue("location", "Digitalt");
-                  }
+                setShowAlert(true);
+                if (value === "Teams") {
+                  setValue("location", "Teams");
+                } else if (value === "Zoom") {
+                  setValue("location", "Zoom");
+                } else if (value === "Vimeo") {
+                  setValue("location", "Vimeo");
+                } else if (value === "Annet") {
+                  setValue("location", "Digitalt");
+                }
               }}
-          >
+            >
               <Radio value="Teams">Teams</Radio>
               <Radio value="Zoom">Zoom</Radio>
               <Radio value="Vimeo">Vimeo</Radio>
               <Radio value="Annet">Annet</Radio>
-          </RadioGroup>
-        )}
+            </RadioGroup>
+          )}
 
           {showAlert && (
-              <Alert className="max-w-prose" variant="info">Vi anbefaler at du limer inn lenken til Teams/Zoom/etc. på bunnen av beskrivelsen til arrangementet.</Alert>
+            <Alert className="max-w-prose" variant="info">Vi anbefaler at du limer inn lenken til Teams/Zoom/etc. på bunnen av beskrivelsen til arrangementet.</Alert>
           )}
 
           {showLocationField && (
-              <TextField
-                  label="Sted"
-                  {...register("location")}
-                  error={errors.location?.message}
-                  className="max-w-prose"
-              />
+            <TextField
+              label="Sted"
+              {...register("location")}
+              error={errors.location?.message}
+              className="max-w-prose"
+            />
           )}
-          </>
-              ) :(
-                  <>
-                      <TextField
-                          label="Sted"
-                          {...register("location")}
-                          error={errors.location?.message}
-                      />
-                  </>
-              )}
-
-          {richEvent.type !== EditTypeEnum.EDIT && (
-              <>
-                  <RadioGroup
-                      legend="Type arrangement"
-                      value={selectedType ?? undefined}
-                      key={`eventtype-${selectedType || 'none'}`}
-                      onChange={(value) => {
-                          setSelectedType(value);
-                          if (value === "Sosialt") {
-                              setSelected([...selectedOptions, "sosialt "]);
-                          } else if (value === "Kompetanse") {
-                              setSelected([...selectedOptions, "kompetanse"]);
-                          } else if (value === "Bedriftidrettslaget") {
-                              setSelected([...selectedOptions, "bedriftidrettslaget"]);
-                          }
-                      }}
-                  >
-                      <Radio value="Sosialt">Sosialt</Radio>
-                      <Radio value="Kompetanse">Kompetanse</Radio>
-                      <Radio value="Bedriftidrettslaget">Bedriftidrettslaget</Radio>
-                  </RadioGroup>
-
-                  {selectedType === "Kompetanse" && (
-                      <CheckboxGroup
-                          legend="Tilknyttet Fagtorsdag?"
-                          onChange={(values: string[]) => {
-                              if (values.includes("Fagtorsdag")) {
-                                  setSelected([...selectedOptions, "fagtorsdag"]);
-                              }
-                          }}
-                      >
-                          <Checkbox value="Fagtorsdag">Ja, tilknyttet Fagtorsdag</Checkbox>
-                      </CheckboxGroup>
-                  )}
-              </>
-          )}
-
-          <div
-              onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                      e.preventDefault();
-                      e.stopPropagation();
-                  }
-              }}
-          >
-              <UNSAFE_Combobox
-                  label="Kategorier (valgfritt)"
-                  className="max-w-prose"
-                  shouldAutocomplete
-                  allowNewValues
-                  isMultiSelect
-                  options={options}
-                  selectedOptions={selectedOptions}
-                  onToggleSelected={(option, isSelected) => {
-                      isSelected
-                          ? setSelected([...selectedOptions, option])
-                          : setSelected(selectedOptions.filter((c) => c !== option));
-                  }}
-              />
-          </div>
-          <div className="max-w-prose">
-          <Textarea
-              label="Beskrivelse"
-              {...register("description")}
-              error={errors.description?.message}
-              onChange={(e) => setDvalue(e.target.value)}
+        </>
+      ) : (
+        <>
+          <TextField
+            label="Sted"
+            {...register("location")}
+            error={errors.location?.message}
           />
-          <div style={{display: "block", marginBottom: "0px"}}>
-              <div style={{marginTop: "0px", float: "right"}}>
-                  <Switch onChange={() => setMobilvisning(!mobilvisning)}
-                          checked={mobilvisning}>Språkhjelp</Switch>
-              </div>
-          </div>
-          <div style={{marginBottom: "0px", display: "block"}}>
-              {mobilvisning == true && (
-                  <>
-                      <Spraksjekk value={dvalue} open={true}/>
-                  </>)
+        </>
+      )}
+
+      {richEvent.type !== EditTypeEnum.EDIT && (
+        <>
+          <RadioGroup
+            legend="Type arrangement"
+            value={selectedType ?? undefined}
+            key={`eventtype-${selectedType || 'none'}`}
+            onChange={(value) => {
+              setSelectedType(value);
+              if (value === "Sosialt") {
+                setSelected([...selectedOptions, "sosialt "]);
+              } else if (value === "Kompetanse") {
+                setSelected([...selectedOptions, "kompetanse"]);
+              } else if (value === "Bedriftidrettslaget") {
+                setSelected([...selectedOptions, "bedriftidrettslaget"]);
               }
+            }}
+          >
+            <Radio value="Sosialt">Sosialt</Radio>
+            <Radio value="Kompetanse">Kompetanse</Radio>
+            <Radio value="Bedriftidrettslaget">Bedriftidrettslaget</Radio>
+          </RadioGroup>
+
+          {selectedType === "Kompetanse" && (
+            <CheckboxGroup
+              legend="Tilknyttet Fagtorsdag?"
+              onChange={(values: string[]) => {
+                if (values.includes("Fagtorsdag")) {
+                  setSelected([...selectedOptions, "fagtorsdag"]);
+                }
+              }}
+            >
+              <Checkbox value="Fagtorsdag">Ja, tilknyttet Fagtorsdag</Checkbox>
+            </CheckboxGroup>
+          )}
+        </>
+      )}
+
+      <div
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        }}
+      >
+        <UNSAFE_Combobox
+          label="Kategorier (valgfritt)"
+          className="max-w-prose"
+          shouldAutocomplete
+          allowNewValues
+          isMultiSelect
+          options={options}
+          selectedOptions={selectedOptions}
+          onToggleSelected={(option, isSelected) => {
+            isSelected
+              ? setSelected([...selectedOptions, option])
+              : setSelected(selectedOptions.filter((c) => c !== option));
+          }}
+        />
+      </div>
+      <div className="max-w-prose">
+        <Textarea
+          label="Beskrivelse"
+          {...register("description")}
+          error={errors.description?.message}
+          onChange={(e) => setDvalue(e.target.value)}
+        />
+        <div style={{ display: "block", marginBottom: "0px" }}>
+          <div style={{ marginTop: "0px", float: "right" }}>
+            <Switch onChange={() => setMobilvisning(!mobilvisning)}
+              checked={mobilvisning}>Språkhjelp</Switch>
           </div>
         </div>
-          <Checkbox {...register("public")} defaultChecked>
-              Publiser arrangementet på forsiden til Delta
-          </Checkbox>
-          <div className="flex flex-col max-w-[21rem]">
-              <Checkbox
-                  {...register("hasParticipantLimit")}
-                  onChange={() => {
-                      const x = hasParticipantLimit;
-                      const invalidInput = !isValidParticipantLimit(
-                          getValues().participantLimit,
-                      );
+        <div style={{ marginBottom: "0px", display: "block" }}>
+          {mobilvisning == true && (
+            <>
+              <Spraksjekk value={dvalue} open={true} />
+            </>)
+          }
+        </div>
+      </div>
+      <Checkbox {...register("public")}>
+        Publiser arrangementet på forsiden til Delta
+      </Checkbox>
+      <div className="flex flex-col max-w-[21rem]">
+        <Checkbox
+          {...register("hasParticipantLimit")}
+          onChange={() => {
+            const x = hasParticipantLimit;
+            const invalidInput = !isValidParticipantLimit(
+              getValues().participantLimit,
+            );
 
-                      if (x && invalidInput) setValue("participantLimit", undefined);
-                      setHasParticipantLimit((x) => !x);
-                  }}
-              >
-                  Begrens maksimalt antall deltakere
-              </Checkbox>
-              <TextField
-                  {...register("participantLimit")}
-                  className={`${!hasParticipantLimit && "hidden"}`}
-                  type="text"
-                  inputMode="numeric"
-                  pattern="[0-9]*"
-                  hideLabel
-                  label="Maksimalt antall deltagere"
-                  error={errors.participantLimit?.message}
-              />
+            if (x && invalidInput) setValue("participantLimit", undefined);
+            setHasParticipantLimit((x) => !x);
+          }}
+        >
+          Begrens maksimalt antall deltakere
+        </Checkbox>
+        <TextField
+          {...register("participantLimit")}
+          className={`${!hasParticipantLimit && "hidden"}`}
+          type="text"
+          inputMode="numeric"
+          pattern="[0-9]*"
+          hideLabel
+          label="Maksimalt antall deltagere"
+          error={errors.participantLimit?.message}
+        />
+      </div>
+      <div>
+        <Checkbox
+          {...register("hasSignupDeadline")}
+          onChange={() => {
+            setDeadline((x) => !x);
+          }}
+        >
+          Spesifiser en påmeldingsfrist
+        </Checkbox>
+        <div
+          className={`flex flex-row flex-wrap justify-left gap-4 pb-0 items-end ${!hasDeadline && "hidden"
+            }`}
+        >
+          <EventDatepicker
+            name="signupDeadlineDate"
+            label="Påmeldingsfrist"
+            invalidMessage="Du må fylle inn en gyldig påmeldingsfrist"
+            requiredMessage="Du må fylle inn en påmeldingsfrist"
+            control={control}
+            errors={errors}
+            hideLabel={true}
+          />
+          <div
+            className={`navds-form-field navds-form-field--medium ${errors.signupDeadlineDate && "navds-text-field--error"
+              }`}
+          >
+            <input
+              type="time"
+              className="navds-text-field__input w-28"
+              {...register("signupDeadlineTime")}
+            />
+            {errors.signupDeadlineTime && (
+              <p className="navds-error-message navds-label">
+                {errors.signupDeadlineTime.message}
+              </p>
+            )}
           </div>
-          <div>
-              <Checkbox
-                  {...register("hasSignupDeadline")}
-                  onChange={() => {
-                      setDeadline((x) => !x);
-                  }}
-              >
-                  Spesifiser en påmeldingsfrist
-              </Checkbox>
-              <div
-                  className={`flex flex-row flex-wrap justify-left gap-4 pb-0 items-end ${
-                      !hasDeadline && "hidden"
-                  }`}
-              >
-                  <EventDatepicker
-                      name="signupDeadlineDate"
-                      label="Påmeldingsfrist"
-                      invalidMessage="Du må fylle inn en gyldig påmeldingsfrist"
-                      requiredMessage="Du må fylle inn en påmeldingsfrist"
-                      control={control}
-                      errors={errors}
-                      hideLabel={true}
-                  />
-                  <div
-                      className={`navds-form-field navds-form-field--medium ${
-                          errors.signupDeadlineDate && "navds-text-field--error"
-                      }`}
-                  >
-                      <input
-                          type="time"
-                          className="navds-text-field__input w-28"
-                          {...register("signupDeadlineTime")}
-                      />
-                      {errors.signupDeadlineTime && (
-                          <p className="navds-error-message navds-label">
-                              {errors.signupDeadlineTime.message}
-                          </p>
-                      )}
-                  </div>
-              </div>
-          </div>
-          {richEvent.type === EditTypeEnum.EDIT && (
-            <div>
-                <Checkbox {...register("sendNotificationEmail")}>
-                    Send e-post til deltakere ved endringer
-                </Checkbox>
-            </div>
-        )}
-          <div className="mt-6 mb-12 flex items-center gap-4">
-{/*              <Link
+        </div>
+      </div>
+      {richEvent.type === EditTypeEnum.EDIT && (
+        <div>
+          <Checkbox {...register("sendNotificationEmail")}>
+            Send e-post til deltakere ved endringer
+          </Checkbox>
+        </div>
+      )}
+      <div className="mt-6 mb-12 flex items-center gap-4">
+        {/*              <Link
                   className="w-fit h-fit"
                   href={
                       richEvent.type === EditTypeEnum.EDIT
@@ -639,45 +635,45 @@ function InternalCreateEventForm({
               >
                   Avbryt
               </Link>*/}
-              <Button type="submit">
-                  {richEvent.type === EditTypeEnum.EDIT ? "Oppdater" : "Opprett"}
-              </Button>
-          </div>
-      </form>
+        <Button type="submit">
+          {richEvent.type === EditTypeEnum.EDIT ? "Oppdater" : "Opprett"}
+        </Button>
+      </div>
+    </form>
   );
 }
 
 async function createAndRedirect(
-    formData: CreateEventSchema,
-    newTags: string[],
-    categories: Category[],
+  formData: CreateEventSchema,
+  newTags: string[],
+  categories: Category[],
 ) {
-    const {event} = await createEvent(formData);
+  const { event } = await createEvent(formData);
 
-    const newCategories = newTags.length
-        ? await Promise.all(newTags.map((c) => createCategory(c)))
-        : [];
-    await setCategories(
-        event.id,
-        categories.concat(newCategories).map((c) => c.id),
-    );
-    window.location.href = `/event/${event.id}`;
+  const newCategories = newTags.length
+    ? await Promise.all(newTags.map((c) => createCategory(c)))
+    : [];
+  await setCategories(
+    event.id,
+    categories.concat(newCategories).map((c) => c.id),
+  );
+  window.location.href = `/event/${event.id}`;
 }
 
 async function updateAndRedirect(
-    formData: CreateEventSchema,
-    eventId: string,
-    newTags: string[],
-    categories: Category[],
+  formData: CreateEventSchema,
+  eventId: string,
+  newTags: string[],
+  categories: Category[],
 ) {
-    const newCategories = newTags.length
-        ? await Promise.all(newTags.map((c) => createCategory(c)))
-        : [];
-    await setCategories(
-        eventId,
-        categories.concat(newCategories).map((c) => c.id),
-    );
+  const newCategories = newTags.length
+    ? await Promise.all(newTags.map((c) => createCategory(c)))
+    : [];
+  await setCategories(
+    eventId,
+    categories.concat(newCategories).map((c) => c.id),
+  );
 
-    const {event} = await updateEvent(formData, eventId);
-    window.location.href = `/event/${event.id}`;
+  const { event } = await updateEvent(formData, eventId);
+  window.location.href = `/event/${event.id}`;
 }

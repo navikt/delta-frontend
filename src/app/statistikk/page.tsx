@@ -32,7 +32,7 @@ export default async function StatsPage({
 }: {
   searchParams: Promise<{ year?: string }>;
 }) {
-  await checkToken("/stats");
+  await checkToken("/statistikk");
 
   const params = await searchParams;
   const currentYear = new Date().getFullYear();
@@ -61,6 +61,7 @@ export default async function StatsPage({
               icon={<PersonGroupIcon className="w-6 h-6" />}
               title="Totalt deltakere"
               value={stats.totalParticipants}
+              subtitle={`${stats.uniqueParticipants.toLocaleString('nb-NO')} unike deltakere`}
             />
             <StatCard
               icon={<PersonGroupIcon className="w-6 h-6" />}

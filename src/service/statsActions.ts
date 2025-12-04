@@ -8,6 +8,7 @@ export type EventStats = {
   totalEvents: number;
   totalEventsThisYear: number;
   totalParticipants: number;
+  uniqueParticipants: number;
   averageParticipants: number;
   categoryStats: CategoryStat[];
   attendanceTypeStats: AttendanceTypeStat[];
@@ -116,6 +117,15 @@ export async function getEventStatistics(year?: number): Promise<EventStats> {
         categoryEventsMap.get(categoryName)?.push(categoryEvent);
       });
     });
+
+    // Calculate unique participants for selected year
+    const uniqueParticipantsSet = new Set<string>();
+    eventsThisYear.forEach(event => {
+      event.participants.forEach(participant => {
+        uniqueParticipantsSet.add(participant.email);
+      });
+    });
+    const uniqueParticipants = uniqueParticipantsSet.size;
 
     const allCategoryStats: CategoryStat[] = Array.from(categoryEventsMap.entries()).map(([name, events]) => ({
       category: name.charAt(0).toUpperCase() + name.slice(1), // Capitalize
@@ -235,6 +245,7 @@ export async function getEventStatistics(year?: number): Promise<EventStats> {
       totalEvents: allEvents.length,
       totalEventsThisYear: eventsThisYear.length,
       totalParticipants,
+      uniqueParticipants,
       averageParticipants,
       categoryStats,
       attendanceTypeStats,

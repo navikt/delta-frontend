@@ -17,7 +17,7 @@ export default function YearSelector({
   const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const year = event.target.value;
     startTransition(() => {
-      router.push(`/stats?year=${year}`);
+      router.push(`/statistikk?year=${year}`);
     });
   };
 

@@ -27,6 +27,7 @@ export type EventStats = {
   allCategories: string[];
   medianParticipants: number;
   allCategoryStats: CategoryStat[];
+  allEventsThisYear: CategoryEvent[];
 };
 
 export type CategoryStat = {
@@ -46,6 +47,7 @@ export type CategoryEvent = {
 export type AttendanceTypeStat = {
   type: string;
   count: number;
+  events: CategoryEvent[];
 };
 
 export type ArrangementTypeStat = {
@@ -73,6 +75,15 @@ export async function getEventStatistics(year?: number): Promise<EventStats> {
       const eventDate = new Date(event.event.startTime);
       return eventDate.getFullYear() === selectedYear;
     });
+
+    // Create list of all events this year for the overview modal
+    const allEventsThisYear: CategoryEvent[] = eventsThisYear.map(event => ({
+      id: event.event.id,
+      title: event.event.public ? event.event.title : 'Privat arrangement',
+      startTime: event.event.startTime,
+      participants: event.participants.length,
+      isPublic: event.event.public,
+    }));
 
     // Calculate total participants for selected year
     const totalParticipants = eventsThisYear.reduce((sum, event) =>
@@ -169,20 +180,31 @@ export async function getEventStatistics(year?: number): Promise<EventStats> {
     ];
 
     // Calculate attendance type stats for selected year
-    const attendanceTypeMap = new Map<string, number>();
+    const attendanceTypeEventsMap = new Map<string, CategoryEvent[]>();
+    attendanceTypeEventsMap.set('fysisk', []);
+    attendanceTypeEventsMap.set('digitalt', []);
+    attendanceTypeEventsMap.set('hybrid', []);
+
     eventsThisYear.forEach(event => {
       event.categories.forEach(cat => {
         const categoryName = cat.name.toLowerCase().trim();
         if (['fysisk', 'digitalt', 'hybrid'].includes(categoryName)) {
-          attendanceTypeMap.set(categoryName, (attendanceTypeMap.get(categoryName) || 0) + 1);
+          const categoryEvent: CategoryEvent = {
+            id: event.event.id,
+            title: event.event.public ? event.event.title : 'Privat arrangement',
+            startTime: event.event.startTime,
+            participants: event.participants.length,
+            isPublic: event.event.public,
+          };
+          attendanceTypeEventsMap.get(categoryName)?.push(categoryEvent);
         }
       });
     });
 
     const attendanceTypeStats: AttendanceTypeStat[] = [
-      { type: 'Fysisk', count: attendanceTypeMap.get('fysisk') || 0 },
-      { type: 'Digitalt', count: attendanceTypeMap.get('digitalt') || 0 },
-      { type: 'Hybrid', count: attendanceTypeMap.get('hybrid') || 0 },
+      { type: 'Fysisk', count: attendanceTypeEventsMap.get('fysisk')?.length || 0, events: attendanceTypeEventsMap.get('fysisk') || [] },
+      { type: 'Digitalt', count: attendanceTypeEventsMap.get('digitalt')?.length || 0, events: attendanceTypeEventsMap.get('digitalt') || [] },
+      { type: 'Hybrid', count: attendanceTypeEventsMap.get('hybrid')?.length || 0, events: attendanceTypeEventsMap.get('hybrid') || [] },
     ];
 
     // Count upcoming and past events for selected year
@@ -281,6 +303,7 @@ export async function getEventStatistics(year?: number): Promise<EventStats> {
       allCategories,
       medianParticipants,
       allCategoryStats,
+      allEventsThisYear,
     };
   } catch (error) {
     console.error('Failed to fetch event statistics:', error);

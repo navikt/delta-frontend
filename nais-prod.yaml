@@ -9,6 +9,7 @@ spec:
   image: {{image}}
   ingresses:
     - https://delta.nav.no
+    - https://fagtorsdag.ansatt.nav.no
   port: 3000
   resources:
     limits:
@@ -27,10 +28,6 @@ spec:
     outbound:
       rules:
         - application: delta-backend
-        - application: delta-fastapi
-      external:
-        - host: fastapi.nav.no
-        - host: ping.nav.no
   env:
     - name: NEXT_PUBLIC_CLUSTER
       value: prod

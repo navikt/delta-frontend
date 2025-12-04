@@ -33,6 +33,8 @@ spec:
       value: prod
     - name: NEXT_PUBLIC_HOSTNAME
       value: https://delta.nav.no
+    - name: NEXT_TELEMETRY_DISABLED
+      value: "1"
   liveness:
     path: /internal/is-alive
     initialDelay: 10

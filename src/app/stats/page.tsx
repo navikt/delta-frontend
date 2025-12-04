@@ -100,18 +100,18 @@ export default async function StatsPage() {
               />
             </div>
             {stats.mostPopularEvent && (
-              <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg border border-blue-200 dark:border-blue-800">
+              <div className="bg-white p-6 rounded-lg border-2 border-blue-300 hover:border-blue-400 transition-colors">
                 <div className="flex items-start gap-3">
-                  <TrendUpIcon className="w-6 h-6 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-1" />
+                  <TrendUpIcon className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
                   <div>
-                    <h3 className="font-semibold text-lg mb-2">Mest populære arrangement</h3>
+                    <h3 className="font-semibold text-lg mb-2 text-gray-900">Mest populære arrangement</h3>
                     <Link
                       href={`/event/${stats.mostPopularEvent.id}`}
-                      className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
+                      className="text-blue-700 hover:text-blue-800 hover:underline font-medium"
                     >
                       {stats.mostPopularEvent.title}
                     </Link>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                    <p className="text-sm text-gray-700 mt-1">
                       {stats.mostPopularEvent.participants} påmeldte deltakere
                     </p>
                   </div>
@@ -137,20 +137,20 @@ function StatCard({
   subtitle?: string;
 }) {
   return (
-    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+    <div className="bg-white p-6 rounded-lg border-2 border-gray-200 hover:border-blue-300 transition-colors">
       {icon && (
-        <div className="text-blue-600 dark:text-blue-400 mb-3">
+        <div className="text-blue-600 mb-3">
           {icon}
         </div>
       )}
-      <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
+      <h3 className="text-sm font-medium text-gray-700 mb-1">
         {title}
       </h3>
-      <p className="text-3xl font-bold text-gray-900 dark:text-white">
+      <p className="text-3xl font-bold text-gray-900">
         {value}
       </p>
       {subtitle && (
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+        <p className="text-sm text-gray-600 mt-1">
           {subtitle}
         </p>
       )}

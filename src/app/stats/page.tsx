@@ -32,7 +32,7 @@ export default async function StatsPage({
 }: {
   searchParams: Promise<{ year?: string }>;
 }) {
-  await checkToken("/statistikk");
+  await checkToken("/stats");
 
   const params = await searchParams;
   const currentYear = new Date().getFullYear();
@@ -67,14 +67,12 @@ export default async function StatsPage({
               icon={<PersonGroupIcon className="w-6 h-6" />}
               title="Gjennomsnitt per arrangement"
               value={stats.averageParticipants}
-              suffix="deltakere"
               subtitle={`Median: ${stats.medianParticipants.toLocaleString('nb-NO')} deltakere`}
             />
             <StatCard
               icon={<PersonGroupIcon className="w-6 h-6" />}
               title="Gjennomsnitt per person"
               value={stats.averageEventsPerPerson}
-              suffix="arrangementer"
               subtitle={`Median: ${stats.medianEventsPerPerson.toLocaleString('nb-NO')} arrangementer`}
             />
           </div>
@@ -167,14 +165,12 @@ function StatCard({
   icon,
   title,
   value,
-  suffix,
   subtitle,
   details,
 }: {
   icon?: React.ReactNode;
   title: string;
   value: number;
-  suffix?: string;
   subtitle?: string;
   details?: React.ReactNode;
 }) {
@@ -194,7 +190,6 @@ function StatCard({
         </h3>
         <p className="text-3xl font-bold text-gray-900">
           {formattedValue}
-          {suffix && <span className="text-lg font-medium text-gray-600 ml-1">{suffix}</span>}
         </p>
         {subtitle && (
           <p className="text-sm text-gray-600 mt-1">
@@ -219,7 +214,6 @@ function StatCard({
         </h3>
         <p className="text-3xl font-bold text-gray-900">
           {formattedValue}
-          {suffix && <span className="text-lg font-medium text-gray-600 ml-1">{suffix}</span>}
         </p>
         {subtitle && (
           <p className="text-sm text-gray-600 mt-1">

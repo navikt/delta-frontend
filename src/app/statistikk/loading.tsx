@@ -1,3 +1,5 @@
+"use client";
+
 import CardWithBackground from "@/components/cardWithBackground";
 import { ProgressBar } from "@navikt/ds-react";
 

@@ -9,14 +9,13 @@ export const metadata: Metadata = {
   title: "Opprett nytt arrangement Δ Delta",
 };
 
-export default async function NewEvent({
-  searchParams,
-}: {
-  searchParams?: { [key: string]: string | string[] | undefined };
+export default async function NewEvent(props: {
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   await checkToken("/event/new");
   const categories = await getAllCategories();
 
+  const searchParams = await props.searchParams;
   let eventId = searchParams?.template;
   if (eventId && typeof eventId !== "string") {
     eventId = eventId[0];

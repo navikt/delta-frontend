@@ -404,6 +404,7 @@ function InternalCreateEventForm({
           <RadioGroup
               legend="Oppmøte"
               value={selectedAttendanceType ?? undefined}
+              key={`attendance-${selectedAttendanceType || 'none'}`}
               onChange={(value) => {
                   setSelectedAttendanceType(value);
                   setShowLocationField(value === "fysisk" || value === "hybrid");
@@ -474,6 +475,7 @@ function InternalCreateEventForm({
                   <RadioGroup
                       legend="Type arrangement"
                       value={selectedType ?? undefined}
+                      key={`eventtype-${selectedType || 'none'}`}
                       onChange={(value) => {
                           setSelectedType(value);
                           if (value === "Sosialt") {

@@ -188,7 +188,7 @@ function AttendanceSection({ stats }: { stats: UserWrappedStats }) {
                                 <span className="text-2xl font-bold">{count}</span>
                             </div>
                             {/* Darker background for the track */}
-                            <div className="h-6 bg-black/40 rounded-full overflow-hidden border border-white/20">
+                            <div className="h-6 bg-black/40 rounded-full overflow-hidden border-2 border-white/50">
                                 <motion.div
                                     initial={{ width: 0 }}
                                     whileInView={{ width: `${total > 0 ? (count / total) * 100 : 0}%` }}

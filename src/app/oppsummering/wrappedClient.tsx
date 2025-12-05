@@ -211,7 +211,7 @@ function AttendanceSection({ stats }: { stats: UserWrappedStats }) {
                     ))}
                 </div>
                 <div className="mt-12 text-center">
-                    <p className="text-xl md:text-2xl font-bold text-white bg-black/20 inline-block px-6 py-3 rounded-xl backdrop-blur-sm border border-white/20">
+                    <p className="text-xl md:text-2xl font-bold text-white inline-block">
                         {fysisk >= digitalt && fysisk >= hybrid && "Du liker best å møte opp på kontoret! 🏢"}
                         {digitalt > fysisk && digitalt >= hybrid && "Du er en digital deltaker! 💻"}
                         {hybrid > fysisk && hybrid > digitalt && "Du er en hybrid deltaker! 🔄"}

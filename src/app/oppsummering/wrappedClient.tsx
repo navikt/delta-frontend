@@ -201,6 +201,13 @@ function AttendanceSection({ stats }: { stats: UserWrappedStats }) {
                         </div>
                     ))}
                 </div>
+                <div className="mt-12 text-center">
+                    <p className="text-xl md:text-2xl font-bold text-white bg-black/20 inline-block px-6 py-3 rounded-xl backdrop-blur-sm border border-white/20">
+                        {fysisk >= digitalt && fysisk >= hybrid && "Du liker best å møte opp på kontoret! 🏢"}
+                        {digitalt > fysisk && digitalt >= hybrid && "Du er en digital deltaker! 💻"}
+                        {hybrid > fysisk && hybrid > digitalt && "Du ja takk begge deler! 🔄"}
+                    </p>
+                </div>
             </div>
         </section>
     );
@@ -211,8 +218,8 @@ function FunFactsSection({ stats }: { stats: UserWrappedStats }) {
     return (
         <section
             className="py-24 px-8 flex justify-center"
-            // Slightly darker gradient for better text contrast
-            style={{ background: 'linear-gradient(135deg, #b45309, #c2410c, #b91c1c)' }}
+            // Violet to Pink gradient to match the rest
+            style={{ background: 'linear-gradient(135deg, #4c1d95, #be185d, #4c1d95)' }}
         >
             <div className="max-w-4xl w-full">
                 <h2 className="text-2xl md:text-3xl font-medium mb-12 text-center text-white">

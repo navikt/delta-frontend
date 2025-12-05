@@ -201,6 +201,7 @@ export async function getUserWrappedStats(year?: number): Promise<UserWrappedSta
             monthlyActivity,
             biggestEvent,
             totalHoursSpent,
+            firstEventOfYear
         });
 
         return {
@@ -235,6 +236,7 @@ function generateFunFacts(data: {
     monthlyActivity: number[];
     biggestEvent: { title: string; participants: number } | null;
     totalHoursSpent: number;
+    firstEventOfYear: { title: string; date: string } | null;
 }): string[] {
     const facts: string[] = [];
 
@@ -250,11 +252,9 @@ function generateFunFacts(data: {
         facts.push(`Du var vert for ${data.eventsHosted} arrangement${data.eventsHosted > 1 ? 'er' : ''}! 🎤`);
     }
 
-    // People met
-    if (data.uniquePeople >= 100) {
-        facts.push(`Du møtte over ${data.uniquePeople} kolleger i år! 🤝`);
-    } else if (data.uniquePeople >= 50) {
-        facts.push(`Du møtte ${data.uniquePeople} forskjellige kolleger! 👋`);
+    // First event of the year (Replaces duplicate "People met" fact)
+    if (data.firstEventOfYear) {
+        facts.push(`Du startet året med "${data.firstEventOfYear.title}"! 🚀`);
     }
 
     // Attendance type

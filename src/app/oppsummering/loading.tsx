@@ -13,7 +13,7 @@ export default function WrappedLoading() {
                     Klargjør din oppsummering...
                 </h1>
                 <p className="text-xl text-white/90 mb-8">
-                    Vent litt mens vi henter høydepunktene dine
+                    Meld deg gjenre på et arrangement i mellomtiden ⚡️
                 </p>
 
                 <div className="bg-white rounded-xl p-6 shadow-lg">

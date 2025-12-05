@@ -45,7 +45,7 @@ function WelcomeSection({ stats, year }: { stats: UserWrappedStats; year: number
                     viewport={{ once: true }}
                     className="text-5xl md:text-7xl font-black mb-8 text-white"
                 >
-                    DELTA {year}
+                    Delta {year}
                 </motion.h1>
                 <motion.p
                     initial={{ opacity: 0 }}
@@ -57,7 +57,7 @@ function WelcomeSection({ stats, year }: { stats: UserWrappedStats; year: number
                     Hei, {stats.userFirstName}! 👋
                 </motion.p>
                 <p className="text-xl mt-12 text-indigo-100">
-                    Her er en oppsummering av ditt år i Delta.
+                    Takk for at du deltar! Her er ditt tilbakeblikk.
                 </p>
             </div>
         </section>
@@ -205,7 +205,7 @@ function AttendanceSection({ stats }: { stats: UserWrappedStats }) {
                     <p className="text-xl md:text-2xl font-bold text-white bg-black/20 inline-block px-6 py-3 rounded-xl backdrop-blur-sm border border-white/20">
                         {fysisk >= digitalt && fysisk >= hybrid && "Du liker best å møte opp på kontoret! 🏢"}
                         {digitalt > fysisk && digitalt >= hybrid && "Du er en digital deltaker! 💻"}
-                        {hybrid > fysisk && hybrid > digitalt && "Du ja takk begge deler! 🔄"}
+                        {hybrid > fysisk && hybrid > digitalt && "Du er en hybrid deltaker! 🔄"}
                     </p>
                 </div>
             </div>
@@ -325,7 +325,7 @@ function SummarySection({ stats, year }: { stats: UserWrappedStats; year: number
                         href="/statistikk"
                         className="inline-flex items-center justify-center gap-2 bg-white text-indigo-900 hover:bg-indigo-50 rounded-full px-8 py-4 text-lg font-bold transition-colors shadow-lg"
                     >
-                        📊 Se full statistikk
+                        📊 Se statistikk for Delta i stort
                     </Link>
                     <Link
                         href="/"

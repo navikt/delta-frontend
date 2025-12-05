@@ -10,7 +10,7 @@ export default function Loading() {
         <div className="w-3/4">
           <ProgressBar
             size="large"
-            simulated={{ seconds: 10, onTimeout: () => { } }}
+            simulated={{ seconds: 15, onTimeout: () => { } }}
             aria-label="Laster statistikk"
           />
         </div>

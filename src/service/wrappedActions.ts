@@ -254,7 +254,7 @@ function generateFunFacts(data: {
 
     // First event of the year (Replaces duplicate "People met" fact)
     if (data.firstEventOfYear) {
-        facts.push(`Du startet året med "${data.firstEventOfYear.title}"! 🚀`);
+        facts.push(`Du startet året med "${data.firstEventOfYear.title}"!`);
     }
 
     // Attendance type
@@ -284,7 +284,7 @@ function generateFunFacts(data: {
 
     // Biggest event
     if (data.biggestEvent && data.biggestEvent.participants >= 50) {
-        facts.push(`Du var med på et arrangement med ${data.biggestEvent.participants} deltakere! 🎊`);
+        facts.push(`Du var med på et arrangement med ${data.biggestEvent.participants} deltakere!`);
     }
 
     // Shuffle and return top 3-4 facts

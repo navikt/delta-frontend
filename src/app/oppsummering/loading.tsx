@@ -5,7 +5,7 @@ import { ProgressBar } from "@navikt/ds-react";
 export default function WrappedLoading() {
     return (
         <div
-            className="w-full flex-grow flex flex-col items-center justify-center py-20 min-h-[60vh]"
+            className="w-full flex-grow flex flex-col items-center justify-center py-20 min-h-screen"
             style={{ background: 'linear-gradient(135deg, #312e81, #6b21a8, #312e81)' }}
         >
             <div className="w-full max-w-md px-6 text-center">
@@ -13,7 +13,7 @@ export default function WrappedLoading() {
                     Klargjør din oppsummering...
                 </h1>
                 <p className="text-xl text-white/90 mb-8">
-                    Vent litt mens vi henter statistikken din
+                    Vent litt mens vi henter høydepunktene dine
                 </p>
 
                 <div className="bg-white rounded-xl p-6 shadow-lg">

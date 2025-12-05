@@ -217,9 +217,14 @@ function AttendanceSection({ stats }: { stats: UserWrappedStats }) {
 }
 
 // Mimretid Section
+// Mimretid Section
 function MimretidSection({ stats }: { stats: UserWrappedStats }) {
     const [page, setPage] = useState(1);
-    const rowsPerPage = 5;
+    const [sort, setSort] = useState<{ orderBy: string; direction: 'ascending' | 'descending' }>({
+        orderBy: 'date',
+        direction: 'ascending'
+    });
+    const rowsPerPage = 10;
 
     const events = stats.attendedEvents || [];
     const count = events.length;
@@ -227,7 +232,26 @@ function MimretidSection({ stats }: { stats: UserWrappedStats }) {
 
     if (count === 0) return null;
 
-    const displayedEvents = events.slice((page - 1) * rowsPerPage, page * rowsPerPage);
+    let sortedEvents = [...events];
+    if (sort && sort.orderBy === 'date') {
+        sortedEvents.sort((a, b) => {
+            const dateA = new Date(a.date).getTime();
+            const dateB = new Date(b.date).getTime();
+            return sort.direction === 'ascending' ? dateA - dateB : dateB - dateA;
+        });
+    }
+
+    const displayedEvents = sortedEvents.slice((page - 1) * rowsPerPage, page * rowsPerPage);
+
+    const handleSort = (sortKey: string) => {
+        setSort((prev) => ({
+            orderBy: sortKey,
+            direction:
+                prev && prev.orderBy === sortKey && prev.direction === 'ascending'
+                    ? 'descending'
+                    : 'ascending',
+        }));
+    };
 
     return (
         <section
@@ -236,16 +260,26 @@ function MimretidSection({ stats }: { stats: UserWrappedStats }) {
         >
             <div className="max-w-4xl w-full">
                 <h2 className="text-2xl md:text-3xl font-medium mb-12 text-center text-white">
-                    Mimretid! 🕰️
+                    Mimretid!
                 </h2>
 
                 <div className="bg-white rounded-xl p-6 shadow-xl text-gray-900 border-4 border-indigo-200">
-                    <Table size="large">
+                    <Table
+                        size="large"
+                        sort={sort}
+                        onSortChange={handleSort}
+                    >
                         <Table.Header>
                             <Table.Row>
-                                <Table.HeaderCell>Dato</Table.HeaderCell>
+                                <Table.HeaderCell onClick={() => handleSort('date')} className="cursor-pointer select-none">
+                                    Dato
+                                    {sort?.orderBy === 'date' && (
+                                        <span className="ml-2">
+                                            {sort.direction === 'ascending' ? '↓' : '↑'}
+                                        </span>
+                                    )}
+                                </Table.HeaderCell>
                                 <Table.HeaderCell>Arrangement</Table.HeaderCell>
-                                <Table.HeaderCell>Kategori</Table.HeaderCell>
                             </Table.Row>
                         </Table.Header>
                         <Table.Body>
@@ -261,14 +295,11 @@ function MimretidSection({ stats }: { stats: UserWrappedStats }) {
                                         <Table.DataCell>
                                             {event.isPublic ? (
                                                 <Link href={`/event/${event.id}`} className="font-semibold text-indigo-700 hover:underline">
-                                                    {event.title}
+                                                    {event.emoji} {event.title}
                                                 </Link>
                                             ) : (
-                                                <span className="font-semibold">{event.title}</span>
+                                                <span className="font-semibold">{event.emoji} {event.title}</span>
                                             )}
-                                        </Table.DataCell>
-                                        <Table.DataCell className="text-2xl text-center">
-                                            {event.emoji}
                                         </Table.DataCell>
                                     </Table.Row>
                                 );

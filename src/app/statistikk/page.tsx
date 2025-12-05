@@ -64,7 +64,9 @@ export default async function StatsPage({
           fagtorsdagStat={stats.arrangementTypeStats.map(s => ({
             category: s.type,
             count: s.count,
-            events: s.events
+            events: s.events,
+            totalParticipants: s.totalParticipants,
+            uniqueParticipants: s.uniqueParticipants
           })).find(s => s.category === 'Fagtorsdag')}
           allCategoryStats={stats.allCategoryStats}
         />

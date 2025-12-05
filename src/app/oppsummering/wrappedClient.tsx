@@ -142,7 +142,7 @@ function CategorySection({ stats }: { stats: UserWrappedStats }) {
                     {stats.favoriteCategory.name.toUpperCase()}
                 </h3>
                 <p className="text-xl md:text-2xl text-cyan-50">
-                    {stats.favoriteCategory.count} arrangementer
+                    Du deltok på{stats.favoriteCategory.count} arrangementer
                 </p>
 
                 {stats.topCategories.length > 1 && (

@@ -19,6 +19,13 @@ export type UserWrappedStats = {
     topCategories: { name: string; count: number; emoji: string }[];
     totalHoursSpent: number;
     eventsHosted: number;
+    attendedEvents: {
+        id: string;
+        title: string;
+        date: string;
+        emoji: string;
+        isPublic: boolean;
+    }[];
 };
 
 const categoryEmojis: Record<string, string> = {
@@ -67,6 +74,7 @@ export async function getUserWrappedStats(year?: number): Promise<UserWrappedSta
                 topCategories: [],
                 totalHoursSpent: 0,
                 eventsHosted: 0,
+                attendedEvents: [],
             };
         }
 
@@ -219,6 +227,22 @@ export async function getUserWrappedStats(year?: number): Promise<UserWrappedSta
             topCategories,
             totalHoursSpent: Math.round(totalHoursSpent),
             eventsHosted,
+            attendedEvents: userEventsThisYear.map(e => {
+                // Determine main category/emoji
+                let emoji = '✨';
+                const eventCategories = e.categories.map(c => c.name.toLowerCase());
+                if (eventCategories.includes('kompetanse')) emoji = getEmoji('kompetanse');
+                else if (eventCategories.includes('sosialt')) emoji = getEmoji('sosialt');
+                else if (eventCategories.includes('bedriftidrettslaget')) emoji = getEmoji('bedriftidrettslaget');
+
+                return {
+                    id: e.event.id,
+                    title: e.event.public ? e.event.title : 'Privat arrangement',
+                    date: e.event.startTime,
+                    emoji,
+                    isPublic: e.event.public
+                };
+            }).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()),
         };
     } catch (error) {
         console.error('Failed to fetch user wrapped stats:', error);

@@ -56,9 +56,9 @@ export default function OverviewSection({
                     />
                     <StatCard
                         icon={<PersonGroupIcon className="w-6 h-6" />}
-                        title="Totalt deltakere"
+                        title="Totalt deltakelser"
                         value={totalParticipants}
-                        suffix="deltakere"
+                        suffix="deltakelser"
                         subtitle={`${uniqueParticipants.toLocaleString('nb-NO')} unike deltakere`}
                     />
                     <StatCard

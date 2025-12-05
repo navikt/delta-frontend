@@ -51,7 +51,6 @@ export default function CategorySection({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Main Categories */}
           {categoryStats.map((cat) => {
-            const totalParticipants = cat.events.reduce((sum, e) => sum + e.participants, 0);
             return (
               <button
                 key={cat.category}
@@ -69,7 +68,7 @@ export default function CategorySection({
                   <span className="text-lg font-medium text-gray-600 ml-1">arrangementer</span>
                 </p>
                 <p className="text-sm text-gray-600 mt-1">
-                  {totalParticipants.toLocaleString("nb-NO")} deltakere totalt
+                  {cat.totalParticipants.toLocaleString("nb-NO")} deltakere totalt, {cat.uniqueParticipants.toLocaleString("nb-NO")} unike
                 </p>
                 <p className="text-xs text-blue-600 mt-2">Klikk for detaljer</p>
               </button>
@@ -78,7 +77,6 @@ export default function CategorySection({
 
           {/* Fagtorsdag */}
           {fagtorsdagStat && (() => {
-            const totalParticipants = fagtorsdagStat.events.reduce((sum, e) => sum + e.participants, 0);
             return (
               <button
                 onClick={() => handleCardClick(fagtorsdagStat)}
@@ -95,7 +93,7 @@ export default function CategorySection({
                   <span className="text-lg font-medium text-gray-600 ml-1">arrangementer</span>
                 </p>
                 <p className="text-sm text-gray-600 mt-1">
-                  {totalParticipants.toLocaleString("nb-NO")} deltakere totalt
+                  {fagtorsdagStat.totalParticipants.toLocaleString("nb-NO")} deltakere totalt, {fagtorsdagStat.uniqueParticipants.toLocaleString("nb-NO")} unike
                 </p>
                 <p className="text-xs text-blue-600 mt-2">Klikk for detaljer</p>
               </button>
@@ -121,7 +119,6 @@ export default function CategorySection({
             />
 
             {customCategoryStat ? (() => {
-              const totalParticipants = customCategoryStat.events.reduce((sum, e) => sum + e.participants, 0);
               return (
                 <div
                   className="cursor-pointer group"
@@ -132,7 +129,7 @@ export default function CategorySection({
                     <span className="text-lg font-medium text-gray-600 ml-1 group-hover:text-blue-600">arrangementer</span>
                   </p>
                   <p className="text-sm text-gray-600 mt-1">
-                    {totalParticipants.toLocaleString("nb-NO")} deltakere totalt
+                    {customCategoryStat.totalParticipants.toLocaleString("nb-NO")} deltakere totalt, {customCategoryStat.uniqueParticipants.toLocaleString("nb-NO")} unike
                   </p>
                   <p className="text-xs text-blue-600 mt-2 group-hover:underline">
                     Klikk for detaljer

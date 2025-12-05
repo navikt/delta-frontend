@@ -34,6 +34,8 @@ export type CategoryStat = {
   category: string;
   count: number;
   events: CategoryEvent[];
+  totalParticipants: number;
+  uniqueParticipants: number;
 };
 
 export type CategoryEvent = {
@@ -48,12 +50,16 @@ export type AttendanceTypeStat = {
   type: string;
   count: number;
   events: CategoryEvent[];
+  totalParticipants: number;
+  uniqueParticipants: number;
 };
 
 export type ArrangementTypeStat = {
   type: string;
   count: number;
   events: CategoryEvent[];
+  totalParticipants: number;
+  uniqueParticipants: number;
 };
 
 export type MostPopularEvent = {
@@ -107,10 +113,14 @@ export async function getEventStatistics(year?: number): Promise<EventStats> {
 
     // Calculate category stats for selected year
     const categoryEventsMap = new Map<string, CategoryEvent[]>();
+    const categoryParticipantsMap = new Map<string, Set<string>>();
     // Initialize main categories to ensure they exist even if empty
     categoryEventsMap.set('kompetanse', []);
     categoryEventsMap.set('bedriftidrettslaget', []);
     categoryEventsMap.set('sosialt', []);
+    categoryParticipantsMap.set('kompetanse', new Set());
+    categoryParticipantsMap.set('bedriftidrettslaget', new Set());
+    categoryParticipantsMap.set('sosialt', new Set());
 
     eventsThisYear.forEach(event => {
       event.categories.forEach(cat => {
@@ -118,6 +128,7 @@ export async function getEventStatistics(year?: number): Promise<EventStats> {
 
         if (!categoryEventsMap.has(categoryName)) {
           categoryEventsMap.set(categoryName, []);
+          categoryParticipantsMap.set(categoryName, new Set());
         }
 
         const categoryEvent: CategoryEvent = {
@@ -128,6 +139,11 @@ export async function getEventStatistics(year?: number): Promise<EventStats> {
           isPublic: event.event.public,
         };
         categoryEventsMap.get(categoryName)?.push(categoryEvent);
+
+        // Track unique participants per category
+        event.participants.forEach(participant => {
+          categoryParticipantsMap.get(categoryName)?.add(participant.email);
+        });
       });
     });
 
@@ -155,35 +171,51 @@ export async function getEventStatistics(year?: number): Promise<EventStats> {
         : (sortedCounts[mid - 1] + sortedCounts[mid]) / 2;
     }
 
-    const allCategoryStats: CategoryStat[] = Array.from(categoryEventsMap.entries()).map(([name, events]) => ({
-      category: name.charAt(0).toUpperCase() + name.slice(1), // Capitalize
-      count: events.length,
-      events: events,
-    })).sort((a, b) => b.count - a.count); // Sort by count desc
+    const allCategoryStats: CategoryStat[] = Array.from(categoryEventsMap.entries()).map(([name, events]) => {
+      const totalParticipants = events.reduce((sum, e) => sum + e.participants, 0);
+      const uniqueParticipants = categoryParticipantsMap.get(name)?.size || 0;
+      return {
+        category: name.charAt(0).toUpperCase() + name.slice(1), // Capitalize
+        count: events.length,
+        events: events,
+        totalParticipants,
+        uniqueParticipants,
+      };
+    }).sort((a, b) => b.count - a.count); // Sort by count desc
 
     const categoryStats: CategoryStat[] = [
       {
         category: 'Kompetanse',
         count: categoryEventsMap.get('kompetanse')?.length || 0,
         events: categoryEventsMap.get('kompetanse') || [],
+        totalParticipants: (categoryEventsMap.get('kompetanse') || []).reduce((sum, e) => sum + e.participants, 0),
+        uniqueParticipants: categoryParticipantsMap.get('kompetanse')?.size || 0,
       },
       {
         category: 'Bedriftidrettslaget',
         count: categoryEventsMap.get('bedriftidrettslaget')?.length || 0,
         events: categoryEventsMap.get('bedriftidrettslaget') || [],
+        totalParticipants: (categoryEventsMap.get('bedriftidrettslaget') || []).reduce((sum, e) => sum + e.participants, 0),
+        uniqueParticipants: categoryParticipantsMap.get('bedriftidrettslaget')?.size || 0,
       },
       {
         category: 'Sosialt',
         count: categoryEventsMap.get('sosialt')?.length || 0,
         events: categoryEventsMap.get('sosialt') || [],
+        totalParticipants: (categoryEventsMap.get('sosialt') || []).reduce((sum, e) => sum + e.participants, 0),
+        uniqueParticipants: categoryParticipantsMap.get('sosialt')?.size || 0,
       },
     ];
 
     // Calculate attendance type stats for selected year
     const attendanceTypeEventsMap = new Map<string, CategoryEvent[]>();
+    const attendanceTypeParticipantsMap = new Map<string, Set<string>>();
     attendanceTypeEventsMap.set('fysisk', []);
     attendanceTypeEventsMap.set('digitalt', []);
     attendanceTypeEventsMap.set('hybrid', []);
+    attendanceTypeParticipantsMap.set('fysisk', new Set());
+    attendanceTypeParticipantsMap.set('digitalt', new Set());
+    attendanceTypeParticipantsMap.set('hybrid', new Set());
 
     eventsThisYear.forEach(event => {
       event.categories.forEach(cat => {
@@ -197,14 +229,37 @@ export async function getEventStatistics(year?: number): Promise<EventStats> {
             isPublic: event.event.public,
           };
           attendanceTypeEventsMap.get(categoryName)?.push(categoryEvent);
+
+          // Track unique participants per attendance type
+          event.participants.forEach(participant => {
+            attendanceTypeParticipantsMap.get(categoryName)?.add(participant.email);
+          });
         }
       });
     });
 
     const attendanceTypeStats: AttendanceTypeStat[] = [
-      { type: 'Fysisk', count: attendanceTypeEventsMap.get('fysisk')?.length || 0, events: attendanceTypeEventsMap.get('fysisk') || [] },
-      { type: 'Digitalt', count: attendanceTypeEventsMap.get('digitalt')?.length || 0, events: attendanceTypeEventsMap.get('digitalt') || [] },
-      { type: 'Hybrid', count: attendanceTypeEventsMap.get('hybrid')?.length || 0, events: attendanceTypeEventsMap.get('hybrid') || [] },
+      {
+        type: 'Fysisk',
+        count: attendanceTypeEventsMap.get('fysisk')?.length || 0,
+        events: attendanceTypeEventsMap.get('fysisk') || [],
+        totalParticipants: (attendanceTypeEventsMap.get('fysisk') || []).reduce((sum, e) => sum + e.participants, 0),
+        uniqueParticipants: attendanceTypeParticipantsMap.get('fysisk')?.size || 0,
+      },
+      {
+        type: 'Digitalt',
+        count: attendanceTypeEventsMap.get('digitalt')?.length || 0,
+        events: attendanceTypeEventsMap.get('digitalt') || [],
+        totalParticipants: (attendanceTypeEventsMap.get('digitalt') || []).reduce((sum, e) => sum + e.participants, 0),
+        uniqueParticipants: attendanceTypeParticipantsMap.get('digitalt')?.size || 0,
+      },
+      {
+        type: 'Hybrid',
+        count: attendanceTypeEventsMap.get('hybrid')?.length || 0,
+        events: attendanceTypeEventsMap.get('hybrid') || [],
+        totalParticipants: (attendanceTypeEventsMap.get('hybrid') || []).reduce((sum, e) => sum + e.participants, 0),
+        uniqueParticipants: attendanceTypeParticipantsMap.get('hybrid')?.size || 0,
+      },
     ];
 
     // Count upcoming and past events for selected year
@@ -246,6 +301,7 @@ export async function getEventStatistics(year?: number): Promise<EventStats> {
 
     // Calculate arrangement type stats for selected year
     const arrangementTypeEventsMap = new Map<string, CategoryEvent[]>();
+    const arrangementTypeParticipantsMap = new Map<string, Set<string>>();
     const allCategoriesSet = new Set<string>();
 
     eventsThisYear.forEach(event => {
@@ -257,6 +313,7 @@ export async function getEventStatistics(year?: number): Promise<EventStats> {
         if (categoryName === 'fagtorsdag') {
           if (!arrangementTypeEventsMap.has('fagtorsdag')) {
             arrangementTypeEventsMap.set('fagtorsdag', []);
+            arrangementTypeParticipantsMap.set('fagtorsdag', new Set());
           }
           const categoryEvent: CategoryEvent = {
             id: event.event.id,
@@ -266,6 +323,11 @@ export async function getEventStatistics(year?: number): Promise<EventStats> {
             isPublic: event.event.public,
           };
           arrangementTypeEventsMap.get('fagtorsdag')?.push(categoryEvent);
+
+          // Track unique participants
+          event.participants.forEach(participant => {
+            arrangementTypeParticipantsMap.get('fagtorsdag')?.add(participant.email);
+          });
         }
       });
     });
@@ -275,6 +337,8 @@ export async function getEventStatistics(year?: number): Promise<EventStats> {
         type: 'Fagtorsdag',
         count: arrangementTypeEventsMap.get('fagtorsdag')?.length || 0,
         events: arrangementTypeEventsMap.get('fagtorsdag') || [],
+        totalParticipants: (arrangementTypeEventsMap.get('fagtorsdag') || []).reduce((sum, e) => sum + e.participants, 0),
+        uniqueParticipants: arrangementTypeParticipantsMap.get('fagtorsdag')?.size || 0,
       },
     ];
 

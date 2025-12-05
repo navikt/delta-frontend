@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { UserWrappedStats } from "@/service/wrappedActions";
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -12,7 +11,7 @@ type WrappedClientProps = {
 
 export default function WrappedClient({ stats, year }: WrappedClientProps) {
     return (
-        <div className="w-full min-h-screen flex flex-col bg-gray-900 text-white">
+        <div className="w-full flex flex-col text-white">
             <WelcomeSection stats={stats} year={year} />
             <TotalEventsSection stats={stats} />
             <CategorySection stats={stats} />
@@ -26,7 +25,7 @@ export default function WrappedClient({ stats, year }: WrappedClientProps) {
 // Welcome Section
 function WelcomeSection({ stats, year }: { stats: UserWrappedStats; year: number }) {
     return (
-        <section className="min-h-[80vh] flex items-center justify-center bg-gradient-to-br from-indigo-900 via-purple-900 to-gray-900 p-8">
+        <section className="min-h-[80vh] flex items-center justify-center bg-gradient-to-br from-indigo-900 via-purple-800 to-indigo-900 p-8">
             <div className="text-center max-w-2xl">
                 <motion.div
                     initial={{ scale: 0 }}
@@ -41,7 +40,7 @@ function WelcomeSection({ stats, year }: { stats: UserWrappedStats; year: number
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    className="text-5xl md:text-7xl font-black mb-6"
+                    className="text-5xl md:text-7xl font-black mb-6 text-white"
                 >
                     DELTA {year}
                 </motion.h1>
@@ -50,11 +49,11 @@ function WelcomeSection({ stats, year }: { stats: UserWrappedStats; year: number
                     whileInView={{ opacity: 1 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.2 }}
-                    className="text-2xl md:text-3xl font-medium"
+                    className="text-2xl md:text-3xl font-medium text-white"
                 >
                     Hei, {stats.userFirstName}! 👋
                 </motion.p>
-                <p className="text-xl mt-4 text-gray-300">
+                <p className="text-xl mt-4 text-indigo-100">
                     Her er en oppsummering av ditt år i Delta.
                 </p>
             </div>
@@ -65,9 +64,9 @@ function WelcomeSection({ stats, year }: { stats: UserWrappedStats; year: number
 // Total Events Section
 function TotalEventsSection({ stats }: { stats: UserWrappedStats }) {
     return (
-        <section className="py-24 px-8 bg-gray-900 flex justify-center">
+        <section className="py-24 px-8 bg-gradient-to-br from-pink-600 to-rose-600 flex justify-center">
             <div className="text-center max-w-2xl w-full">
-                <h2 className="text-2xl md:text-3xl font-medium mb-8 text-gray-300">
+                <h2 className="text-2xl md:text-3xl font-medium mb-8 text-white">
                     Du deltok på
                 </h2>
                 <motion.div
@@ -76,22 +75,22 @@ function TotalEventsSection({ stats }: { stats: UserWrappedStats }) {
                     viewport={{ once: true }}
                     className="relative inline-block"
                 >
-                    <span className="text-[8rem] md:text-[12rem] font-black leading-none text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-orange-400">
+                    <span className="text-[8rem] md:text-[12rem] font-black leading-none text-white drop-shadow-lg">
                         {stats.totalEventsAttended}
                     </span>
                 </motion.div>
-                <p className="text-2xl md:text-3xl font-medium mt-4">
+                <p className="text-2xl md:text-3xl font-medium mt-4 text-white">
                     {stats.totalEventsAttended === 1 ? 'arrangement' : 'arrangementer'} i år!
                 </p>
 
                 <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-white/10 rounded-2xl p-6 border border-white/10">
-                        <p className="text-sm text-gray-400 mb-1">Gjennomsnitt</p>
-                        <p className="text-2xl font-bold">3,7</p>
+                    <div className="bg-white/20 rounded-2xl p-6 border border-white/20 backdrop-blur-sm">
+                        <p className="text-sm text-pink-100 mb-1">Gjennomsnitt</p>
+                        <p className="text-2xl font-bold text-white">3,7</p>
                     </div>
-                    <div className="bg-white/10 rounded-2xl p-6 border border-white/10">
-                        <p className="text-sm text-gray-400 mb-1">Median</p>
-                        <p className="text-2xl font-bold">2</p>
+                    <div className="bg-white/20 rounded-2xl p-6 border border-white/20 backdrop-blur-sm">
+                        <p className="text-sm text-pink-100 mb-1">Median</p>
+                        <p className="text-2xl font-bold text-white">2</p>
                     </div>
                 </div>
             </div>
@@ -104,9 +103,9 @@ function CategorySection({ stats }: { stats: UserWrappedStats }) {
     if (!stats.favoriteCategory) return null;
 
     return (
-        <section className="py-24 px-8 bg-gray-800 flex justify-center">
+        <section className="py-24 px-8 bg-gradient-to-br from-cyan-600 to-blue-600 flex justify-center">
             <div className="text-center max-w-2xl w-full">
-                <h2 className="text-2xl md:text-3xl font-medium mb-12 text-gray-300">
+                <h2 className="text-2xl md:text-3xl font-medium mb-12 text-white">
                     Din favoritt-kategori
                 </h2>
                 <motion.div
@@ -117,20 +116,20 @@ function CategorySection({ stats }: { stats: UserWrappedStats }) {
                 >
                     {stats.favoriteCategory.emoji}
                 </motion.div>
-                <h3 className="text-4xl md:text-6xl font-black mb-4 text-cyan-400">
+                <h3 className="text-4xl md:text-6xl font-black mb-4 text-white drop-shadow-md">
                     {stats.favoriteCategory.name.toUpperCase()}
                 </h3>
-                <p className="text-xl md:text-2xl text-gray-300">
+                <p className="text-xl md:text-2xl text-cyan-50">
                     {stats.favoriteCategory.count} arrangementer
                 </p>
 
                 {stats.topCategories.length > 1 && (
                     <div className="mt-12 flex justify-center gap-4 flex-wrap">
                         {stats.topCategories.slice(1).map((cat) => (
-                            <div key={cat.name} className="bg-white/5 border border-white/10 rounded-xl px-6 py-4 flex items-center gap-3">
+                            <div key={cat.name} className="bg-white/20 border border-white/20 rounded-xl px-6 py-4 flex items-center gap-3 backdrop-blur-sm">
                                 <span className="text-2xl">{cat.emoji}</span>
-                                <span className="font-semibold">{cat.name}</span>
-                                <span className="text-gray-400">({cat.count})</span>
+                                <span className="font-semibold text-white">{cat.name}</span>
+                                <span className="text-cyan-100">({cat.count})</span>
                             </div>
                         ))}
                     </div>
@@ -148,15 +147,15 @@ function AttendanceSection({ stats }: { stats: UserWrappedStats }) {
     if (total === 0) return null;
 
     const typeConfig = {
-        fysisk: { emoji: '🏢', label: 'På kontoret', color: 'bg-emerald-500' },
-        digitalt: { emoji: '💻', label: 'Digitalt', color: 'bg-blue-500' },
-        hybrid: { emoji: '🔄', label: 'Hybrid', color: 'bg-purple-500' },
+        fysisk: { emoji: '🏢', label: 'På kontoret', color: 'bg-emerald-400' },
+        digitalt: { emoji: '💻', label: 'Digitalt', color: 'bg-blue-400' },
+        hybrid: { emoji: '🔄', label: 'Hybrid', color: 'bg-purple-400' },
     };
 
     return (
-        <section className="py-24 px-8 bg-gray-900 flex justify-center">
+        <section className="py-24 px-8 bg-gradient-to-br from-emerald-600 to-teal-600 flex justify-center">
             <div className="max-w-2xl w-full">
-                <h2 className="text-2xl md:text-3xl font-medium mb-12 text-center text-gray-300">
+                <h2 className="text-2xl md:text-3xl font-medium mb-12 text-center text-white">
                     Slik deltok du
                 </h2>
 
@@ -167,12 +166,12 @@ function AttendanceSection({ stats }: { stats: UserWrappedStats }) {
                         { type: 'hybrid' as const, count: hybrid },
                     ].map(({ type, count }) => (
                         <div key={type} className="relative">
-                            <div className="flex items-center gap-4 mb-2">
+                            <div className="flex items-center gap-4 mb-2 text-white">
                                 <span className="text-3xl" aria-hidden="true">{typeConfig[type].emoji}</span>
                                 <span className="text-lg font-medium flex-1">{typeConfig[type].label}</span>
                                 <span className="text-2xl font-bold">{count}</span>
                             </div>
-                            <div className="h-4 bg-gray-700 rounded-full overflow-hidden">
+                            <div className="h-4 bg-black/20 rounded-full overflow-hidden border border-white/10">
                                 <motion.div
                                     initial={{ width: 0 }}
                                     whileInView={{ width: `${total > 0 ? (count / total) * 100 : 0}%` }}
@@ -192,9 +191,9 @@ function AttendanceSection({ stats }: { stats: UserWrappedStats }) {
 // Fun Facts Section
 function FunFactsSection({ stats }: { stats: UserWrappedStats }) {
     return (
-        <section className="py-24 px-8 bg-gray-800 flex justify-center">
+        <section className="py-24 px-8 bg-gradient-to-br from-amber-500 to-orange-600 flex justify-center">
             <div className="max-w-4xl w-full">
-                <h2 className="text-2xl md:text-3xl font-medium mb-12 text-center text-gray-300">
+                <h2 className="text-2xl md:text-3xl font-medium mb-12 text-center text-white">
                     Visste du at...
                 </h2>
 
@@ -206,15 +205,15 @@ function FunFactsSection({ stats }: { stats: UserWrappedStats }) {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: index * 0.1 }}
-                            className="bg-white/5 border border-white/10 p-6 rounded-2xl"
+                            className="bg-white/20 border border-white/20 p-6 rounded-2xl backdrop-blur-sm"
                         >
-                            <p className="text-lg font-medium leading-relaxed">
+                            <p className="text-lg font-medium leading-relaxed text-white">
                                 {fact}
                             </p>
                         </motion.div>
                     ))}
                     {stats.funFacts.length === 0 && (
-                        <div className="col-span-2 text-center text-gray-400">
+                        <div className="col-span-2 text-center text-white/80">
                             Du er fantastisk! 🎉
                         </div>
                     )}
@@ -237,10 +236,10 @@ function FunFactsSection({ stats }: { stats: UserWrappedStats }) {
 
 function StatBox({ icon, value, label }: { icon: string; value: string | number; label: string }) {
     return (
-        <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+        <div className="bg-white/20 border border-white/20 rounded-xl p-4 text-center backdrop-blur-sm">
             <span className="text-2xl block mb-2" aria-hidden="true">{icon}</span>
-            <p className="text-2xl font-bold">{value}</p>
-            <p className="text-sm text-gray-400">{label}</p>
+            <p className="text-2xl font-bold text-white">{value}</p>
+            <p className="text-sm text-white/90">{label}</p>
         </div>
     );
 }
@@ -248,7 +247,7 @@ function StatBox({ icon, value, label }: { icon: string; value: string | number;
 // Summary Section
 function SummarySection({ stats, year }: { stats: UserWrappedStats; year: number }) {
     return (
-        <section className="py-24 px-8 bg-gradient-to-t from-indigo-900 to-gray-900 flex justify-center">
+        <section className="py-24 px-8 bg-gradient-to-t from-indigo-900 to-purple-800 flex justify-center">
             <div className="text-center max-w-lg w-full">
                 <div className="bg-white rounded-3xl p-8 text-gray-900 shadow-2xl mb-12">
                     <div className="flex items-center justify-center gap-2 mb-6">
@@ -292,13 +291,13 @@ function SummarySection({ stats, year }: { stats: UserWrappedStats; year: number
                 <div className="flex flex-col gap-4">
                     <Link
                         href="/statistikk"
-                        className="inline-flex items-center justify-center gap-2 bg-indigo-600 text-white hover:bg-indigo-700 rounded-full px-8 py-4 text-lg font-bold transition-colors shadow-lg"
+                        className="inline-flex items-center justify-center gap-2 bg-white text-indigo-900 hover:bg-indigo-50 rounded-full px-8 py-4 text-lg font-bold transition-colors shadow-lg"
                     >
                         📊 Se full statistikk
                     </Link>
                     <Link
                         href="/"
-                        className="inline-flex items-center justify-center gap-2 text-gray-400 hover:text-white transition-colors"
+                        className="inline-flex items-center justify-center gap-2 text-indigo-200 hover:text-white transition-colors"
                     >
                         ← Tilbake til arrangementer
                     </Link>

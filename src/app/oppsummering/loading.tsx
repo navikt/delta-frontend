@@ -12,9 +12,13 @@ export default function WrappedLoading() {
                 <h1 className="text-3xl font-bold text-white mb-2">
                     Klargjør din oppsummering...
                 </h1>
-                <p className="text-xl text-white/90 mb-8">
-                    Meld deg gjenre på et arrangement i mellomtiden ⚡️
-                </p>
+
+                <div className="text-xl text-white/90 mb-8 flex flex-col gap-2">
+                    <p>Mens du venter:</p>
+                    <p className="font-medium italic">
+                        Visste du at bokstavene i "Delta" kan stokkes om til et annet ord? ⚡️
+                    </p>
+                </div>
 
                 <div className="bg-white rounded-xl p-6 shadow-lg">
                     <ProgressBar

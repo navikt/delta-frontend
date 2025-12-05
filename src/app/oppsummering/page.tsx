@@ -4,12 +4,12 @@ import { Metadata } from 'next';
 import WrappedClient from "./wrappedClient";
 
 export const metadata: Metadata = {
-    title: "Din Wrapped 2025 - Delta Δ Nav",
+    title: "Din deltakelse - Delta Δ Nav",
     description: "Se ditt år i Delta - personlig statistikk over arrangementer du har deltatt på.",
 };
 
 export default async function WrappedPage() {
-    await checkToken("/wrapped");
+    await checkToken("/oppsummering");
 
     const currentYear = new Date().getFullYear();
     const stats = await getUserWrappedStats(currentYear);

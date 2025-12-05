@@ -7,7 +7,7 @@ export default function WrappedLoading() {
                     <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-white animate-spin"></div>
                     <div className="absolute inset-4 rounded-full border-4 border-transparent border-t-white/70 animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
                 </div>
-                <h1 className="text-3xl font-bold mb-2">Laster din Wrapped...</h1>
+                <h1 className="text-3xl font-bold mb-2">Laster din oppsummering...</h1>
                 <p className="text-lg opacity-80">Vent litt mens vi samler statistikken din ✨</p>
             </div>
         </div>

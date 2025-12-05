@@ -23,7 +23,9 @@ const nextConfig = {
     },
   ],
   pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx'],
-  optimizePackageImports: ["@navikt/ds-react", "@navikt/aksel-icons"],
+  experimental: {
+    optimizePackageImports: ["@navikt/ds-react", "@navikt/aksel-icons"],
+  },
 };
 
 const withMDX = require('@next/mdx')({

@@ -73,9 +73,15 @@ function TotalEventsSection({ stats }: { stats: UserWrappedStats }) {
 
     // Calculate comparison text
     const avgDiff = stats.totalEventsAttended - average;
-    const avgText = avgDiff > 0
-        ? `Du deltok på ${Math.round(avgDiff)} flere enn snittet!`
-        : "Du er rett rundt gjennomsnittet.";
+    let avgText;
+
+    if (stats.totalEventsAttended === 0) {
+        avgText = "Du har litt å gå på! Satser på neste år 🚀";
+    } else if (avgDiff >= 0.5) {
+        avgText = `Du deltok på ${Math.round(avgDiff)} flere enn snittet!`;
+    } else {
+        avgText = "Du er rett rundt gjennomsnittet.";
+    }
 
     return (
         <section

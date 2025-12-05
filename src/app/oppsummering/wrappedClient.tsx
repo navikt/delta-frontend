@@ -249,7 +249,7 @@ function FunFactsSection({ stats }: { stats: UserWrappedStats }) {
                 </div>
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <StatBox icon="👥" value={stats.totalPeopleMetWith.toLocaleString('nb-NO')} label="kolleger møtt" />
+                    <StatBox icon="👥" value={stats.totalPeopleMetWith.toLocaleString('nb-NO')} label='kolleger "møtt"' />
                     <StatBox icon="⏰" value={Math.round(stats.totalHoursSpent).toLocaleString('nb-NO')} label="timer brukt" />
                     <StatBox icon="🎤" value={stats.eventsHosted.toLocaleString('nb-NO')} label="som vert" />
                     <StatBox
@@ -307,7 +307,7 @@ function SummarySection({ stats, year }: { stats: UserWrappedStats; year: number
                             )}
                             <SummaryRow
                                 icon="👥"
-                                label="Kolleger møtt"
+                                label='Kolleger "møtt"'
                                 value={stats.totalPeopleMetWith.toLocaleString('nb-NO')}
                             />
                         </div>

@@ -95,7 +95,7 @@ export default function OverviewSection({
                                 title={type.type}
                                 value={type.count}
                                 suffix="arrangementer"
-                                subtitle={`${type.totalParticipants.toLocaleString('nb-NO')} deltakere totalt, ${type.uniqueParticipants.toLocaleString('nb-NO')} unike`}
+                                subtitle={`${type.uniqueParticipants.toLocaleString('nb-NO')} unike deltakere, ${type.totalParticipants.toLocaleString('nb-NO')} deltakelser totalt`}
                                 icon={<LocationPinIcon className="w-6 h-6" />}
                                 onClick={() => setShowAttendanceModal(type)}
                             />

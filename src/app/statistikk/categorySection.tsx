@@ -68,7 +68,7 @@ export default function CategorySection({
                   <span className="text-lg font-medium text-gray-600 ml-1">arrangementer</span>
                 </p>
                 <p className="text-sm text-gray-600 mt-1">
-                  {cat.totalParticipants.toLocaleString("nb-NO")} deltakere totalt, {cat.uniqueParticipants.toLocaleString("nb-NO")} unike
+                  {cat.uniqueParticipants.toLocaleString("nb-NO")} unike deltakere, {cat.totalParticipants.toLocaleString("nb-NO")} deltakelser totalt
                 </p>
                 <p className="text-xs text-blue-600 mt-2">Klikk for detaljer</p>
               </button>
@@ -93,7 +93,7 @@ export default function CategorySection({
                   <span className="text-lg font-medium text-gray-600 ml-1">arrangementer</span>
                 </p>
                 <p className="text-sm text-gray-600 mt-1">
-                  {fagtorsdagStat.totalParticipants.toLocaleString("nb-NO")} deltakere totalt, {fagtorsdagStat.uniqueParticipants.toLocaleString("nb-NO")} unike
+                  {fagtorsdagStat.uniqueParticipants.toLocaleString("nb-NO")} unike deltakere, {fagtorsdagStat.totalParticipants.toLocaleString("nb-NO")} deltakelser totalt
                 </p>
                 <p className="text-xs text-blue-600 mt-2">Klikk for detaljer</p>
               </button>
@@ -129,7 +129,7 @@ export default function CategorySection({
                     <span className="text-lg font-medium text-gray-600 ml-1 group-hover:text-blue-600">arrangementer</span>
                   </p>
                   <p className="text-sm text-gray-600 mt-1">
-                    {customCategoryStat.totalParticipants.toLocaleString("nb-NO")} deltakere totalt, {customCategoryStat.uniqueParticipants.toLocaleString("nb-NO")} unike
+                    {customCategoryStat.uniqueParticipants.toLocaleString("nb-NO")} unike deltakere, {customCategoryStat.totalParticipants.toLocaleString("nb-NO")} deltakelser totalt
                   </p>
                   <p className="text-xs text-blue-600 mt-2 group-hover:underline">
                     Klikk for detaljer

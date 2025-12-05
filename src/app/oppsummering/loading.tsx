@@ -13,13 +13,13 @@ export default function WrappedLoading() {
                     Klargjør din oppsummering...
                 </h1>
                 <p className="text-xl text-white/90 mb-8">
-                    Vent litt mens vi henter statistikken din ✨
+                    Vent litt mens vi henter statistikken din
                 </p>
 
                 <div className="bg-white rounded-xl p-6 shadow-lg">
                     <ProgressBar
                         size="large"
-                        simulated={{ seconds: 5, onTimeout: () => { } }}
+                        simulated={{ seconds: 15, onTimeout: () => { } }}
                         aria-label="Laster statistikk"
                     />
                 </div>

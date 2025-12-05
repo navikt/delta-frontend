@@ -10,11 +10,11 @@ export default function Loading() {
         <div className="w-3/4">
           <ProgressBar
             size="large"
-            simulated={{ seconds: 15, onTimeout: () => {} }}
+            simulated={{ seconds: 10, onTimeout: () => { } }}
             aria-label="Laster statistikk"
           />
         </div>
-        <p className="text-lg">Laster statistikk, dette tar ca. 15 sekunder...</p>
+        <p className="text-lg">Laster statistikk, dette tar ca. 10 sekunder...</p>
       </div>
     </CardWithBackground>
   );

@@ -295,10 +295,10 @@ function MimretidSection({ stats }: { stats: UserWrappedStats }) {
                                         <Table.DataCell>
                                             {event.isPublic ? (
                                                 <Link href={`/event/${event.id}`} className="font-semibold text-indigo-700 hover:underline">
-                                                    {event.emoji} {event.title}
+                                                    {event.title}
                                                 </Link>
                                             ) : (
-                                                <span className="font-semibold">{event.emoji} {event.title}</span>
+                                                <span className="font-semibold">{event.title}</span>
                                             )}
                                         </Table.DataCell>
                                     </Table.Row>

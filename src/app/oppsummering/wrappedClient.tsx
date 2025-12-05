@@ -11,7 +11,7 @@ type WrappedClientProps = {
 
 export default function WrappedClient({ stats, year }: WrappedClientProps) {
     return (
-        <div className="w-full flex flex-col text-white">
+        <div className="w-full flex flex-col text-white -mb-4">
             <WelcomeSection stats={stats} year={year} />
             <TotalEventsSection stats={stats} />
             <CategorySection stats={stats} />
@@ -66,6 +66,19 @@ function WelcomeSection({ stats, year }: { stats: UserWrappedStats; year: number
 
 // Total Events Section
 function TotalEventsSection({ stats }: { stats: UserWrappedStats }) {
+    const average = 3.7;
+    const median = 2;
+
+    // Calculate comparison text
+    const avgDiff = stats.totalEventsAttended - average;
+    const avgText = avgDiff > 0
+        ? `Du deltok på ${Math.round(avgDiff)} flere enn snittet!`
+        : "Du er rett rundt gjennomsnittet.";
+
+    const medianText = stats.totalEventsAttended > median
+        ? "Du er over medianen!"
+        : "God innsats!";
+
     return (
         <section
             className="py-24 px-8 flex justify-center"
@@ -91,12 +104,12 @@ function TotalEventsSection({ stats }: { stats: UserWrappedStats }) {
 
                 <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="bg-white/20 rounded-2xl p-6 border border-white/20 backdrop-blur-sm">
-                        <p className="text-sm text-pink-100 mb-1">Gjennomsnitt</p>
-                        <p className="text-2xl font-bold text-white">3,7</p>
+                        <p className="text-sm text-pink-100 mb-2">Gjennomsnitt: {average}</p>
+                        <p className="text-xl font-bold text-white">{avgText}</p>
                     </div>
                     <div className="bg-white/20 rounded-2xl p-6 border border-white/20 backdrop-blur-sm">
-                        <p className="text-sm text-pink-100 mb-1">Median</p>
-                        <p className="text-2xl font-bold text-white">2</p>
+                        <p className="text-sm text-pink-100 mb-2">Median: {median}</p>
+                        <p className="text-xl font-bold text-white">{medianText}</p>
                     </div>
                 </div>
             </div>
@@ -156,9 +169,9 @@ function AttendanceSection({ stats }: { stats: UserWrappedStats }) {
     if (total === 0) return null;
 
     const typeConfig = {
-        fysisk: { emoji: '🏢', label: 'På kontoret', color: 'bg-emerald-400' },
-        digitalt: { emoji: '💻', label: 'Digitalt', color: 'bg-blue-400' },
-        hybrid: { emoji: '🔄', label: 'Hybrid', color: 'bg-purple-400' },
+        fysisk: { emoji: '🏢', label: 'På kontoret' },
+        digitalt: { emoji: '💻', label: 'Digitalt' },
+        hybrid: { emoji: '🔄', label: 'Hybrid' },
     };
 
     return (
@@ -183,13 +196,15 @@ function AttendanceSection({ stats }: { stats: UserWrappedStats }) {
                                 <span className="text-lg font-medium flex-1">{typeConfig[type].label}</span>
                                 <span className="text-2xl font-bold">{count}</span>
                             </div>
-                            <div className="h-4 bg-black/20 rounded-full overflow-hidden border border-white/10">
+                            {/* Darker background for the track */}
+                            <div className="h-6 bg-black/40 rounded-full overflow-hidden border border-white/20">
                                 <motion.div
                                     initial={{ width: 0 }}
                                     whileInView={{ width: `${total > 0 ? (count / total) * 100 : 0}%` }}
                                     viewport={{ once: true }}
                                     transition={{ duration: 1, ease: "easeOut" }}
-                                    className={`h-full ${typeConfig[type].color}`}
+                                    // High contrast bar color (white/light)
+                                    className="h-full bg-white/90"
                                 />
                             </div>
                         </div>
@@ -205,7 +220,8 @@ function FunFactsSection({ stats }: { stats: UserWrappedStats }) {
     return (
         <section
             className="py-24 px-8 flex justify-center"
-            style={{ background: 'linear-gradient(135deg, #d97706, #ea580c, #dc2626)' }}
+            // Slightly darker gradient for better text contrast
+            style={{ background: 'linear-gradient(135deg, #b45309, #c2410c, #b91c1c)' }}
         >
             <div className="max-w-4xl w-full">
                 <h2 className="text-2xl md:text-3xl font-medium mb-12 text-center text-white">
@@ -220,7 +236,7 @@ function FunFactsSection({ stats }: { stats: UserWrappedStats }) {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: index * 0.1 }}
-                            className="bg-white/20 border border-white/20 p-6 rounded-2xl backdrop-blur-sm"
+                            className="bg-black/20 border border-white/10 p-6 rounded-2xl backdrop-blur-sm"
                         >
                             <p className="text-lg font-medium leading-relaxed text-white">
                                 {fact}
@@ -251,7 +267,7 @@ function FunFactsSection({ stats }: { stats: UserWrappedStats }) {
 
 function StatBox({ icon, value, label }: { icon: string; value: string | number; label: string }) {
     return (
-        <div className="bg-white/20 border border-white/20 rounded-xl p-4 text-center backdrop-blur-sm">
+        <div className="bg-black/20 border border-white/10 rounded-xl p-4 text-center backdrop-blur-sm">
             <span className="text-2xl block mb-2" aria-hidden="true">{icon}</span>
             <p className="text-2xl font-bold text-white">{value}</p>
             <p className="text-sm text-white/90">{label}</p>
@@ -263,7 +279,7 @@ function StatBox({ icon, value, label }: { icon: string; value: string | number;
 function SummarySection({ stats, year }: { stats: UserWrappedStats; year: number }) {
     return (
         <section
-            className="py-24 px-8 flex justify-center"
+            className="py-24 px-8 flex justify-center pb-32" // Added extra padding at bottom to ensure coverage
             style={{ background: 'linear-gradient(to top, #312e81, #4c1d95)' }}
         >
             <div className="text-center max-w-lg w-full">
@@ -315,7 +331,7 @@ function SummarySection({ stats, year }: { stats: UserWrappedStats; year: number
                     </Link>
                     <Link
                         href="/"
-                        className="inline-flex items-center justify-center gap-2 text-indigo-200 hover:text-white transition-colors"
+                        className="inline-flex items-center justify-center gap-2 text-indigo-200 hover:text-white underline decoration-indigo-400/50 hover:decoration-white transition-all"
                     >
                         ← Tilbake til arrangementer
                     </Link>

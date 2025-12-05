@@ -238,12 +238,12 @@ function generateFunFacts(data: {
 }): string[] {
     const facts: string[] = [];
 
-    // Percentile fact
-    if (data.percentileRank >= 90) {
-        facts.push(`Du er blant topp ${100 - data.percentileRank}% av alle deltakere! 🏆`);
-    } else if (data.percentileRank >= 75) {
-        facts.push(`Du er mer aktiv enn ${data.percentileRank}% av brukerne! 🌟`);
-    }
+    // Percentile fact - REMOVED per user request
+    // if (data.percentileRank >= 90) {
+    //     facts.push(`Du er blant topp ${100 - data.percentileRank}% av alle deltakere! 🏆`);
+    // } else if (data.percentileRank >= 75) {
+    //     facts.push(`Du er mer aktiv enn ${data.percentileRank}% av brukerne! 🌟`);
+    // }
 
     // Hosting fact
     if (data.eventsHosted > 0) {

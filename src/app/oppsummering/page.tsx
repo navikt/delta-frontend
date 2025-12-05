@@ -8,11 +8,23 @@ export const metadata: Metadata = {
     description: "Se ditt år i Delta - personlig statistikk over arrangementer du har deltatt på.",
 };
 
-export default async function WrappedPage() {
+export default async function WrappedPage({
+    params,
+}: {
+    params: Promise<{ year?: string }>;
+}) {
     await checkToken("/oppsummering");
 
+    const resolvedParams = await params;
+
+    // Default to current year if no year provided
     const currentYear = new Date().getFullYear();
-    const stats = await getUserWrappedStats(currentYear);
+    const queryYear = resolvedParams?.year ? parseInt(resolvedParams.year) : currentYear;
+
+    // Validate year (simple check to avoid crazy inputs)
+    const year = isNaN(queryYear) || queryYear < 2000 || queryYear > 2100 ? currentYear : queryYear;
+
+    const stats = await getUserWrappedStats(year);
 
     if (!stats) {
         return (
@@ -25,5 +37,5 @@ export default async function WrappedPage() {
         );
     }
 
-    return <WrappedClient stats={stats} year={currentYear} />;
+    return <WrappedClient stats={stats} year={year} />;
 }

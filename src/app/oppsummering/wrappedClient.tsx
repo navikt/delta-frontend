@@ -128,7 +128,7 @@ function CategorySection({ stats }: { stats: UserWrappedStats }) {
         >
             <div className="text-center max-w-2xl w-full">
                 <h2 className="text-2xl md:text-3xl font-medium mb-12 text-white">
-                    Din favoritt-kategori
+                    Din favorittkategori
                 </h2>
                 <motion.div
                     initial={{ scale: 0 }}

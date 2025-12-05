@@ -438,13 +438,13 @@ function SummarySection({ stats, year }: { stats: UserWrappedStats; year: number
                 <div className="flex flex-col gap-4">
                     <Link
                         href="/statistikk"
-                        className="inline-flex items-center justify-center gap-2 bg-white text-indigo-900 hover:bg-indigo-50 rounded-full px-8 py-4 text-lg font-bold transition-colors shadow-lg"
+                        className="inline-flex items-center justify-center gap-2 bg-white text-indigo-900 hover:bg-indigo-50 rounded-full px-8 py-4 text-lg font-bold transition-colors shadow-lg hover:underline"
                     >
                         📊 Se statistikk for Delta i stort
                     </Link>
                     <Link
                         href="/"
-                        className="inline-flex items-center justify-center gap-2 text-white hover:text-white/80 underline decoration-white/50 hover:decoration-white transition-all"
+                        className="inline-flex items-center justify-center gap-2 text-white underline decoration-white/50 hover:decoration-white transition-all"
                     >
                         ← Tilbake til arrangementer
                     </Link>

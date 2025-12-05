@@ -25,7 +25,10 @@ export default function WrappedClient({ stats, year }: WrappedClientProps) {
 // Welcome Section
 function WelcomeSection({ stats, year }: { stats: UserWrappedStats; year: number }) {
     return (
-        <section className="min-h-[80vh] flex items-center justify-center bg-gradient-to-br from-indigo-900 via-purple-800 to-indigo-900 p-8">
+        <section
+            className="min-h-[80vh] flex items-center justify-center p-8"
+            style={{ background: 'linear-gradient(135deg, #312e81, #6b21a8, #312e81)' }}
+        >
             <div className="text-center max-w-2xl">
                 <motion.div
                     initial={{ scale: 0 }}
@@ -64,7 +67,10 @@ function WelcomeSection({ stats, year }: { stats: UserWrappedStats; year: number
 // Total Events Section
 function TotalEventsSection({ stats }: { stats: UserWrappedStats }) {
     return (
-        <section className="py-24 px-8 bg-gradient-to-br from-pink-600 to-rose-600 flex justify-center">
+        <section
+            className="py-24 px-8 flex justify-center"
+            style={{ background: 'linear-gradient(135deg, #db2777, #e11d48)' }}
+        >
             <div className="text-center max-w-2xl w-full">
                 <h2 className="text-2xl md:text-3xl font-medium mb-8 text-white">
                     Du deltok på
@@ -103,7 +109,10 @@ function CategorySection({ stats }: { stats: UserWrappedStats }) {
     if (!stats.favoriteCategory) return null;
 
     return (
-        <section className="py-24 px-8 bg-gradient-to-br from-cyan-600 to-blue-600 flex justify-center">
+        <section
+            className="py-24 px-8 flex justify-center"
+            style={{ background: 'linear-gradient(135deg, #0891b2, #2563eb)' }}
+        >
             <div className="text-center max-w-2xl w-full">
                 <h2 className="text-2xl md:text-3xl font-medium mb-12 text-white">
                     Din favoritt-kategori
@@ -153,7 +162,10 @@ function AttendanceSection({ stats }: { stats: UserWrappedStats }) {
     };
 
     return (
-        <section className="py-24 px-8 bg-gradient-to-br from-emerald-600 to-teal-600 flex justify-center">
+        <section
+            className="py-24 px-8 flex justify-center"
+            style={{ background: 'linear-gradient(135deg, #059669, #0d9488)' }}
+        >
             <div className="max-w-2xl w-full">
                 <h2 className="text-2xl md:text-3xl font-medium mb-12 text-center text-white">
                     Slik deltok du
@@ -191,7 +203,10 @@ function AttendanceSection({ stats }: { stats: UserWrappedStats }) {
 // Fun Facts Section
 function FunFactsSection({ stats }: { stats: UserWrappedStats }) {
     return (
-        <section className="py-24 px-8 bg-gradient-to-br from-amber-500 to-orange-600 flex justify-center">
+        <section
+            className="py-24 px-8 flex justify-center"
+            style={{ background: 'linear-gradient(135deg, #d97706, #ea580c, #dc2626)' }}
+        >
             <div className="max-w-4xl w-full">
                 <h2 className="text-2xl md:text-3xl font-medium mb-12 text-center text-white">
                     Visste du at...
@@ -247,7 +262,10 @@ function StatBox({ icon, value, label }: { icon: string; value: string | number;
 // Summary Section
 function SummarySection({ stats, year }: { stats: UserWrappedStats; year: number }) {
     return (
-        <section className="py-24 px-8 bg-gradient-to-t from-indigo-900 to-purple-800 flex justify-center">
+        <section
+            className="py-24 px-8 flex justify-center"
+            style={{ background: 'linear-gradient(to top, #312e81, #4c1d95)' }}
+        >
             <div className="text-center max-w-lg w-full">
                 <div className="bg-white rounded-3xl p-8 text-gray-900 shadow-2xl mb-12">
                     <div className="flex items-center justify-center gap-2 mb-6">

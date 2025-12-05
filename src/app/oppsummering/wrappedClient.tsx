@@ -35,7 +35,7 @@ function WelcomeSection({ stats, year }: { stats: UserWrappedStats; year: number
                     whileInView={{ scale: 1 }}
                     viewport={{ once: true }}
                     transition={{ type: "spring", stiffness: 200 }}
-                    className="text-6xl mb-8"
+                    className="text-6xl mb-12"
                 >
                     🎉
                 </motion.div>
@@ -43,7 +43,7 @@ function WelcomeSection({ stats, year }: { stats: UserWrappedStats; year: number
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    className="text-5xl md:text-7xl font-black mb-6 text-white"
+                    className="text-5xl md:text-7xl font-black mb-8 text-white"
                 >
                     DELTA {year}
                 </motion.h1>
@@ -56,7 +56,7 @@ function WelcomeSection({ stats, year }: { stats: UserWrappedStats; year: number
                 >
                     Hei, {stats.userFirstName}! 👋
                 </motion.p>
-                <p className="text-xl mt-4 text-indigo-100">
+                <p className="text-xl mt-12 text-indigo-100">
                     Her er en oppsummering av ditt år i Delta.
                 </p>
             </div>

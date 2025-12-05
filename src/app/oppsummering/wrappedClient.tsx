@@ -67,17 +67,12 @@ function WelcomeSection({ stats, year }: { stats: UserWrappedStats; year: number
 // Total Events Section
 function TotalEventsSection({ stats }: { stats: UserWrappedStats }) {
     const average = 3.7;
-    const median = 2;
 
     // Calculate comparison text
     const avgDiff = stats.totalEventsAttended - average;
     const avgText = avgDiff > 0
         ? `Du deltok på ${Math.round(avgDiff)} flere enn snittet!`
         : "Du er rett rundt gjennomsnittet.";
-
-    const medianText = stats.totalEventsAttended > median
-        ? "Du er over medianen!"
-        : "God innsats!";
 
     return (
         <section
@@ -102,14 +97,10 @@ function TotalEventsSection({ stats }: { stats: UserWrappedStats }) {
                     {stats.totalEventsAttended === 1 ? 'arrangement' : 'arrangementer'} i år!
                 </p>
 
-                <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-white/20 rounded-2xl p-6 border border-white/20 backdrop-blur-sm">
+                <div className="mt-12 flex justify-center">
+                    <div className="bg-white/20 rounded-2xl p-6 border border-white/20 backdrop-blur-sm max-w-md w-full">
                         <p className="text-sm text-pink-100 mb-2">Gjennomsnitt: {average}</p>
                         <p className="text-xl font-bold text-white">{avgText}</p>
-                    </div>
-                    <div className="bg-white/20 rounded-2xl p-6 border border-white/20 backdrop-blur-sm">
-                        <p className="text-sm text-pink-100 mb-2">Median: {median}</p>
-                        <p className="text-xl font-bold text-white">{medianText}</p>
                     </div>
                 </div>
             </div>
@@ -236,7 +227,7 @@ function FunFactsSection({ stats }: { stats: UserWrappedStats }) {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: index * 0.1 }}
-                            className="bg-black/20 border border-white/10 p-6 rounded-2xl backdrop-blur-sm"
+                            className="bg-black/20 border-2 border-white/40 p-6 rounded-2xl backdrop-blur-sm"
                         >
                             <p className="text-lg font-medium leading-relaxed text-white">
                                 {fact}
@@ -267,7 +258,7 @@ function FunFactsSection({ stats }: { stats: UserWrappedStats }) {
 
 function StatBox({ icon, value, label }: { icon: string; value: string | number; label: string }) {
     return (
-        <div className="bg-black/20 border border-white/10 rounded-xl p-4 text-center backdrop-blur-sm">
+        <div className="bg-black/20 border-2 border-white/30 rounded-xl p-4 text-center backdrop-blur-sm">
             <span className="text-2xl block mb-2" aria-hidden="true">{icon}</span>
             <p className="text-2xl font-bold text-white">{value}</p>
             <p className="text-sm text-white/90">{label}</p>
@@ -331,7 +322,7 @@ function SummarySection({ stats, year }: { stats: UserWrappedStats; year: number
                     </Link>
                     <Link
                         href="/"
-                        className="inline-flex items-center justify-center gap-2 text-indigo-200 hover:text-white underline decoration-indigo-400/50 hover:decoration-white transition-all"
+                        className="inline-flex items-center justify-center gap-2 text-white hover:text-white/80 underline decoration-white/50 hover:decoration-white transition-all"
                     >
                         ← Tilbake til arrangementer
                     </Link>

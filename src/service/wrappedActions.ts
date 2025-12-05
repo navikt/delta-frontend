@@ -279,7 +279,7 @@ function generateFunFacts(data: {
 
     // Hours spent
     if (data.totalHoursSpent >= 50) {
-        facts.push(`Du brukte ${data.totalHoursSpent} timer på arrangementer – det er ${Math.round(data.totalHoursSpent / 8)} arbeidsdager! ⏰`);
+        facts.push(`Du brukte ${Math.round(data.totalHoursSpent)} timer på arrangementer – det er ${Math.round(data.totalHoursSpent / 8)} arbeidsdager! ⏰`);
     }
 
     // Biggest event

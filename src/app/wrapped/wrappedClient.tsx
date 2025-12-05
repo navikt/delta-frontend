@@ -121,7 +121,8 @@ export default function WrappedClient({ stats, year }: WrappedClientProps) {
                     <button
                         key={index}
                         onClick={() => setCurrentSection(index)}
-                        className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentSection
+                        aria-label={`Gå til seksjon ${index + 1}`}
+                        className={`w-3 h-3 rounded-full transition-all duration-300 focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-500 ${index === currentSection
                             ? "bg-white scale-125 shadow-lg"
                             : "bg-white/40 hover:bg-white/60"
                             }`}
@@ -184,7 +185,7 @@ function WelcomeSection({ stats, year }: { stats: UserWrappedStats; year: number
                     transition={{ delay: 0.4 }}
                     className="text-5xl md:text-7xl font-black mb-6"
                 >
-                    DELTA WRAPPED
+                    DELTA 2025
                 </motion.h1>
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -276,18 +277,22 @@ function TotalEventsSection({ stats }: { stats: UserWrappedStats }) {
                 >
                     {stats.totalEventsAttended === 1 ? 'arrangement' : 'arrangementer'} i år!
                 </motion.p>
-                {stats.percentileRank >= 50 && (
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 1.2 }}
-                        className="mt-8 inline-block bg-white/20 backdrop-blur-sm rounded-full px-6 py-3"
-                    >
-                        <span className="text-lg font-medium">
-                            Mer enn {stats.percentileRank}% av brukerne! 🔥
-                        </span>
-                    </motion.div>
-                )}
+
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 1.2 }}
+                    className="mt-12 grid grid-cols-2 gap-6"
+                >
+                    <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-6">
+                        <p className="text-sm text-white/80 mb-1">Gjennomsnitt</p>
+                        <p className="text-2xl font-bold">3,7</p>
+                    </div>
+                    <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-6">
+                        <p className="text-sm text-white/80 mb-1">Median</p>
+                        <p className="text-2xl font-bold">2</p>
+                    </div>
+                </motion.div>
             </div>
         </div>
     );
@@ -419,12 +424,12 @@ function AttendanceSection({ stats }: { stats: UserWrappedStats }) {
                                 <span className="text-lg font-medium flex-1 text-left">{typeConfig[type].label}</span>
                                 <span className="text-2xl font-bold">{count}</span>
                             </div>
-                            <div className="h-4 bg-white/20 rounded-full overflow-hidden">
+                            <div className="h-6 bg-black/40 rounded-full overflow-hidden border border-white/10">
                                 <motion.div
                                     initial={{ width: 0 }}
                                     animate={{ width: `${total > 0 ? (count / total) * 100 : 0}%` }}
                                     transition={{ delay: 0.6 + index * 0.2, duration: 0.8, ease: "easeOut" }}
-                                    className={`h-full bg-gradient-to-r ${typeConfig[type].color} rounded-full`}
+                                    className={`h-full bg-gradient-to-r ${typeConfig[type].color}`}
                                 />
                             </div>
                         </motion.div>
@@ -451,15 +456,13 @@ function AttendanceSection({ stats }: { stats: UserWrappedStats }) {
 function FunFactsSection({ stats }: { stats: UserWrappedStats }) {
     const [currentFact, setCurrentFact] = useState(0);
 
-    useEffect(() => {
-        if (stats.funFacts.length <= 1) return;
+    const nextFact = () => {
+        setCurrentFact((prev) => (prev + 1) % stats.funFacts.length);
+    };
 
-        const timer = setInterval(() => {
-            setCurrentFact((prev) => (prev + 1) % stats.funFacts.length);
-        }, 4000);
-
-        return () => clearInterval(timer);
-    }, [stats.funFacts.length]);
+    const prevFact = () => {
+        setCurrentFact((prev) => (prev - 1 + stats.funFacts.length) % stats.funFacts.length);
+    };
 
     return (
         <div className="h-full w-full flex items-center justify-center bg-gradient-to-br from-amber-500 via-orange-500 to-red-500 p-8">
@@ -489,17 +492,34 @@ function FunFactsSection({ stats }: { stats: UserWrappedStats }) {
                 </AnimatePresence>
 
                 {stats.funFacts.length > 1 && (
-                    <div className="flex justify-center gap-2 mt-8">
-                        {stats.funFacts.map((_, index) => (
-                            <button
-                                key={index}
-                                onClick={() => setCurrentFact(index)}
-                                className={`w-2 h-2 rounded-full transition-all ${index === currentFact
-                                    ? "bg-white w-8"
-                                    : "bg-white/40"
-                                    }`}
-                            />
-                        ))}
+                    <div className="flex justify-center items-center gap-6 mt-8">
+                        <button
+                            onClick={prevFact}
+                            className="p-3 rounded-full bg-white/20 hover:bg-white/30 transition-colors focus:outline-none focus-visible:ring-4 focus-visible:ring-white"
+                            aria-label="Forrige fun fact"
+                        >
+                            <ChevronUpIcon className="w-6 h-6 -rotate-90" />
+                        </button>
+                        <div className="flex gap-2">
+                            {stats.funFacts.map((_, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => setCurrentFact(index)}
+                                    aria-label={`Vis fun fact ${index + 1}`}
+                                    className={`w-2 h-2 rounded-full transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-white ${index === currentFact
+                                        ? "bg-white w-8"
+                                        : "bg-white/40"
+                                        }`}
+                                />
+                            ))}
+                        </div>
+                        <button
+                            onClick={nextFact}
+                            className="p-3 rounded-full bg-white/20 hover:bg-white/30 transition-colors focus:outline-none focus-visible:ring-4 focus-visible:ring-white"
+                            aria-label="Neste fun fact"
+                        >
+                            <ChevronDownIcon className="w-6 h-6 -rotate-90" />
+                        </button>
                     </div>
                 )}
 
@@ -509,12 +529,12 @@ function FunFactsSection({ stats }: { stats: UserWrappedStats }) {
                     transition={{ delay: 0.8 }}
                     className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4"
                 >
-                    <StatBox icon="👥" value={stats.totalPeopleMetWith} label="kolleger møtt" />
-                    <StatBox icon="⏰" value={stats.totalHoursSpent} label="timer" />
-                    <StatBox icon="🎤" value={stats.eventsHosted} label="som vert" />
+                    <StatBox icon="👥" value={stats.totalPeopleMetWith.toLocaleString('nb-NO')} label="kolleger møtt" />
+                    <StatBox icon="⏰" value={Math.round(stats.totalHoursSpent).toLocaleString('nb-NO')} label="timer" />
+                    <StatBox icon="🎤" value={stats.eventsHosted.toLocaleString('nb-NO')} label="som vert" />
                     <StatBox
                         icon="📅"
-                        value={Math.max(...stats.monthlyActivity)}
+                        value={Math.max(...stats.monthlyActivity).toLocaleString('nb-NO')}
                         label="maks per mnd"
                     />
                 </motion.div>
@@ -523,7 +543,7 @@ function FunFactsSection({ stats }: { stats: UserWrappedStats }) {
     );
 }
 
-function StatBox({ icon, value, label }: { icon: string; value: number; label: string }) {
+function StatBox({ icon, value, label }: { icon: string; value: string | number; label: string }) {
     return (
         <div className="bg-white/15 backdrop-blur-sm rounded-xl p-4">
             <span className="text-2xl">{icon}</span>
@@ -546,7 +566,7 @@ function SummarySection({ stats, year }: { stats: UserWrappedStats; year: number
                 >
                     <div className="flex items-center justify-center gap-2 mb-6">
                         <span className="text-3xl">Δ</span>
-                        <span className="text-xl font-bold">DELTA WRAPPED {year}</span>
+                        <span className="text-xl font-bold">DELTA {year}</span>
                     </div>
 
                     <div className="border-t border-gray-200 pt-6">
@@ -568,14 +588,9 @@ function SummarySection({ stats, year }: { stats: UserWrappedStats; year: number
                                 />
                             )}
                             <SummaryRow
-                                icon="🏆"
-                                label="Rangering"
-                                value={`Topp ${100 - stats.percentileRank}%`}
-                            />
-                            <SummaryRow
                                 icon="👥"
                                 label="Kolleger møtt"
-                                value={stats.totalPeopleMetWith.toString()}
+                                value={stats.totalPeopleMetWith.toLocaleString('nb-NO')}
                             />
                         </div>
 

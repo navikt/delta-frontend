@@ -1,6 +1,6 @@
 export default function WrappedLoading() {
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400">
             <div className="text-center text-white">
                 <div className="relative w-24 h-24 mx-auto mb-8">
                     <div className="absolute inset-0 rounded-full border-4 border-white/20"></div>

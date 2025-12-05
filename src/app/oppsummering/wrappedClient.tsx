@@ -3,6 +3,8 @@
 import { UserWrappedStats } from "@/service/wrappedActions";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { Table, Pagination } from "@navikt/ds-react";
+import { useState } from "react";
 
 type WrappedClientProps = {
     stats: UserWrappedStats;
@@ -16,6 +18,7 @@ export default function WrappedClient({ stats, year }: WrappedClientProps) {
             <TotalEventsSection stats={stats} />
             <CategorySection stats={stats} />
             <AttendanceSection stats={stats} />
+            <MimretidSection stats={stats} />
             <FunFactsSection stats={stats} />
             <SummarySection stats={stats} year={year} />
         </div>
@@ -207,6 +210,81 @@ function AttendanceSection({ stats }: { stats: UserWrappedStats }) {
                         {digitalt > fysisk && digitalt >= hybrid && "Du er en digital deltaker! 💻"}
                         {hybrid > fysisk && hybrid > digitalt && "Du er en hybrid deltaker! 🔄"}
                     </p>
+                </div>
+            </div>
+        </section>
+    );
+}
+
+// Mimretid Section
+function MimretidSection({ stats }: { stats: UserWrappedStats }) {
+    const [page, setPage] = useState(1);
+    const rowsPerPage = 5;
+
+    const events = stats.attendedEvents || [];
+    const count = events.length;
+    const totalPages = Math.ceil(count / rowsPerPage);
+
+    if (count === 0) return null;
+
+    const displayedEvents = events.slice((page - 1) * rowsPerPage, page * rowsPerPage);
+
+    return (
+        <section
+            className="py-24 px-8 flex justify-center"
+            style={{ background: 'linear-gradient(135deg, #4338ca, #3730a3)' }}
+        >
+            <div className="max-w-4xl w-full">
+                <h2 className="text-2xl md:text-3xl font-medium mb-12 text-center text-white">
+                    Mimretid! 🕰️
+                </h2>
+
+                <div className="bg-white rounded-xl p-6 shadow-xl text-gray-900 border-4 border-indigo-200">
+                    <Table size="large">
+                        <Table.Header>
+                            <Table.Row>
+                                <Table.HeaderCell>Dato</Table.HeaderCell>
+                                <Table.HeaderCell>Arrangement</Table.HeaderCell>
+                                <Table.HeaderCell>Kategori</Table.HeaderCell>
+                            </Table.Row>
+                        </Table.Header>
+                        <Table.Body>
+                            {displayedEvents.map((event) => {
+                                const date = new Date(event.date);
+                                const dateString = date.toLocaleDateString("nb-NO", {
+                                    day: "numeric",
+                                    month: "long",
+                                });
+                                return (
+                                    <Table.Row key={event.id}>
+                                        <Table.DataCell className="whitespace-nowrap capitalize">{dateString}</Table.DataCell>
+                                        <Table.DataCell>
+                                            {event.isPublic ? (
+                                                <Link href={`/event/${event.id}`} className="font-semibold text-indigo-700 hover:underline">
+                                                    {event.title}
+                                                </Link>
+                                            ) : (
+                                                <span className="font-semibold">{event.title}</span>
+                                            )}
+                                        </Table.DataCell>
+                                        <Table.DataCell className="text-2xl text-center">
+                                            {event.emoji}
+                                        </Table.DataCell>
+                                    </Table.Row>
+                                );
+                            })}
+                        </Table.Body>
+                    </Table>
+                    {totalPages > 1 && (
+                        <div className="mt-8 flex justify-center">
+                            <Pagination
+                                page={page}
+                                onPageChange={setPage}
+                                count={totalPages}
+                                size="small"
+                            />
+                        </div>
+                    )}
                 </div>
             </div>
         </section>

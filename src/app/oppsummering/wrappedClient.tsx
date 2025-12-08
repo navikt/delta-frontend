@@ -300,9 +300,9 @@ function MimretidSection({ stats }: { stats: UserWrappedStats }) {
                                         <Table.DataCell className="whitespace-nowrap capitalize">{dateString}</Table.DataCell>
                                         <Table.DataCell>
                                             {event.isPublic ? (
-                                                <Link href={`/event/${event.id}`} className="font-semibold text-indigo-700 hover:underline">
+                                                <a href={`/event/${event.id}`} className="font-semibold text-indigo-700 hover:underline">
                                                     {event.title}
-                                                </Link>
+                                                </a>
                                             ) : (
                                                 <span className="font-semibold">{event.title}</span>
                                             )}
@@ -333,8 +333,7 @@ function FunFactsSection({ stats }: { stats: UserWrappedStats }) {
     return (
         <section
             className="py-24 px-8 flex justify-center"
-            // Violet to Pink gradient to match the rest
-            style={{ background: 'linear-gradient(135deg, #4c1d95, #be185d, #4c1d95)' }}
+            style={{ background: 'linear-gradient(135deg, #7c3aed, #a855f7)' }}
         >
             <div className="max-w-4xl w-full">
                 <h2 className="text-2xl md:text-3xl font-medium mb-12 text-center text-white">

@@ -295,15 +295,15 @@ function MimretidSection({ stats }: { stats: UserWrappedStats }) {
                                     month: "long",
                                 });
                                 return (
-                                    <Table.Row key={event.id}>
-                                        <Table.DataCell className="whitespace-nowrap capitalize">{dateString}</Table.DataCell>
-                                        <Table.DataCell>
+                                    <Table.Row key={event.id} className="h-16">
+                                        <Table.DataCell className="whitespace-nowrap capitalize align-middle">{dateString}</Table.DataCell>
+                                        <Table.DataCell className="align-middle">
                                             {event.isPublic ? (
-                                                <a href={`/event/${event.id}`} className="font-semibold text-indigo-700 hover:underline">
+                                                <a href={`/event/${event.id}`} className="font-semibold text-indigo-700 hover:underline line-clamp-2">
                                                     {event.title}
                                                 </a>
                                             ) : (
-                                                <span className="font-semibold">{event.title}</span>
+                                                <span className="font-semibold line-clamp-2">{event.title}</span>
                                             )}
                                         </Table.DataCell>
                                     </Table.Row>
@@ -311,7 +311,7 @@ function MimretidSection({ stats }: { stats: UserWrappedStats }) {
                             })}
                             {/* Fill remaining rows to maintain height */}
                             {Array.from({ length: Math.max(0, rowsPerPage - displayedEvents.length) }).map((_, index) => (
-                                <Table.Row key={`empty-${index}`}>
+                                <Table.Row key={`empty-${index}`} className="h-16">
                                     <Table.DataCell className="whitespace-nowrap capitalize" aria-hidden="true">&nbsp;</Table.DataCell>
                                     <Table.DataCell aria-hidden="true">&nbsp;</Table.DataCell>
                                 </Table.Row>

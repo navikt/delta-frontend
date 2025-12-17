@@ -223,7 +223,6 @@ function AttendanceSection({ stats }: { stats: UserWrappedStats }) {
 }
 
 // Mimretid Section
-// Mimretid Section
 function MimretidSection({ stats }: { stats: UserWrappedStats }) {
     const [page, setPage] = useState(1);
     const [sort, setSort] = useState<{ orderBy: string; direction: 'ascending' | 'descending' }>({
@@ -310,6 +309,13 @@ function MimretidSection({ stats }: { stats: UserWrappedStats }) {
                                     </Table.Row>
                                 );
                             })}
+                            {/* Fill remaining rows to maintain height */}
+                            {Array.from({ length: Math.max(0, rowsPerPage - displayedEvents.length) }).map((_, index) => (
+                                <Table.Row key={`empty-${index}`}>
+                                    <Table.DataCell className="whitespace-nowrap capitalize" aria-hidden="true">&nbsp;</Table.DataCell>
+                                    <Table.DataCell aria-hidden="true">&nbsp;</Table.DataCell>
+                                </Table.Row>
+                            ))}
                         </Table.Body>
                     </Table>
                     {totalPages > 1 && (

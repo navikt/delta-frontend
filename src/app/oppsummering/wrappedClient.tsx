@@ -19,7 +19,7 @@ export default function WrappedClient({ stats, year }: WrappedClientProps) {
             <CategorySection stats={stats} />
             <AttendanceSection stats={stats} />
             <FunFactsSection stats={stats} />
-            <StatsSummarySection stats={stats} />
+
             <MimretidSection stats={stats} />
         </div>
     );
@@ -343,12 +343,12 @@ function MimretidSection({ stats }: { stats: UserWrappedStats }) {
     );
 }
 
-// Fun Facts Section
+// Fun Facts & Stats Section
 function FunFactsSection({ stats }: { stats: UserWrappedStats }) {
     return (
         <section
             className="py-24 px-8 flex justify-center"
-            style={{ background: 'linear-gradient(135deg, #7c3aed, #a855f7)' }}
+            style={{ background: 'linear-gradient(135deg, #5b21b6, #4c1d95)' }}
         >
             <div className="max-w-4xl w-full">
                 <h2 className="text-2xl md:text-3xl font-medium mb-12 text-center text-white">
@@ -376,20 +376,7 @@ function FunFactsSection({ stats }: { stats: UserWrappedStats }) {
                         </div>
                     )}
                 </div>
-            </div>
-        </section>
-    );
-}
 
-
-
-function StatsSummarySection({ stats }: { stats: UserWrappedStats }) {
-    return (
-        <section
-            className="py-24 px-8 flex justify-center"
-            style={{ background: 'linear-gradient(135deg, #7c3aed, #4c1d95)' }}
-        >
-            <div className="max-w-4xl w-full">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     <StatBox icon="👥" value={stats.totalPeopleMetWith.toLocaleString('nb-NO')} label='kolleger "møtt"' />
                     <StatBox icon="⏰" value={Math.round(stats.totalHoursSpent).toLocaleString('nb-NO')} label="timer brukt" />
@@ -397,7 +384,7 @@ function StatsSummarySection({ stats }: { stats: UserWrappedStats }) {
                     <StatBox
                         icon="📅"
                         value={Math.max(...stats.monthlyActivity).toLocaleString('nb-NO')}
-                        label="maks per mnd"
+                        label="flest på én mnd"
                     />
                 </div>
             </div>

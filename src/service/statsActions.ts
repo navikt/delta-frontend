@@ -31,11 +31,13 @@ export type EventStats = {
   newOrganizersCount: number;
   topOrganizersByEvents: OrganizerStat[];
   topOrganizersByParticipants: OrganizerStat[];
+  totalOrganizersCount: number;
 };
 
 export type OrganizerStat = {
   name: string;
   count: number;
+  uniqueCount?: number;
 };
 
 export type CategoryStat = {
@@ -387,16 +389,27 @@ export async function getEventStatistics(year?: number): Promise<EventStats> {
       .slice(0, 5);
 
     // 3. Top Organizers by Participants
-    const organizersByParticipantCount = new Map<string, { count: number; name: string }>();
+    const organizersByParticipantCount = new Map<string, { count: number; uniqueParticipants: Set<string>; name: string }>();
     eventsThisYear.forEach(event => {
-      const participantCount = event.participants.length;
       event.hosts.forEach(host => {
-        const currentData = organizersByParticipantCount.get(host.email) || { count: 0, name: host.name };
-        organizersByParticipantCount.set(host.email, { count: currentData.count + participantCount, name: host.name });
+        const currentData = organizersByParticipantCount.get(host.email) || { count: 0, uniqueParticipants: new Set<string>(), name: host.name };
+
+        // Add total participant count for this event
+        currentData.count += event.participants.length;
+
+        // Add unique participants for this event
+        event.participants.forEach(p => currentData.uniqueParticipants.add(p.email));
+
+        organizersByParticipantCount.set(host.email, currentData);
       });
     });
 
     const topOrganizersByParticipants = Array.from(organizersByParticipantCount.values())
+      .map(data => ({
+        name: data.name,
+        count: data.count,
+        uniqueCount: data.uniqueParticipants.size
+      }))
       .sort((a, b) => b.count - a.count)
       .slice(0, 5);
 
@@ -429,6 +442,7 @@ export async function getEventStatistics(year?: number): Promise<EventStats> {
       newOrganizersCount,
       topOrganizersByEvents,
       topOrganizersByParticipants,
+      totalOrganizersCount: thisYearHosts.size,
     };
   } catch (error) {
     console.error('Failed to fetch event statistics:', error);

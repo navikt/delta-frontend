@@ -18,9 +18,9 @@ export default function WrappedClient({ stats, year }: WrappedClientProps) {
             <TotalEventsSection stats={stats} />
             <CategorySection stats={stats} />
             <AttendanceSection stats={stats} />
-            <MimretidSection stats={stats} />
             <FunFactsSection stats={stats} />
-            <SummarySection stats={stats} year={year} />
+            <StatsSummarySection stats={stats} />
+            <MimretidSection stats={stats} />
         </div>
     );
 }
@@ -181,7 +181,7 @@ function AttendanceSection({ stats }: { stats: UserWrappedStats }) {
         >
             <div className="max-w-2xl w-full">
                 <h2 className="text-2xl md:text-3xl font-medium mb-12 text-center text-white">
-                    Slik deltok du
+                    Dine arrangementer
                 </h2>
 
                 <div className="space-y-8">
@@ -212,9 +212,9 @@ function AttendanceSection({ stats }: { stats: UserWrappedStats }) {
                 </div>
                 <div className="mt-12 text-center">
                     <p className="text-xl md:text-2xl font-bold text-white inline-block">
-                        {fysisk >= digitalt && fysisk >= hybrid && "Du liker best å møte opp på kontoret! 🏢"}
-                        {digitalt > fysisk && digitalt >= hybrid && "Du er en digital deltaker! 💻"}
-                        {hybrid > fysisk && hybrid > digitalt && "Du er en hybrid deltaker! 🔄"}
+                        {fysisk >= digitalt && fysisk >= hybrid && "De fleste arrangementene dine var fysiske! 🏢"}
+                        {digitalt > fysisk && digitalt >= hybrid && "De fleste arrangementene dine var digitale! 💻"}
+                        {hybrid > fysisk && hybrid > digitalt && "De fleste arrangementene dine var hybride! 🔄"}
                     </p>
                 </div>
             </div>
@@ -269,7 +269,7 @@ function MimretidSection({ stats }: { stats: UserWrappedStats }) {
                     Mimretid!
                 </h2>
 
-                <div className="bg-white rounded-xl p-6 shadow-xl text-gray-900 border-4 border-indigo-200">
+                <div className="bg-white rounded-xl p-6 shadow-xl text-gray-900 border-4 border-indigo-200 min-h-[600px] flex flex-col">
                     <Table
                         size="large"
                         sort={sort}
@@ -323,6 +323,21 @@ function MimretidSection({ stats }: { stats: UserWrappedStats }) {
                         </div>
                     )}
                 </div>
+
+                <div className="flex flex-col gap-4 mt-12 items-center">
+                    <Link
+                        href="/statistikk"
+                        className="inline-flex items-center justify-center gap-2 bg-white text-indigo-900 hover:bg-indigo-50 rounded-full px-8 py-4 text-lg font-bold transition-colors shadow-lg hover:underline"
+                    >
+                        📊 Se statistikk for Delta i stort
+                    </Link>
+                    <Link
+                        href="/"
+                        className="inline-flex items-center justify-center gap-2 text-white underline decoration-white/50 hover:decoration-white transition-all"
+                    >
+                        ← Tilbake til arrangementer
+                    </Link>
+                </div>
             </div>
         </section>
     );
@@ -361,8 +376,21 @@ function FunFactsSection({ stats }: { stats: UserWrappedStats }) {
                         </div>
                     )}
                 </div>
+            </div>
+        </section>
+    );
+}
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+
+
+function StatsSummarySection({ stats }: { stats: UserWrappedStats }) {
+    return (
+        <section
+            className="py-24 px-8 flex justify-center"
+            style={{ background: 'linear-gradient(135deg, #7c3aed, #4c1d95)' }}
+        >
+            <div className="max-w-4xl w-full">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     <StatBox icon="👥" value={stats.totalPeopleMetWith.toLocaleString('nb-NO')} label='kolleger "møtt"' />
                     <StatBox icon="⏰" value={Math.round(stats.totalHoursSpent).toLocaleString('nb-NO')} label="timer brukt" />
                     <StatBox icon="🎤" value={stats.eventsHosted.toLocaleString('nb-NO')} label="som vert" />
@@ -387,78 +415,4 @@ function StatBox({ icon, value, label }: { icon: string; value: string | number;
     );
 }
 
-// Summary Section
-function SummarySection({ stats, year }: { stats: UserWrappedStats; year: number }) {
-    return (
-        <section
-            className="py-24 px-8 flex justify-center pb-32" // Added extra padding at bottom to ensure coverage
-            style={{ background: 'linear-gradient(to top, #312e81, #4c1d95)' }}
-        >
-            <div className="text-center max-w-lg w-full">
-                <div className="bg-white rounded-3xl p-8 text-gray-900 shadow-2xl mb-12">
-                    <div className="flex items-center justify-center gap-2 mb-6">
-                        <span className="text-3xl">Δ</span>
-                        <span className="text-xl font-bold">Delta {year}</span>
-                    </div>
 
-                    <div className="border-t border-gray-200 pt-6">
-                        <h2 className="text-2xl font-black text-gray-800 mb-6">
-                            {stats.userName}
-                        </h2>
-
-                        <div className="space-y-4 text-left">
-                            <SummaryRow
-                                icon="🎯"
-                                label="Arrangementer"
-                                value={stats.totalEventsAttended.toString()}
-                            />
-                            {stats.favoriteCategory && (
-                                <SummaryRow
-                                    icon={stats.favoriteCategory.emoji}
-                                    label="Favoritt"
-                                    value={stats.favoriteCategory.name}
-                                />
-                            )}
-                            <SummaryRow
-                                icon="👥"
-                                label='Kolleger "møtt"'
-                                value={stats.totalPeopleMetWith.toLocaleString('nb-NO')}
-                            />
-                        </div>
-
-                        <div className="flex justify-center gap-2 mt-8 pt-6 border-t border-gray-200">
-                            {stats.topCategories.slice(0, 3).map((cat) => (
-                                <span key={cat.name} className="text-3xl" title={cat.name}>{cat.emoji}</span>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-
-                <div className="flex flex-col gap-4">
-                    <Link
-                        href="/statistikk"
-                        className="inline-flex items-center justify-center gap-2 bg-white text-indigo-900 hover:bg-indigo-50 rounded-full px-8 py-4 text-lg font-bold transition-colors shadow-lg hover:underline"
-                    >
-                        📊 Se statistikk for Delta i stort
-                    </Link>
-                    <Link
-                        href="/"
-                        className="inline-flex items-center justify-center gap-2 text-white underline decoration-white/50 hover:decoration-white transition-all"
-                    >
-                        ← Tilbake til arrangementer
-                    </Link>
-                </div>
-            </div>
-        </section>
-    );
-}
-
-function SummaryRow({ icon, label, value }: { icon: string; label: string; value: string }) {
-    return (
-        <div className="flex items-center gap-3 py-2">
-            <span className="text-2xl" aria-hidden="true">{icon}</span>
-            <span className="text-gray-600 flex-1">{label}</span>
-            <span className="font-bold text-lg">{value}</span>
-        </div>
-    );
-}

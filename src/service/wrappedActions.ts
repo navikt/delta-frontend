@@ -308,7 +308,7 @@ function generateFunFacts(data: {
 
     // Biggest event
     if (data.biggestEvent && data.biggestEvent.participants >= 50) {
-        facts.push(`Du var med på et arrangement med ${data.biggestEvent.participants} deltakere!`);
+        facts.push(`Du var med på "${data.biggestEvent.title}" med ${data.biggestEvent.participants} deltakere!`);
     }
 
     // Shuffle and return top 3-4 facts

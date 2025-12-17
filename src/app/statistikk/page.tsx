@@ -71,6 +71,73 @@ export default async function StatsPage({
           allCategoryStats={stats.allCategoryStats}
         />
 
+
+        {/* Organizer Statistics */}
+        <section>
+          <h2 className="text-2xl font-semibold mb-4">Arrangører</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-4">
+              <StatCard
+                title="Totalt antall arrangører"
+                value={stats.totalOrganizersCount}
+                suffix="unike arrangører"
+              />
+              <StatCard
+                title="Nye arrangører"
+                value={stats.newOrganizersCount}
+                suffix="førstegangsarrangører"
+              />
+            </div>
+            {/* Placeholder to keep grid balanced if needed, or expand functionality later */}
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            {/* Top Organizers by Event Count */}
+            <div className="bg-white p-6 rounded-lg border-2 border-green-300">
+              <h3 className="font-semibold text-lg text-gray-900 mb-4">Arrangert flest arrangementer</h3>
+              <div className="space-y-3">
+                {stats.topOrganizersByEvents.map((org, index) => (
+                  <div key={index} className="flex items-center justify-between border-b border-gray-100 last:border-0 pb-2 last:pb-0">
+                    <div className="flex items-center gap-3">
+                      <span className="text-xl font-bold text-green-600 w-6">
+                        {index + 1}
+                      </span>
+                      <span className="text-gray-900 font-medium">{org.name}</span>
+                    </div>
+                    <span className="text-gray-600 font-medium">{org.count} arr.</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Top Organizers by Participant Count */}
+            <div className="bg-white p-6 rounded-lg border-2 border-purple-300">
+              <h3 className="font-semibold text-lg text-gray-900 mb-4">Samlet flest deltakere</h3>
+              <div className="space-y-3">
+                {stats.topOrganizersByParticipants.map((org, index) => (
+                  <div key={index} className="flex items-center justify-between border-b border-gray-100 last:border-0 pb-2 last:pb-0">
+                    <div className="flex items-center gap-3">
+                      <span className="text-xl font-bold text-purple-600 w-6">
+                        {index + 1}
+                      </span>
+                      <span className="text-gray-900 font-medium">{org.name}</span>
+                    </div>
+                    <span className="text-gray-600 font-medium">
+                      {org.count.toLocaleString('nb-NO')}
+                      {org.uniqueCount !== undefined && (
+                        <>
+                          <span className="mx-1">/</span>
+                          <span className="text-sm">{org.uniqueCount.toLocaleString('nb-NO')} unike</span>
+                        </>
+                      )}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Event Details */}
         <section>
           <h2 className="text-2xl font-semibold mb-4">Detaljer</h2>
@@ -123,59 +190,6 @@ export default async function StatsPage({
                 </div>
               </div>
             )}
-          </div>
-        </section>
-
-        {/* Organizer Statistics */}
-        <section>
-          <h2 className="text-2xl font-semibold mb-4">Arrangører</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-4">
-              <StatCard
-                title="Nye arrangører"
-                value={stats.newOrganizersCount}
-                suffix="førstegangsarrangører"
-              />
-            </div>
-            {/* Placeholder to keep grid balanced if needed, or expand functionality later */}
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-            {/* Top Organizers by Event Count */}
-            <div className="bg-white p-6 rounded-lg border-2 border-green-300">
-              <h3 className="font-semibold text-lg text-gray-900 mb-4">Arrangert flest arrangementer</h3>
-              <div className="space-y-3">
-                {stats.topOrganizersByEvents.map((org, index) => (
-                  <div key={index} className="flex items-center justify-between border-b border-gray-100 last:border-0 pb-2 last:pb-0">
-                    <div className="flex items-center gap-3">
-                      <span className="text-xl font-bold text-green-600 w-6">
-                        {index + 1}
-                      </span>
-                      <span className="text-gray-900 font-medium">{org.name}</span>
-                    </div>
-                    <span className="text-gray-600 font-medium">{org.count} arr.</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Top Organizers by Participant Count */}
-            <div className="bg-white p-6 rounded-lg border-2 border-purple-300">
-              <h3 className="font-semibold text-lg text-gray-900 mb-4">Samlet flest deltakere</h3>
-              <div className="space-y-3">
-                {stats.topOrganizersByParticipants.map((org, index) => (
-                  <div key={index} className="flex items-center justify-between border-b border-gray-100 last:border-0 pb-2 last:pb-0">
-                    <div className="flex items-center gap-3">
-                      <span className="text-xl font-bold text-purple-600 w-6">
-                        {index + 1}
-                      </span>
-                      <span className="text-gray-900 font-medium">{org.name}</span>
-                    </div>
-                    <span className="text-gray-600 font-medium">{org.count.toLocaleString('nb-NO')}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
         </section>
       </div>

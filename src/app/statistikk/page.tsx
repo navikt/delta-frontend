@@ -76,19 +76,16 @@ export default async function StatsPage({
         <section>
           <h2 className="text-2xl font-semibold mb-4">Arrangører</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-4">
-              <StatCard
-                title="Totalt antall arrangører"
-                value={stats.totalOrganizersCount}
-                suffix="unike arrangører"
-              />
-              <StatCard
-                title="Nye arrangører"
-                value={stats.newOrganizersCount}
-                suffix="førstegangsarrangører"
-              />
-            </div>
-            {/* Placeholder to keep grid balanced if needed, or expand functionality later */}
+            <StatCard
+              title="Totalt antall arrangører"
+              value={stats.totalOrganizersCount}
+              suffix="unike arrangører"
+            />
+            <StatCard
+              title="Nye arrangører"
+              value={stats.newOrganizersCount}
+              suffix="førstegangsarrangører"
+            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">

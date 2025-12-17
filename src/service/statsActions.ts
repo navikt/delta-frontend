@@ -28,6 +28,14 @@ export type EventStats = {
   medianParticipants: number;
   allCategoryStats: CategoryStat[];
   allEventsThisYear: CategoryEvent[];
+  newOrganizersCount: number;
+  topOrganizersByEvents: OrganizerStat[];
+  topOrganizersByParticipants: OrganizerStat[];
+};
+
+export type OrganizerStat = {
+  name: string;
+  count: number;
 };
 
 export type CategoryStat = {
@@ -342,6 +350,56 @@ export async function getEventStatistics(year?: number): Promise<EventStats> {
       },
     ];
 
+    // --- New Statistics Implementations ---
+
+    // 1. New Organizers Calculation
+    const previousYearsHosts = new Set<string>();
+    allEvents.forEach(event => {
+      const eventYear = new Date(event.event.startTime).getFullYear();
+      if (eventYear < selectedYear) {
+        event.hosts.forEach(host => previousYearsHosts.add(host.email));
+      }
+    });
+
+    const thisYearHosts = new Set<string>();
+    eventsThisYear.forEach(event => {
+      event.hosts.forEach(host => thisYearHosts.add(host.email));
+    });
+
+    let newOrganizersCount = 0;
+    thisYearHosts.forEach(hostEmail => {
+      if (!previousYearsHosts.has(hostEmail)) {
+        newOrganizersCount++;
+      }
+    });
+
+    // 2. Top Organizers by Events
+    const organizersByEventCount = new Map<string, { count: number; name: string }>();
+    eventsThisYear.forEach(event => {
+      event.hosts.forEach(host => {
+        const currentData = organizersByEventCount.get(host.email) || { count: 0, name: host.name };
+        organizersByEventCount.set(host.email, { count: currentData.count + 1, name: host.name });
+      });
+    });
+
+    const topOrganizersByEvents = Array.from(organizersByEventCount.values())
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
+
+    // 3. Top Organizers by Participants
+    const organizersByParticipantCount = new Map<string, { count: number; name: string }>();
+    eventsThisYear.forEach(event => {
+      const participantCount = event.participants.length;
+      event.hosts.forEach(host => {
+        const currentData = organizersByParticipantCount.get(host.email) || { count: 0, name: host.name };
+        organizersByParticipantCount.set(host.email, { count: currentData.count + participantCount, name: host.name });
+      });
+    });
+
+    const topOrganizersByParticipants = Array.from(organizersByParticipantCount.values())
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
+
     const allCategories = Array.from(allCategoriesSet).sort();
 
     return {
@@ -368,6 +426,9 @@ export async function getEventStatistics(year?: number): Promise<EventStats> {
       medianParticipants,
       allCategoryStats,
       allEventsThisYear,
+      newOrganizersCount,
+      topOrganizersByEvents,
+      topOrganizersByParticipants,
     };
   } catch (error) {
     console.error('Failed to fetch event statistics:', error);

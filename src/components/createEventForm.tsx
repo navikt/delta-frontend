@@ -223,8 +223,9 @@ function InternalCreateEventForm({
     trigger,
     getValues,
     control,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     setValue,
+    handleSubmit
   } = useForm<CreateEventSchema>({
     defaultValues:
       richEvent.type === EditTypeEnum.NEW
@@ -317,10 +318,7 @@ function InternalCreateEventForm({
 
   return (
     <form
-      action={async () => {
-        const valid = await trigger();
-        const values = getValues();
-        if (!valid) return;
+      onSubmit={handleSubmit(async (values) => {
         if (richEvent.type === EditTypeEnum.EDIT)
           updateAndRedirect(
             values,
@@ -329,7 +327,7 @@ function InternalCreateEventForm({
             selectedCategories,
           );
         else createAndRedirect(values, newTags, selectedCategories);
-      }}
+      })}
       className="flex flex-col gap-5"
     >
       <TextField
@@ -635,7 +633,7 @@ function InternalCreateEventForm({
               >
                   Avbryt
               </Link>*/}
-        <Button type="submit">
+        <Button type="submit" loading={isSubmitting}>
           {richEvent.type === EditTypeEnum.EDIT ? "Oppdater" : "Opprett"}
         </Button>
       </div>

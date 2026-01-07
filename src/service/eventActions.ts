@@ -23,8 +23,10 @@ class ApiError extends Error {
 }
 
 const handleApiError = (error: unknown): never => {
+  if (error instanceof ApiError) {
+    throw error;
+  }
   console.error('API Error:', error);
-  
   if (error instanceof AxiosError) {
     const status = error.response?.status;
     const message = error.response?.data?.message || 'Ukjent feil';
@@ -49,6 +51,7 @@ const handleApiError = (error: unknown): never => {
 
 export async function joinEvent(eventId: string): Promise<void> {
   try {
+    validateEventId(eventId);
     const api = await getApi();
     await api.post(`/user/event/${eventId}`);
   } catch (error) {
@@ -62,6 +65,7 @@ export async function joinEvent(eventId: string): Promise<void> {
 
 export async function leaveEvent(eventId: string): Promise<void> {
   try {
+    validateEventId(eventId);
     const api = await getApi();
     await api.delete(`/user/event/${eventId}`);
   } catch (error) {
@@ -71,6 +75,7 @@ export async function leaveEvent(eventId: string): Promise<void> {
 
 export async function deleteEvent(eventId: string): Promise<void> {
   try {
+    validateEventId(eventId);
     const api = await getApi();
     await api.delete(`/admin/event/${eventId}`);
   } catch (error) {
@@ -80,6 +85,7 @@ export async function deleteEvent(eventId: string): Promise<void> {
 
 export async function deleteParticipant(eventId: string, userEmail: string): Promise<void> {
   try {
+    validateEventId(eventId);
     const api = await getApi();
     const payload = { email: userEmail };
     await api.delete(`/admin/event/${eventId}/participant`, { data: payload });
@@ -93,6 +99,7 @@ export async function changeParticipant(
   changeDeltaParticipant: ChangeDeltaParticipant,
 ): Promise<void> {
   try {
+    validateEventId(eventId);
     const api = await getApi();
     await api.post(`/admin/event/${eventId}/participant`, changeDeltaParticipant);
   } catch (error) {
@@ -112,6 +119,7 @@ export async function createCategory(category: string): Promise<Category> {
 
 export async function setCategories(eventId: string, categories: number[]): Promise<void> {
   try {
+    validateEventId(eventId);
     const api = await getApi();
     await api.post<string>(
       `/admin/event/${eventId}/category`,
@@ -169,6 +177,7 @@ export async function getEvents({
 
 export async function getEvent(id: string): Promise<FullDeltaEvent> {
   try {
+    validateEventId(id);
     const api = await getApi();
     const response = await api.get<FullDeltaEvent>(`/event/${id}`);
     return response.data;
@@ -198,6 +207,7 @@ export async function updateEvent(
   eventId: string,
 ): Promise<FullDeltaEvent> {
   try {
+    validateEventId(eventId);
     const api = await getApi();
 
     const createEvent = createDeltaEventFromFormData(formData);
@@ -249,4 +259,13 @@ function createDeltaEventFromFormData(
     signupDeadline: formData.hasSignupDeadline ? deadline : undefined,
     sendNotificationEmail: sendNotificationEmail,
   };
+}
+
+function validateEventId(eventId: string): void {
+  // Allow only safe identifier characters (alphanumeric, dash, underscore).
+  // Adjust this regex if event IDs follow a stricter format (e.g., UUID).
+  const safeIdPattern = /^[A-Za-z0-9_-]+$/;
+  if (!eventId || !safeIdPattern.test(eventId)) {
+    throw new ApiError("Invalid event ID", 400);
+  }
 }

@@ -198,6 +198,7 @@ export async function updateEvent(
   eventId: string,
 ): Promise<FullDeltaEvent> {
   try {
+    validateEventId(eventId);
     const api = await getApi();
 
     const createEvent = createDeltaEventFromFormData(formData);
@@ -249,4 +250,13 @@ function createDeltaEventFromFormData(
     signupDeadline: formData.hasSignupDeadline ? deadline : undefined,
     sendNotificationEmail: sendNotificationEmail,
   };
+}
+
+function validateEventId(eventId: string): void {
+  // Allow only safe identifier characters (alphanumeric, dash, underscore).
+  // Adjust this regex if event IDs follow a stricter format (e.g., UUID).
+  const safeIdPattern = /^[A-Za-z0-9_-]+$/;
+  if (!eventId || !safeIdPattern.test(eventId)) {
+    throw new ApiError("Invalid event ID", 400);
+  }
 }

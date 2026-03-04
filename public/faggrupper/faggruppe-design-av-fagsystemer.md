@@ -5,7 +5,7 @@ audience: Designere som jobber med fagsystemer
 ---
 
 ## Møtetidspunkt
-- Møter framover: Onsdag 4. februar 2026 kl. 13, torsdag 19. februar kl. 13, onsdag 4. mars kl. 13.
+- Møter framover: Torsdag 19. mars 2026 kl. 13, torsdag 16. april kl. 13, torsdag 13. mai kl. 13.
 - Frekvens og tidspunkt for møter: Vanligvis på fagtorsdag (13 - 14), i utgangspunktet hver fagtorsdag (annenhver uke). Innkalling sendes til medlemmer i faggruppe-Slack. 
 
 ## Kontaktpersoner

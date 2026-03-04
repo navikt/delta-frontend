@@ -8,10 +8,8 @@ audience: Utviklere
 
 ## Kontaktpersoner
 
-- [Andreas Nordahl](https://nav-it.slack.com/team/U018Y6BG0DN)
-- [Max Lloyd](https://nav-it.slack.com/team/U05A2AYH9NK)
-- [Abdifatah Bashi](https://nav-it.slack.com/team/U055WRJ0N2G)
-- [Thor Håkon Bredesen](https://nav-it.slack.com/team/U05AE67ABK7)
+- [Karl-Magnus Thorsnes](https://nav-it.slack.com/team/U07HJK91DKQ)
+- [Sverre Blekastad Stensby]([https://nav-it.slack.com/team/U05A2AYH9NK](https://nav-it.slack.com/team/U05AABTAM2S))
 
 ## Beskrivelse
 

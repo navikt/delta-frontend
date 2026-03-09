@@ -16,6 +16,7 @@ import Link from "next/link";
 import {useQRCode} from 'next-qrcode';
 import {FullDeltaEvent, DeltaParticipant} from "@/types/event";
 import {deleteEvent, getEvent, joinEvent, leaveEvent} from "@/service/eventActions";
+import MarkdownRenderer from "@/components/MarkdownRenderer";
 import {format} from "date-fns";
 import Calendar from "@/components/calendar";
 import {TrashIcon, PencilIcon, BarChartIcon, FilePlusIcon} from "@navikt/aksel-icons";
@@ -344,9 +345,9 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                     <Heading size="medium" as="h2">
                         Detaljer
                     </Heading>
-                    <BodyLong className="whitespace-pre-line break-words max-w-prose">
-                        {convertTextToLinks(event.description)}
-                    </BodyLong>
+                    <div className="break-words max-w-prose">
+                        <MarkdownRenderer>{event.description}</MarkdownRenderer>
+                    </div>
                     <div className="flex gap-2 flex-wrap mt-5 mb-12">
                         {categories.length > 0 &&
                             categories.map((category) => (

@@ -34,6 +34,7 @@ import {
 import { midnightDate } from "@/service/format";
 import { format } from "date-fns";
 import { Spraksjekk } from "@/components/library";
+import MarkdownRenderer from "@/components/MarkdownRenderer";
 
 function isValidParticipantLimit(limit?: string) {
   if (!limit) return false;
@@ -275,7 +276,12 @@ function InternalCreateEventForm({
   });
 
   const [mobilvisning, setMobilvisning] = useState(true)
-  const [dvalue, setDvalue] = useState("")
+  const [showPreview, setShowPreview] = useState(false);
+  const initialDescription =
+    richEvent.type !== EditTypeEnum.NEW
+      ? (richEvent.event.description ?? "")
+      : ""
+  const [dvalue, setDvalue] = useState(initialDescription)
 
   // Location related fields
   const [showAlert, setShowAlert] = useState(false);
@@ -527,12 +533,40 @@ function InternalCreateEventForm({
         />
       </div>
       <div className="max-w-prose">
-        <Textarea
-          label="Beskrivelse"
-          {...register("description")}
-          error={errors.description?.message}
-          onChange={(e) => setDvalue(e.target.value)}
-        />
+        <div className="flex items-center justify-between mb-1">
+          <span className="navds-label">Beskrivelse</span>
+          <Switch
+            size="small"
+            checked={showPreview}
+            onChange={() => setShowPreview((v) => !v)}
+          >
+            Forhåndsvisning
+          </Switch>
+        </div>
+        {showPreview ? (
+          <div className="border border-gray-300 rounded p-3 min-h-[8rem] bg-white">
+            {dvalue ? (
+              <MarkdownRenderer>{dvalue}</MarkdownRenderer>
+            ) : (
+              <span className="text-gray-400 italic">
+                Ingen beskrivelse ennå
+              </span>
+            )}
+          </div>
+        ) : (
+          <Textarea
+            label="Beskrivelse"
+            hideLabel
+            {...register("description")}
+            error={errors.description?.message}
+            onChange={(e) => setDvalue(e.target.value)}
+          />
+        )}
+        {errors.description?.message && showPreview && (
+          <p className="navds-error-message navds-label mt-1">
+            {errors.description.message}
+          </p>
+        )}
         <div style={{ display: "block", marginBottom: "0px" }}>
           <div style={{ marginTop: "0px", float: "right" }}>
             <Switch onChange={() => setMobilvisning(!mobilvisning)}

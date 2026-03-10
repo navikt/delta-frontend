@@ -2,8 +2,7 @@ import { checkToken, getDeltaBackendAccessToken, getUser, isFaggruppeAdmin } fro
 import CardWithBackground from "@/components/cardWithBackground";
 import { Detail } from "@navikt/ds-react";
 import { PersonGroupIcon, CalendarIcon, ClockIcon } from "@navikt/aksel-icons";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+import MarkdownRenderer from "@/components/MarkdownRenderer";
 import Link from "next/link";
 import { PencilIcon } from "@navikt/aksel-icons";
 import { FaggruppeType } from "@/components/faggrupper/FaggruppeFormFields";
@@ -76,7 +75,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
                     <h1 className="pb-1">{group.navn}</h1>
                     {group.undertittel && (
                         <div className="-mt-7 mb-10">
-                            <ReactMarkdown remarkPlugins={[remarkGfm]}>{group.undertittel}</ReactMarkdown>
+                            <MarkdownRenderer>{group.undertittel}</MarkdownRenderer>
                         </div>
                     )}
                     {group.tidspunkt && (
@@ -103,7 +102,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
                     )}
                     {group.beskrivelse && (
                         <article>
-                            <ReactMarkdown remarkPlugins={[remarkGfm]}>{group.beskrivelse}</ReactMarkdown>
+                            <MarkdownRenderer>{group.beskrivelse}</MarkdownRenderer>
                         </article>
                     )}
                 </div>

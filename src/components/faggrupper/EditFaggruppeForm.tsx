@@ -38,6 +38,7 @@ export default function EditFaggruppeForm({ group }: { group: Group }) {
         try {
             const submitData = {
                 ...formData,
+                beskrivelse: formData.beskrivelse || null,
                 starttid: formData.starttid || null,
                 sluttid: formData.sluttid || null,
                 tidspunkt: formData.tidspunkt || null,

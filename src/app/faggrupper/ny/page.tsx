@@ -2,7 +2,7 @@ import { checkToken } from "@/auth/token";
 import CardWithBackground from '@/components/cardWithBackground';
 import NewFaggruppeForm from "@/components/faggrupper/NewFaggruppeForm";
 
-export default async function NewFaggruppeePage() {
+export default async function NewFaggruppePage() {
     await checkToken("/faggrupper/ny");
 
     return (

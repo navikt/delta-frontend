@@ -26,6 +26,7 @@ export default function NewFaggruppeForm() {
         try {
             const submitData = {
                 ...formData,
+                beskrivelse: formData.beskrivelse || null,
                 starttid: formData.starttid || null,
                 sluttid: formData.sluttid || null,
                 tidspunkt: formData.tidspunkt || null,

@@ -1,4 +1,4 @@
-import { checkToken, getDeltaBackendAccessToken, getUser } from "@/auth/token";
+import { checkToken, getDeltaBackendAccessToken, getUser, isFaggruppeAdmin } from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
 import { Detail } from "@navikt/ds-react";
 import { PersonGroupIcon, CalendarIcon, ClockIcon } from "@navikt/aksel-icons";
@@ -29,7 +29,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
         ? `http://delta-backend/api/faggrupper/${id}`
         : `http://localhost:8080/api/faggrupper/${id}`;
 
-    const [groupResponse, ownerResponse, user] = await Promise.all([
+    const [groupResponse, ownerResponse, user, isAdmin] = await Promise.all([
         fetch(apiUrl, {
             headers: { Authorization: `Bearer ${token ?? 'placeholder-token'}` },
             cache: 'no-store',
@@ -41,6 +41,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
             { headers: { Authorization: `Bearer ${token ?? 'placeholder-token'}` }, cache: 'no-store' }
         ).catch(() => null),
         getUser(),
+        isFaggruppeAdmin(),
     ]);
 
     if (!groupResponse.ok) {
@@ -104,7 +105,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
                         </article>
                     )}
                 </div>
-                {isOwner && (
+                {(isOwner || isAdmin) && (
                     <div className="px-4 pb-10">
                         <Link
                             href={`/faggrupper/${id}/rediger`}

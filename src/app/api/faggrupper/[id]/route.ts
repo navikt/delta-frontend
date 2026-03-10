@@ -29,6 +29,30 @@ export async function GET(
     }
 }
 
+export async function DELETE(
+    request: Request,
+    { params }: { params: Promise<{ id: string }> }
+) {
+    const { id } = await params;
+    const tokenResult = await getOboToken(request);
+    if (typeof tokenResult !== 'string') return tokenResult.error;
+
+    try {
+        const response = await fetch(backendUrl(id), {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${tokenResult}` },
+        });
+        if (!response.ok) {
+            const errorBody = await response.json().catch(() => ({}));
+            return NextResponse.json(errorBody, { status: response.status });
+        }
+        return new NextResponse(null, { status: 204 });
+    } catch (error) {
+        console.error('Failed to delete faggruppe:', error);
+        return NextResponse.json({ error: 'Failed to delete faggruppe' }, { status: 500 });
+    }
+}
+
 export async function PUT(
     request: Request,
     { params }: { params: Promise<{ id: string }> }

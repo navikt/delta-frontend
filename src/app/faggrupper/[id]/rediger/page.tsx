@@ -2,6 +2,7 @@ import { checkToken, getDeltaBackendAccessToken, getUser, isFaggruppeAdmin } fro
 import CardWithBackground from "@/components/cardWithBackground";
 import EditFaggruppeForm from "@/components/faggrupper/EditFaggruppeForm";
 import ManageEiereForm from "@/components/faggrupper/ManageEiereForm";
+import DeleteFaggruppeButton from "@/components/faggrupper/DeleteFaggruppeButton";
 import { FaggruppeType } from "@/components/faggrupper/FaggruppeFormFields";
 import { redirect } from "next/navigation";
 
@@ -79,6 +80,18 @@ export default async function RedigerFaggrupePage({ params }: { params: Promise<
                                     eiere={group.eiere ?? []}
                                     isAdmin={isAdmin}
                                 />
+                            </div>
+                        </CardWithBackground>
+                    </div>
+                )}
+                {(isOwner || isAdmin) && (
+                    <div className="w-full mt-4">
+                        <CardWithBackground
+                            title="Faresone"
+                            backLink={`/faggrupper/${id}`}
+                        >
+                            <div className="mx-4 my-4">
+                                <DeleteFaggruppeButton faggruppeId={id} />
                             </div>
                         </CardWithBackground>
                     </div>

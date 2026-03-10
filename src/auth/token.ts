@@ -78,3 +78,26 @@ export async function getDeltaBackendAccessToken(): Promise<string | null> {
     ? await getAccessToken("api://prod-gcp.delta.delta-backend/.default")
     : await getAccessToken("api://dev-gcp.delta.delta-backend/.default");
 }
+
+export async function getUserGroups(): Promise<string[]> {
+  if (process.env.NODE_ENV === "development") return [];
+
+  const authHeader = (await headers()).get("Authorization");
+  if (!authHeader) return [];
+
+  const token = authHeader.replace("Bearer ", "");
+  const jwtPayload = token.split(".")[1];
+  const payload = JSON.parse(Buffer.from(jwtPayload, "base64").toString());
+
+  return Array.isArray(payload.groups) ? payload.groups : [];
+}
+
+export async function isFaggruppeAdmin(): Promise<boolean> {
+  if (process.env.NODE_ENV === "development") return true;
+
+  const adminGroupId = process.env.FAGGRUPPE_ADMIN_GROUP_ID;
+  if (!adminGroupId) return false;
+
+  const groups = await getUserGroups();
+  return groups.includes(adminGroupId);
+}

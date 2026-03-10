@@ -36,6 +36,8 @@ spec:
       value: https://delta.ekstern.dev.nav.no
     - name: NEXT_TELEMETRY_DISABLED
       value: "1"
+    - name: FAGGRUPPE_ADMIN_GROUP_ID
+      value: "74eafa90-c494-4913-9b96-76da786c8419"
   liveness:
     path: /internal/is-alive
     initialDelay: 10

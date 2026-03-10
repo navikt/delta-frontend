@@ -1,39 +1,65 @@
-import { checkToken } from "@/auth/token";
-import fs from 'fs';
-import path from 'path';
-import matter from 'gray-matter';
-import { remark } from 'remark';
-import html from 'remark-html';
-import { JSDOM } from 'jsdom';
+import { checkToken, getDeltaBackendAccessToken, getUser, isFaggruppeAdmin } from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
-import EditArticleModal from "@/components/faggrupper/editarticlemodal";
 import { Detail } from "@navikt/ds-react";
 import { PersonGroupIcon, CalendarIcon, ClockIcon } from "@navikt/aksel-icons";
+import MarkdownRenderer from "@/components/MarkdownRenderer";
+import Link from "next/link";
+import { PencilIcon } from "@navikt/aksel-icons";
+import { FaggruppeType } from "@/components/faggrupper/FaggruppeFormFields";
 
+interface Group {
+    id: string;
+    navn: string;
+    type?: FaggruppeType;
+    beskrivelse?: string;
+    undertittel?: string;
+    tidspunkt?: string;
+    starttid?: string;
+    sluttid?: string;
+    malgruppe?: string;
+    eiere?: { navn: string | null; epost: string }[];
+}
 
 // @ts-ignore
 export default async function ArticlePage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
     await checkToken(`/faggrupper/${id}`);
-    const filePath = path.join(process.cwd(), `public/faggrupper/${id}.md`);
-    const fileContent = fs.readFileSync(filePath, 'utf8');
-    const { content, data: { title, subtitle, audience, when, starttime, endtime } } = matter(fileContent);
 
-    const processedContent = await remark().use(html).process(content);
-    const htmlContent = processedContent.toString();
+    const token = await getDeltaBackendAccessToken();
+    const apiUrl = process.env.NODE_ENV === 'production'
+        ? `http://delta-backend/api/faggrupper/${id}`
+        : `http://localhost:8080/api/faggrupper/${id}`;
 
-    // Parse the HTML content and remove the first <h1> element
-    const dom = new JSDOM(htmlContent);
-    const document = dom.window.document;
-    const firstH1 = document.querySelector('h1');
-    if (firstH1) {
-        firstH1.remove();
+    const [groupResponse, ownerResponse, user, isAdmin] = await Promise.all([
+        fetch(apiUrl, {
+            headers: { Authorization: `Bearer ${token ?? 'placeholder-token'}` },
+            cache: 'no-store',
+        }),
+        fetch(
+            process.env.NODE_ENV === 'production'
+                ? `http://delta-backend/api/faggrupper/${id}/eier`
+                : `http://localhost:8080/api/faggrupper/${id}/eier`,
+            { headers: { Authorization: `Bearer ${token ?? 'placeholder-token'}` }, cache: 'no-store' }
+        ).catch(() => null),
+        getUser(),
+        isFaggruppeAdmin(),
+    ]);
+
+    if (!groupResponse.ok) {
+        return <div>Faggruppen ble ikke funnet.</div>;
     }
-    const modifiedHtmlContent = document.body.innerHTML;
 
-    // Process subtitle to HTML
-    const processedSubtitle = subtitle ? await remark().use(html).process(subtitle) : '';
-    const subtitleHtml = processedSubtitle.toString();
+    const group: Group = await groupResponse.json();
+
+    let isOwner = false;
+    if (ownerResponse?.ok) {
+        const ownerData = await ownerResponse.json();
+        isOwner = ownerData.isOwner ?? false;
+    } else {
+        isOwner = group.eiere?.some(e => e.epost.toLowerCase() === user.email.toLowerCase()) ?? false;
+    }
+
+    const formatTime = (time: string) => time.split(':').slice(0, 2).join(':');
 
     return (
         <>
@@ -46,34 +72,50 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
                 backText={"Faggrupper"}
             >
                 <div className="prose mx-4 mt-4 mb-2">
-                    <h1 className="pb-1">{title}</h1>
-                    {subtitle && (
-                        <p className="-mt-7 mb-10" dangerouslySetInnerHTML={{ __html: subtitleHtml }} />
+                    <h1 className="pb-1">{group.navn}</h1>
+                    {group.undertittel && (
+                        <div className="-mt-7 mb-10">
+                            <MarkdownRenderer>{group.undertittel}</MarkdownRenderer>
+                        </div>
                     )}
-                    {when && (
+                    {group.tidspunkt && (
                         <Detail className="leading-normal">
                             <span className="flex items-center gap-1">
-                                <CalendarIcon title="person" /> {when}
+                                <CalendarIcon title="person" /> {group.tidspunkt}
                             </span>
                         </Detail>
                     )}
-                    {starttime && endtime && (
+                    {group.starttid && group.sluttid && (
                         <Detail className="leading-normal">
                             <span className="flex items-center gap-1">
-                                <ClockIcon aria-label="tid" /> {`${starttime} - ${endtime}`}
+                                <ClockIcon aria-label="tid" />
+                                {`${formatTime(group.starttid)} - ${formatTime(group.sluttid)}`}
                             </span>
                         </Detail>
                     )}
-                    {audience && (
+                    {group.malgruppe && (
                         <Detail className="leading-normal">
                             <span className="flex items-center gap-1">
-                                <PersonGroupIcon title="person" /> Målgruppe: {audience}
+                                <PersonGroupIcon title="person" /> Målgruppe: {group.malgruppe}
                             </span>
                         </Detail>
                     )}
-                    <article dangerouslySetInnerHTML={{ __html: modifiedHtmlContent }} />
+                    {group.beskrivelse && (
+                        <article>
+                            <MarkdownRenderer>{group.beskrivelse}</MarkdownRenderer>
+                        </article>
+                    )}
                 </div>
-                <EditArticleModal articlepath={id} />
+                {(isOwner || isAdmin) && (
+                    <div className="px-4 pb-10">
+                        <Link
+                            href={`/faggrupper/${id}/rediger`}
+                            className="navds-button navds-button--secondary navds-button--small inline-flex items-center gap-1"
+                        >
+                            <PencilIcon className="inline" title="rediger" fontSize="1.2rem" /> Rediger
+                        </Link>
+                    </div>
+                )}
             </CardWithBackground>
         </>
     );

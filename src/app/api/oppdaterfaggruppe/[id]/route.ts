@@ -1,20 +1,19 @@
 import { NextResponse } from 'next/server';
 import { getToken, validateToken, requestOboToken } from '@navikt/oasis';
 
-export async function GET(request: Request) {
-    const { searchParams } = new URL(request.url);
-    const groupTypes = searchParams.getAll('group_type');
-    const queryString = groupTypes.map(t => `group_type=${encodeURIComponent(t)}`).join('&');
-
-    const baseUrl = process.env.NODE_ENV === 'production'
-        ? 'http://delta-backend/api/groups'
-        : 'http://localhost:8080/api/groups';
-    const apiUrl = queryString ? `${baseUrl}?${queryString}` : baseUrl;
-
-    console.log(`Fetching from API URL: ${apiUrl}`);
+export async function PUT(
+    request: Request,
+    { params }: { params: Promise<{ id: string }> }
+) {
+    const { id } = await params;
+    const apiUrl = process.env.NODE_ENV === 'production'
+        ? `http://delta-backend/api/groups/${id}`
+        : `http://localhost:8080/api/groups/${id}`;
 
     try {
+        const body = await request.json();
         let token: string | null;
+
         if (process.env.NODE_ENV === 'production') {
             token = getToken(request);
             if (!token) {
@@ -39,28 +38,29 @@ export async function GET(request: Request) {
         }
 
         const response = await fetch(apiUrl, {
-            method: 'GET',
+            method: 'PUT',
             headers: {
-                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
             },
+            body: JSON.stringify(body),
         });
 
+        if (response.status === 403) {
+            return NextResponse.json({ error: 'Not authorized to edit this group' }, { status: 403 });
+        }
+
         if (!response.ok) {
-            const errorDetails = await response.text();
-            console.error('Network response was not ok:', response.status, errorDetails);
-            throw new Error(`Network response was not ok: ${response.status} - ${errorDetails}`);
+            throw new Error(`Failed to update group: ${response.status}`);
         }
 
         const data = await response.json();
         return NextResponse.json(data);
     } catch (error) {
-        if (error instanceof Error) {
-            console.error('Fetch failed:', error.message, error.stack);
-            return NextResponse.json({ error: 'Fetch failed', message: error.message }, { status: 500 });
-        } else {
-            console.error('An unknown error occurred');
-            return NextResponse.json({ error: 'An unknown error occurred' }, { status: 500 });
-        }
+        console.error('Error updating group:', error);
+        return NextResponse.json(
+            { error: 'Failed to update group' },
+            { status: 500 }
+        );
     }
 }

@@ -2,9 +2,14 @@ import { NextResponse } from 'next/server';
 import { getToken, validateToken, requestOboToken } from '@navikt/oasis';
 
 export async function GET(request: Request) {
-    const apiUrl = process.env.NODE_ENV === 'production'
-        ? 'http://delta-fastapi/api/groups'
-        : 'http://0.0.0.0:8087/api/groups';
+    const { searchParams } = new URL(request.url);
+    const groupTypes = searchParams.getAll('group_type');
+    const queryString = groupTypes.map(t => `group_type=${encodeURIComponent(t)}`).join('&');
+
+    const baseUrl = process.env.NODE_ENV === 'production'
+        ? 'http://delta-backend/api/groups'
+        : 'http://localhost:8080/api/groups';
+    const apiUrl = queryString ? `${baseUrl}?${queryString}` : baseUrl;
 
     console.log(`Fetching from API URL: ${apiUrl}`);
 
@@ -21,7 +26,9 @@ export async function GET(request: Request) {
                 return NextResponse.json({ error: 'Token validation failed' }, { status: 401 });
             }
 
-            const obo = await requestOboToken(token, 'api://prod-gcp.delta.delta-fastapi/.default');
+            const obo = await requestOboToken(token, process.env.NEXT_PUBLIC_CLUSTER === 'prod'
+                ? 'api://prod-gcp.delta.delta-backend/.default'
+                : 'api://dev-gcp.delta.delta-backend/.default');
             if (!obo.ok) {
                 return NextResponse.json({ error: 'OBO token request failed' }, { status: 401 });
             }

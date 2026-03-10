@@ -1,33 +1,51 @@
-import { checkToken } from "@/auth/token";
-import fs from 'fs';
-import path from 'path';
+import { checkToken, getDeltaBackendAccessToken } from "@/auth/token";
 import CardWithBackground from '@/components/cardWithBackground';
 import SearchArticles from '@/components/faggrupper/SearchArticles';
-import matter from "gray-matter";
 import Link from "next/link";
 
-// Server component using server-side rendering (SSR)
 export default async function ArticlesPage() {
     await checkToken("/faggrupper");
-    const articleDirectory = path.join(process.cwd(), 'public/faggrupper');
-    const filenames = fs.readdirSync(articleDirectory);
 
-    const articles = await Promise.all(
-        filenames.map(async (filename) => {
-            const filePath = path.join(articleDirectory, filename);
-            const fileContent = fs.readFileSync(filePath, 'utf8');
-            const { data: { title, when, audience, starttime, endtime } } = matter(fileContent); // Extract title from front matter
+    const token = await getDeltaBackendAccessToken();
+    const apiUrl = process.env.NODE_ENV === 'production'
+        ? 'http://delta-backend/api/faggrupper'
+        : 'http://localhost:8080/api/faggrupper';
 
-            return {
-                title,
-                when,
-                audience,
-                starttime,
-                endtime,
-                href: `/faggrupper/${filename.replace(/\.md$/, '')}`,
-            };
-        })
-    );
+    let articles: {
+        title: string;
+        when?: string;
+        audience?: string;
+        starttime?: string;
+        endtime?: string;
+        href: string;
+    }[] = [];
+
+    try {
+        const response = await fetch(apiUrl, {
+            headers: { Authorization: `Bearer ${token ?? 'placeholder-token'}` },
+            cache: 'no-store',
+        });
+        if (response.ok) {
+            const groups = await response.json();
+            articles = groups.map((group: {
+                id: string;
+                navn: string;
+                tidspunkt?: string;
+                malgruppe?: string;
+                starttid?: string;
+                sluttid?: string;
+            }) => ({
+                title: group.navn,
+                when: group.tidspunkt,
+                audience: group.malgruppe,
+                starttime: group.starttid,
+                endtime: group.sluttid,
+                href: `/faggrupper/${group.id}`,
+            }));
+        }
+    } catch (error) {
+        console.error('Failed to fetch faggrupper:', error);
+    }
 
     return (
         <>

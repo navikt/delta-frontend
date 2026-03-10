@@ -3,8 +3,8 @@ import { getToken, validateToken, requestOboToken } from '@navikt/oasis';
 
 export async function POST(request: Request) {
     const apiUrl = process.env.NODE_ENV === 'production'
-        ? 'http://delta-fastapi/api/groups'
-        : 'http://0.0.0.0:8087/api/groups';
+        ? 'http://delta-backend/api/groups'
+        : 'http://localhost:8080/api/groups';
 
     try {
         const body = await request.json();
@@ -21,7 +21,9 @@ export async function POST(request: Request) {
                 return NextResponse.json({ error: 'Token validation failed' }, { status: 401 });
             }
 
-            const obo = await requestOboToken(token, 'api://prod-gcp.delta.delta-fastapi/.default');
+            const obo = await requestOboToken(token, process.env.NEXT_PUBLIC_CLUSTER === 'prod'
+                ? 'api://prod-gcp.delta.delta-backend/.default'
+                : 'api://dev-gcp.delta.delta-backend/.default');
             if (!obo.ok) {
                 return NextResponse.json({ error: 'OBO token request failed' }, { status: 401 });
             }

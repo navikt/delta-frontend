@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Button } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
-import FaggruppeFormFields, { FaggruppeFormData, toSubmitData } from './FaggruppeFormFields';
+import FaggruppeFormFields, { FaggruppeFormData, FaggruppeType, toSubmitData } from './FaggruppeFormFields';
 
 interface Group {
     id: string;
@@ -10,7 +10,7 @@ interface Group {
     undertittel?: string;
     beskrivelse?: string;
     malgruppe?: string;
-    type?: string;
+    type?: FaggruppeType;
     tidspunkt?: string;
     starttid?: string;
     sluttid?: string;

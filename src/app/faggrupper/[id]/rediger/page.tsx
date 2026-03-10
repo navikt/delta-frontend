@@ -2,6 +2,7 @@ import { checkToken, getDeltaBackendAccessToken, getUser, isFaggruppeAdmin } fro
 import CardWithBackground from "@/components/cardWithBackground";
 import EditFaggruppeForm from "@/components/faggrupper/EditFaggruppeForm";
 import ManageEiereForm from "@/components/faggrupper/ManageEiereForm";
+import { FaggruppeType } from "@/components/faggrupper/FaggruppeFormFields";
 import { redirect } from "next/navigation";
 
 interface Group {
@@ -10,7 +11,7 @@ interface Group {
     undertittel?: string;
     beskrivelse?: string;
     malgruppe?: string;
-    type?: string;
+    type?: FaggruppeType;
     tidspunkt?: string;
     starttid?: string;
     sluttid?: string;

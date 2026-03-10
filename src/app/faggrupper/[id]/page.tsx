@@ -6,10 +6,12 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Link from "next/link";
 import { PencilIcon } from "@navikt/aksel-icons";
+import { FaggruppeType } from "@/components/faggrupper/FaggruppeFormFields";
 
 interface Group {
     id: string;
     navn: string;
+    type?: FaggruppeType;
     beskrivelse?: string;
     undertittel?: string;
     tidspunkt?: string;

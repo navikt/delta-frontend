@@ -1,8 +1,10 @@
-import { TextField, Select, Textarea } from '@navikt/ds-react';
+import { TextField, Textarea } from '@navikt/ds-react';
+
+export type FaggruppeType = 'faggruppe';
 
 export interface FaggruppeFormData {
     navn: string;
-    type: string;
+    type: FaggruppeType;
     undertittel: string;
     beskrivelse: string;
     malgruppe: string;
@@ -52,15 +54,6 @@ export default function FaggruppeFormFields({ formData, onChange }: Props) {
                 value={formData.navn}
                 onChange={set('navn')}
             />
-
-            <Select
-                label="Type"
-                value={formData.type}
-                onChange={set('type')}
-            >
-                <option value="faggruppe">Faggruppe</option>
-                <option value="møteplass">Møteplass</option>
-            </Select>
 
             <TextField
                 label="Kortbeskrivelse / undertittel"

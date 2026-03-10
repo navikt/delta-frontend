@@ -21,6 +21,9 @@ spec:
       enabled: true
       tenant: nav.no
       allowAllUsers: true
+      claims:
+        groups:
+          - id: "74eafa90-c494-4913-9b96-76da786c8419"
     sidecar:
       enabled: true
       autoLogin: true

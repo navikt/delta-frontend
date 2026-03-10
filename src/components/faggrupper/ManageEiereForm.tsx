@@ -41,7 +41,7 @@ export default function ManageEiereForm({ faggruppeId, eiere, isAdmin }: Props) 
                 throw new Error(data.error ?? 'Noe gikk galt');
             }
             const nyEier: Eier = await response.json();
-            setCurrentEiere([...currentEiere, nyEier]);
+            setCurrentEiere(prev => [...prev, nyEier]);
             setNyEpost('');
             router.refresh();
         } catch (err) {
@@ -66,7 +66,7 @@ export default function ManageEiereForm({ faggruppeId, eiere, isAdmin }: Props) 
                 const data = await response.json();
                 throw new Error(data.error ?? 'Noe gikk galt');
             }
-            setCurrentEiere(currentEiere.filter((e) => e.epost !== epost));
+            setCurrentEiere(prev => prev.filter((e) => e.epost !== epost));
             router.refresh();
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Noe gikk galt');

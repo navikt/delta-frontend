@@ -17,7 +17,10 @@ export async function GET(
         const response = await fetch(apiUrl, {
             headers: { Authorization: `Bearer ${tokenResult}`, 'Content-Type': 'application/json' },
         });
-        if (!response.ok) throw new Error(`Backend responded with ${response.status}`);
+        if (!response.ok) {
+            const errorBody = await response.json().catch(() => ({}));
+            return NextResponse.json(errorBody, { status: response.status });
+        }
         return NextResponse.json(await response.json());
     } catch (error) {
         console.error('Failed to check faggruppe ownership:', error);

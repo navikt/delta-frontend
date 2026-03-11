@@ -169,12 +169,12 @@ export default function CreateEventForm({
     </>
   ) : (
     // @ts-ignore
-    <InternalCreateEventForm
+    (<InternalCreateEventForm
       richEvent={richEvent}
       allCategories={allCategories}
       selectedCategories={selectedCategories || []}
       setSelectedCategories={setSelectedCategories}
-    />
+    />)
   );
 }
 type RichEvent =

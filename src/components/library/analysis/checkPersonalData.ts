@@ -16,11 +16,9 @@ const checkPersonalData = (value: string): PersonalDataResult => {
     };
 
     const extractName = (value: string) => {
-        return (
-            value
-                .match(/([A-Z][a-z][a-z]*(?: [A-Z][a-z][a-z]*){1,2})/g)
-                ?.filter((name, index) => value.indexOf(name) === index) ?? []
-        );
+        return (value
+            .match(/([A-Z][a-z][a-z]*(?: [A-Z][a-z][a-z]*){1,2})/g)
+            ?.filter((name, index) => value.indexOf(name) === index) ?? []);
     };
 
     return {

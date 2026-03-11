@@ -30,13 +30,13 @@ export default function AdminPage({
                 <span className="flex w-full ax-md:w-fit flex-col ax-md:flex-row gap-4">
                     <Link
                         href={`/event/${event.id}/edit`}
-                        className="w-full h-fit aksel-button aksel-button--primary whitespace-nowrap aksel-label"
+                        className="w-full h-fit aksel-button whitespace-nowrap" data-variant="primary"
                     >
                         Rediger arrangement
                     </Link>
                     <Link
                         href={`/event/new?template=${event.id}`}
-                        className="w-full h-fit aksel-button aksel-button--primary-neutral whitespace-nowrap aksel-label"
+                        className="w-full h-fit aksel-button whitespace-nowrap" data-variant="primary" data-color="neutral"
                     >
                         Bruk som mal
                     </Link>

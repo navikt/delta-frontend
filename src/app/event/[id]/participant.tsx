@@ -14,7 +14,7 @@ export default function Participant(participant: ParticipantProps) {
         {participant.name.split(", ").reverse().join(" ")}
       </span>
       {participant.owner && (
-        <span className="bg-ax-neutral-600 text-ax-bg-neutral-soft cursor-default rounded-xl px-2">
+        <span className="bg-ax-neutral-600 text-ax-text-on-inverted cursor-default rounded-xl px-2">
           arrangør
         </span>
       )}

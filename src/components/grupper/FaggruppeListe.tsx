@@ -118,7 +118,7 @@ export default function FaggruppeListe() {
                         {sortedGroups.map((group) => (
                             <Link key={group.group_id} href={`/grupper/${group.group_id}`}>
                                 <div
-                                    className="flex flex-col h-full p-4 border rounded-xl text-ax-text-neutral border-ax-neutral-400 transition-all hover:-translate-y-1 hover:scale-105 hover:text-ax-bg-accent-strong-hover hover:border-ax-border-accent event-card">
+                                    className="flex flex-col h-full p-4 border rounded-xl text-ax-text-neutral border-ax-neutral-400 transition-all hover:-translate-y-1 hover:scale-105 hover:text-ax-text-action hover:border-ax-border-accent event-card">
                                     <Heading level="2" size="small">{group.name}</Heading>
                                     <div className="flex pt-2 flex-col gap-2 h-full">
                                         {group.meeting_frequency ? (

@@ -107,7 +107,7 @@ export default function EventDetails({
                             return (
                                 <>
                                     <Link
-                                        className="w-full h-fit aksel-button aksel-button--primary aksel-label"
+                                        className="w-full h-fit aksel-button" data-variant="primary"
                                         href={`/event/${event.id}/admin`}
                                     >
                                         Administrer
@@ -270,7 +270,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                         </Modal.Footer>
                     </Modal>
                     <CopyButton
-                        className="aksel-button aksel-button--secondary ax-md:whitespace-nowrap w-full"
+                        className="ax-md:whitespace-nowrap w-full"
                         copyText={`${hostname}/fagfest/${event.id}`}
                         text="Kopier lenke"
                     />
@@ -306,7 +306,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                     </Heading>
                     <div className="flex gap-3 mt-2 mb-6">
                         <CopyButton
-                            className="aksel-button aksel-button--secondary ax-md:whitespace-nowrap w-fit h-fit"
+                            className="ax-md:whitespace-nowrap w-fit h-fit"
                             copyText={`${hostname}/fagfest/${event.id}`}
                             text="Kopier lenke"
                             size="small"

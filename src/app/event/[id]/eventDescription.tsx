@@ -157,7 +157,7 @@ export default function EventDescription({
             <div className="flex flex-row ml-[0.3rem] pl-6">
                 {hosts.map((h) => h.email).includes(user.email) ? (<>
                     <Link
-                        className="mb-4 aksel-button aksel-button--secondary aksel-button--xsmall no-underline"
+                        className="mb-4 aksel-button aksel-button--xsmall no-underline" data-variant="secondary"
                         href={`/event/${event.id}/admin`}
                     >
                         Vis deltakere

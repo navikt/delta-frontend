@@ -110,7 +110,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
                     <div className="px-4 pb-10">
                         <Link
                             href={`/faggrupper/${id}/rediger`}
-                            className="aksel-button aksel-button--secondary aksel-button--small inline-flex items-center gap-1"
+                            className="aksel-button aksel-button--small inline-flex items-center gap-1" data-variant="secondary"
                         >
                             <PencilIcon className="inline" title="rediger" fontSize="1.2rem" /> Rediger
                         </Link>

@@ -95,7 +95,7 @@ export default function EventFilters({
               variant="simple"
               value={searchInput}
               size="small"
-              className="border-[#000] w-full ax-md:w-auto"
+              className="w-full ax-md:w-auto"
               onChange={(e) => {
                 setSearchInput(e);
               }}

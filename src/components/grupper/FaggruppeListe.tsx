@@ -92,7 +92,7 @@ export default function FaggruppeListe() {
                     variant="simple"
                     value={searchQuery}
                     size="small"
-                    className="border-[#000] w-full ax-md:w-auto pb-10 pt-4"
+                    className="w-full ax-md:w-auto"
                     onChange={(e) => {
                         setSearchQuery(e);
                     }}

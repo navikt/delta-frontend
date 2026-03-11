@@ -329,7 +329,7 @@ export default function EventFilters({
                     variant="simple"
                     value={searchInput}
                     size="small"
-                    className="border-[#000] w-full ax-md:w-auto order-2 ax-md:order-1"
+                    className="w-full ax-md:w-auto order-2 ax-md:order-1"
                     onChange={(e) => {
                       setSearchInput(e);
                     }}

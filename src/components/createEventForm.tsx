@@ -49,11 +49,11 @@ const createEventSchema = z
     description: z
       .string()
       .nonempty({ message: "Du må fylle inn en beskrivelse" }),
-    startDate: z.date({ required_error: "Du må velge en startdato" }),
+    startDate: z.date({ error: "Du må velge en startdato" }),
     startTime: z.string().regex(/[0-9]{2}:[0-9]{2}/, {
       message: "Verdien må være et gyldig tidspunkt",
     }),
-    endDate: z.date({ required_error: "Du må velge en sluttdato" }),
+    endDate: z.date({ error: "Du må velge en sluttdato" }),
     endTime: z.string().regex(/[0-9]{2}:[0-9]{2}/, {
       message: "Verdien må være et gyldig tidspunkt",
     }),

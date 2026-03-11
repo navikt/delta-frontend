@@ -149,13 +149,13 @@ const FestivalEvents = () => {
         </Tabs.List>
       </Tabs>
 
-      <div className="flex flex-col-reverse gap-2 items-start md:flex-row justify-between w-full md:items-center px-4">
+      <div className="flex flex-col-reverse gap-2 items-start ax-md:flex-row justify-between w-full ax-md:items-center px-4">
         <Search
           label="Søk alle kommende arrangementer"
           variant="simple"
           value={searchInput}
           size="small"
-          className="border-[#000] w-full md:w-auto"
+          className="border-[#000] w-full ax-md:w-auto"
           onChange={(e) => {
             setSearchInput(e);
           }}

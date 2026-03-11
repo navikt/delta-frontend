@@ -54,8 +54,8 @@ export default function ExportParticipants(
           <Dropdown.Menu.List.Item
             className={`
               navds-copybutton--small navds-copybutton--neutral
-              no-underline text-text-subtle hover:text-text-default
-              hover:bg-surface-hover w-full justify-start px-2
+              no-underline text-ax-text-neutral-subtle hover:text-ax-text-neutral
+              hover:bg-ax-bg-neutral-moderate-hoverA w-full justify-start px-2
             `}
             as={Link}
             href={`mailto:${sendEmails}`}
@@ -69,8 +69,8 @@ export default function ExportParticipants(
           </Dropdown.Menu.List.Item>
           <Dropdown.Menu.List.Item
             className=" navds-copybutton--small navds-copybutton--neutral
-              no-underline text-text-subtle hover:text-text-default
-              hover:bg-surface-hover w-full justify-start px-2"
+              no-underline text-ax-text-neutral-subtle hover:text-ax-text-neutral
+              hover:bg-ax-bg-neutral-moderate-hoverA w-full justify-start px-2"
             onClick={exportToExcel}
           >
             <span className="navds-copybutton__content">

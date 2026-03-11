@@ -88,27 +88,27 @@ export default function EventFilters({
         </Tabs>
       )}
       {(searchName || selectCategory) && (
-        <div className="flex flex-col-reverse gap-2 items-start md:flex-row justify-between w-full md:items-center px-4">
+        <div className="flex flex-col-reverse gap-2 items-start ax-md:flex-row justify-between w-full ax-md:items-center px-4">
           {searchName && (
             <Search
               label="Søk alle kommende arrangementer"
               variant="simple"
               value={searchInput}
               size="small"
-              className="border-[#000] w-full md:w-auto"
+              className="border-[#000] w-full ax-md:w-auto"
               onChange={(e) => {
                 setSearchInput(e);
               }}
             />
           )}
           {selectCategory && (
-            <div className="w-full md:w-fit flex items-center flex-wrap flex-row-reverse md:flex-row gap-2">
-              <span className="gap-2 items-center hidden md:flex">
+            <div className="w-full ax-md:w-fit flex items-center flex-wrap flex-row-reverse ax-md:flex-row gap-2">
+              <span className="gap-2 items-center hidden ax-md:flex">
                 <FunnelIcon />
-                <label className="font-bold">Filtrer på kategori</label>
+                <label className="font-ax-bold">Filtrer på kategori</label>
               </span>
               <UNSAFE_Combobox
-                className="w-full md:w-fit"
+                className="w-full ax-md:w-fit"
                 size="small"
                 label="Filtrer på kategori"
                 hideLabel={!isMobile}

@@ -189,7 +189,7 @@ function ExpandedTable({
               </Button>
               <Button
                 variant="danger"
-                className="w-fit h-fit font-bold"
+                className="w-fit h-fit font-ax-bold"
                 onClick={async () => {
                   await removeUser(event.id, email);
                   toggleConfirmation(i);
@@ -307,7 +307,7 @@ function FullTable({
               </Button>
               <Button
                 variant="danger"
-                className="w-fit h-fit font-bold"
+                className="w-fit h-fit font-ax-bold"
                 onClick={async () => {
                   await removeUser(event.id, email);
                   toggleConfirmation(i);

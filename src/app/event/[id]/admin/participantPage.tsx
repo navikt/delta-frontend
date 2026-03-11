@@ -27,7 +27,7 @@ export default function ParticipantPage({
     return (
         <div className="flex flex-col gap-10">
       <span className="w-full flex flex-row justify-end">
-        <span className="flex w-full md:w-fit flex-col md:flex-row gap-4">
+        <span className="flex w-full ax-md:w-fit flex-col ax-md:flex-row gap-4">
   {/*        <Link
               href={`/event/${event.id}/edit`}
               className="w-full h-fit navds-button navds-button--primary whitespace-nowrap navds-label"
@@ -44,7 +44,7 @@ export default function ParticipantPage({
             {/*          <Button
               type="submit"
               variant="danger"
-              className="w-full h-fit font-bold"
+              className="w-full h-fit font-ax-bold"
               onClick={() => setOpenConfirmation((x) => !x)}
           >
             <span className="flex items-center gap-1">
@@ -76,7 +76,7 @@ export default function ParticipantPage({
                     </Button>
                     <Button
                         variant="danger"
-                        className="w-fit h-fit font-bold"
+                        className="w-fit h-fit font-ax-bold"
                         onClick={() => deleteAndRedirect(event?.id!!)}
                     >
                         Ja, jeg vil slette arrangementet
@@ -85,7 +85,7 @@ export default function ParticipantPage({
             </Modal>
             <form>
                 <Search
-                    className="pt-0 -mt-4 -mb-2 sm:w-64"
+                    className="pt-0 -mt-4 -mb-2 ax-sm:w-64"
                     label="Søk alle deltakere"
                     variant="simple"
                     size="small"
@@ -103,7 +103,7 @@ export default function ParticipantPage({
                 searchInput={searchInput}
             />
             <h2 className="navds-heading navds-heading--medium">Detaljer</h2>
-            <span className="flex flex-col md:flex-row justify-start gap-2 -mt-6 mb-5 items-center">
+            <span className="flex flex-col ax-md:flex-row justify-start gap-2 -mt-6 mb-5 items-center">
               <CalendarIcon aria-label="dato"/>
               {formatEventDates(event)}
               <ClockIcon aria-label="tid"/>

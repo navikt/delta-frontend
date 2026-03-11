@@ -322,14 +322,14 @@ export default function EventFilters({
       )}
       {(searchName || selectCategory) && (
           <div
-              className="flex flex-col-reverse gap-2 items-start md:flex-row justify-between w-full md:items-center px-4">
+              className="flex flex-col-reverse gap-2 items-start ax-md:flex-row justify-between w-full ax-md:items-center px-4">
             {searchName && (
                 <Search
                     label="Søk alle kommende arrangementer"
                     variant="simple"
                     value={searchInput}
                     size="small"
-                    className="border-[#000] w-full md:w-auto order-2 md:order-1"
+                    className="border-[#000] w-full ax-md:w-auto order-2 ax-md:order-1"
                     onChange={(e) => {
                       setSearchInput(e);
                     }}
@@ -337,13 +337,13 @@ export default function EventFilters({
             )}
             {selectCategory && tabname == "alle" && (
                 <div
-                    className="mt-5 md:mt-0 w-full md:w-fit flex items-center flex-wrap flex-row-reverse md:flex-row gap-2 order-1 md:order-2">
-      <span className="gap-2 items-center hidden md:flex">
+                    className="mt-5 ax-md:mt-0 w-full ax-md:w-fit flex items-center flex-wrap flex-row-reverse ax-md:flex-row gap-2 order-1 ax-md:order-2">
+      <span className="gap-2 items-center hidden ax-md:flex">
         <FunnelIcon title="trakt"/>
-        <label className="font-bold">Kategorier</label>
+        <label className="font-ax-bold">Kategorier</label>
       </span>
                   <UNSAFE_Combobox
-                      className="w-full md:w-fit"
+                      className="w-full ax-md:w-fit"
                       size="small"
                       label="Filtrer på kategori"
                       hideLabel={!isMobile}
@@ -420,7 +420,7 @@ export default function EventFilters({
                   }
                 }}
             >
-              <div className="mt-1 flex flex-col sm:flex-row gap-0 sm:gap-4">
+              <div className="mt-1 flex flex-col ax-sm:flex-row gap-0 ax-sm:gap-4">
                 <Checkbox value="kompetanse" disabled={selectedCategories.some(category => category.name === "bedriftidrettslaget" || category.name === "sosialt")}>Kompetanse</Checkbox>
                 <Checkbox value="bedriftidrettslaget" disabled={selectedCategories.some(category => category.name === "kompetanse" || category.name === "sosialt")}>Bedriftidrettslaget</Checkbox>
                 <Checkbox value="sosialt" disabled={selectedCategories.some(category => category.name === "kompetanse" || category.name === "bedriftidrettslaget")}>Sosialt</Checkbox>
@@ -434,7 +434,7 @@ export default function EventFilters({
       </div>
       {ctaLink && (
           <div className="px-4 mb-4">
-            <Link prefetch={false} data-umami-event="Opprett event besøkt" data-umami-event-placement="Oversiktmodul" href="/event/new" className="text-deepblue-500 underline hover:no-underline">
+            <Link prefetch={false} data-umami-event="Opprett event besøkt" data-umami-event-placement="Oversiktmodul" href="/event/new" className="text-ax-brand-blue-600 underline hover:no-underline">
               Opprett nytt arrangement
             </Link>
           </div>

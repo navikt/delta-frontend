@@ -35,7 +35,7 @@ export default async function ParticipantsPage({
     return (
       <CardWithBackground
         title="Ingen tilgang"
-        color="bg-red-300"
+        color="bg-ax-danger-400"
         backLink={`/event/${id}`}
       >
         Du har ikke tilgang til denne siden.

@@ -544,11 +544,11 @@ function InternalCreateEventForm({
           </Switch>
         </div>
         {showPreview ? (
-          <div className="border border-gray-300 rounded p-3 min-h-[8rem] bg-white">
+          <div className="border border-ax-neutral-400 rounded p-3 min-h-[8rem] bg-white">
             {dvalue ? (
               <MarkdownRenderer>{dvalue}</MarkdownRenderer>
             ) : (
-              <span className="text-gray-400 italic">
+              <span className="text-ax-neutral-500 italic">
                 Ingen beskrivelse ennå
               </span>
             )}

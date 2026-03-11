@@ -4,14 +4,14 @@ import { BodyShort, Heading, Link } from "@navikt/ds-react";
 
 const Footer = () => {
     return (
-        <div className="bg-deepblue-800 w-full">
+        <div className="bg-ax-brand-blue-900 w-full">
             <footer
                 id="aksel-footer"
                 data-hj-suppress
                 data-theme="dark"
-                className="flex pt-3 z-10 items-center w-5/6 max-w-[80rem] m-auto justify-between toc-ignore text-text-on-inverted bg-deepblue-800 relative flex justify-center"
+                className="flex pt-3 z-10 items-center w-5/6 max-w-[80rem] m-auto justify-between toc-ignore text-ax-text-neutral-contrast bg-ax-brand-blue-900 relative flex justify-center"
             >
-                <div className="relative z-10 mx-auto grid w-full max-w-screen-2xl gap-12 px-4 pb-16 pt-12 md:grid-cols-2 md:px-6 lg:grid-cols-2 xl:grid-cols-4 xl:gap-6">
+                <div className="relative z-10 mx-auto grid w-full max-w-screen-2xl gap-12 px-4 pb-16 pt-12 ax-md:grid-cols-2 ax-md:px-6 ax-lg:grid-cols-2 ax-xl:grid-cols-4 ax-xl:gap-6">
                     <LogoBlock />
                     <Snarveier />
                     <SideLenker />
@@ -91,7 +91,7 @@ function FooterLink({ children, href }) {
     return (
         <li>
             <a
-                className="text-white hover:text-white focus:shadow-focus focus:text-text-default flex w-fit items-center gap-1 underline hover:no-underline focus:bg-blue-100 focus:shadow-blue-100"
+                className="text-white hover:text-white focus:shadow-focus focus:text-ax-text-neutral flex w-fit items-center gap-1 underline hover:no-underline focus:bg-ax-accent-200 focus:shadow-ax-accent-200"
                 href={href}
             >
                 {children}

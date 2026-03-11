@@ -39,7 +39,7 @@
 }
 
 .navds-accordion--indent > :where(.navds-accordion__item) > :where(.navds-accordion__content) {
-    padding: var(--a-spacing-3) var(--a-spacing-3) 18px;
+    padding: var(--ax-space-12) var(--ax-space-12) 18px;
 }
 
 .navds-button--secondary {
@@ -47,18 +47,18 @@
 }
 
 .feedback_overrideSecondaryButton__GJyIS {
-    --ac-button-secondary-text: var(--a-deepblue-500);
-    --ac-button-secondary-bg: var(--a-surface-default);
-    --ac-button-secondary-border: var(--a-deepblue-500);
-    --ac-button-secondary-hover-text: var(--a-deepblue-500);
-    --ac-button-secondary-hover-bg: var(--a-deepblue-50);
-    --ac-button-secondary-focus-border: var(--a-deepblue-500)
+    --ac-button-secondary-text: var(--ax-brand-blue-600);
+    --ac-button-secondary-bg: var(--ax-bg-default);
+    --ac-button-secondary-border: var(--ax-brand-blue-600);
+    --ac-button-secondary-hover-text: var(--ax-brand-blue-600);
+    --ac-button-secondary-hover-bg: var(--ax-brand-blue-100);
+    --ac-button-secondary-focus-border: var(--ax-brand-blue-600)
 }
 
 .feedback_overrideSecondaryButtonActive__TitX3 {
-    --ac-button-secondary-text: var(--a-text-on-action);
-    --ac-button-secondary-hover-bg: var(--a-deepblue-700);
-    --ac-button-secondary-hover-text: var(--a-text-on-action)
+    --ac-button-secondary-text: var(--ax-text-accent-contrast);
+    --ac-button-secondary-hover-bg: var(--ax-brand-blue-800);
+    --ac-button-secondary-hover-text: var(--ax-text-accent-contrast)
 }
 
 .cube_animated__vdkt0 {

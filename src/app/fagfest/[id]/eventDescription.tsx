@@ -124,7 +124,7 @@ export default function EventDescription({
                         <HourglassBottomFilledIcon aria-hidden/>
                         Påmeldingsfrist:
                     </label>
-                    <span className="flex ml-[0.2rem] pl-6 gap-2 text-red-600">
+                    <span className="flex ml-[0.2rem] pl-6 gap-2 text-ax-danger-700">
             {formatDeadline(event)}{" "}
           </span>
                 </div>

@@ -91,7 +91,7 @@ export default function EventDetails({
                         <Calendar dateString={event.endTime} displayTime={!isSameDay}/>
                     </div>
                 )}
-                <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
+                <div className="flex flex-col ax-md:flex-row gap-4 items-start ax-md:items-center">
                     {showRegistration && (
                         <Alert variant="success" size="small">
                             Påmelding registrert
@@ -256,7 +256,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                             </Button>
                             <Button
                                 variant={isParticipant ? "danger" : "primary"}
-                                className="w-fit h-fit font-bold"
+                                className="w-fit h-fit font-ax-bold"
                                 onClick={() =>
                                     toggleEventStatus(event.id, isParticipant, (state) => {
                                         showAlert();
@@ -270,13 +270,13 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                         </Modal.Footer>
                     </Modal>
                     <CopyButton
-                        className="navds-button navds-button--secondary md:whitespace-nowrap w-full"
+                        className="navds-button navds-button--secondary ax-md:whitespace-nowrap w-full"
                         copyText={`${hostname}/fagdag_utvikling_og_data/${event.id}`}
                         text="Kopier lenke"
                     />
                 </div>
             </div>
-            <div className="flex-col md:flex-row flex justify-between gap-4 md:gap-28 pt-4">
+            <div className="flex-col ax-md:flex-row flex justify-between gap-4 ax-md:gap-28 pt-4">
                 <EventDescription
                     user={user}
                     event={event}
@@ -286,7 +286,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                     displayTime={isSameDay}
                     className="flex flex-col gap-2 max-w-xs"
                 />
-                <div className="flex-grow flex flex-col gap-2 md:w-2/4">
+                <div className="flex-grow flex flex-col gap-2 ax-md:w-2/4">
                     <Heading size="medium" as="h2">
                         Detaljer
                     </Heading>
@@ -306,7 +306,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                     </Heading>
                     <div className="flex gap-3 mt-2 mb-6">
                         <CopyButton
-                            className="navds-button navds-button--secondary md:whitespace-nowrap w-fit h-fit"
+                            className="navds-button navds-button--secondary ax-md:whitespace-nowrap w-fit h-fit"
                             copyText={`${hostname}/fagdag_utvikling_og_data/${event.id}`}
                             text="Kopier lenke"
                             size="small"

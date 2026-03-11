@@ -11,10 +11,10 @@
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
     "@mdx-js/loader": "^3.1.1",
-    "@navikt/aksel-icons": "^7.35.3",
-    "@navikt/ds-css": "^7.35.3",
-    "@navikt/ds-react": "^7.35.3",
-    "@navikt/ds-tailwind": "^7.35.3",
+    "@navikt/aksel-icons": "^8.7.0",
+    "@navikt/ds-css": "^8.7.0",
+    "@navikt/ds-react": "^8.7.0",
+    "@navikt/ds-tailwind": "^8.7.0",
     "@navikt/oasis": "^4.1.1",
     "@next/mdx": "16.0.10",
     "@types/jsdom": "^27.0.0",
@@ -49,6 +49,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.3",
+    "@navikt/aksel": "^8.7.0",
     "@tailwindcss/typography": "^0.5.19"
   }
 }

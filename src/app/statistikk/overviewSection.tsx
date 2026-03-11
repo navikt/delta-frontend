@@ -46,7 +46,7 @@ export default function OverviewSection({
             {/* Overview Section */}
             <section>
                 <h2 className="text-2xl font-semibold mb-4">Oversikt for {selectedYear}</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 ax-md:grid-cols-2 ax-lg:grid-cols-4 gap-4">
                     <StatCard
                         icon={<CalendarIcon className="w-6 h-6" />}
                         title="Arrangementer i år"
@@ -78,7 +78,7 @@ export default function OverviewSection({
                 </div>
                 <button
                     onClick={() => setShowOverviewModal(true)}
-                    className="mt-4 text-blue-600 hover:text-blue-800 hover:underline text-sm font-medium cursor-pointer"
+                    className="mt-4 text-ax-accent-700 hover:text-ax-accent-900 hover:underline text-sm font-medium cursor-pointer"
                 >
                     Klikk for detaljer →
                 </button>
@@ -87,7 +87,7 @@ export default function OverviewSection({
             {/* Attendance Type Statistics */}
             <section>
                 <h2 className="text-2xl font-semibold mb-4">Oppmøtetype</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 ax-md:grid-cols-3 gap-4">
                     {attendanceTypeStats.map((type) => {
                         return (
                             <ClickableStatCard
@@ -145,21 +145,21 @@ function StatCard({
     const formattedValue = value.toLocaleString('nb-NO');
 
     return (
-        <div className="bg-white p-6 rounded-lg border-2 border-gray-200">
+        <div className="bg-white p-6 rounded-lg border-2 border-ax-neutral-300">
             {icon && (
-                <div className="text-blue-600 mb-3">
+                <div className="text-ax-accent-700 mb-3">
                     {icon}
                 </div>
             )}
-            <h3 className="text-sm font-medium text-gray-700 mb-1">
+            <h3 className="text-sm font-medium text-ax-neutral-800 mb-1">
                 {title}
             </h3>
-            <p className="text-3xl font-bold text-gray-900">
+            <p className="text-3xl font-ax-bold text-ax-neutral-1000">
                 {formattedValue}
-                {suffix && <span className="text-lg font-medium text-gray-600 ml-1">{suffix}</span>}
+                {suffix && <span className="text-lg font-medium text-ax-neutral-700 ml-1">{suffix}</span>}
             </p>
             {subtitle && (
-                <p className="text-sm text-gray-600 mt-1">
+                <p className="text-sm text-ax-neutral-700 mt-1">
                     {subtitle}
                 </p>
             )}
@@ -188,26 +188,26 @@ function ClickableStatCard({
     return (
         <button
             onClick={onClick}
-            className="bg-white p-6 rounded-lg border-2 border-gray-200 hover:border-blue-300 transition-colors text-left cursor-pointer w-full"
+            className="bg-white p-6 rounded-lg border-2 border-ax-neutral-300 hover:border-ax-accent-400 transition-colors text-left cursor-pointer w-full"
         >
             {icon && (
-                <div className="text-blue-600 mb-3">
+                <div className="text-ax-accent-700 mb-3">
                     {icon}
                 </div>
             )}
-            <h3 className="text-sm font-medium text-gray-700 mb-1">
+            <h3 className="text-sm font-medium text-ax-neutral-800 mb-1">
                 {title}
             </h3>
-            <p className="text-3xl font-bold text-gray-900">
+            <p className="text-3xl font-ax-bold text-ax-neutral-1000">
                 {formattedValue}
-                {suffix && <span className="text-lg font-medium text-gray-600 ml-1">{suffix}</span>}
+                {suffix && <span className="text-lg font-medium text-ax-neutral-700 ml-1">{suffix}</span>}
             </p>
             {subtitle && (
-                <p className="text-sm text-gray-600 mt-1">
+                <p className="text-sm text-ax-neutral-700 mt-1">
                     {subtitle}
                 </p>
             )}
-            <p className="text-xs text-blue-600 mt-2">Klikk for detaljer</p>
+            <p className="text-xs text-ax-accent-700 mt-2">Klikk for detaljer</p>
         </button>
     );
 }

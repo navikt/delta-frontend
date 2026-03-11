@@ -24,7 +24,7 @@ export default async function Accessibility() {
                 <p className="mb-4 leading-normal">Alle virksomheter i offentlig sektor skal ha en
                     tilgjengelighetserklæring. WCAG 2.1 på nivå AA er lovpålagt i Norge. Erklæringen beskriver hvert
                     suksesskriterium i WCAG, og om nettstedet imøtekommer disse kravene.</p>
-                <Link className="mb-4 leading-normal text-deepblue-500 underline hover:no-underline"
+                <Link className="mb-4 leading-normal text-ax-brand-blue-600 underline hover:no-underline"
                       href="https://uustatus.no/nb/erklaringer/publisert/eccc5189-b976-4970-bbf8-b5bcf52a4b10">Tilgjengelighetserklæring
                     for delta.nav.no.</Link>
 
@@ -32,9 +32,9 @@ export default async function Accessibility() {
                 <p className="leading-normal">Hvis du opplever problemer eller har forslag til forbedringer hører vi
                     veldig gjerne fra deg! Feil og mangler kan rapporteres til <Link
                         href="mailto:eilif.johansen@nav.no"
-                        className="text-deepblue-500 underline hover:no-underline">eilif.johansen@nav.no</Link>, eller <Link
+                        className="text-ax-brand-blue-600 underline hover:no-underline">eilif.johansen@nav.no</Link>, eller <Link
                         href="https://nav-it.slack.com/archives/C05E0NJ6Z0C"
-                        className="text-deepblue-500 underline hover:no-underline">#delta  på
+                        className="text-ax-brand-blue-600 underline hover:no-underline">#delta  på
                         Slack</Link>.</p>
             </div>
         </CardWithBackground>

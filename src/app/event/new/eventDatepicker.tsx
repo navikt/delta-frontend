@@ -74,7 +74,7 @@ export default function EventDatepicker(props: EventDatepickerProps) {
   return (
     <DatePicker {...datepickerProps} style={{ width: "100%" }} key={internalDate?.getTime() || 'empty'}>
       <div className="flex flex-row flex-wrap justify-left gap-4 pb-0 items-end">
-        <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4 flex-wrap ">
+        <div className="flex flex-col ax-sm:flex-row items-start ax-sm:items-end gap-4 flex-wrap ">
           <DatePicker.Input
             hideLabel={props.hideLabel}
             {...syncedInputProps}

@@ -19,9 +19,9 @@ export default async function Privacy() {
                     personvernerklæringen er knyttet til behandlingen av personopplysninger på dette nettstedet. For
                     utfyllende informasjon om hvordan NAV behandler personopplysninger, kan du lese mer i <Link
                         href="https://www.nav.no/no/nav-og-samfunn/om-nav/personvern-i-arbeids-og-velferdsetaten"
-                        className="text-deepblue-500 underline hover:no-underline">NAVs generelle
+                        className="text-ax-brand-blue-600 underline hover:no-underline">NAVs generelle
                         personvernerklæring.</Link></p>
-                <Link className="mb-4 leading-normal text-deepblue-500 underline hover:no-underline"
+                <Link className="mb-4 leading-normal text-ax-brand-blue-600 underline hover:no-underline"
                       href="https://etterlevelse.intern.nav.no/dokumentasjon/935f99be-82b1-4833-b9d7-5ccdc2623025">For
                     detaljer se Deltas oppføring i Etterlevelse i NAV.</Link>
 
@@ -32,7 +32,7 @@ export default async function Privacy() {
                     kalenderinvitasjonen skal sendes til.
                     Delta ber om samtykke før personopplysninger lagres tilknyttet påmelding til et event.
                 </p>
-                <Link className="mb-4 leading-normal text-deepblue-500 underline hover:no-underline"
+                <Link className="mb-4 leading-normal text-ax-brand-blue-600 underline hover:no-underline"
                       href="https://behandlingskatalog.intern.nav.no/process/purpose/KOMPETANSEUTVIKLING/b2d74c2c-8d0b-4bdc-a21a-4ca9e265bc85">For
                     detaljer se Deltas oppføring i Behandlerkatalogen.</Link>
 
@@ -88,10 +88,10 @@ export default async function Privacy() {
                 <p className="leading-normal">Hvis du opplever problemer eller har forslag til forbedringer hører vi
                     veldig gjerne fra deg! Feil og mangler kan rapporteres til <Link
                         href="mailto:eilif.johansen@nav.no"
-                        className="text-deepblue-500 underline hover:no-underline">eilif.johansen@nav.no</Link>,
+                        className="text-ax-brand-blue-600 underline hover:no-underline">eilif.johansen@nav.no</Link>,
                     eller <Link
                         href="https://nav-it.slack.com/archives/C05E0NJ6Z0C"
-                        className="text-deepblue-500 underline hover:no-underline">#delta på
+                        className="text-ax-brand-blue-600 underline hover:no-underline">#delta på
                         Slack</Link>.</p>
             </div>
         </CardWithBackground>

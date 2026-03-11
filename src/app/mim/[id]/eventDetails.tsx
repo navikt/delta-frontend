@@ -107,7 +107,7 @@ export default function EventDetails({
                             return (
                                 <>
                                     <Link
-                                        className="w-full h-fit navds-button navds-button--primary navds-label"
+                                        className="w-full h-fit aksel-button aksel-button--primary aksel-label"
                                         href={`/event/${event.id}/admin`}
                                     >
                                         Administrer
@@ -270,7 +270,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                         </Modal.Footer>
                     </Modal>
                     <CopyButton
-                        className="navds-button navds-button--secondary ax-md:whitespace-nowrap w-full"
+                        className="aksel-button aksel-button--secondary ax-md:whitespace-nowrap w-full"
                         copyText={`${hostname}/mim/${event.id}`}
                         text="Kopier lenke"
                     />
@@ -306,7 +306,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                     </Heading>
                     <div className="flex gap-3 mt-2 mb-6">
                         <CopyButton
-                            className="navds-button navds-button--secondary ax-md:whitespace-nowrap w-fit h-fit"
+                            className="aksel-button aksel-button--secondary ax-md:whitespace-nowrap w-fit h-fit"
                             copyText={`${hostname}/mim/${event.id}`}
                             text="Kopier lenke"
                             size="small"

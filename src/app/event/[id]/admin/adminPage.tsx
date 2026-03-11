@@ -30,13 +30,13 @@ export default function AdminPage({
                 <span className="flex w-full ax-md:w-fit flex-col ax-md:flex-row gap-4">
                     <Link
                         href={`/event/${event.id}/edit`}
-                        className="w-full h-fit navds-button navds-button--primary whitespace-nowrap navds-label"
+                        className="w-full h-fit aksel-button aksel-button--primary whitespace-nowrap aksel-label"
                     >
                         Rediger arrangement
                     </Link>
                     <Link
                         href={`/event/new?template=${event.id}`}
-                        className="w-full h-fit navds-button navds-button--primary-neutral whitespace-nowrap navds-label"
+                        className="w-full h-fit aksel-button aksel-button--primary-neutral whitespace-nowrap aksel-label"
                     >
                         Bruk som mal
                     </Link>
@@ -83,7 +83,7 @@ export default function AdminPage({
                     </Button>
                 </Modal.Footer>
             </Modal>
-            <h2 className="navds-heading navds-heading--medium -mt-4">Detaljer</h2>
+            <h2 className="aksel-heading aksel-heading--medium -mt-4">Detaljer</h2>
             <span className="flex flex-row justify-start gap-2 items-center -mt-5">
                 <CalendarIcon aria-label="dato" />
                 {formatEventDates(event)}
@@ -99,7 +99,7 @@ export default function AdminPage({
                 <LocationPinIcon aria-label="sted" />
                 {event.location}
             </span>
-            <h2 className="navds-heading navds-heading--medium mt-1">Deltakerliste</h2>
+            <h2 className="aksel-heading aksel-heading--medium mt-1">Deltakerliste</h2>
             <form>
                 <Search
                     className="pt-0 -mt-4 -mb-2 ax-sm:w-64"

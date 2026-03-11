@@ -53,29 +53,29 @@ export default function ExportParticipants(
           />
           <Dropdown.Menu.List.Item
             className={`
-              navds-copybutton--small navds-copybutton--neutral
+              aksel-copybutton--small aksel-copybutton--neutral
               no-underline text-ax-text-neutral-subtle hover:text-ax-text-neutral
               hover:bg-ax-bg-neutral-moderate-hoverA w-full justify-start px-2
             `}
             as={Link}
             href={`mailto:${sendEmails}`}
           >
-            <span className="navds-copybutton__content">
-              <EnvelopeClosedIcon className="navds-copybutton__icon" />
-              <span className="navds-label navds-label--small ml-1">
+            <span className="aksel-copybutton__content">
+              <EnvelopeClosedIcon className="aksel-copybutton__icon" />
+              <span className="aksel-label aksel-label--small ml-1">
                 Send e-post til deltakere
               </span>
             </span>
           </Dropdown.Menu.List.Item>
           <Dropdown.Menu.List.Item
-            className=" navds-copybutton--small navds-copybutton--neutral
+            className=" aksel-copybutton--small aksel-copybutton--neutral
               no-underline text-ax-text-neutral-subtle hover:text-ax-text-neutral
               hover:bg-ax-bg-neutral-moderate-hoverA w-full justify-start px-2"
             onClick={exportToExcel}
           >
-            <span className="navds-copybutton__content">
+            <span className="aksel-copybutton__content">
               <FileExcelIcon />
-              <span className="navds-label navds-label--small">
+              <span className="aksel-label aksel-label--small">
                 Eksporter til Excel
               </span>
             </span>

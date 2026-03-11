@@ -59,7 +59,7 @@ export default function CardWithBackground(props: CardWithBackgroundProps) {
             <span className="relative mb-2 top-[-4rem] w-0 h-0">
               <a
                 href={props.backLink}
-                className="flex items-center no-underline font-ax-bold border w-fit p-1 bg-ax-bg-neutral-soft rounded drop-shadow-sm text-sm hover:bg-bg-subtle-hover hover:text-ax-text-neutral tracking-wide"
+                className="flex items-center no-underline font-ax-bold border w-fit p-1 bg-ax-bg-neutral-soft rounded drop-shadow-sm text-sm hover:bg-ax-bg-neutral-moderate-hover hover:text-ax-text-neutral tracking-wide"
               >
                 <ArrowLeftIcon aria-hidden /> {props.backText}
               </a>

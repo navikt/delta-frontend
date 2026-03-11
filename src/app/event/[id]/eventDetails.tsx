@@ -110,7 +110,7 @@ export default function EventDetails({
                             return (
                                 <>
                                     <Link data-umami-event="administrer besøkt"
-                                        className="w-full h-fit navds-button navds-button--primary navds-label"
+                                        className="w-full h-fit aksel-button aksel-button--primary aksel-label"
                                         href={`/event/${event.id}/edit`}
                                     >
                                         <PencilIcon/> Rediger
@@ -127,12 +127,12 @@ export default function EventDetails({
                                     </Button>
                                     <Link data-umami-event="bruk som mal"
                                         href={`/event/new?template=${event.id}`}
-                                        className="w-full h-fit navds-button navds-button--secondary navds-label"
+                                        className="w-full h-fit aksel-button aksel-button--secondary aksel-label"
                                     >
                                         <FilePlusIcon /> Dupliser
                                     </Link>
                                     <Link data-umami-event="webtatistikk besøkt"
-                                        className="w-full h-fit navds-button navds-button--secondary navds-label"
+                                        className="w-full h-fit aksel-button aksel-button--secondary aksel-label"
                                         href={`https://metabase.ansatt.nav.no/dashboard/716-nav-webstatistikk?dato=past30days~&nettside=delta.nav.no&url-sti_er_lik=%2Fevent%2F${event.id}`}
                                     >
                                         <BarChartIcon/> Statistikk
@@ -325,7 +325,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                         </Modal.Footer>
                     </Modal>
                     <CopyButton data-umami-event="kopierer eventlenke"
-                        className="navds-button navds-button--secondary ax-md:whitespace-nowrap w-full"
+                        className="aksel-button aksel-button--secondary ax-md:whitespace-nowrap w-full"
                         copyText={`${hostname}/event/${event.id}`}
                         text="Kopier lenke"
                     />
@@ -361,7 +361,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                     </Heading>
                     <div className="flex gap-3 mt-2 mb-6">
                         <CopyButton data-umami-event="kopierer eventlenke"
-                            className="navds-button navds-button--secondary ax-md:whitespace-nowrap w-fit h-fit"
+                            className="aksel-button aksel-button--secondary ax-md:whitespace-nowrap w-fit h-fit"
                             copyText={`${hostname}/event/${event.id}`}
                             text="Kopier lenke"
                             size="small"

@@ -30,13 +30,13 @@ export default function ParticipantPage({
         <span className="flex w-full ax-md:w-fit flex-col ax-md:flex-row gap-4">
   {/*        <Link
               href={`/event/${event.id}/edit`}
-              className="w-full h-fit navds-button navds-button--primary whitespace-nowrap navds-label"
+              className="w-full h-fit aksel-button aksel-button--primary whitespace-nowrap aksel-label"
           >
             Rediger arrangement
           </Link>
           <Link
               href={`/event/new?template=${event.id}`}
-              className="w-full h-fit navds-button navds-button--primary-neutral whitespace-nowrap navds-label"
+              className="w-full h-fit aksel-button aksel-button--primary-neutral whitespace-nowrap aksel-label"
           >
             Bruk som mal
           </Link>*/}
@@ -102,7 +102,7 @@ export default function ParticipantPage({
                 user={user}
                 searchInput={searchInput}
             />
-            <h2 className="navds-heading navds-heading--medium">Detaljer</h2>
+            <h2 className="aksel-heading aksel-heading--medium">Detaljer</h2>
             <span className="flex flex-col ax-md:flex-row justify-start gap-2 -mt-6 mb-5 items-center">
               <CalendarIcon aria-label="dato"/>
               {formatEventDates(event)}

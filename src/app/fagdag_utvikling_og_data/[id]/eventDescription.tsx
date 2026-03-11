@@ -155,7 +155,7 @@ export default function EventDescription({
             <div className="flex flex-row ml-[0.3rem] pl-6">
                 {hosts.map((h) => h.email).includes(user.email) ? (<>
                     <Link
-                        className="mb-4 navds-button navds-button--secondary navds-button--xsmall no-underline"
+                        className="mb-4 aksel-button aksel-button--secondary aksel-button--xsmall no-underline"
                         href={`/event/${event.id}/admin`}
                     >
                         Vis deltakere
@@ -178,7 +178,7 @@ export default function EventDescription({
                 ref={ref}
             >
                 <Modal.Header>
-                    <h1 className="navds-heading navds-heading--medium">
+                    <h1 className="aksel-heading aksel-heading--medium">
                         Deltakere
                     </h1>
                     <form>

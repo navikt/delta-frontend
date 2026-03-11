@@ -91,7 +91,7 @@ function FooterLink({ children, href }) {
     return (
         <li>
             <a
-                className="text-white hover:text-white focus:shadow-focus focus:text-ax-text-neutral flex w-fit items-center gap-1 underline hover:no-underline focus:bg-ax-accent-200 focus:shadow-ax-accent-200"
+                className="text-white hover:text-white focus:text-ax-text-neutral flex w-fit items-center gap-1 underline hover:no-underline focus:bg-ax-accent-200 focus:shadow-ax-accent-200"
                 href={href}
             >
                 {children}

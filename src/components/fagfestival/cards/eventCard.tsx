@@ -34,7 +34,7 @@ export function EventCard({ event }: EventCardProps) {
     <Link
       href={`/fagfest/${event.event.id}`}
       key={`event-${event.event.id}`}
-      className="flex flex-col h-full p-4 border rounded-xl text-ax-text-neutral border-ax-neutral-400 transition-all hover:-translate-y-1 hover:scale-105 hover:text-ax-text-action hover:border-ax-border-accent event-card"
+      className="flex flex-col h-full p-4 border rounded-xl text-ax-text-neutral border-ax-neutral-400 transition-all hover:-translate-y-1 hover:scale-105 hover:text-ax-text-action hover:border-ax-border-accent no-underline event-card"
     >
       <Heading level="2" size="small">
         {event.event.title}

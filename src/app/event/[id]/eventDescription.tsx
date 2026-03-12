@@ -198,7 +198,7 @@ export default function EventDescription({
                 </Modal.Header>
                 <Modal.Body>
                     <div className="flex flex-col gap-6">
-                        <ul className="flex flex-col gap-1">
+                        <ul className="flex flex-col gap-1 list-none p-0 m-0">
                             {filterParticipants.map((p) => (
                                 <li className="pb-4" key={p.email}>
                                     <Participant

@@ -68,9 +68,10 @@ export default function EventFilters({
   const [events, setEvents] = useState<FullDeltaEvent[]>([]);
   const hasRestoredScroll = useRef(false);
 
+  const searchParamsKey = searchParams.toString();
   const selectedCategoryNames = useMemo(
-    () => getSelectedCategoryNames(searchParams),
-    [searchParams],
+    () => getSelectedCategoryNames(new URLSearchParams(searchParamsKey)),
+    [searchParamsKey],
   );
   const selectedCategoryNamesKey = selectedCategoryNames.join(",");
   const searchInput = searchParams.get("search") ?? "";
@@ -80,9 +81,9 @@ export default function EventFilters({
   const selectedTime =
     searchParams.get("time") === TimeSelector.PAST ? TimeSelector.PAST : TimeSelector.FUTURE;
   const currentOverviewPath = useMemo(() => {
-    const currentSearch = searchParams.toString();
+    const currentSearch = searchParamsKey;
     return `${pathname}${currentSearch ? `?${currentSearch}` : ""}`;
-  }, [pathname, searchParams]);
+  }, [pathname, searchParamsKey]);
 
   const providedCategories = useMemo(
     () => getUniqueCategories(allCategories),
@@ -135,7 +136,7 @@ export default function EventFilters({
     showPast?: boolean | null;
     time?: TimeSelector | null;
   }) => {
-    const nextSearchParams = new URLSearchParams(searchParams.toString());
+    const nextSearchParams = new URLSearchParams(searchParamsKey);
 
     if (updates.categories !== undefined) {
       if (updates.categories?.length) {
@@ -220,14 +221,27 @@ export default function EventFilters({
     hasRestoredScroll.current = false;
   }, [currentOverviewPath]);
 
+  const selectedCategoryIdsKey = useMemo(
+    () => selectedCategories.map((category) => category.id).sort((a, b) => a - b).join(","),
+    [selectedCategories],
+  );
   useEffect(() => {
     let cancelled = false;
 
     const fetchEvents = async () => {
       try {
         setLoading(true);
+        const categoriesForFetch =
+          selectedCategoryIdsKey.length === 0
+            ? []
+            : selectedCategoryIdsKey
+                .split(",")
+                .map((categoryId) => Number(categoryId))
+                .filter((categoryId) => Number.isFinite(categoryId))
+                .map((categoryId) => ({ id: categoryId, name: "" }));
+
         const eventsData = await getEvents({
-          categories: selectedCategories,
+          categories: categoriesForFetch,
           onlyFuture,
           onlyPast,
           onlyJoined: tabname === "påmeldte",
@@ -249,7 +263,7 @@ export default function EventFilters({
     return () => {
       cancelled = true;
     };
-  }, [selectedCategoryNamesKey, selectedCategories, onlyFuture, onlyPast, tabname]);
+  }, [selectedCategoryIdsKey, onlyFuture, onlyPast, tabname]);
 
   useEffect(() => {
     const handleResize = () => {

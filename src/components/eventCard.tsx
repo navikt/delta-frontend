@@ -52,7 +52,7 @@ export function EventCard({
             ) : (
                 <a
                     href={`/event/${event.event.id}`}
-                    className="flex flex-col h-full p-4 border rounded-xl text-text-default border-gray-300 transition-all hover:-translate-y-1 hover:scale-105 hover:text-surface-action-selected-hover hover:border-border-action event-card"
+                    className="flex flex-col h-full p-4 border rounded-xl text-ax-text-neutral border-ax-neutral-400 transition-all hover:-translate-y-1 hover:scale-105 hover:text-ax-text-action hover:border-ax-border-accent no-underline event-card"
                 >
                     <Heading level="2" size="small">{event.event.title}</Heading>
                     <div className="flex flex-col gap-2 h-full justify-between">
@@ -96,7 +96,7 @@ export function EventCard({
                 <HourglassBottomFilledIcon title="timeglass"/>
                 Påmeldingsfrist:{" "}
                   {isUtløpt ? (
-                      <span className="text-white bg-red-600 rounded px-2">
+                      <span className="text-white bg-ax-danger-700 rounded px-2">
                     Utløpt
                   </span>
                   ) : (
@@ -113,7 +113,7 @@ export function EventCard({
                     {/*Maks {event.participants.length + event.hosts.length} av*/}
                     {event.participants.length + event.hosts.length >=
                     event.event.participantLimit ? (
-                        <span className="bg-red-600 text-white rounded px-2">
+                        <span className="bg-ax-danger-700 text-white rounded px-2">
                       Arrangementet er fullt
                     </span>
                     ) : (<>
@@ -128,7 +128,7 @@ export function EventCard({
                         </div>
                         <div className="flex gap-2 flex-wrap items-end w-full">
                             {categories.map((category) => (
-                                <Tag variant="alt1" size="small" key={category.id}>
+                                <Tag variant="neutral" size="small" key={category.id}>
                                     {category.name}
                                 </Tag>
                             ))}

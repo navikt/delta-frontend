@@ -48,29 +48,29 @@ export default function CategorySection({
         <h2 className="text-2xl font-semibold mb-4">
           Arrangementer per kategori
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 ax-md:grid-cols-3 gap-4">
           {/* Main Categories */}
           {categoryStats.map((cat) => {
             return (
               <button
                 key={cat.category}
                 onClick={() => handleCardClick(cat)}
-                className="bg-white p-6 rounded-lg border-2 border-gray-200 hover:border-blue-300 transition-colors text-left cursor-pointer"
+                className="bg-white p-6 rounded-lg border-2 border-ax-neutral-300 hover:border-ax-accent-400 transition-colors text-left cursor-pointer"
               >
-                <div className="text-blue-600 mb-3">
+                <div className="text-ax-accent-700 mb-3">
                   <BarChartIcon className="w-6 h-6" />
                 </div>
-                <h3 className="text-sm font-medium text-gray-700 mb-1">
+                <h3 className="text-sm font-medium text-ax-neutral-800 mb-1">
                   {cat.category}
                 </h3>
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="text-3xl font-ax-bold text-ax-neutral-1000">
                   {cat.count.toLocaleString("nb-NO")}
-                  <span className="text-lg font-medium text-gray-600 ml-1">arrangementer</span>
+                  <span className="text-lg font-medium text-ax-neutral-700 ml-1">arrangementer</span>
                 </p>
-                <p className="text-sm text-gray-600 mt-1">
+                <p className="text-sm text-ax-neutral-700 mt-1">
                   {cat.uniqueParticipants.toLocaleString("nb-NO")} unike deltakere, {cat.totalParticipants.toLocaleString("nb-NO")} deltakelser totalt
                 </p>
-                <p className="text-xs text-blue-600 mt-2">Klikk for detaljer</p>
+                <p className="text-xs text-ax-accent-700 mt-2">Klikk for detaljer</p>
               </button>
             );
           })}
@@ -80,32 +80,32 @@ export default function CategorySection({
             return (
               <button
                 onClick={() => handleCardClick(fagtorsdagStat)}
-                className="bg-white p-6 rounded-lg border-2 border-gray-200 hover:border-blue-300 transition-colors text-left cursor-pointer"
+                className="bg-white p-6 rounded-lg border-2 border-ax-neutral-300 hover:border-ax-accent-400 transition-colors text-left cursor-pointer"
               >
-                <div className="text-blue-600 mb-3">
+                <div className="text-ax-accent-700 mb-3">
                   <BarChartIcon className="w-6 h-6" />
                 </div>
-                <h3 className="text-sm font-medium text-gray-700 mb-1">
+                <h3 className="text-sm font-medium text-ax-neutral-800 mb-1">
                   {fagtorsdagStat.category}
                 </h3>
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="text-3xl font-ax-bold text-ax-neutral-1000">
                   {fagtorsdagStat.count.toLocaleString("nb-NO")}
-                  <span className="text-lg font-medium text-gray-600 ml-1">arrangementer</span>
+                  <span className="text-lg font-medium text-ax-neutral-700 ml-1">arrangementer</span>
                 </p>
-                <p className="text-sm text-gray-600 mt-1">
+                <p className="text-sm text-ax-neutral-700 mt-1">
                   {fagtorsdagStat.uniqueParticipants.toLocaleString("nb-NO")} unike deltakere, {fagtorsdagStat.totalParticipants.toLocaleString("nb-NO")} deltakelser totalt
                 </p>
-                <p className="text-xs text-blue-600 mt-2">Klikk for detaljer</p>
+                <p className="text-xs text-ax-accent-700 mt-2">Klikk for detaljer</p>
               </button>
             );
           })()}
 
           {/* Custom Category Selector */}
-          <div className="bg-white p-6 rounded-lg border-2 border-gray-200 flex flex-col">
-            <div className="text-blue-600 mb-3">
+          <div className="bg-white p-6 rounded-lg border-2 border-ax-neutral-300 flex flex-col">
+            <div className="text-ax-accent-700 mb-3">
               <MagnifyingGlassIcon className="w-6 h-6" />
             </div>
-            <h3 className="text-sm font-medium text-gray-700 mb-3">
+            <h3 className="text-sm font-medium text-ax-neutral-800 mb-3">
               Velg kategori
             </h3>
             <UNSAFE_Combobox
@@ -124,20 +124,20 @@ export default function CategorySection({
                   className="cursor-pointer group"
                   onClick={() => handleCardClick(customCategoryStat)}
                 >
-                  <p className="text-3xl font-bold text-gray-900 group-hover:text-blue-700 transition-colors">
+                  <p className="text-3xl font-ax-bold text-ax-neutral-1000 group-hover:text-ax-accent-800 transition-colors">
                     {customCategoryStat.count.toLocaleString("nb-NO")}
-                    <span className="text-lg font-medium text-gray-600 ml-1 group-hover:text-blue-600">arrangementer</span>
+                    <span className="text-lg font-medium text-ax-neutral-700 ml-1 group-hover:text-ax-accent-700">arrangementer</span>
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="text-sm text-ax-neutral-700 mt-1">
                     {customCategoryStat.uniqueParticipants.toLocaleString("nb-NO")} unike deltakere, {customCategoryStat.totalParticipants.toLocaleString("nb-NO")} deltakelser totalt
                   </p>
-                  <p className="text-xs text-blue-600 mt-2 group-hover:underline">
+                  <p className="text-xs text-ax-accent-700 mt-2 group-hover:underline">
                     Klikk for detaljer
                   </p>
                 </div>
               );
             })() : (
-              <p className="text-sm text-gray-500 italic mt-auto">
+              <p className="text-sm text-ax-neutral-600 italic mt-auto">
                 Velg en kategori for å se statistikk
               </p>
             )}

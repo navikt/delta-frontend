@@ -135,7 +135,7 @@ export default function CategoryModal({
             </div>
 
             {events.length === 0 ? (
-              <p className="text-gray-600">Ingen arrangementer funnet i denne kategorien.</p>
+              <p className="text-ax-neutral-700">Ingen arrangementer funnet i denne kategorien.</p>
             ) : (
               <>
                 <Table size="small">
@@ -170,12 +170,12 @@ export default function CategoryModal({
                           {event.isPublic ? (
                             <Link
                               href={`/event/${event.id}`}
-                              className="text-blue-700 hover:text-blue-800 hover:underline"
+                              className="text-ax-accent-800 hover:text-ax-accent-900 hover:underline"
                             >
                               {event.title}
                             </Link>
                           ) : (
-                            <span className="text-gray-700">{event.title}</span>
+                            <span className="text-ax-neutral-800">{event.title}</span>
                           )}
                         </Table.DataCell>
                         <Table.DataCell style={{ whiteSpace: "nowrap" }}>
@@ -225,7 +225,7 @@ export default function CategoryModal({
                 ))}
                 {sortedMonthlyStats.length === 0 && (
                   <Table.Row>
-                    <Table.DataCell colSpan={2} className="text-center text-gray-500">
+                    <Table.DataCell colSpan={2} className="text-center text-ax-neutral-600">
                       Ingen data tilgjengelig
                     </Table.DataCell>
                   </Table.Row>

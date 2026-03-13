@@ -79,13 +79,13 @@ export default function ManageEiereForm({ faggruppeId, eiere, isAdmin }: Props) 
         <div className="space-y-4">
             <div className="space-y-2">
                 {currentEiere.length === 0 && (
-                    <p className="text-gray-500 text-sm">Ingen eiere registrert.</p>
+                    <p className="text-ax-neutral-600 text-sm">Ingen eiere registrert.</p>
                 )}
                 {currentEiere.map((eier) => (
                     <div key={eier.epost} className="flex items-center justify-between gap-2 p-2 border rounded">
                         <div>
                             {eier.navn && <span className="font-medium">{eier.navn}</span>}
-                            <span className="text-sm text-gray-600 ml-1">{eier.epost}</span>
+                            <span className="text-sm text-ax-neutral-700 ml-1">{eier.epost}</span>
                         </div>
                         <Button
                             variant="tertiary-neutral"
@@ -113,10 +113,10 @@ export default function ManageEiereForm({ faggruppeId, eiere, isAdmin }: Props) 
                 </Button>
             </form>
 
-            {error && <p className="text-red-600 text-sm">{error}</p>}
+            {error && <p className="text-ax-danger-700 text-sm">{error}</p>}
 
             {isAdmin && (
-                <p className="text-sm text-gray-500 italic">
+                <p className="text-sm text-ax-neutral-600 italic">
                     Du ser dette som administrator og kan administrere eiere for alle faggrupper.
                 </p>
             )}

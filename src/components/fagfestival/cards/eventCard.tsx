@@ -34,7 +34,7 @@ export function EventCard({ event }: EventCardProps) {
     <Link
       href={`/fagfest/${event.event.id}`}
       key={`event-${event.event.id}`}
-      className="flex flex-col h-full p-4 border rounded-xl text-text-default border-gray-300 transition-all hover:-translate-y-1 hover:scale-105 hover:text-surface-action-selected-hover hover:border-border-action event-card"
+      className="flex flex-col h-full p-4 border rounded-xl text-ax-text-neutral border-ax-neutral-400 transition-all hover:-translate-y-1 hover:scale-105 hover:text-ax-text-action hover:border-ax-border-accent no-underline event-card"
     >
       <Heading level="2" size="small">
         {event.event.title}
@@ -88,7 +88,7 @@ export function EventCard({ event }: EventCardProps) {
                 <HourglassBottomFilledIcon title="timeglass" />
                 Påmeldingsfrist:{" "}
                 {hasEventExpired ? (
-                  <span className="text-white bg-red-600 rounded px-2">Utløpt</span>
+                  <span className="text-white bg-ax-danger-700 rounded px-2">Utløpt</span>
                 ) : (
                   formatDeadline(event.event)
                 )}
@@ -103,7 +103,7 @@ export function EventCard({ event }: EventCardProps) {
                   <PersonCheckmarkIcon title="person" />
                   {event.participants.length + event.hosts.length >=
                   event.event.participantLimit ? (
-                    <span className="bg-red-600 text-white rounded px-2">
+                    <span className="bg-ax-danger-700 text-white rounded px-2">
                       Arrangementet er fullt
                     </span>
                   ) : (
@@ -134,7 +134,7 @@ export function EventCard({ event }: EventCardProps) {
           {event.categories.map((category) => {
             if (category.name !== "fagfestival") {
               return (
-                <Tag variant="alt1" size="small" key={category.id}>
+                <Tag variant="neutral" size="small" key={category.id}>
                   {category.name}
                 </Tag>
               );

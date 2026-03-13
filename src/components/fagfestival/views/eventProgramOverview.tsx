@@ -35,7 +35,7 @@ export default function EventProgramOverview({
   }
 
   if (!filteredEvents || filteredEvents?.length === 0) {
-    return <p className="col-span-full italic text-xlarge">Fant ingen arrangementer :--(</p>;
+    return <p className="col-span-full italic text-ax-xlarge">Fant ingen arrangementer :--(</p>;
   }
   
   const days = Array.from(
@@ -53,7 +53,7 @@ export default function EventProgramOverview({
     <table className="w-full h-full table-fixed">
       <thead>
         <tr>
-          <th className="w-12 md:w-14 lg:w-16"></th>
+          <th className="w-12 ax-md:w-14 ax-lg:w-16"></th>
           {days.map((day) => (
             <th key={day}>{new Date(day).toLocaleDateString()}</th>
           ))}

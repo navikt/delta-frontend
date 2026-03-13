@@ -124,7 +124,7 @@ export default function EventDescription({
                         <HourglassBottomFilledIcon aria-hidden/>
                         Påmeldingsfrist:
                     </label>
-                    <span className="flex ml-[0.2rem] pl-6 gap-2 text-red-600">
+                    <span className="flex ml-[0.2rem] pl-6 gap-2 text-ax-danger-700">
             {formatDeadline(event)}{" "}
           </span>
                 </div>
@@ -134,7 +134,7 @@ export default function EventDescription({
                     <PersonCircleIcon aria-hidden/>
                     Arrangeres av:
                 </label>
-                <ul>
+                <ul className="list-none p-0 m-0">
                         <li className="flex ml-[0.2rem] pl-6 gap-2">
                             <Link
                                 title={`Send e-post til fagfestival@nav.no`}
@@ -155,7 +155,7 @@ export default function EventDescription({
             <div className="flex flex-row ml-[0.3rem] pl-6">
                 {hosts.map((h) => h.email).includes(user.email) ? (<>
                     <Link
-                        className="mb-4 navds-button navds-button--secondary navds-button--xsmall no-underline"
+                        className="mb-4 aksel-button aksel-button--xsmall no-underline" data-variant="secondary"
                         href={`/event/${event.id}/admin`}
                     >
                         Vis deltakere
@@ -178,7 +178,7 @@ export default function EventDescription({
                 ref={ref}
             >
                 <Modal.Header>
-                    <h1 className="navds-heading navds-heading--medium">
+                    <h1 className="aksel-heading aksel-heading--medium">
                         Deltakere
                     </h1>
                     <form>
@@ -196,7 +196,7 @@ export default function EventDescription({
                 </Modal.Header>
                 <Modal.Body>
                     <div className="flex flex-col gap-6">
-                        <ul className="flex flex-col gap-1">
+                        <ul className="flex flex-col gap-1 list-none p-0 m-0">
                             {filterParticipants.map((p) => (
                                 <li className="pb-4" key={p.email}>
                                     <Participant

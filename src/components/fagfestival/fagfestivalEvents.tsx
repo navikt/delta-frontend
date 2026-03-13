@@ -144,13 +144,13 @@ const FagfestivalEvents = () => {
         </Tabs.List>
       </Tabs>
 
-      <div className="flex flex-col-reverse gap-2 items-start md:flex-row justify-between w-full md:items-center px-4">
+      <div className="flex flex-col-reverse gap-2 items-start ax-md:flex-row justify-between w-full ax-md:items-center px-4">
         <Search
           label="Søk alle kommende arrangementer"
           variant="simple"
           value={searchInput}
           size="small"
-          className="border-[#000] w-full md:w-auto"
+          className="w-full ax-md:w-auto"
           onChange={(e) => {
             setSearchInput(e);
           }}
@@ -176,14 +176,14 @@ const FagfestivalEvents = () => {
               Husk å meld deg på{" "}
               <Link
                 href="https://delta.nav.no/fagfest/38d6e0a2-8b13-4c4d-b398-d73116331e14"
-                className="text-deepblue-500 underline hover:no-underline"
+                className="text-ax-brand-blue-600 underline hover:no-underline"
               >
                 felles avslutning
               </Link>{" "}
               og{" "}
               <Link
                 href="https://delta.nav.no/fagfest/168e3338-0a9b-4755-8d12-1f176fd8c7ed"
-                className="text-deepblue-500 underline hover:no-underline"
+                className="text-ax-brand-blue-600 underline hover:no-underline"
               >
                 husfest etter fagfestival
               </Link>{" "}

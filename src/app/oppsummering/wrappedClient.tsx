@@ -46,7 +46,7 @@ function WelcomeSection({ stats, year }: { stats: UserWrappedStats; year: number
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    className="text-5xl md:text-7xl font-black mb-8 text-white"
+                    className="text-5xl ax-md:text-7xl font-black mb-8 text-white"
                 >
                     Delta {year}
                 </motion.h1>
@@ -55,7 +55,7 @@ function WelcomeSection({ stats, year }: { stats: UserWrappedStats; year: number
                     whileInView={{ opacity: 1 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.2 }}
-                    className="text-2xl md:text-3xl font-medium text-white"
+                    className="text-2xl ax-md:text-3xl font-medium text-white"
                 >
                     Hei, {stats.userFirstName}! 👋
                 </motion.p>
@@ -89,7 +89,7 @@ function TotalEventsSection({ stats }: { stats: UserWrappedStats }) {
             style={{ background: 'linear-gradient(135deg, #db2777, #e11d48)' }}
         >
             <div className="text-center max-w-2xl w-full">
-                <h2 className="text-2xl md:text-3xl font-medium mb-8 text-white">
+                <h2 className="text-2xl ax-md:text-3xl font-medium mb-8 text-white">
                     Du deltok på
                 </h2>
                 <motion.div
@@ -98,18 +98,18 @@ function TotalEventsSection({ stats }: { stats: UserWrappedStats }) {
                     viewport={{ once: true }}
                     className="relative inline-block"
                 >
-                    <span className="text-[8rem] md:text-[12rem] font-black leading-none text-white drop-shadow-lg">
+                    <span className="text-[8rem] ax-md:text-[12rem] font-black leading-none text-white drop-shadow-lg">
                         {stats.totalEventsAttended}
                     </span>
                 </motion.div>
-                <p className="text-2xl md:text-3xl font-medium mt-4 text-white">
+                <p className="text-2xl ax-md:text-3xl font-medium mt-4 text-white">
                     {stats.totalEventsAttended === 1 ? 'arrangement' : 'arrangementer'} i år!
                 </p>
 
                 <div className="mt-12 flex justify-center">
                     <div className="bg-white/20 rounded-2xl p-6 border border-white/20 backdrop-blur-sm max-w-md w-full">
                         <p className="text-sm text-pink-100 mb-2">Gjennomsnitt: {average}</p>
-                        <p className="text-xl font-bold text-white">{avgText}</p>
+                        <p className="text-xl font-ax-bold text-white">{avgText}</p>
                     </div>
                 </div>
             </div>
@@ -127,7 +127,7 @@ function CategorySection({ stats }: { stats: UserWrappedStats }) {
             style={{ background: 'linear-gradient(135deg, #0891b2, #2563eb)' }}
         >
             <div className="text-center max-w-2xl w-full">
-                <h2 className="text-2xl md:text-3xl font-medium mb-12 text-white">
+                <h2 className="text-2xl ax-md:text-3xl font-medium mb-12 text-white">
                     Din favorittkategori
                 </h2>
                 <motion.div
@@ -138,10 +138,10 @@ function CategorySection({ stats }: { stats: UserWrappedStats }) {
                 >
                     {stats.favoriteCategory.emoji}
                 </motion.div>
-                <h3 className="text-4xl md:text-6xl font-black mb-4 text-white drop-shadow-md">
+                <h3 className="text-4xl ax-md:text-6xl font-black mb-4 text-white drop-shadow-md">
                     {stats.favoriteCategory.name.toUpperCase()}
                 </h3>
-                <p className="text-xl md:text-2xl text-cyan-50">
+                <p className="text-xl ax-md:text-2xl text-cyan-50">
                     Du deltok på {stats.favoriteCategory.count} arrangementer
                 </p>
 
@@ -180,7 +180,7 @@ function AttendanceSection({ stats }: { stats: UserWrappedStats }) {
             style={{ background: 'linear-gradient(135deg, #059669, #0d9488)' }}
         >
             <div className="max-w-2xl w-full">
-                <h2 className="text-2xl md:text-3xl font-medium mb-12 text-center text-white">
+                <h2 className="text-2xl ax-md:text-3xl font-medium mb-12 text-center text-white">
                     Dine arrangementer
                 </h2>
 
@@ -194,7 +194,7 @@ function AttendanceSection({ stats }: { stats: UserWrappedStats }) {
                             <div className="flex items-center gap-4 mb-2 text-white">
                                 <span className="text-3xl" aria-hidden="true">{typeConfig[type].emoji}</span>
                                 <span className="text-lg font-medium flex-1">{typeConfig[type].label}</span>
-                                <span className="text-2xl font-bold">{count}</span>
+                                <span className="text-2xl font-ax-bold">{count}</span>
                             </div>
                             {/* Darker background for the track */}
                             <div className="h-6 bg-black/40 rounded-full overflow-hidden border-2 border-white/50">
@@ -211,7 +211,7 @@ function AttendanceSection({ stats }: { stats: UserWrappedStats }) {
                     ))}
                 </div>
                 <div className="mt-12 text-center">
-                    <p className="text-xl md:text-2xl font-bold text-white inline-block">
+                    <p className="text-xl ax-md:text-2xl font-ax-bold text-white inline-block">
                         {fysisk >= digitalt && fysisk >= hybrid && "De fleste arrangementene dine var fysiske! 🏢"}
                         {digitalt > fysisk && digitalt >= hybrid && "De fleste arrangementene dine var digitale! 💻"}
                         {hybrid > fysisk && hybrid > digitalt && "De fleste arrangementene dine var hybride! 🔄"}
@@ -264,11 +264,11 @@ function MimretidSection({ stats }: { stats: UserWrappedStats }) {
             style={{ background: 'linear-gradient(135deg, #4338ca, #3730a3)' }}
         >
             <div className="max-w-4xl w-full">
-                <h2 className="text-2xl md:text-3xl font-medium mb-12 text-center text-white">
+                <h2 className="text-2xl ax-md:text-3xl font-medium mb-12 text-center text-white">
                     Mimretid!
                 </h2>
 
-                <div className="bg-white rounded-xl p-6 shadow-xl text-gray-900 border-4 border-indigo-200 min-h-[600px] flex flex-col">
+                <div className="bg-white rounded-xl p-6 shadow-xl text-ax-neutral-1000 border-4 border-indigo-200 min-h-[600px] flex flex-col">
                     <Table
                         size="large"
                         sort={sort}
@@ -333,7 +333,7 @@ function MimretidSection({ stats }: { stats: UserWrappedStats }) {
                 <div className="flex flex-col gap-4 mt-12 items-center">
                     <Link
                         href="/statistikk"
-                        className="inline-flex items-center justify-center gap-2 bg-white text-indigo-900 hover:bg-indigo-50 rounded-full px-8 py-4 text-lg font-bold transition-colors shadow-lg hover:underline"
+                        className="inline-flex items-center justify-center gap-2 bg-white text-indigo-900 hover:bg-indigo-50 rounded-full px-8 py-4 text-lg font-ax-bold transition-colors shadow-lg hover:underline"
                     >
                         📊 Se statistikk for Delta i stort
                     </Link>
@@ -357,11 +357,11 @@ function FunFactsSection({ stats }: { stats: UserWrappedStats }) {
             style={{ background: 'linear-gradient(135deg, #5b21b6, #4c1d95)' }}
         >
             <div className="max-w-4xl w-full">
-                <h2 className="text-2xl md:text-3xl font-medium mb-12 text-center text-white">
+                <h2 className="text-2xl ax-md:text-3xl font-medium mb-12 text-center text-white">
                     Visste du at...
                 </h2>
 
-                <div className="grid gap-6 md:grid-cols-2 mb-12">
+                <div className="grid gap-6 ax-md:grid-cols-2 mb-12">
                     {stats.funFacts.map((fact, index) => (
                         <motion.div
                             key={index}
@@ -383,7 +383,7 @@ function FunFactsSection({ stats }: { stats: UserWrappedStats }) {
                     )}
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 ax-sm:grid-cols-2 ax-lg:grid-cols-4 gap-6">
                     <StatBox icon="👥" value={stats.totalPeopleMetWith.toLocaleString('nb-NO')} label='kolleger "møtt"' />
                     <StatBox icon="⏰" value={Math.round(stats.totalHoursSpent).toLocaleString('nb-NO')} label="timer brukt" />
                     <StatBox icon="🎤" value={stats.eventsHosted.toLocaleString('nb-NO')} label="som vert" />
@@ -402,7 +402,7 @@ function StatBox({ icon, value, label }: { icon: string; value: string | number;
     return (
         <div className="bg-black/20 border-2 border-white/30 rounded-xl p-4 text-center backdrop-blur-sm">
             <span className="text-2xl block mb-2" aria-hidden="true">{icon}</span>
-            <p className="text-2xl font-bold text-white">{value}</p>
+            <p className="text-2xl font-ax-bold text-white">{value}</p>
             <p className="text-sm text-white/90">{label}</p>
         </div>
     );

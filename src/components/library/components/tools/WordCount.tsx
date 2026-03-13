@@ -14,7 +14,7 @@ function WordCount({ value }: Props) {
         <Accordion.Item>
             <Accordion.Header>Ordtelling: {totalWords} ord</Accordion.Header>
             <Accordion.Content>
-                <ul>
+                <ul className="list-none p-0 m-0">
                     <li>Ord: {totalWords}</li>
                     <li>Setninger: {totalSentences}</li>
                     <li>Avsnitt: {totalParagraphs}</li>

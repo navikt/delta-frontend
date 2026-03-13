@@ -11,7 +11,7 @@ type EventListProps = {
 };
 export default function EventList({ fullEvents, loading, showAll, tabname}: EventListProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 ax-md:grid-cols-3 gap-4">
       {loading ? (
         <>
           <Skeleton variant="rounded" />
@@ -30,7 +30,7 @@ export default function EventList({ fullEvents, loading, showAll, tabname}: Even
           />
         ))
       ) : (
-        <p className="col-span-full italic text-xlarge">
+        <p className="col-span-full italic text-ax-xlarge">
           Fant ingen arrangementer :--(
         </p>
       )}

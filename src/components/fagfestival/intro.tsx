@@ -54,15 +54,15 @@ export default function Intro() {
                         <div className="prose">
                             <p>Kontakt komitéen på <Link
                                 href="mailto:fagfestival@nav.no"
-                                className="text-deepblue-500 underline hover:no-underline">fagfestival@nav.no</Link>,
+                                className="text-ax-brand-blue-600 underline hover:no-underline">fagfestival@nav.no</Link>,
                                 eller <Link
                                     href="https://nav-it.slack.com/archives/C06LR875SF7"
-                                    className="text-deepblue-500 underline hover:no-underline">#fagfestival-direktoratet-2024
+                                    className="text-ax-brand-blue-600 underline hover:no-underline">#fagfestival-direktoratet-2024
                                     (Slack)</Link>.</p>
 
                             <p>For detaljer <Link
                                 href="https://navno.sharepoint.com/sites/enhet-arbeids-og-velferdsdirektoratet/SitePages/Fagfest.aspx"
-                                className="text-deepblue-500 underline hover:no-underline">se fagfestivalens side på
+                                className="text-ax-brand-blue-600 underline hover:no-underline">se fagfestivalens side på
                                 Navet</Link>.</p>
 
                             <p>Fagfesten samler Mind the Gap, Juridisk fagdag og husfesten til en felles

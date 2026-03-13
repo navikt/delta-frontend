@@ -46,7 +46,7 @@ export default function YearSelector({
         {isPending && (
           <div className="flex items-center gap-2 mt-6">
             <Loader size="small" title="Laster statistikk..." />
-            <span className="text-sm text-gray-600">Laster...</span>
+            <span className="text-sm text-ax-neutral-700">Laster...</span>
           </div>
         )}
       </div>

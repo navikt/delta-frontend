@@ -1,7 +1,7 @@
-.event-card:hover > .navds-heading {
+.event-card:hover > .aksel-heading {
   text-decoration: underline;
 }
 
-#timeRadio > .navds-radio-buttons {
+#timeRadio > .aksel-radio-buttons {
   display: flex;
 }

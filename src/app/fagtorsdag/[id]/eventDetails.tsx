@@ -7,7 +7,6 @@ import {
     Alert,
     Button,
     Heading,
-    CopyButton,
     Modal,
     BodyLong,
     Tag,
@@ -18,6 +17,7 @@ import {FullDeltaEvent, DeltaParticipant} from "@/types/event";
 import {getEvent, joinEvent, leaveEvent} from "@/service/eventActions";
 import {format} from "date-fns";
 import Calendar from "@/components/calendar";
+import SecondaryCopyButton from "@/components/SecondaryCopyButton";
 
 export default function EventDetails({
      event,
@@ -91,7 +91,7 @@ export default function EventDetails({
                         <Calendar dateString={event.endTime} displayTime={!isSameDay}/>
                     </div>
                 )}
-                <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
+                <div className="flex flex-col ax-md:flex-row gap-4 items-start ax-md:items-center">
                     {showRegistration && (
                         <Alert variant="success" size="small">
                             Påmelding registrert
@@ -107,7 +107,7 @@ export default function EventDetails({
                             return (
                                 <>
                                     <Link
-                                        className="w-full h-fit navds-button navds-button--primary navds-label"
+                                        className="w-full h-fit aksel-button" data-variant="primary"
                                         href={`/event/${event.id}/admin`}
                                     >
                                         Administrer
@@ -256,7 +256,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                             </Button>
                             <Button
                                 variant={isParticipant ? "danger" : "primary"}
-                                className="w-fit h-fit font-bold"
+                                className="w-fit h-fit font-ax-bold"
                                 onClick={() =>
                                     toggleEventStatus(event.id, isParticipant, (state) => {
                                         showAlert();
@@ -269,14 +269,14 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                             </Button>
                         </Modal.Footer>
                     </Modal>
-                    <CopyButton
-                        className="navds-button navds-button--secondary md:whitespace-nowrap w-full"
+                    <SecondaryCopyButton
+                        className="ax-md:whitespace-nowrap w-full"
                         copyText={`${hostname}/fagtorsdag/${event.id}`}
                         text="Kopier lenke"
                     />
                 </div>
             </div>
-            <div className="flex-col md:flex-row flex justify-between gap-4 md:gap-28 pt-4">
+            <div className="flex-col ax-md:flex-row flex justify-between gap-4 ax-md:gap-28 pt-4">
                 <EventDescription
                     user={user}
                     event={event}
@@ -286,7 +286,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                     displayTime={isSameDay}
                     className="flex flex-col gap-2 max-w-xs"
                 />
-                <div className="flex-grow flex flex-col gap-2 md:w-2/4">
+                <div className="flex-grow flex flex-col gap-2 ax-md:w-2/4">
                     <Heading size="medium" as="h2">
                         Detaljer
                     </Heading>
@@ -296,7 +296,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                     <div className="flex gap-2 flex-wrap mt-5 mb-12">
                         {categories.length > 0 &&
                             categories.map((category) => (
-                                <Tag variant="alt1" size="small" key={category.id}>
+                                <Tag variant="neutral" size="small" key={category.id}>
                                     {category.name}
                                 </Tag>
                             ))}
@@ -305,8 +305,8 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                         Del arrangementet
                     </Heading>
                     <div className="flex gap-3 mt-2 mb-6">
-                        <CopyButton
-                            className="navds-button navds-button--secondary md:whitespace-nowrap w-fit h-fit"
+                        <SecondaryCopyButton
+                            className="ax-md:whitespace-nowrap w-fit h-fit"
                             copyText={`${hostname}/fagtorsdag/${event.id}`}
                             text="Kopier lenke"
                             size="small"

@@ -113,7 +113,7 @@ export default function GroupDetails({ id }: { id: string }) {
                             
                         return (
                             <List.Item key={index} className="mb-2">
-                                <a href={`mailto:${owner.email}`} className="text-deepblue-500 hover:underline">
+                                <a href={`mailto:${owner.email}`} className="text-ax-brand-blue-600 hover:underline">
                                     {formattedName}
                                 </a>
                             </List.Item>

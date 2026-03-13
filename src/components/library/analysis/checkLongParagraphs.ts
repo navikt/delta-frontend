@@ -8,10 +8,7 @@ const checkLongParagraphs = (value: string): string[] => {
         .join('\n');
 
     const paragraphs = processedValue.split(/\n/).sort((a: string, b: string) => {
-        return (
-            b.replace(/([.?!])\s*(?=[A-Z])/g, '$1|').split('|').length -
-            a.replace(/([.?!])\s*(?=[A-Z])/g, '$1|').split('|').length
-        );
+        return (b.replace(/([.?!])\s*(?=[A-Z])/g, '$1|').split('|').length - a.replace(/([.?!])\s*(?=[A-Z])/g, '$1|').split('|').length);
     });
 
     const longParagraphs = paragraphs.reduce((acc: string[], val: string) => {

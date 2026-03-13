@@ -21,11 +21,11 @@ export default function EventList({ filteredEvents, loading }: EventListProps) {
   }
 
   if (!filteredEvents || filteredEvents?.length === 0) {
-    return <p className="col-span-full italic text-xlarge">Fant ingen arrangementer :--(</p>;
+    return <p className="col-span-full italic text-ax-xlarge">Fant ingen arrangementer :--(</p>;
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 ax-md:grid-cols-3 gap-4">
       {filteredEvents.map((fullEvent) => (
         <EventCard event={fullEvent} key={`event-${fullEvent.event.id}`} />
       ))}

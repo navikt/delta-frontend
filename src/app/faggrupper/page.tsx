@@ -60,7 +60,7 @@ export default async function ArticlesPage() {
                     >
                         <SearchArticles articles={articles}/>
                         <div className="px-4 mb-5 pt-5">
-                            <Link href="/faggrupper/ny" className="text-deepblue-500 underline hover:no-underline">
+                            <Link href="/faggrupper/ny" className="text-ax-brand-blue-600 underline hover:no-underline">
                                 Opprett ny faggruppe eller møteplass
                             </Link>
                         </div>

@@ -48,7 +48,7 @@ function Lix({ value }: Props) {
                     <Heading spacing level="3" size="xsmall">
                         Skriveråd
                     </Heading>
-                    <ul>
+                    <ul className="list-none p-0 m-0">
                         <li>Skriv korte og enkle setninger</li>
                         <li>Velg korte og enkle ord</li>
                         <li>Skriv det viktigste først</li>

@@ -75,7 +75,7 @@ export default async function StatsPage({
         {/* Organizer Statistics */}
         <section>
           <h2 className="text-2xl font-semibold mb-4">Arrangører</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 ax-md:grid-cols-2 gap-4">
             <StatCard
               title="Totalt antall arrangører"
               value={stats.totalOrganizersCount}
@@ -88,38 +88,38 @@ export default async function StatsPage({
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <div className="grid grid-cols-1 ax-md:grid-cols-2 gap-4 mt-4">
             {/* Top Organizers by Event Count */}
-            <div className="bg-white p-6 rounded-lg border-2 border-green-300">
-              <h3 className="font-semibold text-lg text-gray-900 mb-4">Arrangert flest arrangementer</h3>
+            <div className="bg-white p-6 rounded-lg border-2 border-ax-success-400">
+              <h3 className="font-semibold text-lg text-ax-neutral-1000 mb-4">Arrangert flest arrangementer</h3>
               <div className="space-y-3">
                 {stats.topOrganizersByEvents.map((org, index) => (
-                  <div key={index} className="flex items-center justify-between border-b border-gray-100 last:border-0 pb-2 last:pb-0">
+                  <div key={index} className="flex items-center justify-between border-b border-ax-neutral-200 last:border-0 pb-2 last:pb-0">
                     <div className="flex items-center gap-3">
-                      <span className="text-xl font-bold text-green-600 w-6">
+                      <span className="text-xl font-ax-bold text-ax-success-700 w-6">
                         {index + 1}
                       </span>
-                      <span className="text-gray-900 font-medium">{org.name}</span>
+                      <span className="text-ax-neutral-1000 font-medium">{org.name}</span>
                     </div>
-                    <span className="text-gray-600 font-medium">{org.count} arr.</span>
+                    <span className="text-ax-neutral-700 font-medium">{org.count} arr.</span>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Top Organizers by Participant Count */}
-            <div className="bg-white p-6 rounded-lg border-2 border-purple-300">
-              <h3 className="font-semibold text-lg text-gray-900 mb-4">Samlet flest deltakere</h3>
+            <div className="bg-white p-6 rounded-lg border-2 border-ax-meta-purple-400">
+              <h3 className="font-semibold text-lg text-ax-neutral-1000 mb-4">Samlet flest deltakere</h3>
               <div className="space-y-3">
                 {stats.topOrganizersByParticipants.map((org, index) => (
-                  <div key={index} className="flex items-center justify-between border-b border-gray-100 last:border-0 pb-2 last:pb-0">
+                  <div key={index} className="flex items-center justify-between border-b border-ax-neutral-200 last:border-0 pb-2 last:pb-0">
                     <div className="flex items-center gap-3">
-                      <span className="text-xl font-bold text-purple-600 w-6">
+                      <span className="text-xl font-ax-bold text-ax-meta-purple-700 w-6">
                         {index + 1}
                       </span>
-                      <span className="text-gray-900 font-medium">{org.name}</span>
+                      <span className="text-ax-neutral-1000 font-medium">{org.name}</span>
                     </div>
-                    <span className="text-gray-600 font-medium">
+                    <span className="text-ax-neutral-700 font-medium">
                       {org.count.toLocaleString('nb-NO')}
                       {org.uniqueCount !== undefined && (
                         <>
@@ -138,7 +138,7 @@ export default async function StatsPage({
         {/* Event Details */}
         <section>
           <h2 className="text-2xl font-semibold mb-4">Detaljer</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 ax-md:grid-cols-2 gap-4">
             <div className="space-y-4">
               <StatCard
                 title="Med påmeldingsfrist"
@@ -154,31 +154,31 @@ export default async function StatsPage({
               />
             </div>
             {stats.mostPopularEvents.length > 0 && (
-              <div className="bg-white p-6 rounded-lg border-2 border-blue-300">
+              <div className="bg-white p-6 rounded-lg border-2 border-ax-accent-400">
                 <div className="flex items-start gap-3 mb-4">
-                  <TrendUpIcon className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
-                  <h3 className="font-semibold text-lg text-gray-900">Mest populære arrangementer</h3>
+                  <TrendUpIcon className="w-6 h-6 text-ax-accent-700 flex-shrink-0 mt-1" />
+                  <h3 className="font-semibold text-lg text-ax-neutral-1000">Mest populære arrangementer</h3>
                 </div>
                 <div className="space-y-4">
                   {stats.mostPopularEvents.map((event, index) => (
-                    <div key={`${event.id}-${index}`} className="flex items-start gap-3 pb-4 last:pb-0 border-b last:border-b-0 border-gray-200">
-                      <span className="text-2xl font-bold text-blue-600 min-w-[2rem]">
+                    <div key={`${event.id}-${index}`} className="flex items-start gap-3 pb-4 last:pb-0 border-b last:border-b-0 border-ax-neutral-300">
+                      <span className="text-2xl font-ax-bold text-ax-accent-700 min-w-[2rem]">
                         {index + 1}
                       </span>
                       <div className="flex-1">
                         {event.id ? (
                           <Link
                             href={`/event/${event.id}`}
-                            className="text-blue-700 hover:text-blue-800 hover:underline font-medium"
+                            className="text-ax-accent-800 hover:text-ax-accent-900 hover:underline font-medium"
                           >
                             {event.title}
                           </Link>
                         ) : (
-                          <span className="text-gray-700 font-medium">
+                          <span className="text-ax-neutral-800 font-medium">
                             {event.title}
                           </span>
                         )}
-                        <p className="text-sm text-gray-700 mt-1">
+                        <p className="text-sm text-ax-neutral-800 mt-1">
                           {event.participants.toLocaleString('nb-NO')} påmeldte deltakere
                         </p>
                       </div>
@@ -210,21 +210,21 @@ function StatCard({
   const formattedValue = value.toLocaleString('nb-NO');
 
   return (
-    <div className="bg-white p-6 rounded-lg border-2 border-gray-200">
+    <div className="bg-white p-6 rounded-lg border-2 border-ax-neutral-300">
       {icon && (
-        <div className="text-blue-600 mb-3">
+        <div className="text-ax-accent-700 mb-3">
           {icon}
         </div>
       )}
-      <h3 className="text-sm font-medium text-gray-700 mb-1">
+      <h3 className="text-sm font-medium text-ax-neutral-800 mb-1">
         {title}
       </h3>
-      <p className="text-3xl font-bold text-gray-900">
+      <p className="text-3xl font-ax-bold text-ax-neutral-1000">
         {formattedValue}
-        {suffix && <span className="text-lg font-medium text-gray-600 ml-1">{suffix}</span>}
+        {suffix && <span className="text-lg font-medium text-ax-neutral-700 ml-1">{suffix}</span>}
       </p>
       {subtitle && (
-        <p className="text-sm text-gray-600 mt-1">
+        <p className="text-sm text-ax-neutral-700 mt-1">
           {subtitle}
         </p>
       )}

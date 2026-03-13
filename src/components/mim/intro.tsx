@@ -43,15 +43,15 @@ export default function Intro() {
                         <div className="prose">
                             <p>Kontakt komitéen på <Link
                                 href="mailto:uu@nav.no"
-                                className="text-deepblue-500 underline hover:no-underline">uu@nav.no</Link>,
+                                className="text-ax-brand-blue-600 underline hover:no-underline">uu@nav.no</Link>,
                                 eller <Link
                                     href="https://nav-it.slack.com/archives/C0387QZ64M6"
-                                    className="text-deepblue-500 underline hover:no-underline">#mangfold-i-mai
+                                    className="text-ax-brand-blue-600 underline hover:no-underline">#mangfold-i-mai
                                     (Slack)</Link>.</p>
 
                             <p>For detaljer <Link
                                 href="https://mangfoldimai.no/mangfold-i-mai/"
-                                className="text-deepblue-500 underline hover:no-underline">mangfoldimai.no</Link>.</p>
+                                className="text-ax-brand-blue-600 underline hover:no-underline">mangfoldimai.no</Link>.</p>
 
                         </div>
                     </Accordion.Content>

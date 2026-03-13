@@ -28,9 +28,9 @@ export default async function WrappedPage({
 
     if (!stats) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 to-pink-500">
+            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-ax-meta-purple-700 to-pink-500">
                 <div className="text-center text-white p-8">
-                    <h1 className="text-4xl font-bold mb-4">Oops! 😅</h1>
+                    <h1 className="text-4xl font-ax-bold mb-4">Oops! 😅</h1>
                     <p className="text-xl">Vi klarte ikke å hente dataene dine. Prøv igjen senere.</p>
                 </div>
             </div>

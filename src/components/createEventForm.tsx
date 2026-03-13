@@ -49,11 +49,11 @@ const createEventSchema = z
     description: z
       .string()
       .nonempty({ message: "Du må fylle inn en beskrivelse" }),
-    startDate: z.date({ required_error: "Du må velge en startdato" }),
+    startDate: z.date({ error: "Du må velge en startdato" }),
     startTime: z.string().regex(/[0-9]{2}:[0-9]{2}/, {
       message: "Verdien må være et gyldig tidspunkt",
     }),
-    endDate: z.date({ required_error: "Du må velge en sluttdato" }),
+    endDate: z.date({ error: "Du må velge en sluttdato" }),
     endTime: z.string().regex(/[0-9]{2}:[0-9]{2}/, {
       message: "Verdien må være et gyldig tidspunkt",
     }),
@@ -169,12 +169,12 @@ export default function CreateEventForm({
     </>
   ) : (
     // @ts-ignore
-    <InternalCreateEventForm
+    (<InternalCreateEventForm
       richEvent={richEvent}
       allCategories={allCategories}
       selectedCategories={selectedCategories || []}
       setSelectedCategories={setSelectedCategories}
-    />
+    />)
   );
 }
 type RichEvent =
@@ -359,16 +359,16 @@ function InternalCreateEventForm({
           }}
         />
         <div
-          className={`navds-form-field navds-form-field--medium ${errors.startTime && "navds-text-field--error"
+          className={`aksel-form-field aksel-form-field--medium ${errors.startTime && "aksel-text-field--error"
             }`}
         >
           <input
             type="time"
-            className="navds-text-field__input w-28"
+            className="aksel-text-field__input w-28"
             {...register("startTime")}
           />
           {errors.startTime && (
-            <p className="navds-error-message navds-label">
+            <p className="aksel-error-message aksel-label">
               {errors.startTime.message}
             </p>
           )}
@@ -385,16 +385,16 @@ function InternalCreateEventForm({
           hideLabel={false}
         />
         <div
-          className={`navds-form-field navds-form-field--medium ${errors.endTime && "navds-text-field--error"
+          className={`aksel-form-field aksel-form-field--medium ${errors.endTime && "aksel-text-field--error"
             }`}
         >
           <input
             type="time"
-            className="navds-text-field__input w-28"
+            className="aksel-text-field__input w-28"
             {...register("endTime")}
           />
           {errors.endTime && (
-            <p className="navds-error-message navds-label">
+            <p className="aksel-error-message aksel-label">
               {errors.endTime.message}
             </p>
           )}
@@ -534,7 +534,7 @@ function InternalCreateEventForm({
       </div>
       <div className="max-w-prose">
         <div className="flex items-center justify-between mb-1">
-          <span className="navds-label">Beskrivelse</span>
+          <span className="aksel-label">Beskrivelse</span>
           <Switch
             size="small"
             checked={showPreview}
@@ -544,11 +544,11 @@ function InternalCreateEventForm({
           </Switch>
         </div>
         {showPreview ? (
-          <div className="border border-gray-300 rounded p-3 min-h-[8rem] bg-white">
+          <div className="border border-ax-neutral-400 rounded p-3 min-h-[8rem] bg-white">
             {dvalue ? (
               <MarkdownRenderer>{dvalue}</MarkdownRenderer>
             ) : (
-              <span className="text-gray-400 italic">
+              <span className="text-ax-neutral-500 italic">
                 Ingen beskrivelse ennå
               </span>
             )}
@@ -563,7 +563,7 @@ function InternalCreateEventForm({
           />
         )}
         {errors.description?.message && showPreview && (
-          <p className="navds-error-message navds-label mt-1">
+          <p className="aksel-error-message aksel-label mt-1">
             {errors.description.message}
           </p>
         )}
@@ -633,16 +633,16 @@ function InternalCreateEventForm({
             hideLabel={true}
           />
           <div
-            className={`navds-form-field navds-form-field--medium ${errors.signupDeadlineDate && "navds-text-field--error"
+            className={`aksel-form-field aksel-form-field--medium ${errors.signupDeadlineDate && "aksel-text-field--error"
               }`}
           >
             <input
               type="time"
-              className="navds-text-field__input w-28"
+              className="aksel-text-field__input w-28"
               {...register("signupDeadlineTime")}
             />
             {errors.signupDeadlineTime && (
-              <p className="navds-error-message navds-label">
+              <p className="aksel-error-message aksel-label">
                 {errors.signupDeadlineTime.message}
               </p>
             )}

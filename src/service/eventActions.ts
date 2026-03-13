@@ -1,6 +1,7 @@
 "use server";
 
-import { getApi } from "@/api/instance";
+import { getDeltaBackendAccessToken } from "@/auth/token";
+import { backendUrl, getApi } from "@/api/instance";
 import { CreateEventSchema } from "@/components/createEventForm";
 import {
   Category,
@@ -10,6 +11,17 @@ import {
 } from "@/types/event";
 import { formatInTimeZone } from "date-fns-tz";
 import { AxiosError } from 'axios';
+import { unstable_cache } from "next/cache";
+
+const SHARED_EVENT_LIST_REVALIDATE_SECONDS = 60;
+
+type EventListQuery = {
+  categoryIds: number[];
+  onlyFuture: boolean;
+  onlyPast: boolean;
+  onlyMine: boolean;
+  onlyJoined: boolean;
+};
 
 class ApiError extends Error {
   constructor(
@@ -48,6 +60,101 @@ const handleApiError = (error: unknown): never => {
   
   throw new ApiError('Kunne ikke koble til serveren. Sjekk internettforbindelsen.');
 };
+
+function normalizeEventListQuery({
+  categories = [],
+  onlyFuture = false,
+  onlyPast = false,
+  onlyMine = false,
+  onlyJoined = false,
+}: {
+  categories?: Category[];
+  onlyFuture?: boolean;
+  onlyPast?: boolean;
+  onlyMine?: boolean;
+  onlyJoined?: boolean;
+}): EventListQuery {
+  return {
+    categoryIds: Array.from(new Set(categories.map((category) => category.id))).sort((a, b) => a - b),
+    onlyFuture,
+    onlyPast,
+    onlyMine,
+    onlyJoined,
+  };
+}
+
+function isSharedEventListQuery(query: EventListQuery) {
+  return !query.onlyJoined && !query.onlyMine;
+}
+
+function createEventListSearchParams(query: EventListQuery) {
+  const params = new URLSearchParams();
+
+  if (query.categoryIds.length > 0) {
+    params.set("categories", query.categoryIds.join(","));
+  }
+
+  if (query.onlyFuture) {
+    params.set("onlyFuture", "true");
+  }
+
+  if (query.onlyPast) {
+    params.set("onlyPast", "true");
+  }
+
+  if (query.onlyJoined) {
+    params.set("onlyJoined", "true");
+  }
+
+  if (query.onlyMine) {
+    params.set("onlyMine", "true");
+  }
+
+  return params;
+}
+
+function createSharedEventListCacheKey(query: EventListQuery) {
+  return [
+    query.categoryIds.join(","),
+    query.onlyFuture ? "future" : "all",
+    query.onlyPast ? "past" : "not-past",
+  ].join("|");
+}
+
+async function fetchEventList(query: EventListQuery, accessToken: string | null): Promise<FullDeltaEvent[]> {
+  const params = createEventListSearchParams(query);
+  const headers: HeadersInit = {
+    "Content-Type": "application/json",
+  };
+
+  if (accessToken !== null) {
+    headers.Authorization = `Bearer ${accessToken}`;
+  }
+
+  const response = await fetch(
+    `${backendUrl()}/event${params.size > 0 ? `?${params.toString()}` : ""}`,
+    {
+      headers,
+      cache: "no-store",
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(`Event list fetch failed with status ${response.status}`);
+  }
+
+  return response.json();
+}
+
+async function getSharedEventList(query: EventListQuery, accessToken: string | null) {
+  const cacheKey = createSharedEventListCacheKey(query);
+
+  return unstable_cache(
+    async () => fetchEventList(query, accessToken),
+    ["shared-event-list", cacheKey],
+    { revalidate: SHARED_EVENT_LIST_REVALIDATE_SECONDS },
+  )();
+}
 
 export async function joinEvent(eventId: string): Promise<void> {
   try {
@@ -155,19 +262,20 @@ export async function getEvents({
   onlyJoined?: boolean;
 }): Promise<FullDeltaEvent[]> {
   try {
-    const api = await getApi();
-    const response = await api.get<FullDeltaEvent[]>("/event", {
-      params: {
-        categories: categories.length
-          ? categories.map((c) => c.id).join(",")
-          : undefined,
-        onlyFuture,
-        onlyPast,
-        onlyJoined,
-        onlyMine,
-      },
+    const query = normalizeEventListQuery({
+      categories,
+      onlyFuture,
+      onlyPast,
+      onlyJoined,
+      onlyMine,
     });
-    return response.data;
+    const accessToken = await getDeltaBackendAccessToken();
+
+    if (isSharedEventListQuery(query)) {
+      return await getSharedEventList(query, accessToken);
+    }
+
+    return await fetchEventList(query, accessToken);
   } catch (error) {
     console.error('Failed to fetch events:', error);
     // Always return empty array instead of throwing

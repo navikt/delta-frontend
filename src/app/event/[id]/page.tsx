@@ -6,7 +6,18 @@ import { getEvent } from "@/service/eventActions";
 import { Metadata, ResolvingMetadata } from "next";
 import Head from "next/head";
 
-type EventPageProps = { params: Promise<{ id: string }> };
+type EventPageProps = {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ returnTo?: string }>;
+};
+
+function getSafeReturnTo(returnTo?: string) {
+  if (!returnTo || !returnTo.startsWith("/") || returnTo.startsWith("//")) {
+    return "/";
+  }
+
+  return returnTo;
+}
 
 async function getOptionalEventFromId(id: string) {
   try {
@@ -34,10 +45,12 @@ export async function generateMetadata(
   };
 }
 
-export default async function Page({ params }: EventPageProps) {
+export default async function Page({ params, searchParams }: EventPageProps) {
   const { id } = await params;
+  const { returnTo } = await searchParams;
   await checkToken(`/event/${id}`);
   const hostname = process.env.NEXT_PUBLIC_HOSTNAME;
+  const backLink = getSafeReturnTo(returnTo);
 
   const user = await getUser();
   const { event, participants, hosts, categories }: FullDeltaEvent =
@@ -52,7 +65,7 @@ export default async function Page({ params }: EventPageProps) {
         title={event.title}
         home
         backText="Arrangementer"
-        backLink="/"
+        backLink={backLink}
       >
         <EventDetails
           event={event}

@@ -17,6 +17,7 @@ import {
     formatEventDates,
     formatEventTimes,
 } from "@/service/format";
+import { usePathname, useSearchParams } from "next/navigation";
 
 export function EventCard({
                               event,
@@ -34,6 +35,8 @@ export function EventCard({
         new Date(event.event.signupDeadline) < new Date()
             ? true
             : false;
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
 
     // Check if the tab is "alle" and the event has a category named "fagfestival"
     const shouldHide = tabname === "alle" && event.categories.some(category =>
@@ -45,13 +48,22 @@ export function EventCard({
         return null;
     }
 
+    const currentSearch = searchParams.toString();
+    const returnTo = `${pathname}${currentSearch ? `?${currentSearch}` : ""}`;
+    const href = `/event/${event.event.id}?returnTo=${encodeURIComponent(returnTo)}`;
+
+    const handleNavigation = () => {
+        sessionStorage.setItem(`event-overview-scroll:${returnTo}`, `${window.scrollY}`);
+    };
+
     return (
         <>
             {isUtløpt && tabname == "alle" && showAll != 10 ? (
                 <></>
             ) : (
-                <a
-                    href={`/event/${event.event.id}`}
+                <Link
+                    href={href}
+                    onClick={handleNavigation}
                     className="flex flex-col h-full p-4 border rounded-xl text-ax-text-neutral border-ax-neutral-400 transition-all hover:-translate-y-1 hover:scale-105 hover:text-ax-text-action hover:border-ax-border-accent no-underline event-card"
                 >
                     <Heading level="2" size="small">{event.event.title}</Heading>
@@ -134,7 +146,7 @@ export function EventCard({
                             ))}
                         </div>
                     </div>
-                </a>
+                </Link>
             )}
         </>
     );

@@ -7,7 +7,6 @@ import {
     Alert,
     Button,
     Heading,
-    CopyButton,
     Modal,
     BodyLong,
     Tag,
@@ -18,6 +17,7 @@ import {FullDeltaEvent, DeltaParticipant} from "@/types/event";
 import {getEvent, joinEvent, leaveEvent} from "@/service/eventActions";
 import {format} from "date-fns";
 import Calendar from "@/components/calendar";
+import SecondaryCopyButton from "@/components/SecondaryCopyButton";
 
 export default function EventDetails({
      event,
@@ -269,7 +269,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                             </Button>
                         </Modal.Footer>
                     </Modal>
-                    <CopyButton
+                    <SecondaryCopyButton
                         className="ax-md:whitespace-nowrap w-full"
                         copyText={`${hostname}/fagdag_utvikling_og_data/${event.id}`}
                         text="Kopier lenke"
@@ -305,7 +305,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                         Del arrangementet
                     </Heading>
                     <div className="flex gap-3 mt-2 mb-6">
-                        <CopyButton
+                        <SecondaryCopyButton
                             className="ax-md:whitespace-nowrap w-fit h-fit"
                             copyText={`${hostname}/fagdag_utvikling_og_data/${event.id}`}
                             text="Kopier lenke"

@@ -7,7 +7,6 @@ import {
     Alert,
     Button,
     Heading,
-    CopyButton,
     Modal,
     BodyLong,
     Tag,
@@ -19,6 +18,7 @@ import {deleteEvent, getEvent, joinEvent, leaveEvent} from "@/service/eventActio
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import {format} from "date-fns";
 import Calendar from "@/components/calendar";
+import SecondaryCopyButton from "@/components/SecondaryCopyButton";
 import {TrashIcon, PencilIcon, BarChartIcon, FilePlusIcon} from "@navikt/aksel-icons";
 
 export default function EventDetails({
@@ -324,7 +324,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                             </Button>
                         </Modal.Footer>
                     </Modal>
-                    <CopyButton data-umami-event="kopierer eventlenke"
+                    <SecondaryCopyButton data-umami-event="kopierer eventlenke"
                         className="ax-md:whitespace-nowrap w-full"
                         copyText={`${hostname}/event/${event.id}`}
                         text="Kopier lenke"
@@ -360,7 +360,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                         Del arrangementet
                     </Heading>
                     <div className="flex gap-3 mt-2 mb-6">
-                        <CopyButton data-umami-event="kopierer eventlenke"
+                        <SecondaryCopyButton data-umami-event="kopierer eventlenke"
                             className="ax-md:whitespace-nowrap w-fit h-fit"
                             copyText={`${hostname}/event/${event.id}`}
                             text="Kopier lenke"

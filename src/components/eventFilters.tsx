@@ -84,19 +84,27 @@ export default function EventFilters({
     return `${pathname}${currentSearch ? `?${currentSearch}` : ""}`;
   }, [pathname, searchParams]);
 
+  const providedCategories = useMemo(
+    () => getUniqueCategories(allCategories),
+    [allCategories],
+  );
   const eventCategories = useMemo(
     () =>
-      getUniqueCategories([...allCategories, ...events.flatMap((event) => event.categories)]),
-    [allCategories, events],
+      providedCategories.length > 0
+        ? providedCategories
+        : getUniqueCategories(events.flatMap((event) => event.categories)),
+    [providedCategories, events],
   );
   const selectedCategories = useMemo(
     () =>
       selectedCategoryNames
         .map((categoryName) =>
-          eventCategories.find((category) => category.name === categoryName),
+          (providedCategories.length > 0 ? providedCategories : eventCategories).find(
+            (category) => category.name === categoryName,
+          ),
         )
         .filter((category): category is Category => category !== undefined),
-    [eventCategories, selectedCategoryNames],
+    [eventCategories, providedCategories, selectedCategoryNames],
   );
   const filterEvents = useMemo(
     () =>

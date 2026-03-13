@@ -8,15 +8,25 @@ import Head from "next/head";
 
 type EventPageProps = {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ returnTo?: string }>;
+  searchParams: Promise<{ returnTo?: string | string[] }>;
 };
 
-function getSafeReturnTo(returnTo?: string) {
-  if (!returnTo || !returnTo.startsWith("/") || returnTo.startsWith("//")) {
+function normalizeSearchParamValue(value?: string | string[]) {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+function getSafeReturnTo(returnTo?: string | string[]) {
+  const normalizedReturnTo = normalizeSearchParamValue(returnTo);
+
+  if (
+    !normalizedReturnTo ||
+    !normalizedReturnTo.startsWith("/") ||
+    normalizedReturnTo.startsWith("//")
+  ) {
     return "/";
   }
 
-  return returnTo;
+  return normalizedReturnTo;
 }
 
 async function getOptionalEventFromId(id: string) {

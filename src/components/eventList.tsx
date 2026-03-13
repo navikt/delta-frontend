@@ -6,7 +6,7 @@ import { Skeleton } from "@navikt/ds-react";
 type EventListProps = {
   fullEvents: FullDeltaEvent[];
   loading: boolean;
-  showAll?: any;
+  showAll?: string[];
   tabname?: string;
 };
 export default function EventList({ fullEvents, loading, showAll, tabname}: EventListProps) {

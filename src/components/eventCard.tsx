@@ -24,10 +24,10 @@ export function EventCard({
                               categories,
                               showAll,
                               tabname,
-                          }: {
+                           }: {
     event: FullDeltaEvent;
     categories: Category[];
-    showAll?: any;
+    showAll?: string[];
     tabname?: string;
 }) {
     const isUtløpt =
@@ -58,7 +58,7 @@ export function EventCard({
 
     return (
         <>
-            {isUtløpt && tabname == "alle" && showAll != 10 ? (
+            {isUtløpt && tabname == "alle" && !showAll?.includes("10") ? (
                 <></>
             ) : (
                 <Link

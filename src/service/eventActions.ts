@@ -156,6 +156,10 @@ async function getSharedEventList(query: EventListQuery, accessToken: string | n
   )();
 }
 
+function canUseSharedEventListCache(query: EventListQuery, accessToken: string | null) {
+  return isSharedEventListQuery(query) && accessToken === null;
+}
+
 export async function joinEvent(eventId: string): Promise<void> {
   try {
     validateEventId(eventId);
@@ -271,7 +275,7 @@ export async function getEvents({
     });
     const accessToken = await getDeltaBackendAccessToken();
 
-    if (isSharedEventListQuery(query)) {
+    if (canUseSharedEventListCache(query, accessToken)) {
       return await getSharedEventList(query, accessToken);
     }
 

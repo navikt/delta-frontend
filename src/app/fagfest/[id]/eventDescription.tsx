@@ -134,7 +134,7 @@ export default function EventDescription({
                     <PersonCircleIcon aria-hidden/>
                     Arrangeres av:
                 </label>
-                <ul>
+                <ul className="list-none p-0 m-0">
                         <li className="flex ml-[0.2rem] pl-6 gap-2">
                             <Link
                                 title={`Send e-post til fagfestival@nav.no`}

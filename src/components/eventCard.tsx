@@ -128,7 +128,7 @@ export function EventCard({
                         </div>
                         <div className="flex gap-2 flex-wrap items-end w-full">
                             {categories.map((category) => (
-                                <Tag variant="alt1" size="small" key={category.id}>
+                                <Tag variant="neutral" size="small" key={category.id}>
                                     {category.name}
                                 </Tag>
                             ))}

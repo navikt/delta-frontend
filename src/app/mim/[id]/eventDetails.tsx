@@ -296,7 +296,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                     <div className="flex gap-2 flex-wrap mt-5 mb-12">
                         {categories.length > 0 &&
                             categories.map((category) => (
-                                <Tag variant="alt1" size="small" key={category.id}>
+                                <Tag variant="neutral" size="small" key={category.id}>
                                     {category.name}
                                 </Tag>
                             ))}

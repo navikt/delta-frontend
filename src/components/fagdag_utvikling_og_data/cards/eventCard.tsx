@@ -134,7 +134,7 @@ export function EventCard({ event }: EventCardProps) {
           {event.categories.map((category) => {
             if (category.name !== "fagdag_utvikling_og_data" && category.name !== "mangfold i mai") {
               return (
-                  <Tag variant="alt1" size="small" key={category.id}>
+                  <Tag variant="neutral" size="small" key={category.id}>
                     {category.name}
                   </Tag>
               );

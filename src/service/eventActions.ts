@@ -12,6 +12,7 @@ import {
 import { formatInTimeZone } from "date-fns-tz";
 import { AxiosError } from 'axios';
 import { unstable_cache } from "next/cache";
+import { notFound } from "next/navigation";
 
 const SHARED_EVENT_LIST_REVALIDATE_SECONDS = 60;
 
@@ -40,7 +41,7 @@ const handleApiError = (error: unknown): never => {
   }
   console.error('API Error:', error);
   if (error instanceof AxiosError) {
-    const status = error.response?.status;
+    const status = error.status ?? error.response?.status;
     const message = error.response?.data?.message || 'Ukjent feil';
     
     if (status === 500) {
@@ -294,7 +295,10 @@ export async function getEvent(id: string): Promise<FullDeltaEvent> {
     const response = await api.get<FullDeltaEvent>(`/event/${id}`);
     return response.data;
   } catch (error) {
-    return handleApiError(error);
+    if (error instanceof AxiosError && error.status === 404) {
+      notFound();
+    }
+    throw handleApiError(error);
   }
 }
 

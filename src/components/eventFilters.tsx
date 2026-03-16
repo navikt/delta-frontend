@@ -109,10 +109,12 @@ export default function EventFilters({
   );
   const filterEvents = useMemo(
     () =>
-      events.filter((fullEvent) =>
-        fullEvent.event.title.toLowerCase().includes(searchInput.toLowerCase()),
-      ),
-    [events, searchInput],
+      tabname !== "alle"
+        ? events
+        : events.filter((fullEvent) =>
+            fullEvent.event.title.toLowerCase().includes(searchInput.toLowerCase()),
+          ),
+    [events, searchInput, tabname],
   );
   const selectedQuickFilters = useMemo(
     () => QUICK_FILTER_NAMES.filter((categoryName) => selectedCategoryNames.includes(categoryName)),
@@ -225,6 +227,7 @@ export default function EventFilters({
     () => selectedCategories.map((category) => category.id).sort((a, b) => a - b).join(","),
     [selectedCategories],
   );
+  const categoryIdsKeyForFetch = tabname === "alle" ? selectedCategoryIdsKey : "";
   useEffect(() => {
     let cancelled = false;
 
@@ -232,9 +235,9 @@ export default function EventFilters({
       try {
         setLoading(true);
         const categoriesForFetch =
-          selectedCategoryIdsKey.length === 0
+          categoryIdsKeyForFetch.length === 0
             ? []
-            : selectedCategoryIdsKey
+            : categoryIdsKeyForFetch
                 .split(",")
                 .map((categoryId) => Number(categoryId))
                 .filter((categoryId) => Number.isFinite(categoryId))
@@ -263,7 +266,7 @@ export default function EventFilters({
     return () => {
       cancelled = true;
     };
-  }, [selectedCategoryIdsKey, onlyFuture, onlyPast, tabname]);
+  }, [categoryIdsKeyForFetch, onlyFuture, onlyPast, tabname]);
 
   useEffect(() => {
     const handleResize = () => {

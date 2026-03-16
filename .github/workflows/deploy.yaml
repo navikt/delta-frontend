@@ -10,12 +10,13 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    outputs: 
+    outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
     steps:
-      - uses: actions/checkout@v4
-        name: Checkout
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f
         with:
           node-version: 22.x
           registry-url: https://npm.pkg.github.com
@@ -30,13 +31,10 @@ jobs:
         run: npm run build
 
       - name: Push docker image to GAR
-        uses: nais/docker-build-push@v0
+        uses: nais/docker-build-push@078e460885ed0424b60d45ce9220b4be1748be9d
         id: docker-build-push
         with:
           team: delta
-          pull: true
-          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }} # Provided as Organization Secret
-          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }} # Provided as Organization Variable
 
   deploy:
     name: Deploy to NAIS
@@ -46,15 +44,44 @@ jobs:
       contents: read
       id-token: write
     steps:
-    - uses: actions/checkout@v4
-    - uses: nais/deploy/actions/deploy@v2
-      env:
-        CLUSTER: dev-gcp 
-        RESOURCE: nais-dev.yaml
-        IMAGE: ${{ needs.build.outputs.image }}
-    - uses: nais/deploy/actions/deploy@v2
-      if: github.ref == 'refs/heads/main'
-      env:
-        CLUSTER: prod-gcp 
-        RESOURCE: nais-prod.yaml
-        IMAGE: ${{ needs.build.outputs.image }}
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
+      - uses: nais/deploy/actions/deploy@fa754451577294aae42872a69b888b3470478ec1
+        env:
+          CLUSTER: dev-gcp
+          RESOURCE: nais-dev.yaml
+          IMAGE: ${{ needs.build.outputs.image }}
+      - uses: nais/deploy/actions/deploy@fa754451577294aae42872a69b888b3470478ec1
+        if: github.ref == 'refs/heads/main'
+        env:
+          CLUSTER: prod-gcp
+          RESOURCE: nais-prod.yaml
+          IMAGE: ${{ needs.build.outputs.image }}
+
+  trivy:
+    name: Scan Docker image with Trivy
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      security-events: write
+      id-token: write
+      actions: read # require for non-public repos
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
+      - uses: nais/login@c88ada9ce583928e1c84d2fd5c45cfacdd18d5de
+        with:
+          team: delta
+      - name: Scan docker image for secrets
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1
+        with:
+          image-ref: '${{ needs.build.outputs.image }}'
+          format: 'sarif'
+          scanners: 'secret'
+          output: 'trivy.sarif'
+      - uses: github/codeql-action/upload-sarif@0d579ffd059c29b07949a3cce3983f0780820c98
+        with:
+          sarif_file: 'trivy.sarif'

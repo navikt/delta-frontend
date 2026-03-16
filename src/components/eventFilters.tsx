@@ -2,14 +2,43 @@
 import { Category, FullDeltaEvent } from "@/types/event";
 import { Search, Tabs, UNSAFE_Combobox, CheckboxGroup, Checkbox, LinkPanel } from "@navikt/ds-react";
 import EventList from "./eventList";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { getEvents } from "@/service/eventActions";
 import { FunnelIcon } from "@navikt/aksel-icons";
 import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 enum TimeSelector {
-  PAST,
-  FUTURE,
+  PAST = "past",
+  FUTURE = "future",
+}
+
+type HomeTab = "alle" | "påmeldte" | "mine";
+
+const DEFAULT_TAB: HomeTab = "alle";
+const VISIBLE_PREVIOUS_VALUE = "10";
+const QUICK_FILTER_NAMES = ["kompetanse", "bedriftidrettslaget", "sosialt"] as const;
+const HIDDEN_CATEGORY_NAMES = new Set(["fagfestival", "biljard", "fagdag_utvikling_og_data"]);
+
+function getUniqueCategories(categories: Category[]) {
+  return Array.from(new Map(categories.map((category) => [category.name, category])).values());
+}
+
+function isHomeTab(value: string | null): value is HomeTab {
+  return value === "alle" || value === "påmeldte" || value === "mine";
+}
+
+function isQuickFilterName(value: string): value is (typeof QUICK_FILTER_NAMES)[number] {
+  return QUICK_FILTER_NAMES.includes(value as (typeof QUICK_FILTER_NAMES)[number]);
+}
+
+function getSelectedCategoryNames(searchParams: Pick<URLSearchParams, "get">) {
+  const categories = searchParams.get("categories");
+
+  return categories
+    ?.split(",")
+    .map((categoryName) => categoryName.trim())
+    .filter(Boolean) ?? [];
 }
 
 export default function EventFilters({
@@ -18,9 +47,7 @@ export default function EventFilters({
   selectTimeRadio = false,
   selectCategory = false,
   searchName = false,
-  onlyJoined = false,
   joinedLink  = false,
-  onlyMine = false,
   homeTabs  = false,
   ctaLink  = false,
 }: {
@@ -29,279 +56,291 @@ export default function EventFilters({
   selectTimeRadio?: boolean;
   searchName?: boolean;
   selectCategory?: boolean;
-  onlyJoined?: boolean;
-  onlyMine?: boolean;
   joinedLink?: boolean;
   homeTabs?: boolean;
   ctaLink?: boolean;
 }) {
-  const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
-  const [searchInput, setSearchInput] = useState("");
-  const [filterEvents, setFilterEvents] = useState<FullDeltaEvent[]>([]);
-
-  const [selectedTime, setSelectedTime] = useState(TimeSelector.FUTURE);
-  const onlyFuture = selectedTime === TimeSelector.FUTURE;
-  const onlyPast = selectedTime === TimeSelector.PAST;
-
-  const handleChange = (val: any) => {
-    if (tabname == "alle") {
-      if (val.length == 0) {
-        setVal(val);
-        getAll()
-      } else {
-        setVal(val);
-        getAllPrev()
-      }
-    }
-    if (tabname == "påmeldte") {
-      if (val.length == 0) {
-        setVal(val);
-        getOnlyJoined()
-      } else {
-        setVal(val);
-        getOnlyJoinedPrev()
-      }
-    }
-    if (tabname == "mine") {
-      if (val.length == 0) {
-        setVal(val);
-        getOnlyMine()
-      } else {
-        setVal(val);
-        getOnlyMinePrev()
-      }
-    }
-  }
-
-  const [val, setVal] = useState([]);
-  const [tabname, setTabname] = useState("alle");
-
-
-  const [events, setEvents] = useState([] as FullDeltaEvent[]);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
-
-  const [eventCategories, setEventCategories] = useState<Category[]>([]);
   const [isMobile, setIsMobile] = useState(false);
+  const [events, setEvents] = useState<FullDeltaEvent[]>([]);
+  const hasRestoredScroll = useRef(false);
 
-  // Filter the events based on the search input
+  const searchParamsKey = searchParams.toString();
+  const selectedCategoryNames = useMemo(
+    () => getSelectedCategoryNames(new URLSearchParams(searchParamsKey)),
+    [searchParamsKey],
+  );
+  const selectedCategoryNamesKey = selectedCategoryNames.join(",");
+  const searchInput = searchParams.get("search") ?? "";
+  const tabParam = searchParams.get("tab");
+  const tabname: HomeTab = isHomeTab(tabParam) ? tabParam : DEFAULT_TAB;
+  const showPrevious = searchParams.get("showPast") === "1";
+  const selectedTime =
+    searchParams.get("time") === TimeSelector.PAST ? TimeSelector.PAST : TimeSelector.FUTURE;
+  const currentOverviewPath = useMemo(() => {
+    const currentSearch = searchParamsKey;
+    return `${pathname}${currentSearch ? `?${currentSearch}` : ""}`;
+  }, [pathname, searchParamsKey]);
+
+  const providedCategories = useMemo(
+    () => getUniqueCategories(allCategories),
+    [allCategories],
+  );
+  const eventCategories = useMemo(
+    () =>
+      providedCategories.length > 0
+        ? providedCategories
+        : getUniqueCategories(events.flatMap((event) => event.categories)),
+    [providedCategories, events],
+  );
+  const selectedCategories = useMemo(
+    () =>
+      selectedCategoryNames
+        .map((categoryName) =>
+          (providedCategories.length > 0 ? providedCategories : eventCategories).find(
+            (category) => category.name === categoryName,
+          ),
+        )
+        .filter((category): category is Category => category !== undefined),
+    [eventCategories, providedCategories, selectedCategoryNames],
+  );
+  const filterEvents = useMemo(
+    () =>
+      events.filter((fullEvent) =>
+        fullEvent.event.title.toLowerCase().includes(searchInput.toLowerCase()),
+      ),
+    [events, searchInput],
+  );
+  const selectedQuickFilters = useMemo(
+    () => QUICK_FILTER_NAMES.filter((categoryName) => selectedCategoryNames.includes(categoryName)),
+    [selectedCategoryNames],
+  );
+  const visibleCategoryOptions = useMemo(
+    () =>
+      eventCategories
+        .map((category) => category.name)
+        .filter((categoryName) => !HIDDEN_CATEGORY_NAMES.has(categoryName))
+        .sort((a, b) => a.localeCompare(b)),
+    [eventCategories],
+  );
+  const onlyFuture = tabname === "alle" || !showPrevious;
+  const onlyPast = tabname !== "alle" && showPrevious;
+
+  const updateUrlState = (updates: {
+    categories?: string[] | null;
+    search?: string | null;
+    tab?: HomeTab | null;
+    showPast?: boolean | null;
+    time?: TimeSelector | null;
+  }) => {
+    const nextSearchParams = new URLSearchParams(searchParamsKey);
+
+    if (updates.categories !== undefined) {
+      if (updates.categories?.length) {
+        nextSearchParams.set(
+          "categories",
+          [...updates.categories].sort((a, b) => a.localeCompare(b)).join(","),
+        );
+      } else {
+        nextSearchParams.delete("categories");
+      }
+    }
+
+    if (updates.search !== undefined) {
+      if (updates.search) {
+        nextSearchParams.set("search", updates.search);
+      } else {
+        nextSearchParams.delete("search");
+      }
+    }
+
+    if (updates.tab !== undefined) {
+      if (updates.tab && updates.tab !== DEFAULT_TAB) {
+        nextSearchParams.set("tab", updates.tab);
+      } else {
+        nextSearchParams.delete("tab");
+      }
+    }
+
+    if (updates.showPast !== undefined) {
+      if (updates.showPast) {
+        nextSearchParams.set("showPast", "1");
+      } else {
+        nextSearchParams.delete("showPast");
+      }
+    }
+
+    if (updates.time !== undefined) {
+      if (updates.time && updates.time !== TimeSelector.FUTURE) {
+        nextSearchParams.set("time", updates.time);
+      } else {
+        nextSearchParams.delete("time");
+      }
+    }
+
+    const nextSearch = nextSearchParams.toString();
+    router.replace(nextSearch ? `${pathname}?${nextSearch}` : pathname, { scroll: false });
+  };
+
+  const handleTabChange = (nextTab: HomeTab) => {
+    updateUrlState({
+      tab: nextTab,
+      showPast: nextTab === "alle" ? null : showPrevious,
+    });
+  };
+
+  const handleCategoryToggle = (categoryName: string, isSelected: boolean) => {
+    const nextCategoryNames = isSelected
+      ? [...selectedCategoryNames, categoryName]
+      : selectedCategoryNames.filter((category) => category !== categoryName);
+
+    updateUrlState({ categories: nextCategoryNames });
+  };
+
+  const handleQuickFilterChange = (values: string[]) => {
+    const validValues = values.filter(isQuickFilterName);
+
+    if (validValues.length > 1) {
+      return;
+    }
+
+    const nextCategoryNames = [
+      ...selectedCategoryNames.filter(
+        (categoryName) => !isQuickFilterName(categoryName),
+      ),
+      ...validValues,
+    ];
+
+    updateUrlState({ categories: nextCategoryNames });
+  };
+
   useEffect(() => {
-    const filtered = events.filter((fullEvent) =>
-        fullEvent.event.title.toLowerCase().includes(searchInput.toLowerCase())
-    );
+    hasRestoredScroll.current = false;
+  }, [currentOverviewPath]);
 
-    // Ensure selectedCategories only includes valid categories
-    const validSelectedCategories = selectedCategories.filter(category =>
-        eventCategories.some(eventCategory => eventCategory.name === category.name)
-    );
-
-    setFilterEvents(filtered);
-
-    // Get the categories of the filtered events
-    const categories = filtered.flatMap((event) => event.categories);
-
-    // Use a Set to remove duplicates
-    const uniqueCategories = Array.from(new Set(categories.map(category => category.name)))
-        .map(name => categories.find(category => category.name === name))
-        .filter(category => category !== undefined); // Ensure no undefined categories
-
-    // Filter out the "fagfestival" tag
-    const filteredCategories = uniqueCategories.filter(category => category.name !== "fagfestival");
-
-    // Set the categories as a state
-    setEventCategories(filteredCategories as Category[]);
-  }, [events, searchInput, selectedCategories]);
-
+  const selectedCategoryIdsKey = useMemo(
+    () => selectedCategories.map((category) => category.id).sort((a, b) => a - b).join(","),
+    [selectedCategories],
+  );
   useEffect(() => {
+    let cancelled = false;
+
     const fetchEvents = async () => {
       try {
         setLoading(true);
+        const categoriesForFetch =
+          selectedCategoryIdsKey.length === 0
+            ? []
+            : selectedCategoryIdsKey
+                .split(",")
+                .map((categoryId) => Number(categoryId))
+                .filter((categoryId) => Number.isFinite(categoryId))
+                .map((categoryId) => ({ id: categoryId, name: "" }));
+
         const eventsData = await getEvents({
-          categories: selectedCategories,
-          onlyFuture: true,
+          categories: categoriesForFetch,
+          onlyFuture,
+          onlyPast,
+          onlyJoined: tabname === "påmeldte",
+          onlyMine: tabname === "mine",
         });
-        setEvents(eventsData);
-      } catch (error) {
-        console.error('Error fetching events:', error);
-        setEvents([]);
+
+        if (!cancelled) {
+          setEvents(eventsData);
+        }
       } finally {
-        setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     };
 
-    fetchEvents();
-  }, []);
+    void fetchEvents();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedCategoryIdsKey, onlyFuture, onlyPast, tabname]);
 
   useEffect(() => {
-    getEvents({
-      categories: selectedCategories,
-      onlyFuture,
-      onlyPast,
-      onlyJoined,
-      onlyMine,
-    })
-        .then(setEvents)
-        .then(() => setLoading(false));
-  }, [selectedCategories, onlyFuture, onlyPast, onlyJoined]);
-
-  useEffect(() => {
-    getAll()
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
     };
+
     handleResize();
     window.addEventListener("resize", handleResize);
+
     return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
 
-  async function getOnlyJoined() {
-    try {
-      setLoading(true);
-      setTabname("påmeldte");
-      setVal([]);
-      const eventsData = await getEvents({
-        categories: selectedCategories,
-        onlyFuture,
-        onlyJoined: true,
-      });
-      setEvents(eventsData);
-    } catch (error) {
-      console.error('Error fetching events:', error);
-      setEvents([]);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function getOnlyJoinedPrev() {
-    try {
-      setLoading(true);
-      const eventsData = await getEvents({
-        categories: selectedCategories,
-        onlyPast,
-        onlyJoined: true,
-      });
-      setEvents(eventsData);
-    } catch (error) {
-      console.error('Error fetching events:', error);
-      setEvents([]);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function getOnlyMine() {
-    try {
-      setLoading(true);
-      setTabname("mine");
-      setVal([]);
-      const eventsData = await getEvents({
-        categories: selectedCategories,
-        onlyFuture,
-        onlyMine: true,
-      });
-      setEvents(eventsData);
-    } catch (error) {
-      console.error('Error fetching events:', error);
-      setEvents([]);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function getOnlyMinePrev() {
-    try {
-      setLoading(true);
-      const eventsData = await getEvents({
-        categories: selectedCategories,
-        onlyPast,
-        onlyMine: true,
-      });
-      setEvents(eventsData);
-    } catch (error) {
-      console.error('Error fetching events:', error);
-      setEvents([]);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function getAll() {
-    try {
-      setLoading(true);
-      setTabname("alle");
-      setVal([]);
-      const eventsData = await getEvents({
-        categories: selectedCategories,
-        onlyFuture: true,
-      });
-      setEvents(eventsData);
-    } catch (error) {
-      console.error('Error fetching events:', error);
-      setEvents([]);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function getAllPrev() {
-    try {
-      setLoading(true);
-      const eventsData = await getEvents({
-        onlyPast
-      });
-      setEvents(eventsData);
-    } catch (error) {
-      console.error('Error fetching events:', error);
-      setEvents([]);
-    } finally {
-      setLoading(false);
-    }
-  }
-
   useEffect(() => {
-    const filtered = events.filter((fullEvent) =>
-      fullEvent.event.title.toLowerCase().includes(searchInput.toLowerCase()),
-    );
-    setFilterEvents(filtered);
-  }, [events, searchInput]);
+    if (loading || hasRestoredScroll.current) {
+      return;
+    }
+
+    const savedScrollY = sessionStorage.getItem(`event-overview-scroll:${currentOverviewPath}`);
+
+    hasRestoredScroll.current = true;
+
+    if (!savedScrollY) {
+      return;
+    }
+
+    const parsedScrollY = Number(savedScrollY);
+
+    if (!Number.isFinite(parsedScrollY)) {
+      sessionStorage.removeItem(`event-overview-scroll:${currentOverviewPath}`);
+      return;
+    }
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: parsedScrollY, behavior: "auto" });
+        sessionStorage.removeItem(`event-overview-scroll:${currentOverviewPath}`);
+      });
+    });
+  }, [currentOverviewPath, filterEvents.length, loading]);
 
   return (
     <div className="flex flex-col w-full gap-6 items-start">
       {homeTabs && (
-          <Tabs className="self-start w-full" defaultValue="fremtidige">
+          <Tabs className="self-start w-full" value={tabname}>
             <Tabs.List>
               <Tabs.Tab
-                  value="fremtidige"
+                  value="alle"
                   label="Alle"
-                  onClick={() => getAll()}
+                  onClick={() => handleTabChange("alle")}
               />
               <Tabs.Tab
-                  value="tidligere"
+                  value="påmeldte"
                   label="Mine påmeldinger"
-                  onClick={() => getOnlyJoined()}
+                  onClick={() => handleTabChange("påmeldte")}
               />
               <Tabs.Tab
                   value="mine"
                   label="Arrangør"
-                  onClick={() => getOnlyMine()}
+                  onClick={() => handleTabChange("mine")}
               />
             </Tabs.List>
           </Tabs>
       )}
       {selectTime && (
-        <Tabs className="self-start w-full" defaultValue="fremtidige">
+        <Tabs className="self-start w-full" value={selectedTime}>
           <Tabs.List>
             <Tabs.Tab
-              value="fremtidige"
+              value={TimeSelector.FUTURE}
               label="Kommende"
-              onClick={() => setSelectedTime(TimeSelector.FUTURE)}
+              onClick={() => updateUrlState({ time: TimeSelector.FUTURE })}
             />
             <Tabs.Tab
-              value="tidligere"
+              value={TimeSelector.PAST}
               label="Tidligere"
-              onClick={() => setSelectedTime(TimeSelector.PAST)}
+              onClick={() => updateUrlState({ time: TimeSelector.PAST })}
             />
           </Tabs.List>
         </Tabs>
@@ -331,7 +370,7 @@ export default function EventFilters({
                     size="small"
                     className="w-full ax-md:w-auto order-2 ax-md:order-1"
                     onChange={(e) => {
-                      setSearchInput(e);
+                      updateUrlState({ search: e || null });
                     }}
                 />
             )}
@@ -347,24 +386,12 @@ export default function EventFilters({
                       size="small"
                       label="Filtrer på kategori"
                       hideLabel={!isMobile}
-                      options={eventCategories
-                          .map((category) => category.name)
-                          .filter((categoryName) => categoryName !== "fagfestival" && categoryName !== "biljard" && categoryName !== "fagdag_utvikling_og_data")
-                          .sort((a, b) => a.localeCompare(b))}
+                      options={visibleCategoryOptions}
                       selectedOptions={selectedCategories
                           .map((category) => category.name)
                           .sort((a, b) => a.localeCompare(b))}
                       onToggleSelected={(categoryName, isSelected) => {
-                        if (isSelected) {
-                          setSelectedCategories((categories) => [
-                            ...categories,
-                            eventCategories.find((category) => category.name === categoryName)!,
-                          ]);
-                        } else {
-                          setSelectedCategories((categories) =>
-                              categories.filter((category) => category.name !== categoryName)
-                          );
-                        }
+                        handleCategoryToggle(categoryName, isSelected);
                       }}
                       isMultiSelect
                       shouldAutocomplete
@@ -378,47 +405,22 @@ export default function EventFilters({
             {/*<Switch className={"-mt-5 -mb-2 ml-4"}>Vis tidligere</Switch>*/}
             <CheckboxGroup
                 legend={"Vis"} hideLegend className={"-mt-5 -mb-2 ml-4"}
-                onChange={(val: any[]) => handleChange(val)}
-                value={val}
+                onChange={(values: string[]) =>
+                  updateUrlState({ showPast: values.includes(VISIBLE_PREVIOUS_VALUE) })
+                }
+                value={showPrevious ? [VISIBLE_PREVIOUS_VALUE] : []}
             >
-              <Checkbox value="10">Vis tidligere</Checkbox>
+              <Checkbox value={VISIBLE_PREVIOUS_VALUE}>Vis tidligere</Checkbox>
             </CheckboxGroup>
           </>
-      )}
+       )}
       {(selectTimeRadio && tabname == "alle") && (
           <>
             {/*<Switch className={"-mt-5 -mb-2 ml-4"}>Vis tidligere</Switch>*/}
             <CheckboxGroup
                 legend={"Vis"} hideLegend className={"-mt-5 -mb-2 ml-4"}
-                onChange={(values: string[]) => {
-                  const validValues = values.filter(value =>
-                      ["kompetanse", "bedriftidrettslaget", "sosialt"].includes(value)
-                  );
-
-                  if (validValues.includes("kompetanse") && validValues.includes("bedriftidrettslaget")) {
-                    // If both are selected, do nothing or handle the error gracefully
-                    return;
-                  }
-
-                  if (validValues.includes("kompetanse")) {
-                    setSelectedCategories((prevCategories) => [
-                      ...prevCategories.filter((category) => category.name !== "bedriftidrettslaget" && category.name !== "sosialt"),
-                      eventCategories.find((category) => category.name === "kompetanse")!,
-                    ].filter(category => category !== undefined));
-                  } else if (validValues.includes("bedriftidrettslaget")) {
-                    setSelectedCategories((prevCategories) => [
-                      ...prevCategories.filter((category) => category.name !== "kompetanse" && category.name !== "sosialt"),
-                      eventCategories.find((category) => category.name === "bedriftidrettslaget")!,
-                    ].filter(category => category !== undefined));
-                  } else if (validValues.includes("sosialt")) {
-                    setSelectedCategories((prevCategories) => [
-                      ...prevCategories.filter((category) => category.name !== "kompetanse" && category.name !== "bedriftidrettslaget"),
-                      eventCategories.find((category) => category.name === "sosialt ")!,
-                    ].filter(category => category !== undefined));
-                  } else {
-                    setSelectedCategories([]);
-                  }
-                }}
+                onChange={handleQuickFilterChange}
+                value={selectedQuickFilters}
             >
               <div className="mt-1 flex flex-col ax-sm:flex-row gap-0 ax-sm:gap-4">
                 <Checkbox value="kompetanse" disabled={selectedCategories.some(category => category.name === "bedriftidrettslaget" || category.name === "sosialt")}>Kompetanse</Checkbox>
@@ -430,7 +432,12 @@ export default function EventFilters({
       )}
       <div className="w-full p-4">
         {filterEvents.length > 0 && (<p className="pb-4">{filterEvents.length} {filterEvents.length == 1 ? (<>arrangement</>) : (<>arrangementer</>)}</p>)}
-        <EventList fullEvents={filterEvents} loading={loading} showAll={val} tabname={tabname}/>
+        <EventList
+          fullEvents={filterEvents}
+          loading={loading}
+          showAll={showPrevious ? [VISIBLE_PREVIOUS_VALUE] : []}
+          tabname={tabname}
+        />
       </div>
       {ctaLink && (
           <div className="px-4 mb-4">

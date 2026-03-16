@@ -27,7 +27,7 @@ export async function getApi() {
   return client;
 }
 
-function backendUrl() {
+export function backendUrl() {
   return process.env.NODE_ENV === "production"
     ? "http://delta-backend"
     : "http://localhost:8080";

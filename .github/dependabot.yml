@@ -8,21 +8,43 @@ updates:
   - package-ecosystem: npm
     directory: "/"
     schedule:
-      interval: daily
+      interval: weekly
     registries:
       - npm-github
+    cooldown:
+      default-days: 7
     groups:
+      navikt:
+        patterns:
+          - "@navikt/*"
       react:
         patterns:
           - "react"
           - "react-dom"
+          - "react-hook-form"
+          - "react-markdown"
+          - "remark-gfm"
+          - "@hookform/resolvers"
           - "@types/react"
+          - "@types/react-dom"
+          - "framer-motion"
+      next:
+        patterns:
+          - "next"
+          - "next-*"
+          - "@next/*"
+          - "@mdx-js/*"
+          - "eslint-config-next"
+      npm:
+        patterns:
+          - "*"
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
-      interval: daily
-    open-pull-requests-limit: 10
-  - package-ecosystem: docker
-    directory: "/"
-    schedule:
-      interval: daily
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      github-actions:
+        patterns:
+          - "*"

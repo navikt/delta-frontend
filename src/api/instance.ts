@@ -18,9 +18,13 @@ export async function getApi() {
   client.interceptors.response.use(
     (response) => response,
     (error) => {
+      const status = error.response?.status;
       delete error.config;
       delete error.response;
       delete error.request;
+      if (status !== undefined) {
+        error.status = status;
+      }
       return Promise.reject(error);
     },
   );

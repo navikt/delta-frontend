@@ -24,7 +24,7 @@ export default function CardWithBackground(props: CardWithBackgroundProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (props.scrollToTopOnMount !== false && containerRef.current) {
+    if (props.scrollToTopOnMount && containerRef.current) {
       containerRef.current.scrollIntoView({ behavior: "instant" });
     }
   }, [props.scrollToTopOnMount]);

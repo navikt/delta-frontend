@@ -34,6 +34,6 @@ Kode på Github: [delta-backend](https://github.com/navikt/delta-backend)
 - Start dev-versjon av frontend
   - `npm run dev`
 
-# Bruk a KI
+# Bruk av AI
 
-Delta er utviklet med hjelp av KI.
+Delta er utviklet med hjelp av AI.

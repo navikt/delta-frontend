@@ -19,7 +19,7 @@ import MarkdownRenderer from "@/components/MarkdownRenderer";
 import {format} from "date-fns";
 import Calendar from "@/components/calendar";
 import SecondaryCopyButton from "@/components/SecondaryCopyButton";
-import {TrashIcon, PencilIcon, BarChartIcon, FilePlusIcon} from "@navikt/aksel-icons";
+import {TrashIcon, PencilIcon, BarChartIcon, FilePlusIcon, ArrowsCirclepathIcon} from "@navikt/aksel-icons";
 
 export default function EventDetails({
      event,
@@ -351,7 +351,8 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                     <div className="flex gap-2 flex-wrap mt-5 mb-12">
                         {categories.length > 0 &&
                             categories.map((category) => (
-                                <Tag variant="neutral" size="small" key={category.id}>
+                                <Tag variant={category.name === "Gjentakende" ? "alt1" : "neutral"} size="small" key={category.id}>
+                                    {category.name === "Gjentakende" && <ArrowsCirclepathIcon aria-hidden className="mr-1" />}
                                     {category.name}
                                 </Tag>
                             ))}

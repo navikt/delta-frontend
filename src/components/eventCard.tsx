@@ -9,6 +9,7 @@ import {
     HourglassBottomFilledIcon,
     PersonCheckmarkIcon,
     LocationPinIcon,
+    ArrowsCirclepathIcon,
 } from "@navikt/aksel-icons";
 import Link from "next/link";
 import {
@@ -140,7 +141,8 @@ export function EventCard({
                         </div>
                         <div className="flex gap-2 flex-wrap items-end w-full">
                             {categories.map((category) => (
-                                <Tag variant="neutral" size="small" key={category.id}>
+                                <Tag variant={category.name === "Gjentakende" ? "alt1" : "neutral"} size="small" key={category.id}>
+                                    {category.name === "Gjentakende" && <ArrowsCirclepathIcon aria-hidden className="mr-1" />}
                                     {category.name}
                                 </Tag>
                             ))}

@@ -864,6 +864,10 @@ async function createAndRedirect(
         : 0;
 
     let firstEventId: string | null = null;
+
+    const recurringCategory = await createCategory("Gjentakende");
+    const recurringCategoryIds = [...allCategoryIds, recurringCategory.id];
+
     for (const occurrenceDate of occurrences) {
       const occurrenceFormData: CreateEventSchema = {
         ...formData,
@@ -875,7 +879,7 @@ async function createAndRedirect(
             : formData.signupDeadlineDate,
       };
       const { event } = await createEvent(occurrenceFormData);
-      await setCategories(event.id, allCategoryIds);
+      await setCategories(event.id, recurringCategoryIds);
       if (!firstEventId) firstEventId = event.id;
     }
     window.location.href = `/event/${firstEventId}`;

@@ -13,7 +13,7 @@ import {
   CheckboxGroup,
   Alert,
 } from "@navikt/ds-react";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import {
   createCategory,
   createEvent,
@@ -32,9 +32,10 @@ import {
   TemplateDeltaEvent,
 } from "@/types/event";
 import { midnightDate } from "@/service/format";
-import { format } from "date-fns";
+import { addDays, differenceInCalendarDays, format } from "date-fns";
 import { Spraksjekk } from "@/components/library";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
+import { generateOccurrenceDates, RecurrenceFrequency, RecurrenceEndCondition } from "@/service/recurrence";
 
 function isValidParticipantLimit(limit?: string) {
   if (!limit) return false;
@@ -66,6 +67,10 @@ const createEventSchema = z
     signupDeadlineTime: z.string().regex(/(?:^$)|(?:^[0-9]{2}:[0-9]{2}$)/, {
       message: "Verdien må være et gyldig tidspunkt",
     }),
+    isRecurring: z.boolean(),
+    recurrenceFrequency: z.enum(["weekly", "biweekly", "monthly"]).optional(),
+    recurrenceEndType: z.enum(["date", "count"]).optional(),
+    recurrenceCount: z.string().optional(),
   })
   .refine((data) => data.endDate >= data.startDate, {
     message: "Sluttdato må være etter startdato",
@@ -108,6 +113,61 @@ const createEventSchema = z
     {
       message: "Må være mellom 1 og 9999",
       path: ["participantLimit"],
+    },
+  )
+  .refine(
+    (data) =>
+      !data.isRecurring || data.recurrenceFrequency !== undefined,
+    {
+      message: "Du må velge en frekvens for gjentakelsen",
+      path: ["recurrenceFrequency"],
+    },
+  )
+  .refine(
+    (data) =>
+      !data.isRecurring || data.recurrenceEndType !== undefined,
+    {
+      message: "Du må velge når gjentakelsen skal avsluttes",
+      path: ["recurrenceEndType"],
+    },
+  )
+  .refine(
+    (data) =>
+      !data.isRecurring ||
+      data.recurrenceEndType !== "date" ||
+      data.endDate > data.startDate,
+    {
+      message: "Sluttdato må være etter startdato for gjentakende arrangementer",
+      path: ["endDate"],
+    },
+  )
+  .refine(
+    (data) => {
+      if (!data.isRecurring || data.recurrenceEndType !== "count") return true;
+      const count = parseInt(data.recurrenceCount || "");
+      return !Number.isNaN(count) && count >= 2 && count <= 52;
+    },
+    {
+      message: "Må være mellom 2 og 52",
+      path: ["recurrenceCount"],
+    },
+  )
+  .refine(
+    (data) => {
+      if (!data.isRecurring || !data.recurrenceFrequency || data.recurrenceEndType !== "count") return true;
+      const count = parseInt(data.recurrenceCount || "");
+      if (Number.isNaN(count) || count < 2) return true;
+      const occurrences = generateOccurrenceDates(
+        data.startDate,
+        data.recurrenceFrequency,
+        { type: "count", count },
+      );
+      const lastOccurrence = occurrences[occurrences.length - 1];
+      return lastOccurrence <= data.endDate;
+    },
+    {
+      message: "Antall gjentakelser overskrider slutt-datoen (Til). Reduser antallet eller flytt slutt-datoen.",
+      path: ["recurrenceCount"],
     },
   );
 
@@ -226,11 +286,12 @@ function InternalCreateEventForm({
     control,
     formState: { errors, isSubmitting },
     setValue,
-    handleSubmit
+    handleSubmit,
+    watch,
   } = useForm<CreateEventSchema>({
     defaultValues:
       richEvent.type === EditTypeEnum.NEW
-        ? { public: true }
+        ? { public: true, isRecurring: false }
         : richEvent.type === EditTypeEnum.TEMPLATE
           ? {
             title: richEvent.event.title,
@@ -248,7 +309,8 @@ function InternalCreateEventForm({
             hasSignupDeadline: hasDeadline,
             signupDeadlineDate: undefined,
             signupDeadlineTime: "",
-            sendNotificationEmail: true
+            sendNotificationEmail: true,
+            isRecurring: false,
           }
           : {
             title: richEvent.event.title,
@@ -270,7 +332,8 @@ function InternalCreateEventForm({
             signupDeadlineTime: richEvent.event.signupDeadline
               ? format(new Date(richEvent.event.signupDeadline), "HH:mm")
               : "",
-            sendNotificationEmail: true
+            sendNotificationEmail: true,
+            isRecurring: false,
           },
     resolver: zodResolver(createEventSchema),
   });
@@ -282,6 +345,31 @@ function InternalCreateEventForm({
       ? (richEvent.event.description ?? "")
       : ""
   const [dvalue, setDvalue] = useState(initialDescription)
+
+  // Recurrence fields
+  const [isRecurring, setIsRecurring] = useState(false);
+  const [recurrenceFrequency, setRecurrenceFrequency] = useState<RecurrenceFrequency | null>(null);
+  const [recurrenceEndType, setRecurrenceEndType] = useState<"date" | "count" | null>(null);
+
+  const watchedStartDate = watch("startDate");
+  const watchedEndDate = watch("endDate");
+  const watchedRecurrenceCount = watch("recurrenceCount");
+
+  const occurrenceCount = useMemo(() => {
+    if (!isRecurring || !recurrenceFrequency || !recurrenceEndType || !watchedStartDate) return 0;
+    try {
+      const endCondition: RecurrenceEndCondition =
+        recurrenceEndType === "date" && watchedEndDate
+          ? { type: "date", endDate: watchedEndDate }
+          : recurrenceEndType === "count" && watchedRecurrenceCount
+            ? { type: "count", count: parseInt(watchedRecurrenceCount) }
+            : { type: "count", count: 0 };
+      if (endCondition.type === "count" && endCondition.count < 2) return 0;
+      return generateOccurrenceDates(watchedStartDate, recurrenceFrequency, endCondition).length;
+    } catch {
+      return 0;
+    }
+  }, [isRecurring, recurrenceFrequency, recurrenceEndType, watchedStartDate, watchedEndDate, watchedRecurrenceCount]);
 
   // Location related fields
   const [showAlert, setShowAlert] = useState(false);
@@ -400,6 +488,75 @@ function InternalCreateEventForm({
           )}
         </div>
       </div>
+
+      {richEvent.type !== EditTypeEnum.EDIT && (
+        <div className="flex flex-col gap-3">
+          <Checkbox
+            {...register("isRecurring")}
+            onChange={() => {
+              const next = !isRecurring;
+              setIsRecurring(next);
+              if (!next) {
+                setRecurrenceFrequency(null);
+                setRecurrenceEndType(null);
+                setValue("recurrenceFrequency", undefined);
+                setValue("recurrenceEndType", undefined);
+                setValue("recurrenceCount", undefined);
+              }
+            }}
+          >
+            Gjentakende arrangement
+          </Checkbox>
+          {isRecurring && (
+            <div className="flex flex-col gap-4 ml-8">
+              <RadioGroup
+                legend="Frekvens"
+                value={recurrenceFrequency ?? ""}
+                onChange={(value: string) => {
+                  setRecurrenceFrequency(value as RecurrenceFrequency);
+                  setValue("recurrenceFrequency", value as RecurrenceFrequency);
+                }}
+                error={errors.recurrenceFrequency?.message}
+              >
+                <Radio value="weekly">Ukentlig</Radio>
+                <Radio value="biweekly">Annenhver uke</Radio>
+                <Radio value="monthly">Månedlig</Radio>
+              </RadioGroup>
+              <RadioGroup
+                legend="Avslutt gjentakelse"
+                value={recurrenceEndType ?? ""}
+                onChange={(value: string) => {
+                  setRecurrenceEndType(value as "date" | "count");
+                  setValue("recurrenceEndType", value as "date" | "count");
+                }}
+                error={errors.recurrenceEndType?.message}
+              >
+                <Radio value="date">Til slutt-dato (Til-datoen ovenfor)</Radio>
+                <Radio value="count">Etter et antall ganger</Radio>
+              </RadioGroup>
+              {recurrenceEndType === "count" && (
+                <TextField
+                  label="Antall ganger"
+                  description="Totalt antall arrangementer (2–52)"
+                  {...register("recurrenceCount")}
+                  error={errors.recurrenceCount?.message}
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  className="max-w-[10rem]"
+                />
+              )}
+              {occurrenceCount > 0 && (
+                <Alert variant={occurrenceCount >= 2 ? "info" : "warning"} className="max-w-prose">
+                  {occurrenceCount >= 2
+                    ? `Det vil bli opprettet ${occurrenceCount} arrangementer.`
+                    : "Gjentakelsesinnstillingene gir bare ett arrangement. Juster sluttdato eller frekvens."}
+                </Alert>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       {richEvent.type !== EditTypeEnum.EDIT ? (
         <>
@@ -680,16 +837,53 @@ async function createAndRedirect(
   newTags: string[],
   categories: Category[],
 ) {
-  const { event } = await createEvent(formData);
-
   const newCategories = newTags.length
     ? await Promise.all(newTags.map((c) => createCategory(c)))
     : [];
-  await setCategories(
-    event.id,
-    categories.concat(newCategories).map((c) => c.id),
-  );
-  window.location.href = `/event/${event.id}`;
+  const allCategoryIds = categories.concat(newCategories).map((c) => c.id);
+
+  if (
+    formData.isRecurring &&
+    formData.recurrenceFrequency &&
+    formData.recurrenceEndType
+  ) {
+    const endCondition: RecurrenceEndCondition =
+      formData.recurrenceEndType === "date"
+        ? { type: "date", endDate: formData.endDate }
+        : { type: "count", count: parseInt(formData.recurrenceCount!) };
+
+    const occurrences = generateOccurrenceDates(
+      formData.startDate,
+      formData.recurrenceFrequency,
+      endCondition,
+    );
+
+    const deadlineOffset =
+      formData.hasSignupDeadline && formData.signupDeadlineDate
+        ? differenceInCalendarDays(formData.signupDeadlineDate, formData.startDate)
+        : 0;
+
+    let firstEventId: string | null = null;
+    for (const occurrenceDate of occurrences) {
+      const occurrenceFormData: CreateEventSchema = {
+        ...formData,
+        startDate: occurrenceDate,
+        endDate: occurrenceDate,
+        signupDeadlineDate:
+          formData.hasSignupDeadline && formData.signupDeadlineDate
+            ? addDays(occurrenceDate, deadlineOffset)
+            : formData.signupDeadlineDate,
+      };
+      const { event } = await createEvent(occurrenceFormData);
+      await setCategories(event.id, allCategoryIds);
+      if (!firstEventId) firstEventId = event.id;
+    }
+    window.location.href = `/event/${firstEventId}`;
+  } else {
+    const { event } = await createEvent(formData);
+    await setCategories(event.id, allCategoryIds);
+    window.location.href = `/event/${event.id}`;
+  }
 }
 
 async function updateAndRedirect(

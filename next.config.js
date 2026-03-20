@@ -9,6 +9,11 @@ const nextConfig = {
         destination: '/event/1b9783d3-c8d6-4131-ac01-46c3dab3f9ea',
         permanent: true,
       },
+      {
+        source: '/faggrupper/faggruppe-design-av-fagsystemer',
+        destination: '/faggrupper/88ae4787-4279-4604-9800-2c69ad228e4b',
+        permanent: true,
+      },
     ]
   },
   headers: () => [
@@ -33,4 +38,3 @@ const withMDX = require('@next/mdx')({
 });
 
 module.exports = withMDX(nextConfig);
-

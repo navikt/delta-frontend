@@ -13,19 +13,20 @@ import {
 } from "@navikt/ds-react";
 import Link from "next/link";
 import {useQRCode} from 'next-qrcode';
-import {FullDeltaEvent, DeltaParticipant} from "@/types/event";
-import {deleteEvent, getEvent, joinEvent, leaveEvent} from "@/service/eventActions";
+import {FullDeltaEvent, DeltaParticipant} from "@/types/event";import {deleteEvent, getEvent, joinEvent, leaveEvent} from "@/service/eventActions";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import {format} from "date-fns";
 import Calendar from "@/components/calendar";
 import SecondaryCopyButton from "@/components/SecondaryCopyButton";
 import {TrashIcon, PencilIcon, BarChartIcon, FilePlusIcon} from "@navikt/aksel-icons";
+import { RecurringBadge } from "@/components/RecurringBadge";
 
 export default function EventDetails({
      event,
      participants,
      hosts,
      categories,
+     recurringSeries,
      user,
      hostname,
  }: FullDeltaEvent & {
@@ -86,12 +87,18 @@ export default function EventDetails({
         <div>
             <div className="flex w-full justify-between items-start gap-4">
                 {isSameDay ? (
-                    <Calendar dateString={event.startTime} displayTime={!isSameDay}/>
-                ) : (
-                    <div className="flex gap-2 items-center">
+                    <div className="flex flex-col gap-2">
                         <Calendar dateString={event.startTime} displayTime={!isSameDay}/>
-                        ⁠–
-                        <Calendar dateString={event.endTime} displayTime={!isSameDay}/>
+                        {recurringSeries && <RecurringBadge frequency={recurringSeries.frequency} />}
+                    </div>
+                ) : (
+                    <div className="flex flex-col gap-2">
+                        <div className="flex gap-2 items-center">
+                            <Calendar dateString={event.startTime} displayTime={!isSameDay}/>
+                            ⁠–
+                            <Calendar dateString={event.endTime} displayTime={!isSameDay}/>
+                        </div>
+                        {recurringSeries && <RecurringBadge frequency={recurringSeries.frequency} />}
                     </div>
                 )}
                 <div className="flex flex-col ax-md:flex-row gap-4 items-start ax-md:items-center">

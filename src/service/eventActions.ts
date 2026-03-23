@@ -8,6 +8,8 @@ import {
   ChangeDeltaParticipant,
   CreateDeltaEvent,
   FullDeltaEvent,
+  RecurrenceFrequency,
+  EventEditScope,
 } from "@/types/event";
 import { formatInTimeZone } from "date-fns-tz";
 import { AxiosError } from 'axios';
@@ -361,6 +363,18 @@ function createDeltaEventFromFormData(
 
   const sendNotificationEmail = formData.sendNotificationEmail;
 
+  const recurrence =
+    formData.recurrenceFrequency && formData.recurrenceUntilDate
+      ? {
+          frequency: formData.recurrenceFrequency as RecurrenceFrequency,
+          untilDate: formatInTimeZone(
+            formData.recurrenceUntilDate,
+            "Europe/Oslo",
+            "yyyy-MM-dd",
+          ),
+        }
+      : undefined;
+
   return {
     title: formData.title,
     description: formData.description,
@@ -374,6 +388,8 @@ function createDeltaEventFromFormData(
     endTime: end,
     signupDeadline: formData.hasSignupDeadline ? deadline : undefined,
     sendNotificationEmail: sendNotificationEmail,
+    recurrence,
+    editScope: formData.editScope as EventEditScope | undefined,
   };
 }
 

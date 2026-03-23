@@ -17,6 +17,7 @@ import {
     formatEventDates,
     formatEventTimes,
 } from "@/service/format";
+import { RecurringBadge } from "@/components/RecurringBadge";
 import { usePathname, useSearchParams } from "next/navigation";
 
 export function EventCard({
@@ -139,6 +140,9 @@ export function EventCard({
                             )}
                         </div>
                         <div className="flex gap-2 flex-wrap items-end w-full">
+                            {event.recurringSeries && (
+                                <RecurringBadge frequency={event.recurringSeries.frequency} />
+                            )}
                             {categories.map((category) => (
                                 <Tag variant="neutral" size="small" key={category.id}>
                                     {category.name}

@@ -29,6 +29,7 @@ import {
   Category,
   DeltaEvent,
   EditTypeEnum,
+  RecurringSeriesSummary,
   TemplateDeltaEvent,
 } from "@/types/event";
 import { midnightDate } from "@/service/format";
@@ -66,6 +67,9 @@ const createEventSchema = z
     signupDeadlineTime: z.string().regex(/(?:^$)|(?:^[0-9]{2}:[0-9]{2}$)/, {
       message: "Verdien må være et gyldig tidspunkt",
     }),
+    recurrenceFrequency: z.enum(["WEEKLY", "BIWEEKLY", "MONTHLY"]).optional(),
+    recurrenceUntilDate: z.date().optional(),
+    editScope: z.enum(["SINGLE", "UPCOMING"]).optional(),
   })
   .refine((data) => data.endDate >= data.startDate, {
     message: "Sluttdato må være etter startdato",
@@ -109,6 +113,23 @@ const createEventSchema = z
       message: "Må være mellom 1 og 9999",
       path: ["participantLimit"],
     },
+  )
+  .refine(
+    (data) => !data.recurrenceFrequency || !!data.recurrenceUntilDate,
+    {
+      message: "Du må velge en sluttdato for gjentakelse",
+      path: ["recurrenceUntilDate"],
+    },
+  )
+  .refine(
+    (data) =>
+      !data.recurrenceFrequency ||
+      !data.recurrenceUntilDate ||
+      data.recurrenceUntilDate >= data.startDate,
+    {
+      message: "Sluttdato for gjentakelse kan ikke være før startdatoen",
+      path: ["recurrenceUntilDate"],
+    },
   );
 
 export type CreateEventSchema = z.infer<typeof createEventSchema>;
@@ -142,6 +163,7 @@ export default function CreateEventForm({
           richEvent = {
             type: EditTypeEnum.EDIT,
             event: e.event,
+            recurringSeries: e.recurringSeries,
           };
         } else {
           richEvent = {
@@ -178,7 +200,7 @@ export default function CreateEventForm({
   );
 }
 type RichEvent =
-  | { type: EditTypeEnum.EDIT; event: DeltaEvent }
+  | { type: EditTypeEnum.EDIT; event: DeltaEvent; recurringSeries?: RecurringSeriesSummary }
   | { type: EditTypeEnum.TEMPLATE; event: TemplateDeltaEvent }
   | { type: EditTypeEnum.NEW };
 
@@ -202,6 +224,9 @@ function InternalCreateEventForm({
   const [hasDeadline, setDeadline] = useState(
     !!(richEvent.type === EditTypeEnum.EDIT && richEvent.event.signupDeadline),
   );
+  const [isRecurring, setIsRecurring] = useState(false);
+  const [recurrenceFrequency, setRecurrenceFrequency] = useState<string>("");
+  const [editScope, setEditScope] = useState<string>("SINGLE");
 
   const [newTags, setNewTags] = useState<string[]>([]);
   const setSelected = (tags: string[]) => {
@@ -248,7 +273,10 @@ function InternalCreateEventForm({
             hasSignupDeadline: hasDeadline,
             signupDeadlineDate: undefined,
             signupDeadlineTime: "",
-            sendNotificationEmail: true
+            sendNotificationEmail: true,
+            recurrenceFrequency: undefined,
+            recurrenceUntilDate: undefined,
+            editScope: undefined,
           }
           : {
             title: richEvent.event.title,
@@ -270,7 +298,10 @@ function InternalCreateEventForm({
             signupDeadlineTime: richEvent.event.signupDeadline
               ? format(new Date(richEvent.event.signupDeadline), "HH:mm")
               : "",
-            sendNotificationEmail: true
+            sendNotificationEmail: true,
+            recurrenceFrequency: undefined,
+            recurrenceUntilDate: undefined,
+            editScope: "SINGLE" as const,
           },
     resolver: zodResolver(createEventSchema),
   });
@@ -655,6 +686,64 @@ function InternalCreateEventForm({
             Send e-post til deltakere ved endringer
           </Checkbox>
         </div>
+      )}
+      {richEvent.type !== EditTypeEnum.EDIT && (
+        <div className="flex flex-col gap-3">
+          <Checkbox
+            onChange={() => {
+              const next = !isRecurring;
+              setIsRecurring(next);
+              if (!next) {
+                setRecurrenceFrequency("");
+                setValue("recurrenceFrequency", undefined);
+                setValue("recurrenceUntilDate", undefined as unknown as Date);
+              }
+            }}
+          >
+            Gjentakende arrangement
+          </Checkbox>
+          {isRecurring && (
+            <div className="flex flex-col gap-4 pl-6">
+              <RadioGroup
+                legend="Frekvens"
+                value={recurrenceFrequency}
+                onChange={(v) => {
+                  setRecurrenceFrequency(v);
+                  setValue("recurrenceFrequency", v as "WEEKLY" | "BIWEEKLY" | "MONTHLY", { shouldValidate: true });
+                }}
+                error={errors.recurrenceFrequency?.message}
+              >
+                <Radio value="WEEKLY">Ukentlig</Radio>
+                <Radio value="BIWEEKLY">Annenhver uke</Radio>
+                <Radio value="MONTHLY">Månedlig</Radio>
+              </RadioGroup>
+              <div className="flex flex-row flex-wrap justify-left gap-4 pb-0 items-end">
+                <EventDatepicker
+                  name="recurrenceUntilDate"
+                  label="Gjenta til"
+                  invalidMessage="Du må fylle inn en gyldig dato"
+                  requiredMessage="Du må fylle inn en dato"
+                  control={control}
+                  errors={errors}
+                  hideLabel={false}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+      {richEvent.type === EditTypeEnum.EDIT && richEvent.recurringSeries && (
+        <RadioGroup
+          legend="Endre arrangementer"
+          value={editScope}
+          onChange={(v) => {
+            setEditScope(v);
+            setValue("editScope", v as "SINGLE" | "UPCOMING");
+          }}
+        >
+          <Radio value="SINGLE">Kun dette arrangementet</Radio>
+          <Radio value="UPCOMING">Dette og alle fremtidige arrangementer</Radio>
+        </RadioGroup>
       )}
       <div className="mt-6 mb-12 flex items-center gap-4">
         {/*              <Link

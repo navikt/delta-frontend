@@ -1,3 +1,19 @@
+export type RecurrenceFrequency = "WEEKLY" | "BIWEEKLY" | "MONTHLY";
+
+export type EventEditScope = "SINGLE" | "UPCOMING";
+
+export type RecurrenceRequest = {
+  frequency: RecurrenceFrequency;
+  untilDate: string; // yyyy-MM-dd
+};
+
+export type RecurringSeriesSummary = {
+  seriesId: string;
+  frequency: RecurrenceFrequency;
+  untilDate: string; // yyyy-MM-dd
+  editableScopes: EventEditScope[];
+};
+
 export type CreateDeltaEvent = {
   title: string;
   description: string;
@@ -8,6 +24,8 @@ export type CreateDeltaEvent = {
   participantLimit: number;
   signupDeadline?: string;
   sendNotificationEmail?: boolean;
+  recurrence?: RecurrenceRequest;
+  editScope?: EventEditScope;
 };
 
 export type FullDeltaEvent = {
@@ -15,6 +33,7 @@ export type FullDeltaEvent = {
   participants: DeltaParticipant[];
   hosts: DeltaParticipant[];
   categories: Category[];
+  recurringSeries?: RecurringSeriesSummary;
 };
 
 export type DeltaEvent = {

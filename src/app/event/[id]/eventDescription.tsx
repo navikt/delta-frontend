@@ -9,11 +9,12 @@ import {
     PersonCircleIcon,
     HourglassBottomFilledIcon,
     LocationPinIcon,
+    ArrowCirclepathIcon,
 } from "@navikt/aksel-icons";
 import {useEffect, useRef, useState} from "react";
 import {Link, Modal, Search, Button} from "@navikt/ds-react";
 import Participant from "./participant";
-import {formatEventDates, formatEventTimes, formatDeadline, formatEventDuration} from "@/service/format";
+import {formatEventDates, formatEventTimes, formatDeadline, formatEventDuration, formatRecurrenceFrequency, formatRecurrenceUntilDate} from "@/service/format";
 
 type EventDescriptionProps = FullDeltaEvent & {
     className?: string;
@@ -24,6 +25,7 @@ export default function EventDescription({
      event,
      participants,
      hosts,
+     recurringSeries,
      user,
      className,
      displayTime,
@@ -127,6 +129,14 @@ export default function EventDescription({
                     <span className="flex ml-[0.2rem] pl-6 gap-2 text-ax-danger-700">
             {formatDeadline(event)}{" "}
           </span>
+                </div>
+            )}
+            {recurringSeries && (
+                <div>
+                    <span className="flex flex-row justify-start gap-2 items-center pb-1">
+                        <ArrowCirclepathIcon aria-hidden/>
+                        {formatRecurrenceFrequency(recurringSeries.frequency)} til {formatRecurrenceUntilDate(recurringSeries.untilDate)}
+                    </span>
                 </div>
             )}
             <div className="pb-1">

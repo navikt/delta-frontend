@@ -9,6 +9,7 @@ import {
     HourglassBottomFilledIcon,
     PersonCheckmarkIcon,
     LocationPinIcon,
+    ArrowCirclepathIcon,
 } from "@navikt/aksel-icons";
 import Link from "next/link";
 import {
@@ -66,7 +67,16 @@ export function EventCard({
                     onClick={handleNavigation}
                     className="flex flex-col h-full p-4 border rounded-xl text-ax-text-neutral border-ax-neutral-400 transition-all hover:-translate-y-1 hover:scale-105 hover:text-ax-text-action hover:border-ax-border-accent no-underline event-card"
                 >
-                    <Heading level="2" size="small">{event.event.title}</Heading>
+                    <Heading level="2" size="small">
+                        {event.recurringSeries && (
+                            <ArrowCirclepathIcon
+                                title="Gjentakende arrangement"
+                                className="inline-block mr-1 align-text-bottom"
+                                fontSize="1.2em"
+                            />
+                        )}
+                        {event.event.title}
+                    </Heading>
                     <div className="flex flex-col gap-2 h-full justify-between">
                         <div>
                             {format(new Date(event.event.startTime), "MMMd") ===

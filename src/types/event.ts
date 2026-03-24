@@ -5,6 +5,7 @@ export type EditScope = "SINGLE" | "UPCOMING";
 export type RecurrenceRequest = {
   frequency: RecurrenceFrequency;
   untilDate: string;
+  signupDeadlineOffsetDays?: number;
 };
 
 export type RecurringSeriesSummary = {

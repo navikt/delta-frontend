@@ -74,6 +74,7 @@ const createEventSchema = z
     isRecurring: z.boolean().optional(),
     recurrenceFrequency: z.enum(["WEEKLY", "BIWEEKLY", "MONTHLY"]).optional(),
     recurrenceUntilDate: z.optional(z.date()),
+    signupDeadlineOffsetDays: z.string().optional(),
   })
   .refine((data) => data.endDate >= data.startDate, {
     message: "Sluttdato må være etter startdato",
@@ -91,6 +92,7 @@ const createEventSchema = z
   .refine(
     (data) =>
       !data.hasSignupDeadline ||
+      data.isRecurring ||
       (data.signupDeadlineDate !== undefined &&
         data.signupDeadlineDate <= data.startDate),
     {
@@ -101,6 +103,7 @@ const createEventSchema = z
   .refine(
     (data) =>
       !data.hasSignupDeadline ||
+      data.isRecurring ||
       (data.signupDeadlineDate !== undefined &&
         (data.signupDeadlineDate.getTime() !== data.startDate.getTime() ||
           data.signupDeadlineTime <= data.startTime)),
@@ -145,6 +148,20 @@ const createEventSchema = z
     {
       message: "Sluttdato for gjentakelse må være etter startdato",
       path: ["recurrenceUntilDate"],
+    },
+  )
+  .refine(
+    (data) =>
+      !data.isRecurring ||
+      !data.hasSignupDeadline ||
+      (data.signupDeadlineOffsetDays !== undefined &&
+        data.signupDeadlineOffsetDays !== "" &&
+        !Number.isNaN(parseInt(data.signupDeadlineOffsetDays)) &&
+        parseInt(data.signupDeadlineOffsetDays) >= 1 &&
+        parseInt(data.signupDeadlineOffsetDays) <= 365),
+    {
+      message: "Må være mellom 1 og 365 dager",
+      path: ["signupDeadlineOffsetDays"],
     },
   );
 
@@ -675,35 +692,51 @@ function InternalCreateEventForm({
         >
           Spesifiser en påmeldingsfrist
         </Checkbox>
-        <div
-          className={`flex flex-row flex-wrap justify-left gap-4 pb-0 items-end ${!hasDeadline && "hidden"
-            }`}
-        >
-          <EventDatepicker
-            name="signupDeadlineDate"
-            label="Påmeldingsfrist"
-            invalidMessage="Du må fylle inn en gyldig påmeldingsfrist"
-            requiredMessage="Du må fylle inn en påmeldingsfrist"
-            control={control}
-            errors={errors}
-            hideLabel={true}
-          />
+        {hasDeadline && isRecurring ? (
+          <div className="flex flex-row items-end gap-2 mt-2">
+            <TextField
+              {...register("signupDeadlineOffsetDays")}
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              label="Påmeldingsfrist"
+              hideLabel
+              className="w-20"
+              error={errors.signupDeadlineOffsetDays?.message}
+            />
+            <span className="pb-3">dager før start</span>
+          </div>
+        ) : (
           <div
-            className={`aksel-form-field aksel-form-field--medium ${errors.signupDeadlineDate && "aksel-text-field--error"
+            className={`flex flex-row flex-wrap justify-left gap-4 pb-0 items-end ${!hasDeadline && "hidden"
               }`}
           >
-            <input
-              type="time"
-              className="aksel-text-field__input w-28"
-              {...register("signupDeadlineTime")}
+            <EventDatepicker
+              name="signupDeadlineDate"
+              label="Påmeldingsfrist"
+              invalidMessage="Du må fylle inn en gyldig påmeldingsfrist"
+              requiredMessage="Du må fylle inn en påmeldingsfrist"
+              control={control}
+              errors={errors}
+              hideLabel={true}
             />
-            {errors.signupDeadlineTime && (
-              <p className="aksel-error-message aksel-label">
-                {errors.signupDeadlineTime.message}
-              </p>
-            )}
+            <div
+              className={`aksel-form-field aksel-form-field--medium ${errors.signupDeadlineDate && "aksel-text-field--error"
+                }`}
+            >
+              <input
+                type="time"
+                className="aksel-text-field__input w-28"
+                {...register("signupDeadlineTime")}
+              />
+              {errors.signupDeadlineTime && (
+                <p className="aksel-error-message aksel-label">
+                  {errors.signupDeadlineTime.message}
+                </p>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
       {richEvent.type !== EditTypeEnum.EDIT && (
         <div>

@@ -377,6 +377,9 @@ function createDeltaEventFromFormData(
             "Europe/Oslo",
             "yyyy-MM-dd",
           ),
+          ...(formData.hasSignupDeadline && formData.signupDeadlineOffsetDays
+            ? { signupDeadlineOffsetDays: parseInt(formData.signupDeadlineOffsetDays) }
+            : {}),
         }
       : undefined;
 
@@ -391,7 +394,7 @@ function createDeltaEventFromFormData(
         : 0,
     startTime: start,
     endTime: end,
-    signupDeadline: formData.hasSignupDeadline ? deadline : undefined,
+    signupDeadline: formData.hasSignupDeadline && !formData.isRecurring ? deadline : undefined,
     sendNotificationEmail: sendNotificationEmail,
     recurrence: recurrence,
   };

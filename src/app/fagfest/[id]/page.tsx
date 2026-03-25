@@ -5,7 +5,28 @@ import { getEvent } from "@/service/eventActions";
 import { Metadata, ResolvingMetadata } from "next";
 import CardWithBackground from "@/components/cardWithBackground";
 
-type EventPageProps = { params: Promise<{ id: string }> };
+type EventPageProps = {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ returnTo?: string | string[] }>;
+};
+
+function normalizeSearchParamValue(value?: string | string[]) {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+function getSafeReturnTo(returnTo?: string | string[]) {
+  const normalizedReturnTo = normalizeSearchParamValue(returnTo);
+
+  if (
+    !normalizedReturnTo ||
+    !normalizedReturnTo.startsWith("/") ||
+    normalizedReturnTo.startsWith("//")
+  ) {
+    return "/fagfest";
+  }
+
+  return normalizedReturnTo;
+}
 
 async function getOptionalEventFromId(id: string) {
   try {
@@ -33,10 +54,12 @@ export async function generateMetadata(
   };
 }
 
-export default async function Page({ params }: EventPageProps) {
+export default async function Page({ params, searchParams }: EventPageProps) {
   const { id } = await params;
+  const { returnTo } = await searchParams;
   await checkToken(`/fagfest/${id}`);
   const hostname = process.env.NEXT_PUBLIC_HOSTNAME;
+  const backLink = getSafeReturnTo(returnTo);
 
   const user = await getUser();
   const { event, participants, hosts, categories }: FullDeltaEvent = await getEvent(id);
@@ -49,7 +72,7 @@ export default async function Page({ params }: EventPageProps) {
         className="bg-fagfestival"
         home
         backText={"FAGFEST"}
-        backLink={"/fagfest"}
+        backLink={backLink}
       >
         <EventDetails
           event={event}

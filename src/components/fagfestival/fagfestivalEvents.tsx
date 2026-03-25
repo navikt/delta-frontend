@@ -6,11 +6,19 @@ import { getEvents } from "@/service/eventActions";
 import { FilterOption, FullDeltaEvent } from "@/types/event";
 import { Checkbox, CheckboxGroup, Search, Tabs } from "@navikt/ds-react";
 import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 
 const fagfestivalCategory = "fagfest";
 const activeDays = ["28", "29", "30"];
 const fagfestivalMonth = "April"
+const DEFAULT_FILTER_OPTION: FilterOption = "vis-programoversikt";
+const TAB_VALUES = [...activeDays, "påmeldte"] as const;
+type FagfestTab = (typeof TAB_VALUES)[number];
+
+function isFagfestTab(value: string | null): value is FagfestTab {
+  return value !== null && TAB_VALUES.includes(value as FagfestTab);
+}
 
 const getRemainingActiveDays = () => {
   const today = new Date();
@@ -31,13 +39,57 @@ const getCurrentDayAsString = () => {
 };
 
 const FagfestivalEvents = () => {
-  const [searchInput, setSearchInput] = useState("");
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const searchParamsKey = searchParams.toString();
+  const searchInput = searchParams.get("search") ?? "";
+  const tabName: FagfestTab = isFagfestTab(searchParams.get("tab"))
+    ? (searchParams.get("tab") as FagfestTab)
+    : getCurrentDayAsString();
+  const showProgramOverview = searchParams.get("view") === "program";
+  const currentOverviewPath = `${pathname}${searchParamsKey ? `?${searchParamsKey}` : ""}`;
+
   const [filterEvents, setFilterEvents] = useState<FullDeltaEvent[]>([]);
-  const [filterOptions, setFilterOptions] = useState<FilterOption[]>([]);
-  const [tabName, setTabName] = useState(getCurrentDayAsString());
   const [events, setEvents] = useState([] as FullDeltaEvent[]);
   const [loading, setLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const hasRestoredScroll = useRef(false);
+
+  const updateUrlState = (updates: {
+    tab?: FagfestTab | null;
+    search?: string | null;
+    view?: "program" | null;
+  }) => {
+    const nextSearchParams = new URLSearchParams(searchParamsKey);
+
+    if (updates.tab !== undefined) {
+      if (updates.tab && updates.tab !== getCurrentDayAsString()) {
+        nextSearchParams.set("tab", updates.tab);
+      } else {
+        nextSearchParams.delete("tab");
+      }
+    }
+
+    if (updates.search !== undefined) {
+      if (updates.search) {
+        nextSearchParams.set("search", updates.search);
+      } else {
+        nextSearchParams.delete("search");
+      }
+    }
+
+    if (updates.view !== undefined) {
+      if (updates.view === "program") {
+        nextSearchParams.set("view", "program");
+      } else {
+        nextSearchParams.delete("view");
+      }
+    }
+
+    const nextSearch = nextSearchParams.toString();
+    router.replace(nextSearch ? `${pathname}?${nextSearch}` : pathname, { scroll: false });
+  };
 
   useEffect(() => {
     const filteredEvents = events.filter((fullEvent) => {
@@ -86,10 +138,11 @@ const FagfestivalEvents = () => {
     // - No mobile compatibility when we have events for multiple days
 
     if (tabName === "påmeldte" && isMobile) {
-      const filteredOptions = filterOptions.filter((option) => option !== "vis-programoversikt");
-      setFilterOptions(filteredOptions);
+      if (showProgramOverview) {
+        updateUrlState({ view: null });
+      }
     }
-  }, [isMobile, tabName]);
+  }, [isMobile, showProgramOverview, tabName]);
 
   const prevTabNameRef = useRef<string>(undefined);
 
@@ -129,17 +182,55 @@ const FagfestivalEvents = () => {
 
   const showProgramoversiktFilterOption = tabName !== "påmeldte" || !isMobile;
 
+  useEffect(() => {
+    hasRestoredScroll.current = false;
+  }, [currentOverviewPath]);
+
+  useEffect(() => {
+    if (loading || hasRestoredScroll.current) {
+      return;
+    }
+
+    const savedScrollY = sessionStorage.getItem(`event-overview-scroll:${currentOverviewPath}`);
+    hasRestoredScroll.current = true;
+
+    if (!savedScrollY) {
+      return;
+    }
+
+    const parsedScrollY = Number(savedScrollY);
+
+    if (!Number.isFinite(parsedScrollY)) {
+      sessionStorage.removeItem(`event-overview-scroll:${currentOverviewPath}`);
+      return;
+    }
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: parsedScrollY, behavior: "auto" });
+        sessionStorage.removeItem(`event-overview-scroll:${currentOverviewPath}`);
+      });
+    });
+  }, [currentOverviewPath, filterEvents.length, loading]);
+
   return (
     <div className="flex flex-col w-full gap-6 items-start">
-      <Tabs className="self-start w-full" defaultValue={activeDays[0]}>
+      <Tabs className="self-start w-full" value={tabName}>
         <Tabs.List>
           {getRemainingActiveDays().map((day, index) => {
-            return <Tabs.Tab key={index} value={day} label={`${day}. ${fagfestivalMonth}`} onClick={() => setTabName(day)} />
+            return (
+              <Tabs.Tab
+                key={index}
+                value={day}
+                label={`${day}. ${fagfestivalMonth}`}
+                onClick={() => updateUrlState({ tab: day as FagfestTab })}
+              />
+            );
           })}
           <Tabs.Tab
             value="påmeldte"
             label="Mine påmeldinger"
-            onClick={() => setTabName("påmeldte")}
+            onClick={() => updateUrlState({ tab: "påmeldte" })}
           />
         </Tabs.List>
       </Tabs>
@@ -151,8 +242,8 @@ const FagfestivalEvents = () => {
           value={searchInput}
           size="small"
           className="w-full ax-md:w-auto"
-          onChange={(e) => {
-            setSearchInput(e);
+          onChange={(value) => {
+            updateUrlState({ search: value || null });
           }}
         />
       </div>
@@ -162,8 +253,12 @@ const FagfestivalEvents = () => {
           legend="Vis programoversikt"
           hideLegend
           className="-mt-5 -mb-2 ml-4"
-          value={filterOptions}
-          onChange={(newValues: FilterOption[]) => setFilterOptions(newValues)}
+          value={showProgramOverview ? [DEFAULT_FILTER_OPTION] : []}
+          onChange={(newValues: FilterOption[]) =>
+            updateUrlState({
+              view: newValues.includes(DEFAULT_FILTER_OPTION) ? "program" : null,
+            })
+          }
         >
           <Checkbox value="vis-programoversikt">Programoversikt</Checkbox>
         </CheckboxGroup>
@@ -192,10 +287,14 @@ const FagfestivalEvents = () => {
           </div>
         )}
         <div className="w-full">
-          {filterOptions.includes("vis-programoversikt") ? (
-            <EventProgramOverview filteredEvents={filterEvents} loading={loading} />
+          {showProgramOverview ? (
+            <EventProgramOverview
+              filteredEvents={filterEvents}
+              loading={loading}
+              returnTo={currentOverviewPath}
+            />
           ) : (
-            <EventList filteredEvents={filterEvents} loading={loading} />
+            <EventList filteredEvents={filterEvents} loading={loading} returnTo={currentOverviewPath} />
           )}
         </div>
       </div>

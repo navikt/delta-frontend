@@ -20,9 +20,10 @@ import {
 
 type EventCardProps = {
   event: FullDeltaEvent;
+  returnTo: string;
 };
 
-export function EventCard({ event }: EventCardProps) {
+export function EventCard({ event, returnTo }: EventCardProps) {
   const hasEventExpired =
     !!event.event.signupDeadline && new Date(event.event.signupDeadline) < new Date()
       ? true
@@ -30,9 +31,16 @@ export function EventCard({ event }: EventCardProps) {
   const startDay = format(new Date(event.event.startTime), "MMMd");
   const endDay = format(new Date(event.event.endTime), "MMMd");
 
+  const href = `/fagfest/${event.event.id}?returnTo=${encodeURIComponent(returnTo)}`;
+
+  const handleNavigation = () => {
+    sessionStorage.setItem(`event-overview-scroll:${returnTo}`, `${window.scrollY}`);
+  };
+
   return (
     <Link
-      href={`/fagfest/${event.event.id}`}
+      href={href}
+      onClick={handleNavigation}
       key={`event-${event.event.id}`}
       className="flex flex-col h-full p-4 border rounded-xl text-ax-text-neutral border-ax-neutral-400 transition-all hover:-translate-y-1 hover:scale-105 hover:text-ax-text-action hover:border-ax-border-accent no-underline event-card"
     >

@@ -6,9 +6,10 @@ import { Skeleton } from "@navikt/ds-react";
 type EventListProps = {
   filteredEvents: FullDeltaEvent[];
   loading: boolean;
+  returnTo: string;
 };
 
-export default function EventList({ filteredEvents, loading }: EventListProps) {
+export default function EventList({ filteredEvents, loading, returnTo }: EventListProps) {
   if (loading) {
     return (
       <div className="space-y-4">
@@ -27,7 +28,7 @@ export default function EventList({ filteredEvents, loading }: EventListProps) {
   return (
     <div className="grid grid-cols-1 ax-md:grid-cols-3 gap-4">
       {filteredEvents.map((fullEvent) => (
-        <EventCard event={fullEvent} key={`event-${fullEvent.event.id}`} />
+        <EventCard event={fullEvent} key={`event-${fullEvent.event.id}`} returnTo={returnTo} />
       ))}
     </div>
   );

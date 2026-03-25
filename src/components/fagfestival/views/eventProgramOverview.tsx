@@ -7,6 +7,7 @@ import { EventCard } from "@/components/fagfestival/cards/eventCard";
 type EventProgramOverviewProps = {
   filteredEvents: FullDeltaEvent[];
   loading: boolean;
+  returnTo: string;
 };
 
 const generateTimeSlots = (events: FullDeltaEvent[]): string[] => {
@@ -22,6 +23,7 @@ const generateTimeSlots = (events: FullDeltaEvent[]): string[] => {
 export default function EventProgramOverview({
   filteredEvents,
   loading,
+  returnTo,
 }: EventProgramOverviewProps) {
   if (loading) {
     return (
@@ -80,7 +82,7 @@ export default function EventProgramOverview({
                         className="h-full flex-1 flex flex-col p-1"
                         title={`${event.event.title} - ${event.event.description}`}
                       >
-                        <EventCard event={event} key={`event-${event.event.id}`} />
+                        <EventCard event={event} key={`event-${event.event.id}`} returnTo={returnTo} />
                       </div>
                     ))}
                 </div>

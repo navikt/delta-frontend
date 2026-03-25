@@ -39,7 +39,6 @@ import { format } from "date-fns";
 import { Spraksjekk } from "@/components/library";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import EditScopeModal from "@/components/editScopeModal";
-import { formatRecurrenceFrequency, formatRecurrenceUntilDate } from "@/service/format";
 
 function isValidParticipantLimit(limit?: string) {
   if (!limit) return false;

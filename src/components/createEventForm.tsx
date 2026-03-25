@@ -167,6 +167,14 @@ const createEventSchema = z
 
 export type CreateEventSchema = z.infer<typeof createEventSchema>;
 
+function req(label: string) {
+  return (
+    <>
+      {label} <span className="text-red-600 font-bold" aria-hidden="true">*</span>
+    </>
+  );
+}
+
 export type EditType =
   | { type: EditTypeEnum.NEW }
   | { type: EditTypeEnum.EDIT | EditTypeEnum.TEMPLATE; eventId: string };
@@ -410,22 +418,20 @@ function InternalCreateEventForm({
       className="flex flex-col gap-5"
     >
       <TextField
-        label="Tittel"
+        label={req("Tittel")}
         {...register("title")}
         error={errors.title?.message}
         className="max-w-prose"
-        required
       />
       <div className="flex flex-row flex-wrap justify-left gap-4 pb-0 items-end">
         <EventDatepicker
           name="startDate"
-          label="Fra"
+          label={req("Fra")}
           invalidMessage="Du må fylle inn en gyldig startdato"
           requiredMessage="Du må fylle inn en startdato"
           control={control}
           errors={errors}
           hideLabel={false}
-          required
           onDateSelected={(date) => {
             if (date) {
               console.log("Setting end date to:", date);
@@ -452,13 +458,12 @@ function InternalCreateEventForm({
       <div className="flex flex-row flex-wrap justify-left gap-4 pb-0 items-end">
         <EventDatepicker
           name="endDate"
-          label="Til"
+          label={req("Til")}
           invalidMessage="Du må fylle inn en gyldig sluttdato"
           requiredMessage="Du må fylle inn en sluttdato"
           control={control}
           errors={errors}
           hideLabel={false}
-          required
         />
         <div
           className={`aksel-form-field aksel-form-field--medium ${errors.endTime && "aksel-text-field--error"
@@ -480,20 +485,22 @@ function InternalCreateEventForm({
       {richEvent.type !== EditTypeEnum.EDIT ? (
         <>
           <RadioGroup
-            legend="Oppmøte"
+            legend={req("Oppmøte")}
             value={selectedAttendanceType ?? undefined}
             key={`attendance-${selectedAttendanceType || 'none'}`}
             onChange={(value) => {
               setSelectedAttendanceType(value);
               setShowLocationField(value === "fysisk" || value === "hybrid");
               setShowPlatformField(value === "digitalt");
+              const attendanceCategories = ["digitalt", "hybrid", "fysisk"];
+              const base = selectedOptions.filter((o) => !attendanceCategories.includes(o));
               if (value === "digitalt") {
-                setSelected([...selectedOptions, "digitalt"]);
+                setSelected([...base, "digitalt"]);
               } else if (value === "hybrid") {
-                setSelected([...selectedOptions, "hybrid"]);
+                setSelected([...base, "hybrid"]);
                 setShowAlert(true);
               } else if (value === "fysisk") {
-                setSelected([...selectedOptions, "fysisk"]);
+                setSelected([...base, "fysisk"]);
               }
             }}
           >
@@ -531,21 +538,19 @@ function InternalCreateEventForm({
 
           {showLocationField && (
             <TextField
-              label="Sted"
+              label={req("Sted")}
               {...register("location")}
               error={errors.location?.message}
               className="max-w-prose"
-              required
             />
           )}
         </>
       ) : (
         <>
           <TextField
-            label="Sted"
+            label={req("Sted")}
             {...register("location")}
             error={errors.location?.message}
-            required
           />
         </>
       )}
@@ -579,7 +584,9 @@ function InternalCreateEventForm({
               legend="Tilknyttet Fagtorsdag?"
               onChange={(values: string[]) => {
                 if (values.includes("Fagtorsdag")) {
-                  setSelected([...selectedOptions, "fagtorsdag"]);
+                  setSelected([...selectedOptions.filter((o) => o !== "fagtorsdag"), "fagtorsdag"]);
+                } else {
+                  setSelected(selectedOptions.filter((o) => o !== "fagtorsdag"));
                 }
               }}
             >
@@ -614,9 +621,7 @@ function InternalCreateEventForm({
       </div>
       <div className="max-w-prose">
         <div className="flex items-center justify-between mb-1">
-          <Label htmlFor="description">
-            Beskrivelse <span className="text-ax-text-danger" aria-hidden="true">*</span>
-          </Label>
+          <Label htmlFor="description">{req("Beskrivelse")}</Label>
           <Switch
             size="small"
             checked={showPreview}

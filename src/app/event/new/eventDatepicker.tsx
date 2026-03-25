@@ -2,19 +2,18 @@
 
 import { CreateEventSchema } from "@/components/createEventForm";
 import { DatePicker, DateValidationT, useDatepicker } from "@navikt/ds-react";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { Control, FieldErrors, useController } from "react-hook-form";
 import { format } from "date-fns";
 
 type EventDatepickerProps = {
   name: "startDate" | "endDate" | "signupDeadlineDate" | "recurrenceUntilDate";
-  label: "Fra" | "Til" | "Påmeldingsfrist" | "Gjenta til";
+  label: ReactNode;
   invalidMessage: string;
   requiredMessage: string;
   control: Control<CreateEventSchema>;
   errors: FieldErrors<CreateEventSchema>;
   hideLabel: boolean;
-  required?: boolean;
   onDateSelected?: (date: Date | undefined) => void;
 };
 
@@ -63,7 +62,6 @@ export default function EventDatepicker(props: EventDatepickerProps) {
             {...syncedInputProps}
             id={field.name}
             label={props.label}
-            required={props.required}
             error={props.errors[field.name]?.message}
           />
         </div>

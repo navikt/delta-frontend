@@ -2,13 +2,13 @@
 
 import { CreateEventSchema } from "@/components/createEventForm";
 import { DatePicker, DateValidationT, useDatepicker } from "@navikt/ds-react";
-import { useEffect, useState } from "react";
+import { ReactNode, useState } from "react";
 import { Control, FieldErrors, useController } from "react-hook-form";
 import { format } from "date-fns";
 
 type EventDatepickerProps = {
-  name: "startDate" | "endDate" | "signupDeadlineDate";
-  label: "Fra" | "Til" | "Påmeldingsfrist";
+  name: "startDate" | "endDate" | "signupDeadlineDate" | "recurrenceUntilDate";
+  label: ReactNode;
   invalidMessage: string;
   requiredMessage: string;
   control: Control<CreateEventSchema>;
@@ -20,12 +20,8 @@ type EventDatepickerProps = {
 export default function EventDatepicker(props: EventDatepickerProps) {
   const [validationError, setValidationError] =
     useState<DateValidationT | null>(null);
-  const [internalDate, setInternalDate] = useState<Date | undefined>(undefined);
 
-  const { field, fieldState } = useController<
-    CreateEventSchema,
-    typeof props.name
-  >({
+  const { field } = useController<CreateEventSchema, typeof props.name>({
     name: props.name,
     control: props.control,
     rules: {
@@ -40,41 +36,27 @@ export default function EventDatepicker(props: EventDatepickerProps) {
     },
   });
 
-  // Sync internal date with field value when it changes externally
-  useEffect(() => {
-    if (field.value && (!internalDate || field.value.getTime() !== internalDate.getTime())) {
-      console.log(`External change detected for ${props.name}, updating internal date:`, field.value);
-      setInternalDate(field.value);
-    }
-  }, [field.value, props.name]);
-
   const { datepickerProps, inputProps } = useDatepicker({
-    defaultSelected: internalDate,
+    defaultSelected: field.value,
     fromDate: new Date(),
     onDateChange: (date: Date | undefined) => {
-      console.log(`Date changed for ${props.name}:`, date);
-      setInternalDate(date);
       field.onChange(date);
-      if (props.onDateSelected) {
-        console.log("Calling onDateSelected callback");
-        props.onDateSelected(date);
-      }
+      props.onDateSelected?.(date);
     },
     onValidate: (validation) => {
       setValidationError(validation);
     },
   });
 
-  // Override input value to sync with field value
   const syncedInputProps = {
     ...inputProps,
     value: field.value ? format(field.value, "dd.MM.yyyy") : inputProps.value,
   };
 
   return (
-    <DatePicker {...datepickerProps} style={{ width: "100%" }} key={internalDate?.getTime() || 'empty'}>
+    <DatePicker {...datepickerProps} style={{ width: "100%" }} key={field.value?.getTime() ?? "empty"}>
       <div className="flex flex-row flex-wrap justify-left gap-4 pb-0 items-end">
-        <div className="flex flex-col ax-sm:flex-row items-start ax-sm:items-end gap-4 flex-wrap ">
+        <div className="flex flex-col ax-sm:flex-row items-start ax-sm:items-end gap-4 flex-wrap">
           <DatePicker.Input
             hideLabel={props.hideLabel}
             {...syncedInputProps}

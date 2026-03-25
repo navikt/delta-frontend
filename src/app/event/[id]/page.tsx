@@ -63,7 +63,7 @@ export default async function Page({ params, searchParams }: EventPageProps) {
   const backLink = getSafeReturnTo(returnTo);
 
   const user = await getUser();
-  const { event, participants, hosts, categories }: FullDeltaEvent =
+  const { event, participants, hosts, categories, recurringSeries }: FullDeltaEvent =
     await getEvent(id);
 
   return (
@@ -82,6 +82,7 @@ export default async function Page({ params, searchParams }: EventPageProps) {
           participants={participants}
           hosts={hosts}
           categories={categories}
+          recurringSeries={recurringSeries}
           user={user}
           hostname={hostname}
         />

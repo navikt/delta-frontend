@@ -7,6 +7,7 @@ import {
   Category,
   ChangeDeltaParticipant,
   CreateDeltaEvent,
+  EditScope,
   FullDeltaEvent,
 } from "@/types/event";
 import { formatInTimeZone } from "date-fns-tz";
@@ -185,11 +186,13 @@ export async function leaveEvent(eventId: string): Promise<void> {
   }
 }
 
-export async function deleteEvent(eventId: string): Promise<void> {
+export async function deleteEvent(eventId: string, editScope?: EditScope): Promise<void> {
   try {
     validateEventId(eventId);
     const api = await getApi();
-    await api.delete(`/admin/event/${eventId}`);
+    await api.delete(`/admin/event/${eventId}`, {
+      ...(editScope ? { params: { editScope } } : {}),
+    });
   } catch (error) {
     handleApiError(error);
   }
@@ -308,8 +311,8 @@ export async function createEvent(
   try {
     const api = await getApi();
 
-    const createEvent = createDeltaEventFromFormData(formData);
-    const response = await api.put("/admin/event", createEvent);
+    const event = createDeltaEventFromFormData(formData);
+    const response = await api.put("/admin/event", event);
 
     return response.data;
   } catch (error) {
@@ -321,13 +324,17 @@ export async function createEvent(
 export async function updateEvent(
   formData: CreateEventSchema,
   eventId: string,
+  editScope?: EditScope,
 ): Promise<FullDeltaEvent> {
   try {
     validateEventId(eventId);
     const api = await getApi();
 
-    const createEvent = createDeltaEventFromFormData(formData);
-    const response = await api.post(`/admin/event/${eventId}`, createEvent);
+    const event = createDeltaEventFromFormData(formData);
+    if (editScope) {
+      event.editScope = editScope;
+    }
+    const response = await api.post(`/admin/event/${eventId}`, event);
 
     return response.data;
   } catch (error) {
@@ -361,6 +368,21 @@ function createDeltaEventFromFormData(
 
   const sendNotificationEmail = formData.sendNotificationEmail;
 
+  const recurrence =
+    formData.isRecurring && formData.recurrenceFrequency && formData.recurrenceUntilDate
+      ? {
+          frequency: formData.recurrenceFrequency,
+          untilDate: formatInTimeZone(
+            formData.recurrenceUntilDate,
+            "Europe/Oslo",
+            "yyyy-MM-dd",
+          ),
+          ...(formData.hasSignupDeadline && formData.signupDeadlineOffsetDays
+            ? { signupDeadlineOffsetDays: parseInt(formData.signupDeadlineOffsetDays) }
+            : {}),
+        }
+      : undefined;
+
   return {
     title: formData.title,
     description: formData.description,
@@ -372,8 +394,9 @@ function createDeltaEventFromFormData(
         : 0,
     startTime: start,
     endTime: end,
-    signupDeadline: formData.hasSignupDeadline ? deadline : undefined,
+    signupDeadline: formData.hasSignupDeadline && !formData.isRecurring ? deadline : undefined,
     sendNotificationEmail: sendNotificationEmail,
+    recurrence: recurrence,
   };
 }
 

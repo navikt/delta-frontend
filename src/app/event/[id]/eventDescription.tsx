@@ -13,7 +13,8 @@ import {
 import {useEffect, useRef, useState} from "react";
 import {Link, Modal, Search, Button} from "@navikt/ds-react";
 import Participant from "./participant";
-import {formatEventDates, formatEventTimes, formatDeadline, formatEventDuration} from "@/service/format";
+import {formatEventDates, formatEventTimes, formatDeadline, formatEventDuration, formatRecurrenceUntilDate} from "@/service/format";
+import { RecurringBadge } from "@/components/RecurringBadge";
 
 type EventDescriptionProps = FullDeltaEvent & {
     className?: string;
@@ -24,6 +25,7 @@ export default function EventDescription({
      event,
      participants,
      hosts,
+     recurringSeries,
      user,
      className,
      displayTime,
@@ -127,6 +129,14 @@ export default function EventDescription({
                     <span className="flex ml-[0.2rem] pl-6 gap-2 text-ax-danger-700">
             {formatDeadline(event)}{" "}
           </span>
+                </div>
+            )}
+            {recurringSeries && (
+                <div className="flex flex-col gap-1">
+                    <RecurringBadge frequency={recurringSeries.frequency} />
+                    <span className="text-ax-text-subtle text-sm pl-1">
+                        Til {formatRecurrenceUntilDate(recurringSeries.untilDate)}
+                    </span>
                 </div>
             )}
             <div className="pb-1">

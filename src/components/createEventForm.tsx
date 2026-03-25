@@ -12,6 +12,7 @@ import {
   RadioGroup,
   CheckboxGroup,
   Alert,
+  Label,
 } from "@navikt/ds-react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import {
@@ -29,12 +30,16 @@ import {
   Category,
   DeltaEvent,
   EditTypeEnum,
+  RecurrenceFrequency,
+  RecurringSeriesSummary,
+  EditScope,
   TemplateDeltaEvent,
 } from "@/types/event";
 import { midnightDate } from "@/service/format";
 import { format } from "date-fns";
 import { Spraksjekk } from "@/components/library";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
+import EditScopeModal from "@/components/editScopeModal";
 
 function isValidParticipantLimit(limit?: string) {
   if (!limit) return false;
@@ -66,6 +71,10 @@ const createEventSchema = z
     signupDeadlineTime: z.string().regex(/(?:^$)|(?:^[0-9]{2}:[0-9]{2}$)/, {
       message: "Verdien må være et gyldig tidspunkt",
     }),
+    isRecurring: z.boolean().optional(),
+    recurrenceFrequency: z.enum(["WEEKLY", "BIWEEKLY", "MONTHLY"]).optional(),
+    recurrenceUntilDate: z.optional(z.date()),
+    signupDeadlineOffsetDays: z.string().optional(),
   })
   .refine((data) => data.endDate >= data.startDate, {
     message: "Sluttdato må være etter startdato",
@@ -83,6 +92,7 @@ const createEventSchema = z
   .refine(
     (data) =>
       !data.hasSignupDeadline ||
+      data.isRecurring ||
       (data.signupDeadlineDate !== undefined &&
         data.signupDeadlineDate <= data.startDate),
     {
@@ -93,6 +103,7 @@ const createEventSchema = z
   .refine(
     (data) =>
       !data.hasSignupDeadline ||
+      data.isRecurring ||
       (data.signupDeadlineDate !== undefined &&
         (data.signupDeadlineDate.getTime() !== data.startDate.getTime() ||
           data.signupDeadlineTime <= data.startTime)),
@@ -109,9 +120,60 @@ const createEventSchema = z
       message: "Må være mellom 1 og 9999",
       path: ["participantLimit"],
     },
+  )
+  .refine(
+    (data) =>
+      !data.isRecurring ||
+      data.recurrenceFrequency !== undefined,
+    {
+      message: "Du må velge en frekvens",
+      path: ["recurrenceFrequency"],
+    },
+  )
+  .refine(
+    (data) =>
+      !data.isRecurring ||
+      data.recurrenceUntilDate !== undefined,
+    {
+      message: "Du må velge en sluttdato for gjentakelsen",
+      path: ["recurrenceUntilDate"],
+    },
+  )
+  .refine(
+    (data) =>
+      !data.isRecurring ||
+      !data.recurrenceUntilDate ||
+      !data.startDate ||
+      data.recurrenceUntilDate > data.startDate,
+    {
+      message: "Sluttdato for gjentakelse må være etter startdato",
+      path: ["recurrenceUntilDate"],
+    },
+  )
+  .refine(
+    (data) =>
+      !data.isRecurring ||
+      !data.hasSignupDeadline ||
+      (data.signupDeadlineOffsetDays !== undefined &&
+        data.signupDeadlineOffsetDays !== "" &&
+        !Number.isNaN(parseInt(data.signupDeadlineOffsetDays)) &&
+        parseInt(data.signupDeadlineOffsetDays) >= 1 &&
+        parseInt(data.signupDeadlineOffsetDays) <= 365),
+    {
+      message: "Må være mellom 1 og 365 dager",
+      path: ["signupDeadlineOffsetDays"],
+    },
   );
 
 export type CreateEventSchema = z.infer<typeof createEventSchema>;
+
+function req(label: string) {
+  return (
+    <>
+      {label} <span className="text-red-600 font-bold" aria-hidden="true">*</span>
+    </>
+  );
+}
 
 export type EditType =
   | { type: EditTypeEnum.NEW }
@@ -142,6 +204,7 @@ export default function CreateEventForm({
           richEvent = {
             type: EditTypeEnum.EDIT,
             event: e.event,
+            recurringSeries: e.recurringSeries,
           };
         } else {
           richEvent = {
@@ -178,7 +241,7 @@ export default function CreateEventForm({
   );
 }
 type RichEvent =
-  | { type: EditTypeEnum.EDIT; event: DeltaEvent }
+  | { type: EditTypeEnum.EDIT; event: DeltaEvent; recurringSeries?: RecurringSeriesSummary }
   | { type: EditTypeEnum.TEMPLATE; event: TemplateDeltaEvent }
   | { type: EditTypeEnum.NEW };
 
@@ -202,6 +265,12 @@ function InternalCreateEventForm({
   const [hasDeadline, setDeadline] = useState(
     !!(richEvent.type === EditTypeEnum.EDIT && richEvent.event.signupDeadline),
   );
+
+  const isEditingRecurring =
+    richEvent.type === EditTypeEnum.EDIT && !!richEvent.recurringSeries;
+  const [isRecurring, setIsRecurring] = useState(isEditingRecurring);
+  const [openEditScopeModal, setOpenEditScopeModal] = useState(false);
+  const [pendingFormValues, setPendingFormValues] = useState<CreateEventSchema | null>(null);
 
   const [newTags, setNewTags] = useState<string[]>([]);
   const setSelected = (tags: string[]) => {
@@ -270,7 +339,12 @@ function InternalCreateEventForm({
             signupDeadlineTime: richEvent.event.signupDeadline
               ? format(new Date(richEvent.event.signupDeadline), "HH:mm")
               : "",
-            sendNotificationEmail: true
+            sendNotificationEmail: true,
+            isRecurring: !!richEvent.recurringSeries,
+            recurrenceFrequency: richEvent.recurringSeries?.frequency,
+            recurrenceUntilDate: richEvent.recurringSeries
+              ? new Date(richEvent.recurringSeries.untilDate)
+              : undefined,
           },
     resolver: zodResolver(createEventSchema),
   });
@@ -325,19 +399,26 @@ function InternalCreateEventForm({
   return (
     <form
       onSubmit={handleSubmit(async (values) => {
-        if (richEvent.type === EditTypeEnum.EDIT)
-          updateAndRedirect(
-            values,
-            richEvent.event.id,
-            newTags,
-            selectedCategories,
-          );
-        else createAndRedirect(values, newTags, selectedCategories);
+        if (richEvent.type === EditTypeEnum.EDIT) {
+          if (isEditingRecurring) {
+            setPendingFormValues(values);
+            setOpenEditScopeModal(true);
+          } else {
+            updateAndRedirect(
+              values,
+              richEvent.event.id,
+              newTags,
+              selectedCategories,
+            );
+          }
+        } else {
+          createAndRedirect(values, newTags, selectedCategories);
+        }
       })}
       className="flex flex-col gap-5"
     >
       <TextField
-        label="Tittel"
+        label={req("Tittel")}
         {...register("title")}
         error={errors.title?.message}
         className="max-w-prose"
@@ -345,7 +426,7 @@ function InternalCreateEventForm({
       <div className="flex flex-row flex-wrap justify-left gap-4 pb-0 items-end">
         <EventDatepicker
           name="startDate"
-          label="Fra"
+          label={req("Fra")}
           invalidMessage="Du må fylle inn en gyldig startdato"
           requiredMessage="Du må fylle inn en startdato"
           control={control}
@@ -377,7 +458,7 @@ function InternalCreateEventForm({
       <div className="flex flex-row flex-wrap justify-left gap-4 pb-0 items-end">
         <EventDatepicker
           name="endDate"
-          label="Til"
+          label={req("Til")}
           invalidMessage="Du må fylle inn en gyldig sluttdato"
           requiredMessage="Du må fylle inn en sluttdato"
           control={control}
@@ -404,20 +485,22 @@ function InternalCreateEventForm({
       {richEvent.type !== EditTypeEnum.EDIT ? (
         <>
           <RadioGroup
-            legend="Oppmøte"
+            legend={req("Oppmøte")}
             value={selectedAttendanceType ?? undefined}
             key={`attendance-${selectedAttendanceType || 'none'}`}
             onChange={(value) => {
               setSelectedAttendanceType(value);
               setShowLocationField(value === "fysisk" || value === "hybrid");
               setShowPlatformField(value === "digitalt");
+              const attendanceCategories = ["digitalt", "hybrid", "fysisk"];
+              const base = selectedOptions.filter((o) => !attendanceCategories.includes(o));
               if (value === "digitalt") {
-                setSelected([...selectedOptions, "digitalt"]);
+                setSelected([...base, "digitalt"]);
               } else if (value === "hybrid") {
-                setSelected([...selectedOptions, "hybrid"]);
+                setSelected([...base, "hybrid"]);
                 setShowAlert(true);
               } else if (value === "fysisk") {
-                setSelected([...selectedOptions, "fysisk"]);
+                setSelected([...base, "fysisk"]);
               }
             }}
           >
@@ -455,7 +538,7 @@ function InternalCreateEventForm({
 
           {showLocationField && (
             <TextField
-              label="Sted"
+              label={req("Sted")}
               {...register("location")}
               error={errors.location?.message}
               className="max-w-prose"
@@ -465,7 +548,7 @@ function InternalCreateEventForm({
       ) : (
         <>
           <TextField
-            label="Sted"
+            label={req("Sted")}
             {...register("location")}
             error={errors.location?.message}
           />
@@ -475,17 +558,19 @@ function InternalCreateEventForm({
       {richEvent.type !== EditTypeEnum.EDIT && (
         <>
           <RadioGroup
-            legend="Type arrangement"
+            legend="Type arrangement (valgfritt)"
             value={selectedType ?? undefined}
             key={`eventtype-${selectedType || 'none'}`}
             onChange={(value) => {
               setSelectedType(value);
+              const typeCategories = ["sosialt ", "kompetanse", "bedriftidrettslaget", "fagtorsdag"];
+              const base = selectedOptions.filter((o) => !typeCategories.includes(o));
               if (value === "Sosialt") {
-                setSelected([...selectedOptions, "sosialt "]);
+                setSelected([...base, "sosialt "]);
               } else if (value === "Kompetanse") {
-                setSelected([...selectedOptions, "kompetanse"]);
+                setSelected([...base, "kompetanse"]);
               } else if (value === "Bedriftidrettslaget") {
-                setSelected([...selectedOptions, "bedriftidrettslaget"]);
+                setSelected([...base, "bedriftidrettslaget"]);
               }
             }}
           >
@@ -499,7 +584,9 @@ function InternalCreateEventForm({
               legend="Tilknyttet Fagtorsdag?"
               onChange={(values: string[]) => {
                 if (values.includes("Fagtorsdag")) {
-                  setSelected([...selectedOptions, "fagtorsdag"]);
+                  setSelected([...selectedOptions.filter((o) => o !== "fagtorsdag"), "fagtorsdag"]);
+                } else {
+                  setSelected(selectedOptions.filter((o) => o !== "fagtorsdag"));
                 }
               }}
             >
@@ -534,7 +621,7 @@ function InternalCreateEventForm({
       </div>
       <div className="max-w-prose">
         <div className="flex items-center justify-between mb-1">
-          <span className="aksel-label">Beskrivelse</span>
+          <Label htmlFor="description">{req("Beskrivelse")}</Label>
           <Switch
             size="small"
             checked={showPreview}
@@ -619,36 +706,126 @@ function InternalCreateEventForm({
         >
           Spesifiser en påmeldingsfrist
         </Checkbox>
-        <div
-          className={`flex flex-row flex-wrap justify-left gap-4 pb-0 items-end ${!hasDeadline && "hidden"
-            }`}
-        >
-          <EventDatepicker
-            name="signupDeadlineDate"
-            label="Påmeldingsfrist"
-            invalidMessage="Du må fylle inn en gyldig påmeldingsfrist"
-            requiredMessage="Du må fylle inn en påmeldingsfrist"
-            control={control}
-            errors={errors}
-            hideLabel={true}
-          />
+        {hasDeadline && isRecurring ? (
+          <div className="flex flex-row items-end gap-2 mt-2">
+            <TextField
+              {...register("signupDeadlineOffsetDays")}
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              label="Påmeldingsfrist"
+              hideLabel
+              className="w-20"
+              error={errors.signupDeadlineOffsetDays?.message}
+            />
+            <span className="pb-3">dager før start</span>
+          </div>
+        ) : (
           <div
-            className={`aksel-form-field aksel-form-field--medium ${errors.signupDeadlineDate && "aksel-text-field--error"
+            className={`flex flex-row flex-wrap justify-left gap-4 pb-0 items-end ${!hasDeadline && "hidden"
               }`}
           >
-            <input
-              type="time"
-              className="aksel-text-field__input w-28"
-              {...register("signupDeadlineTime")}
+            <EventDatepicker
+              name="signupDeadlineDate"
+              label="Påmeldingsfrist"
+              invalidMessage="Du må fylle inn en gyldig påmeldingsfrist"
+              requiredMessage="Du må fylle inn en påmeldingsfrist"
+              control={control}
+              errors={errors}
+              hideLabel={true}
             />
-            {errors.signupDeadlineTime && (
-              <p className="aksel-error-message aksel-label">
-                {errors.signupDeadlineTime.message}
-              </p>
-            )}
+            <div
+              className={`aksel-form-field aksel-form-field--medium ${errors.signupDeadlineDate && "aksel-text-field--error"
+                }`}
+            >
+              <input
+                type="time"
+                className="aksel-text-field__input w-28"
+                {...register("signupDeadlineTime")}
+              />
+              {errors.signupDeadlineTime && (
+                <p className="aksel-error-message aksel-label">
+                  {errors.signupDeadlineTime.message}
+                </p>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
+      {richEvent.type !== EditTypeEnum.EDIT && (
+        <div>
+          <Checkbox
+            checked={isRecurring}
+            onChange={() => {
+              const next = !isRecurring;
+              setIsRecurring(next);
+              setValue("isRecurring", next);
+              if (!next) {
+                setValue("recurrenceFrequency", undefined);
+                setValue("recurrenceUntilDate", undefined);
+              }
+            }}
+          >
+            Gjentakende arrangement
+          </Checkbox>
+          {isRecurring && (
+            <div className="flex flex-col gap-4 mt-3 ml-7">
+              <RadioGroup
+                legend="Frekvens"
+                value={getValues("recurrenceFrequency") ?? ""}
+                onChange={(value: RecurrenceFrequency) => {
+                  setValue("recurrenceFrequency", value, { shouldValidate: true });
+                }}
+                error={errors.recurrenceFrequency?.message}
+              >
+                <Radio value="WEEKLY">Ukentlig</Radio>
+                <Radio value="BIWEEKLY">Annenhver uke</Radio>
+                <Radio value="MONTHLY">Månedlig</Radio>
+              </RadioGroup>
+              <EventDatepicker
+                name="recurrenceUntilDate"
+                label="Gjenta til"
+                invalidMessage="Du må fylle inn en gyldig dato"
+                requiredMessage="Du må velge en sluttdato for gjentakelsen"
+                control={control}
+                errors={errors}
+                hideLabel={false}
+              />
+            </div>
+          )}
+        </div>
+      )}
+      {richEvent.type === EditTypeEnum.EDIT && isEditingRecurring && (
+        <div>
+          <Checkbox
+            checked={isRecurring}
+            onChange={() => {
+              const next = !isRecurring;
+              setIsRecurring(next);
+              setValue("isRecurring", next);
+              if (!next) {
+                setValue("recurrenceFrequency", undefined);
+                setValue("recurrenceUntilDate", undefined);
+              }
+            }}
+          >
+            Gjentakende arrangement
+          </Checkbox>
+          {isRecurring && (
+            <div className="flex flex-col gap-4 mt-3 ml-7">
+              <EventDatepicker
+                name="recurrenceUntilDate"
+                label="Gjenta til"
+                invalidMessage="Du må fylle inn en gyldig dato"
+                requiredMessage="Du må velge en sluttdato for gjentakelsen"
+                control={control}
+                errors={errors}
+                hideLabel={false}
+              />
+            </div>
+          )}
+        </div>
+      )}
       {richEvent.type === EditTypeEnum.EDIT && (
         <div>
           <Checkbox {...register("sendNotificationEmail")}>
@@ -671,6 +848,31 @@ function InternalCreateEventForm({
           {richEvent.type === EditTypeEnum.EDIT ? "Oppdater" : "Opprett"}
         </Button>
       </div>
+      {isEditingRecurring && richEvent.type === EditTypeEnum.EDIT && richEvent.recurringSeries && (
+        <EditScopeModal
+          open={openEditScopeModal}
+          onClose={() => {
+            setOpenEditScopeModal(false);
+            setPendingFormValues(null);
+          }}
+          onConfirm={async (scope) => {
+            setOpenEditScopeModal(false);
+            if (pendingFormValues) {
+              updateAndRedirect(
+                pendingFormValues,
+                richEvent.event.id,
+                newTags,
+                selectedCategories,
+                scope,
+              );
+            }
+          }}
+          title="Endre gjentakende arrangement"
+          description="Vil du endre kun dette arrangementet, eller dette og alle fremtidige i serien?"
+          confirmLabel="Lagre endringer"
+          availableScopes={richEvent.recurringSeries.editableScopes}
+        />
+      )}
     </form>
   );
 }
@@ -697,6 +899,7 @@ async function updateAndRedirect(
   eventId: string,
   newTags: string[],
   categories: Category[],
+  editScope?: EditScope,
 ) {
   const newCategories = newTags.length
     ? await Promise.all(newTags.map((c) => createCategory(c)))
@@ -706,6 +909,6 @@ async function updateAndRedirect(
     categories.concat(newCategories).map((c) => c.id),
   );
 
-  const { event } = await updateEvent(formData, eventId);
+  const { event } = await updateEvent(formData, eventId, editScope);
   window.location.href = `/event/${event.id}`;
 }

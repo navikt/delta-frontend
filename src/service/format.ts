@@ -1,9 +1,11 @@
 import { DeltaEvent } from "@/types/event";
 import { format, formatDuration, intervalToDuration } from "date-fns";
 import { nb } from "date-fns/locale/nb";
+import type { RecurrenceFrequency } from "@/types/event";
 
 const fmt = "EEEE do MMMM, HH:mm";
 const fmtShort = "EEEE do MMMM";
+const fmtDate = "do MMMM yyyy";
 
 export const formatEventTimes = (event: DeltaEvent): string => {
   const start = new Date(event.startTime);
@@ -52,4 +54,20 @@ export const midnightDate = (dateString: string): Date => {
   const date = new Date(dateString);
   date.setHours(0, 0, 0, 0);
   return date;
+};
+
+const frequencyLabels: Record<RecurrenceFrequency, string> = {
+  WEEKLY: "Ukentlig",
+  BIWEEKLY: "Annenhver uke",
+  MONTHLY: "Månedlig",
+};
+
+export const formatRecurrenceFrequency = (
+  frequency: RecurrenceFrequency,
+): string => {
+  return frequencyLabels[frequency] ?? frequency;
+};
+
+export const formatRecurrenceUntilDate = (untilDate: string): string => {
+  return format(new Date(untilDate), fmtDate, { locale: nb });
 };

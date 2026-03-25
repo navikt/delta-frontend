@@ -14,6 +14,7 @@ type EventDatepickerProps = {
   control: Control<CreateEventSchema>;
   errors: FieldErrors<CreateEventSchema>;
   hideLabel: boolean;
+  required?: boolean;
   onDateSelected?: (date: Date | undefined) => void;
 };
 
@@ -62,6 +63,7 @@ export default function EventDatepicker(props: EventDatepickerProps) {
             {...syncedInputProps}
             id={field.name}
             label={props.label}
+            required={props.required}
             error={props.errors[field.name]?.message}
           />
         </div>

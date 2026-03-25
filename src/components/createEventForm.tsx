@@ -12,6 +12,7 @@ import {
   RadioGroup,
   CheckboxGroup,
   Alert,
+  Label,
 } from "@navikt/ds-react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import {
@@ -413,6 +414,7 @@ function InternalCreateEventForm({
         {...register("title")}
         error={errors.title?.message}
         className="max-w-prose"
+        required
       />
       <div className="flex flex-row flex-wrap justify-left gap-4 pb-0 items-end">
         <EventDatepicker
@@ -423,6 +425,7 @@ function InternalCreateEventForm({
           control={control}
           errors={errors}
           hideLabel={false}
+          required
           onDateSelected={(date) => {
             if (date) {
               console.log("Setting end date to:", date);
@@ -455,6 +458,7 @@ function InternalCreateEventForm({
           control={control}
           errors={errors}
           hideLabel={false}
+          required
         />
         <div
           className={`aksel-form-field aksel-form-field--medium ${errors.endTime && "aksel-text-field--error"
@@ -531,6 +535,7 @@ function InternalCreateEventForm({
               {...register("location")}
               error={errors.location?.message}
               className="max-w-prose"
+              required
             />
           )}
         </>
@@ -540,6 +545,7 @@ function InternalCreateEventForm({
             label="Sted"
             {...register("location")}
             error={errors.location?.message}
+            required
           />
         </>
       )}
@@ -547,17 +553,19 @@ function InternalCreateEventForm({
       {richEvent.type !== EditTypeEnum.EDIT && (
         <>
           <RadioGroup
-            legend="Type arrangement"
+            legend="Type arrangement (valgfritt)"
             value={selectedType ?? undefined}
             key={`eventtype-${selectedType || 'none'}`}
             onChange={(value) => {
               setSelectedType(value);
+              const typeCategories = ["sosialt ", "kompetanse", "bedriftidrettslaget", "fagtorsdag"];
+              const base = selectedOptions.filter((o) => !typeCategories.includes(o));
               if (value === "Sosialt") {
-                setSelected([...selectedOptions, "sosialt "]);
+                setSelected([...base, "sosialt "]);
               } else if (value === "Kompetanse") {
-                setSelected([...selectedOptions, "kompetanse"]);
+                setSelected([...base, "kompetanse"]);
               } else if (value === "Bedriftidrettslaget") {
-                setSelected([...selectedOptions, "bedriftidrettslaget"]);
+                setSelected([...base, "bedriftidrettslaget"]);
               }
             }}
           >
@@ -606,7 +614,9 @@ function InternalCreateEventForm({
       </div>
       <div className="max-w-prose">
         <div className="flex items-center justify-between mb-1">
-          <span className="aksel-label">Beskrivelse</span>
+          <Label htmlFor="description">
+            Beskrivelse <span className="text-ax-text-danger" aria-hidden="true">*</span>
+          </Label>
           <Switch
             size="small"
             checked={showPreview}

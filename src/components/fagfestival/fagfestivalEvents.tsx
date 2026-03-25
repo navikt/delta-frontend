@@ -8,7 +8,7 @@ import { Checkbox, CheckboxGroup, Search, Tabs } from "@navikt/ds-react";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 
-const fagfestivalCategory = "#fagfestivalen";
+const fagfestivalCategory = "fagfest";
 const activeDays = ["28", "29", "30"];
 const fagfestivalMonth = "April"
 

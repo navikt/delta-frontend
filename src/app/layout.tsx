@@ -38,14 +38,19 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: RootLayoutProps) {
+  const isProd = process.env.NEXT_PUBLIC_CLUSTER === "prod";
   return (
     <html lang="no" className="min-h-screen">
       <head>
-        <Script id="umami" strategy="afterInteractive" data-domains="delta.nav.no" defer src="https://cdn.nav.no/team-researchops/sporing/sporing.js"
-          data-host-url="https://umami.nav.no"
-          data-website-id="efe951d8-ebbb-4fad-938e-91eee190f6aa"></Script>
-        <Script id="skyra-config" strategy="beforeInteractive">{`window.SKYRA_CONFIG = { org: 'arbeids-og-velferdsetaten-nav' }`}</Script>
-        <Script id="skyra-survey" strategy="afterInteractive" src="https://survey.skyra.no/skyra-survey.js"></Script>
+        {isProd && (
+          <>
+            <Script id="umami" strategy="afterInteractive" data-domains="delta.nav.no" defer src="https://cdn.nav.no/team-researchops/sporing/sporing.js"
+              data-host-url="https://umami.nav.no"
+              data-website-id="efe951d8-ebbb-4fad-938e-91eee190f6aa"></Script>
+            <Script id="skyra-config" strategy="beforeInteractive">{`window.SKYRA_CONFIG = { org: 'arbeids-og-velferdsetaten-nav' }`}</Script>
+            <Script id="skyra-survey" strategy="afterInteractive" src="https://survey.skyra.no/skyra-survey.js"></Script>
+          </>
+        )}
       </head>
       <body>
         <div className="flex flex-col min-h-screen" style={{ background: "rgba(19,17,54)" }}>

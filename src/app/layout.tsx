@@ -49,8 +49,10 @@ export default async function RootLayout({ children }: RootLayoutProps) {
       </head>
       <body>
         <div className="flex flex-col min-h-screen" style={{ background: "rgba(19,17,54)" }}>
-          <Header />
-          <main className="svelte-reugtu winter bg-ax-bg-neutral-soft flex-grow flex justify-center">
+          <div className="relative z-50">
+            <Header />
+          </div>
+          <main className="svelte-reugtu winter bg-ax-bg-neutral-soft flex-grow flex justify-center relative z-0">
             {children}
           </main>
           <Footer />

@@ -18,7 +18,7 @@ export default async function Fagfestival() {
   return (
     <>
       <div className="flex flex-col w-full bg-fagfestival pb-10 -mb-4">
-        <div className="w-full relative z-0">
+        <div className="w-full relative z-20">
           <CardWithBackground
             compactHeader
             titleNode={
@@ -42,7 +42,7 @@ export default async function Fagfestival() {
           </CardWithBackground>
         </div>
 
-        <div className="w-full -mt-28 relative z-0">
+        <div className="w-full -mt-28 relative z-10">
           <CardWithBackground className="bg-fagfestival" newEvent>
             <FagfestivalEvents />
           </CardWithBackground>

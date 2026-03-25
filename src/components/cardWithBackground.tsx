@@ -6,6 +6,7 @@ import { useEffect, useRef } from "react";
 
 type CardWithBackgroundProps = {
   title?: string;
+  titleNode?: React.ReactNode;
   subtitle?: string;
   children: React.ReactNode;
   home?: boolean;
@@ -16,12 +17,18 @@ type CardWithBackgroundProps = {
   titleColor?: string;
   className?: string;
   scrollToTopOnMount?: boolean;
+  compactHeader?: boolean;
 };
 
 // ${props.color} ${props.className}
 
 export default function CardWithBackground(props: CardWithBackgroundProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const headerPaddingClass = props.compactHeader ? "pb-12" : "pb-24";
+  const headerLayoutClass = props.compactHeader
+    ? "relative mt-12 mx-auto grid w-full place-items-center px-4 text-center ax-sm:max-w-[632px] ax-sm:px-6"
+    : "relative mt-28 mx-auto grid w-full place-items-center px-4 text-center ax-sm:max-w-[632px] ax-sm:px-6";
+  const titleTopClass = props.compactHeader ? "mt-2" : "mt-8";
 
   useEffect(() => {
     if (props.scrollToTopOnMount && containerRef.current) {
@@ -32,12 +39,22 @@ export default function CardWithBackground(props: CardWithBackgroundProps) {
   return (
     <div ref={containerRef} className={`w-full flex flex-col align-center items-center -mt-20`}>
       <div className="w-full header-animated-bg relative max-w-[100vw] overflow-hidden animation-stop">
-        <div className="z-20 pb-24">
-          <div className="relative mt-28 mx-auto grid w-full place-items-center px-4 text-center ax-sm:max-w-[632px] ax-sm:px-6">
-            {props.title && (
+        <div className={`z-20 ${headerPaddingClass}`}>
+          <div className={headerLayoutClass}>
+            {props.titleNode ? (
               <>
+                <div className={`${titleTopClass} flex items-center justify-center`}>{props.titleNode}</div>
+                {props.subtitle && (
+                  <p className="text-lg mt-2" style={{ color: props.titleColor || "#100d29" }}>
+                    {props.subtitle}
+                  </p>
+                )}
+              </>
+            ) : (
+              props.title && (
+                <>
                 <Heading
-                  className="first-letter:uppercase mt-8"
+                  className={`first-letter:uppercase ${titleTopClass}`}
                   style={{ color: props.titleColor || "#100d29" }}
                   level="1"
                   size="xlarge"
@@ -49,7 +66,8 @@ export default function CardWithBackground(props: CardWithBackgroundProps) {
                     {props.subtitle}
                   </p>
                 )}
-              </>
+                </>
+              )
             )}
           </div>
         </div>

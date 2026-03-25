@@ -8,8 +8,8 @@ import { Checkbox, CheckboxGroup, Search, Tabs } from "@navikt/ds-react";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 
-const fagfestivalCategory = "fagfestival";
-const activeDays = ["23", "24", "25"];
+const fagfestivalCategory = "#fagfestivalen";
+const activeDays = ["28", "29", "30"];
 const fagfestivalMonth = "April"
 
 const getRemainingActiveDays = () => {
@@ -175,14 +175,14 @@ const FagfestivalEvents = () => {
             <p>
               Husk å meld deg på{" "}
               <Link
-                href="https://delta.nav.no/fagfest/38d6e0a2-8b13-4c4d-b398-d73116331e14"
+                href="https://delta.nav.no/fagfest"
                 className="text-ax-brand-blue-600 underline hover:no-underline"
               >
                 felles avslutning
               </Link>{" "}
               og{" "}
               <Link
-                href="https://delta.nav.no/fagfest/168e3338-0a9b-4755-8d12-1f176fd8c7ed"
+                href="https://delta.nav.no/fagfest"
                 className="text-ax-brand-blue-600 underline hover:no-underline"
               >
                 husfest etter fagfestival

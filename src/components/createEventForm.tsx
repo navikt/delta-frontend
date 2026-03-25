@@ -798,18 +798,6 @@ function InternalCreateEventForm({
           </Checkbox>
           {isRecurring && (
             <div className="flex flex-col gap-4 mt-3 ml-7">
-              <RadioGroup
-                legend="Frekvens"
-                value={getValues("recurrenceFrequency") ?? ""}
-                onChange={(value: RecurrenceFrequency) => {
-                  setValue("recurrenceFrequency", value, { shouldValidate: true });
-                }}
-                error={errors.recurrenceFrequency?.message}
-              >
-                <Radio value="WEEKLY">Ukentlig</Radio>
-                <Radio value="BIWEEKLY">Annenhver uke</Radio>
-                <Radio value="MONTHLY">Månedlig</Radio>
-              </RadioGroup>
               <EventDatepicker
                 name="recurrenceUntilDate"
                 label="Gjenta til"

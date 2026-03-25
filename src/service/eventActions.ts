@@ -331,6 +331,8 @@ export async function updateEvent(
     const api = await getApi();
 
     const event = createDeltaEventFromFormData(formData);
+    // Backend doesn't support updating recurrence settings yet — only send on create
+    event.recurrence = undefined;
     if (editScope) {
       event.editScope = editScope;
     }

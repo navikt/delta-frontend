@@ -26,12 +26,16 @@ export function EventCard({
                               categories,
                               showAll,
                               tabname,
+                              userEmail,
                            }: {
     event: FullDeltaEvent;
     categories: Category[];
     showAll?: string[];
     tabname?: string;
+    userEmail?: string;
 }) {
+    const isRegistered =
+        userEmail != null && event.participants.some((p) => p.email === userEmail);
     const isUtløpt =
         !!event.event.signupDeadline &&
         new Date(event.event.signupDeadline) < new Date()
@@ -152,6 +156,9 @@ export function EventCard({
                         <div className="flex gap-2 flex-wrap items-end w-full">
                             {event.recurringSeries && (
                                 <RecurringBadge frequency={event.recurringSeries.frequency} />
+                            )}
+                            {isRegistered && (
+                                <Tag variant="success" size="small">Påmeldt</Tag>
                             )}
                             {categories.map((category) => (
                                 <Tag variant="neutral" size="small" key={category.id}>

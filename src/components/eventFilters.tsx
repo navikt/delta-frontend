@@ -350,12 +350,17 @@ export default function EventFilters({
       )}
     {tabname == "alle" && (
           <>
-            {joinedLink && new Date() < new Date('2024-11-15') && (
+            {joinedLink && (
                 <div className="px-4 inline-block">
-                  <LinkPanel data-umami-event="Fagtorsdag CTA" href="https://fagtorsdag.ansatt.nav.no/" border className={"colorful_fagdag_utvikling_og_data"}>
-                    <LinkPanel.Title>Fagtorsdag</LinkPanel.Title>
-                    <LinkPanel.Description>
-                      Programmet 14. november
+                  <LinkPanel
+                    data-umami-event="Fagfest CTA"
+                    href="/fagfest"
+                    border
+                    className="bg-fagfestival text-white"
+                  >
+                    <LinkPanel.Title className="!text-white">Fagfest</LinkPanel.Title>
+                    <LinkPanel.Description className="!text-white">
+                      Se programmet og meld deg på arrangementer
                     </LinkPanel.Description>
                   </LinkPanel>
                 </div>

@@ -3,6 +3,7 @@ import React from "react";
 import { FullDeltaEvent } from "@/types/event";
 import { Skeleton } from "@navikt/ds-react";
 import { EventCard } from "@/components/fagfestival/cards/eventCard";
+import { isComingSoonTimeRange } from "@/service/format";
 
 type EventProgramOverviewProps = {
   filteredEvents: FullDeltaEvent[];
@@ -14,7 +15,9 @@ const generateTimeSlots = (events: FullDeltaEvent[]): string[] => {
   const times = new Set<string>();
   events.forEach((event) => {
     const startTime = new Date(event.event.startTime);
-    const formattedTime = startTime.getHours().toString().padStart(2, "0") + ":00";
+    const formattedTime = isComingSoonTimeRange(event.event)
+      ? "Kommer senere"
+      : startTime.getHours().toString().padStart(2, "0") + ":00";
     times.add(formattedTime);
   });
   return Array.from(times).sort();
@@ -72,8 +75,9 @@ export default function EventProgramOverview({
                     .filter((event) => {
                       const eventStartTime = new Date(event.event.startTime);
                       const eventDay = eventStartTime.toISOString().split("T")[0];
-                      const eventHour =
-                        eventStartTime.getHours().toString().padStart(2, "0") + ":00";
+                      const eventHour = isComingSoonTimeRange(event.event)
+                        ? "Kommer senere"
+                        : eventStartTime.getHours().toString().padStart(2, "0") + ":00";
                       return eventDay === day && eventHour === time;
                     })
                     .map((event) => (

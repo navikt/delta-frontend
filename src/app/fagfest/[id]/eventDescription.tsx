@@ -144,7 +144,7 @@ export default function EventDescription({
                                 href={`mailto:fagfestival@nav.no`}
                                 className="leading-relaxed"
                             >
-                              FAGFEST 2024
+                              Fagfest
                             </Link>
                         </li>
                 </ul>

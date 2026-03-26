@@ -50,6 +50,25 @@ export const formatEventDuration = (event: DeltaEvent): string => {
   );
 };
 
+export const isComingSoonTimeRange = (event: DeltaEvent): boolean => {
+  const startTime = event.startTime.substring(11, 16);
+  const endTime = event.endTime.substring(11, 16);
+
+  return startTime === "00:00" && endTime === "00:01";
+};
+
+export const formatEventTimeRange = (event: DeltaEvent): string => {
+  return `${event.startTime.substring(11, 16)} – ${event.endTime.substring(11, 16)}`;
+};
+
+export const formatEventTimeRangeOrComingSoon = (event: DeltaEvent): string => {
+  if (isComingSoonTimeRange(event)) {
+    return "Kommer senere";
+  }
+
+  return formatEventTimeRange(event);
+};
+
 export const midnightDate = (dateString: string): Date => {
   const date = new Date(dateString);
   date.setHours(0, 0, 0, 0);

@@ -13,7 +13,13 @@ import {
 import {useEffect, useRef, useState} from "react";
 import {Link, Modal, Search, Button} from "@navikt/ds-react";
 import Participant from "./participant";
-import {formatEventDates, formatEventTimes, formatDeadline, formatEventDuration} from "@/service/format";
+import {
+    formatEventDates,
+    formatEventTimes,
+    formatDeadline,
+    formatEventDuration,
+    formatEventTimeRangeOrComingSoon,
+} from "@/service/format";
 
 type EventDescriptionProps = FullDeltaEvent & {
     className?: string;
@@ -98,10 +104,7 @@ export default function EventDescription({
                 {displayTime ? (
                     <span className="flex flex-row justify-start gap-2 items-center pb-1">
           <ClockIcon aria-label="tid"/>
-                        {`${event.startTime.substring(11, 16)} – ${event.endTime.substring(
-                            11,
-                            16,
-                        )}`}
+                        {formatEventTimeRangeOrComingSoon(event)}
           </span>
                 ) : (
                     <span className="flex flex-row justify-start gap-2 items-center pb-1">

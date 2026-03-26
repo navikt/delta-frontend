@@ -15,6 +15,7 @@ import {
   formatDeadline,
   formatEventDuration,
   formatEventDates,
+  formatEventTimeRangeOrComingSoon,
   formatEventTimes,
 } from "@/service/format";
 
@@ -59,10 +60,7 @@ export function EventCard({ event, returnTo }: EventCardProps) {
               {formatEventDuration(event.event) !== "" && (
                 <Detail className="flex gap-1 items-center pb-1 leading-normal">
                   <ClockIcon title="tid" />
-                  {`${event.event.startTime.substring(11, 16)} – ${event.event.endTime.substring(
-                    11,
-                    16,
-                  )}`}
+                  {formatEventTimeRangeOrComingSoon(event.event)}
                 </Detail>
               )}
             </>

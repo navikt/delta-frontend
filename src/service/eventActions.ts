@@ -9,6 +9,7 @@ import {
   CreateDeltaEvent,
   EditScope,
   FullDeltaEvent,
+  UserSearchResult,
 } from "@/types/event";
 import { formatInTimeZone } from "date-fns-tz";
 import { AxiosError } from 'axios';
@@ -305,13 +306,27 @@ export async function getEvent(id: string): Promise<FullDeltaEvent> {
   }
 }
 
+export async function searchUsers(query: string): Promise<UserSearchResult[]> {
+  if (!query || query.length < 2) return [];
+  try {
+    const api = await getApi();
+    const response = await api.get<UserSearchResult[]>("/users/search", {
+      params: { q: query },
+    });
+    return response.data;
+  } catch {
+    return [];
+  }
+}
+
 export async function createEvent(
   formData: CreateEventSchema,
+  additionalHosts: string[] = [],
 ): Promise<FullDeltaEvent> {
   try {
     const api = await getApi();
 
-    const event = createDeltaEventFromFormData(formData);
+    const event = createDeltaEventFromFormData(formData, additionalHosts);
     const response = await api.put("/admin/event", event);
 
     return response.data;
@@ -345,6 +360,7 @@ export async function updateEvent(
 
 function createDeltaEventFromFormData(
   formData: CreateEventSchema,
+  additionalHosts: string[] = [],
 ): CreateDeltaEvent {
   const start = `${formatInTimeZone(
     formData.startDate,
@@ -397,6 +413,7 @@ function createDeltaEventFromFormData(
     signupDeadline: formData.hasSignupDeadline && !formData.isRecurring ? deadline : undefined,
     sendNotificationEmail: sendNotificationEmail,
     recurrence: recurrence,
+    ...(additionalHosts.length > 0 ? { additionalHosts } : {}),
   };
 }
 

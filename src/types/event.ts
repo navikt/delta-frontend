@@ -27,6 +27,7 @@ export type CreateDeltaEvent = {
   sendNotificationEmail?: boolean;
   recurrence?: RecurrenceRequest;
   editScope?: EditScope;
+  additionalHosts?: string[];
 };
 
 export type FullDeltaEvent = {
@@ -75,6 +76,11 @@ export type ChangeDeltaParticipant = {
 
 export type Category = {
   id: number;
+  name: string;
+};
+
+export type UserSearchResult = {
+  email: string;
   name: string;
 };
 

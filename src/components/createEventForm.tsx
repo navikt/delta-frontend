@@ -15,7 +15,7 @@ import {
   Label,
   Chips,
 } from "@navikt/ds-react";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import {
   createCategory,
   createEvent,
@@ -294,14 +294,21 @@ function InternalCreateEventForm({
   const [coHosts, setCoHosts] = useState<UserSearchResult[]>([]);
   const [coHostInput, setCoHostInput] = useState("");
   const [coHostSuggestions, setCoHostSuggestions] = useState<UserSearchResult[]>([]);
+  const coHostQueryRef = useRef("");
 
   useEffect(() => {
     if (coHostInput.length < 2) {
       setCoHostSuggestions([]);
       return;
     }
+    coHostQueryRef.current = coHostInput;
     const timer = setTimeout(() => {
-      searchUsers(coHostInput).then(setCoHostSuggestions);
+      const query = coHostInput;
+      searchUsers(query).then((results) => {
+        if (coHostQueryRef.current === query) {
+          setCoHostSuggestions(results);
+        }
+      });
     }, 300);
     return () => clearTimeout(timer);
   }, [coHostInput]);
@@ -857,17 +864,19 @@ function InternalCreateEventForm({
               onKeyDown={(e) => { if (e.key === "Enter") e.preventDefault(); }}
               autoComplete="off"
             />
-            {coHostSuggestions.filter(s => !coHosts.some(h => h.email === s.email)).length > 0 && (
-              <ul className="absolute z-10 w-full bg-white border border-gray-200 rounded shadow-lg mt-1 max-h-48 overflow-y-auto">
-                {coHostSuggestions
-                  .filter(s => !coHosts.some(h => h.email === s.email))
-                  .map(s => (
+            {(() => {
+              const filtered = coHostSuggestions.filter(s => !coHosts.some(h => h.email === s.email));
+              return filtered.length > 0 ? (
+                <ul className="absolute z-10 w-full bg-white border border-gray-200 rounded shadow-lg mt-1 max-h-48 overflow-y-auto">
+                  {filtered.map(s => (
                     <li key={s.email}>
                       <button
                         type="button"
                         className="w-full px-4 py-2 text-left hover:bg-gray-100 text-sm"
                         onClick={() => {
-                          setCoHosts(prev => [...prev, s]);
+                          setCoHosts(prev =>
+                            prev.some(h => h.email === s.email) ? prev : [...prev, s]
+                          );
                           setCoHostInput("");
                           setCoHostSuggestions([]);
                         }}
@@ -877,8 +886,9 @@ function InternalCreateEventForm({
                       </button>
                     </li>
                   ))}
-              </ul>
-            )}
+                </ul>
+              ) : null;
+            })()}
           </div>
           {coHosts.length > 0 && (
             <Chips>

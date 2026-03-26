@@ -314,7 +314,8 @@ export async function searchUsers(query: string): Promise<UserSearchResult[]> {
       params: { q: query },
     });
     return response.data;
-  } catch {
+  } catch (error) {
+    console.error("Failed to search users:", error);
     return [];
   }
 }

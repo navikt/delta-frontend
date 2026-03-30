@@ -13,7 +13,13 @@ import {
 import {useEffect, useRef, useState} from "react";
 import {Link, Modal, Search, Button} from "@navikt/ds-react";
 import Participant from "./participant";
-import {formatEventDates, formatEventTimes, formatDeadline, formatEventDuration} from "@/service/format";
+import {
+    formatEventDates,
+    formatEventTimes,
+    formatDeadline,
+    formatEventDuration,
+    formatEventTimeRangeOrComingSoon,
+} from "@/service/format";
 
 type EventDescriptionProps = FullDeltaEvent & {
     className?: string;
@@ -98,10 +104,7 @@ export default function EventDescription({
                 {displayTime ? (
                     <span className="flex flex-row justify-start gap-2 items-center pb-1">
           <ClockIcon aria-label="tid"/>
-                        {`${event.startTime.substring(11, 16)} – ${event.endTime.substring(
-                            11,
-                            16,
-                        )}`}
+                        {formatEventTimeRangeOrComingSoon(event)}
           </span>
                 ) : (
                     <span className="flex flex-row justify-start gap-2 items-center pb-1">
@@ -118,6 +121,13 @@ export default function EventDescription({
           </span>
                 )}
             </div>
+            {!event.public && (
+                <div>
+                    <span className="flex flex-row justify-start items-center pb-1 pl-1 text-ax-neutral-700">
+                        • Privat arrangement
+                    </span>
+                </div>
+            )}
             {event.signupDeadline && (
                 <div>
                     <label className="flex items-center gap-2">
@@ -141,7 +151,7 @@ export default function EventDescription({
                                 href={`mailto:fagfestival@nav.no`}
                                 className="leading-relaxed"
                             >
-                              FAGFEST 2024
+                              Fagfest
                             </Link>
                         </li>
                 </ul>

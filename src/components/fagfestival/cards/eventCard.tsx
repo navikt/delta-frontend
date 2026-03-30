@@ -118,7 +118,7 @@ export function EventCard({ event, returnTo }: EventCardProps) {
                         event.participants.length -
                         event.hosts.length >
                       9 ? (
-                        <>Maks {event.event.participantLimit} deltakere</>
+                        <>{event.participants.length} / {event.event.participantLimit} deltakere</>
                       ) : (
                         <>
                           Kun{" "}
@@ -133,6 +133,14 @@ export function EventCard({ event, returnTo }: EventCardProps) {
                 </span>
               </Detail>
             </>
+          )}
+          {event.event.participantLimit === 0 && (
+            <Detail className="leading-normal">
+              <span className="flex items-center gap-1 pb-1 leading-normal">
+                <PersonCheckmarkIcon title="deltakere" />
+                {event.participants.length} {event.participants.length === 1 ? "deltaker" : "deltakere"}
+              </span>
+            </Detail>
           )}
         </div>
 

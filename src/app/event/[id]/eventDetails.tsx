@@ -1,6 +1,6 @@
 "use client";
 
-import {Dispatch, SetStateAction, useState} from "react";
+import {useEffect, useState} from "react";
 import {User} from "@/types/user";
 import EventDescription from "./eventDescription";
 import {
@@ -14,7 +14,7 @@ import {
 import Link from "next/link";
 import {useQRCode} from 'next-qrcode';
 import {FullDeltaEvent, DeltaParticipant, EditScope} from "@/types/event";
-import {deleteEvent, getEvent, joinEvent, leaveEvent} from "@/service/eventActions";
+import {deleteEvent, joinEvent, leaveEvent} from "@/service/eventActions";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import {format} from "date-fns";
 import Calendar from "@/components/calendar";
@@ -22,6 +22,7 @@ import SecondaryCopyButton from "@/components/SecondaryCopyButton";
 import {TrashIcon, PencilIcon, BarChartIcon, FilePlusIcon} from "@navikt/aksel-icons";
 import EditScopeModal from "@/components/editScopeModal";
 import { RecurringBadge } from "@/components/RecurringBadge";
+import { useRouter } from "next/navigation";
 
 export default function EventDetails({
      event,
@@ -36,6 +37,11 @@ export default function EventDetails({
     hostname?: string;
 }) {
     const [reactiveParticipants, setParticipants] = useState(participants);
+    const router = useRouter();
+
+    useEffect(() => {
+        setParticipants(participants);
+    }, [participants]);
     const isParticipant = reactiveParticipants
         .map((p) => p.email)
         .includes(user.email);
@@ -343,13 +349,12 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                             <Button data-umami-event={isParticipant ? "avmelding" : "påmelding"}
                                 variant={isParticipant ? "danger" : "primary"}
                                 className="w-fit h-fit font-ax-bold"
-                                onClick={() =>
-                                    toggleEventStatus(event.id, isParticipant, (state) => {
-                                        showAlert();
-                                        setParticipants(state);
-                                        setOpenConfirmation((x) => !x);
-                                    })
-                                }
+                                onClick={async () => {
+                                    await (isParticipant ? leaveEvent(event.id) : joinEvent(event.id));
+                                    showAlert();
+                                    setOpenConfirmation(false);
+                                    router.refresh();
+                                }}
                             >
                                 {isParticipant ? <>{new Date(event.endTime) < new Date() ? "Ja, slett meg" : "Ja, meld meg av"}</> : "Godta og bli med"}
                             </Button>
@@ -447,14 +452,4 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
 async function deleteAndRedirect(eventId: string, editScope?: EditScope) {
     await deleteEvent(eventId, editScope);
     window.location.href = "/";
-}
-
-
-async function toggleEventStatus(
-    eventId: string,
-    isParticipant: boolean,
-    setParticipants: Dispatch<SetStateAction<DeltaParticipant[]>>,
-) {
-    await (isParticipant ? leaveEvent(eventId) : joinEvent(eventId));
-    setParticipants((await getEvent(eventId)).participants);
 }

@@ -1,5 +1,5 @@
 "use client";
-import "./eventCard.css";
+import "./festivalEventCard.css";
 import { FullDeltaEvent } from "@/types/event";
 import { format } from "date-fns";
 import { Detail, Heading, Tag } from "@navikt/ds-react";
@@ -18,22 +18,27 @@ import {
   formatEventTimes,
 } from "@/service/format";
 
-type EventCardProps = {
+type FestivalEventCardProps = {
   event: FullDeltaEvent;
+  basePath: string;
+  hiddenCategoryNames: string[];
 };
 
-export function EventCard({ event }: EventCardProps) {
+export function FestivalEventCard({
+  event,
+  basePath,
+  hiddenCategoryNames,
+}: FestivalEventCardProps) {
   const hasEventExpired =
-    !!event.event.signupDeadline && new Date(event.event.signupDeadline) < new Date()
-      ? true
-      : false;
+    !!event.event.signupDeadline &&
+    new Date(event.event.signupDeadline) < new Date();
   const startDay = format(new Date(event.event.startTime), "MMMd");
   const endDay = format(new Date(event.event.endTime), "MMMd");
 
   return (
     <Link
-      href={`/fagdag_utvikling_og_data/${event.event.id}`}
-      key={`event-${event.event.id}`}
+      href={`/${basePath}/${event.event.id}`}
+      prefetch={false}
       className="flex flex-col h-full p-4 border rounded-xl text-ax-text-neutral border-ax-neutral-400 transition-all hover:-translate-y-1 hover:scale-105 hover:text-ax-text-action hover:border-ax-border-accent no-underline event-card"
     >
       <Heading level="2" size="small">
@@ -51,10 +56,7 @@ export function EventCard({ event }: EventCardProps) {
               {formatEventDuration(event.event) !== "" && (
                 <Detail className="flex gap-1 items-center pb-1 leading-normal">
                   <ClockIcon title="tid" />
-                  {`${event.event.startTime.substring(11, 16)} – ${event.event.endTime.substring(
-                    11,
-                    16,
-                  )}`}
+                  {`${event.event.startTime.substring(11, 16)} – ${event.event.endTime.substring(11, 16)}`}
                 </Detail>
               )}
             </>
@@ -88,7 +90,9 @@ export function EventCard({ event }: EventCardProps) {
                 <HourglassBottomFilledIcon title="timeglass" />
                 Påmeldingsfrist:{" "}
                 {hasEventExpired ? (
-                  <span className="text-white bg-ax-danger-700 rounded px-2">Utløpt</span>
+                  <span className="text-white bg-ax-danger-700 rounded px-2">
+                    Utløpt
+                  </span>
                 ) : (
                   formatDeadline(event.event)
                 )}
@@ -97,49 +101,43 @@ export function EventCard({ event }: EventCardProps) {
           )}
 
           {event.event.participantLimit > 0 && (
-            <>
-              <Detail className="leading-normal">
-                <span className="flex items-center gap-1 pb-1 leading-normal">
-                  <PersonCheckmarkIcon title="person" />
-                  {event.participants.length + event.hosts.length >=
-                  event.event.participantLimit ? (
-                    <span className="bg-ax-danger-700 text-white rounded px-2">
-                      Arrangementet er fullt
-                    </span>
-                  ) : (
-                    <>
-                      {event.event.participantLimit -
-                        event.participants.length -
-                        event.hosts.length >
-                      9 ? (
-                        <>Maks {event.event.participantLimit} deltakere</>
-                      ) : (
-                        <>
-                          Kun{" "}
-                          {event.event.participantLimit -
-                            event.participants.length -
-                            event.hosts.length}{" "}
-                          plasser igjen
-                        </>
-                      )}
-                    </>
-                  )}
-                </span>
-              </Detail>
-            </>
+            <Detail className="leading-normal">
+              <span className="flex items-center gap-1 pb-1 leading-normal">
+                <PersonCheckmarkIcon title="person" />
+                {event.participants.length + event.hosts.length >=
+                event.event.participantLimit ? (
+                  <span className="bg-ax-danger-700 text-white rounded px-2">
+                    Arrangementet er fullt
+                  </span>
+                ) : event.event.participantLimit -
+                    event.participants.length -
+                    event.hosts.length >
+                  9 ? (
+                  <>Maks {event.event.participantLimit} deltakere</>
+                ) : (
+                  <>
+                    Kun{" "}
+                    {event.event.participantLimit -
+                      event.participants.length -
+                      event.hosts.length}{" "}
+                    plasser igjen
+                  </>
+                )}
+              </span>
+            </Detail>
           )}
         </div>
 
         <div className="flex gap-2 flex-wrap items-end w-full">
-          {event.categories.map((category) => {
-            if (category.name !== "fagdag_utvikling_og_data" && category.name !== "mangfold i mai") {
-              return (
-                  <Tag variant="neutral" size="small" key={category.id}>
-                    {category.name}
-                  </Tag>
-              );
-            }
-          })}
+          {event.categories
+            .filter(
+              (category) => !hiddenCategoryNames.includes(category.name),
+            )
+            .map((category) => (
+              <Tag variant="neutral" size="small" key={category.id}>
+                {category.name}
+              </Tag>
+            ))}
         </div>
       </div>
     </Link>

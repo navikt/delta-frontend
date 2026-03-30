@@ -58,10 +58,6 @@ export function EventCard({
     const returnTo = `${pathname}${currentSearch ? `?${currentSearch}` : ""}`;
     const href = `/event/${event.event.id}?returnTo=${encodeURIComponent(returnTo)}`;
 
-    const handleNavigation = () => {
-        sessionStorage.setItem(`event-overview-scroll:${returnTo}`, `${window.scrollY}`);
-    };
-
     return (
         <>
             {isUtløpt && tabname == "alle" && !showAll?.includes("10") ? (
@@ -69,7 +65,7 @@ export function EventCard({
             ) : (
                 <Link
                     href={href}
-                    onClick={handleNavigation}
+                    prefetch={false}
                     className="flex flex-col h-full p-4 border rounded-xl text-ax-text-neutral border-ax-neutral-400 transition-all hover:-translate-y-1 hover:scale-105 hover:text-ax-text-action hover:border-ax-border-accent no-underline event-card"
                 >
                     <Heading level="2" size="small">

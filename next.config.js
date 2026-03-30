@@ -16,17 +16,7 @@ const nextConfig = {
       },
     ]
   },
-  headers: () => [
-    {
-      source: "/event/:path*",
-      headers: [
-        {
-          key: "Cache-Control",
-          value: "no-store",
-        },
-      ],
-    },
-  ],
+  cacheComponents: true,
   pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx'],
   experimental: {
     optimizePackageImports: ["@navikt/ds-react", "@navikt/aksel-icons"],

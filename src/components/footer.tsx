@@ -1,6 +1,6 @@
-"use client";
-
 import { BodyShort, Heading, Link } from "@navikt/ds-react";
+import { Suspense } from "react";
+import CopyrightYear from "./copyrightYear";
 
 const Footer = () => {
     return (
@@ -26,7 +26,7 @@ function LogoBlock() {
     return (
         <div>
             <span className="mt-4 text-2xl whitespace-nowrap">Δ Delta</span>
-            <p className="mt-3 leading-normal">&copy; {new Date().getFullYear()} Nav</p>
+            <p className="mt-3 leading-normal">&copy; <Suspense>{<CopyrightYear />}</Suspense> Nav</p>
             <p className="leading-normal">Arbeids- og velferdsetaten</p>
         </div>
     );

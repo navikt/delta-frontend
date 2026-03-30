@@ -1,14 +1,21 @@
 "use client";
-import { EventCard } from "@/components/fagdag_utvikling_og_data/cards/eventCard";
+import { FestivalEventCard } from "./festivalEventCard";
 import { FullDeltaEvent } from "@/types/event";
 import { Skeleton } from "@navikt/ds-react";
 
-type EventListProps = {
+type FestivalEventListProps = {
   filteredEvents: FullDeltaEvent[];
   loading: boolean;
+  basePath: string;
+  hiddenCategoryNames: string[];
 };
 
-export default function EventList({ filteredEvents, loading }: EventListProps) {
+export default function FestivalEventList({
+  filteredEvents,
+  loading,
+  basePath,
+  hiddenCategoryNames,
+}: FestivalEventListProps) {
   if (loading) {
     return (
       <div className="space-y-4">
@@ -21,13 +28,22 @@ export default function EventList({ filteredEvents, loading }: EventListProps) {
   }
 
   if (!filteredEvents || filteredEvents?.length === 0) {
-    return <p className="col-span-full italic text-ax-xlarge">Fant ingen arrangementer :--(</p>;
+    return (
+      <p className="col-span-full italic text-ax-xlarge">
+        Fant ingen arrangementer :--(
+      </p>
+    );
   }
 
   return (
     <div className="grid grid-cols-1 ax-md:grid-cols-3 gap-4">
       {filteredEvents.map((fullEvent) => (
-        <EventCard event={fullEvent} key={`event-${fullEvent.event.id}`} />
+        <FestivalEventCard
+          event={fullEvent}
+          basePath={basePath}
+          hiddenCategoryNames={hiddenCategoryNames}
+          key={`event-${fullEvent.event.id}`}
+        />
       ))}
     </div>
   );

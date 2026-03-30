@@ -2,7 +2,7 @@ import { checkToken } from "@/auth/token";
 import CreateEventForm from "@/components/createEventForm";
 import CardWithBackground from "@/components/cardWithBackground";
 import { Metadata } from "next";
-import { getAllCategories } from "@/service/eventActions";
+import { getAllCategories } from "@/service/eventQueries";
 import { EditTypeEnum } from "@/types/event";
 
 export const metadata: Metadata = {

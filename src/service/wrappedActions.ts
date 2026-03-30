@@ -1,6 +1,6 @@
 "use server";
 
-import { getEvents } from "./eventActions";
+import { getEvents } from "./eventQueries";
 import { getUser } from "@/auth/token";
 import { FullDeltaEvent } from "@/types/event";
 

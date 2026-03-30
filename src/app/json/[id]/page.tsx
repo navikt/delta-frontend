@@ -1,6 +1,6 @@
 import { checkToken } from "@/auth/token";
 import EventJSONFilters from "@/components/eventJSONFilters";
-import { getAllCategories } from "@/service/eventActions";
+import { getAllCategories } from "@/service/eventQueries";
 import { Metadata } from "next";
 
 type CategoryPageProps = { params: Promise<{ id: string }> };

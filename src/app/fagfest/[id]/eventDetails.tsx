@@ -1,6 +1,6 @@
 "use client";
 
-import {Dispatch, SetStateAction, useState} from "react";
+import {useEffect, useState} from "react";
 import {User} from "@/types/user";
 import EventDescription from "./eventDescription";
 import {
@@ -12,9 +12,10 @@ import {
     Tag,
 } from "@navikt/ds-react";
 import Link from "next/link";
+import {useRouter} from "next/navigation";
 import {useQRCode} from 'next-qrcode';
 import {FullDeltaEvent, DeltaParticipant} from "@/types/event";
-import {getEvent, joinEvent, leaveEvent} from "@/service/eventActions";
+import {joinEvent, leaveEvent} from "@/service/eventActions";
 import {format} from "date-fns";
 import Calendar from "@/components/calendar";
 import SecondaryCopyButton from "@/components/SecondaryCopyButton";
@@ -31,6 +32,12 @@ export default function EventDetails({
     hostname?: string;
 }) {
     const [reactiveParticipants, setParticipants] = useState(participants);
+    const router = useRouter();
+
+    useEffect(() => {
+        setParticipants(participants);
+    }, [participants]);
+
     const isParticipant = reactiveParticipants
         .map((p) => p.email)
         .includes(user.email);
@@ -257,13 +264,12 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                             <Button
                                 variant={isParticipant ? "danger" : "primary"}
                                 className="w-fit h-fit font-ax-bold"
-                                onClick={() =>
-                                    toggleEventStatus(event.id, isParticipant, (state) => {
-                                        showAlert();
-                                        setParticipants(state);
-                                        setOpenConfirmation((x) => !x);
-                                    })
-                                }
+                                onClick={async () => {
+                                    await (isParticipant ? leaveEvent(event.id) : joinEvent(event.id));
+                                    showAlert();
+                                    setOpenConfirmation(false);
+                                    router.refresh();
+                                }}
                             >
                                 {isParticipant ? <>{new Date(event.endTime) < new Date() ? "Ja, slett meg" : "Ja, meld meg av"}</> : "Godta og bli med"}
                             </Button>
@@ -356,13 +362,4 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
             </div>
         </div>
     );
-}
-
-async function toggleEventStatus(
-    eventId: string,
-    isParticipant: boolean,
-    setParticipants: Dispatch<SetStateAction<DeltaParticipant[]>>,
-) {
-    await (isParticipant ? leaveEvent(eventId) : joinEvent(eventId));
-    setParticipants((await getEvent(eventId)).participants);
 }

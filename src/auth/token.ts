@@ -2,6 +2,7 @@ import { requestOboToken, validateToken, getToken } from "@navikt/oasis";
 import type { User } from "@/types/user";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { cache } from "react";
 
 export async function checkToken(redirectTo?: string) {
   if (process.env.NODE_ENV === "development") return;
@@ -24,7 +25,8 @@ export async function checkToken(redirectTo?: string) {
 }
 // fjernet : ${result.error.message}
 
-export async function getUser(): Promise<User> {
+// Deduplicate user lookups within a single server render
+export const getUser = cache(async (): Promise<User> => {
   if (process.env.NODE_ENV === "development") {
     return {
       firstName: "Ola Kari",
@@ -50,7 +52,7 @@ export async function getUser(): Promise<User> {
     lastName,
     email,
   };
-}
+});
 
 export async function getAccessToken(
   scope: string = "",
@@ -73,11 +75,14 @@ export async function getAccessToken(
   return result.token;
 }
 
-export async function getDeltaBackendAccessToken(): Promise<string | null> {
-  return process.env.NEXT_PUBLIC_CLUSTER === "prod"
-    ? await getAccessToken("api://prod-gcp.delta.delta-backend/.default")
-    : await getAccessToken("api://dev-gcp.delta.delta-backend/.default");
-}
+// Deduplicate OBO token requests within a single server render
+export const getDeltaBackendAccessToken = cache(
+  async (): Promise<string | null> => {
+    return process.env.NEXT_PUBLIC_CLUSTER === "prod"
+      ? await getAccessToken("api://prod-gcp.delta.delta-backend/.default")
+      : await getAccessToken("api://dev-gcp.delta.delta-backend/.default");
+  },
+);
 
 export async function getUserGroups(): Promise<string[]> {
   if (process.env.NODE_ENV === "development") return [];

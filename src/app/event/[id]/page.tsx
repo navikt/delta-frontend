@@ -2,7 +2,7 @@ import type { FullDeltaEvent } from "@/types/event";
 import { checkToken, getUser } from "@/auth/token";
 import EventDetails from "./eventDetails";
 import CardWithBackground from "@/components/cardWithBackground";
-import { getEvent } from "@/service/eventActions";
+import { getEvent } from "@/service/eventQueries";
 import { Metadata, ResolvingMetadata } from "next";
 import Head from "next/head";
 

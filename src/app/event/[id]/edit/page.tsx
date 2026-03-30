@@ -1,7 +1,7 @@
 import { checkToken } from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
 import CreateEventForm from "@/components/createEventForm";
-import { getAllCategories } from "@/service/eventActions";
+import { getAllCategories } from "@/service/eventQueries";
 import { EditTypeEnum } from "@/types/event";
 import { Metadata } from "next";
 

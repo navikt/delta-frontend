@@ -1,7 +1,7 @@
 import { checkToken } from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
 import EventFilters from "@/components/eventFiltersCategory";
-import { getAllCategories } from "@/service/eventActions";
+import { getAllCategories } from "@/service/eventQueries";
 import { Metadata } from "next";
 
 type CategoryPageProps = { params: Promise<{ id: string }> };

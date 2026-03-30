@@ -2,7 +2,7 @@
 
 import { getApi } from "@/api/instance";
 import { FullDeltaEvent } from "@/types/event";
-import { getEvents } from "./eventActions";
+import { getEvents } from "./eventQueries";
 
 export type EventStats = {
   totalEvents: number;

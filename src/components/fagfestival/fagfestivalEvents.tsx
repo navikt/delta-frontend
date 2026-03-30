@@ -20,11 +20,7 @@ function isFagfestTab(value: string | null): value is FagfestTab {
   return value !== null && TAB_VALUES.includes(value as FagfestTab);
 }
 
-const getRemainingActiveDays = () => {
-  const today = new Date();
-  const dayOfMonth = today.getDate();
-  return activeDays.filter(day => parseInt(day) >= dayOfMonth);
-};
+const getRemainingActiveDays = () => activeDays;
 
 const getCurrentDayAsString = () => {
   const today = new Date();

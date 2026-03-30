@@ -121,6 +121,13 @@ export default function EventDescription({
           </span>
                 )}
             </div>
+            {!event.public && (
+                <div>
+                    <span className="flex flex-row justify-start items-center pb-1 pl-1 text-ax-neutral-700">
+                        • Privat arrangement
+                    </span>
+                </div>
+            )}
             {event.signupDeadline && (
                 <div>
                     <label className="flex items-center gap-2">

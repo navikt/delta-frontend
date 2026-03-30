@@ -11,7 +11,8 @@ import React, { useEffect, useRef, useState } from "react";
 
 const fagfestivalCategory = "fagfest";
 const activeDays = ["28", "29", "30"];
-const fagfestivalMonth = "April"
+const fagfestivalMonth = "April";
+const fagfestivalMonthIndex = new Date(`${fagfestivalMonth} 1, 2000`).getMonth();
 const DEFAULT_FILTER_OPTION: FilterOption = "vis-programoversikt";
 const TAB_VALUES = [...activeDays, "påmeldte"] as const;
 type FagfestTab = (typeof TAB_VALUES)[number];
@@ -20,11 +21,31 @@ function isFagfestTab(value: string | null): value is FagfestTab {
   return value !== null && TAB_VALUES.includes(value as FagfestTab);
 }
 
-const getRemainingActiveDays = () => activeDays;
+const getRemainingActiveDays = () => {
+  const today = new Date();
+
+  if (today.getMonth() !== fagfestivalMonthIndex) {
+    return activeDays;
+  }
+
+  const dayOfMonth = today.getDate();
+  return activeDays.filter((day) => parseInt(day) >= dayOfMonth);
+};
 
 const getCurrentDayAsString = () => {
   const today = new Date();
+  const currentMonth = today.getMonth();
+
+  if (currentMonth < fagfestivalMonthIndex) {
+    return activeDays[0];
+  }
+
+  if (currentMonth > fagfestivalMonthIndex) {
+    return "påmeldte";
+  }
+
   const dayOfMonth = today.getDate().toString();
+
   if (activeDays.includes(dayOfMonth)) {
     return dayOfMonth;
   } else if (parseInt(activeDays[0]) > today.getDate()) {

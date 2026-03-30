@@ -9,6 +9,7 @@ type EventProgramOverviewProps = {
   filteredEvents: FullDeltaEvent[];
   loading: boolean;
   returnTo: string;
+  joinedEventIds: Set<string>;
 };
 
 const generateTimeSlots = (events: FullDeltaEvent[]): string[] => {
@@ -27,6 +28,7 @@ export default function EventProgramOverview({
   filteredEvents,
   loading,
   returnTo,
+  joinedEventIds,
 }: EventProgramOverviewProps) {
   if (loading) {
     return (
@@ -86,7 +88,12 @@ export default function EventProgramOverview({
                         className="h-full flex-1 flex flex-col p-1"
                         title={`${event.event.title} - ${event.event.description}`}
                       >
-                        <EventCard event={event} key={`event-${event.event.id}`} returnTo={returnTo} />
+                        <EventCard
+                          event={event}
+                          key={`event-${event.event.id}`}
+                          returnTo={returnTo}
+                          isJoined={joinedEventIds.has(event.event.id)}
+                        />
                       </div>
                     ))}
                 </div>

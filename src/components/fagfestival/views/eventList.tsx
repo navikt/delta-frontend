@@ -7,9 +7,10 @@ type EventListProps = {
   filteredEvents: FullDeltaEvent[];
   loading: boolean;
   returnTo: string;
+  joinedEventIds: Set<string>;
 };
 
-export default function EventList({ filteredEvents, loading, returnTo }: EventListProps) {
+export default function EventList({ filteredEvents, loading, returnTo, joinedEventIds }: EventListProps) {
   if (loading) {
     return (
       <div className="space-y-4">
@@ -26,9 +27,14 @@ export default function EventList({ filteredEvents, loading, returnTo }: EventLi
   }
 
   return (
-    <div className="grid grid-cols-1 ax-md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 ax-md:grid-cols-3 gap-4">
       {filteredEvents.map((fullEvent) => (
-        <EventCard event={fullEvent} key={`event-${fullEvent.event.id}`} returnTo={returnTo} />
+        <EventCard
+          event={fullEvent}
+          key={`event-${fullEvent.event.id}`}
+          returnTo={returnTo}
+          isJoined={joinedEventIds.has(fullEvent.event.id)}
+        />
       ))}
     </div>
   );

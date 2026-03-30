@@ -22,9 +22,10 @@ import {
 type EventCardProps = {
   event: FullDeltaEvent;
   returnTo: string;
+  isJoined?: boolean;
 };
 
-export function EventCard({ event, returnTo }: EventCardProps) {
+export function EventCard({ event, returnTo, isJoined = false }: EventCardProps) {
   const hasEventExpired =
     !!event.event.signupDeadline && new Date(event.event.signupDeadline) < new Date()
       ? true
@@ -145,8 +146,13 @@ export function EventCard({ event, returnTo }: EventCardProps) {
         </div>
 
         <div className="flex gap-2 flex-wrap items-end w-full">
+          {isJoined && (
+            <Tag variant="success" size="small">
+              Påmeldt
+            </Tag>
+          )}
           {event.categories.map((category) => {
-            if (category.name !== "fagfestival") {
+            if (category.name !== "fagfest" && category.name.toLowerCase() !== "påmeldt") {
               return (
                 <Tag variant="neutral" size="small" key={category.id}>
                   {category.name}

@@ -69,6 +69,7 @@ const FagfestivalEvents = () => {
 
   const [filterEvents, setFilterEvents] = useState<FullDeltaEvent[]>([]);
   const [events, setEvents] = useState([] as FullDeltaEvent[]);
+  const [joinedEventIds, setJoinedEventIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const hasRestoredScroll = useRef(false);
@@ -131,11 +132,19 @@ const FagfestivalEvents = () => {
     // Load initial events
     setLoading(true);
 
-    getEvents({
-      onlyFuture: true,
-    })
-      .then(setEvents)
-      .then(() => setLoading(false));
+    Promise.all([
+      getEvents({
+        onlyFuture: true,
+      }),
+      getEvents({
+        onlyFuture: true,
+        onlyJoined: true,
+      }),
+    ]).then(([allEvents, joinedEvents]) => {
+      setEvents(allEvents);
+      setJoinedEventIds(new Set(joinedEvents.map((event) => event.event.id)));
+      setLoading(false);
+    });
 
     // Resizing
     const handleResize = () => {
@@ -186,13 +195,25 @@ const FagfestivalEvents = () => {
         onlyFuture: true,
         onlyJoined: true,
       })
-        .then(setEvents)
+        .then((joinedEvents) => {
+          setEvents(joinedEvents);
+          setJoinedEventIds(new Set(joinedEvents.map((event) => event.event.id)));
+        })
         .then(() => setLoading(false));
     } else {
-      getEvents({
-        onlyFuture: true,
-      })
-        .then(setEvents)
+      Promise.all([
+        getEvents({
+          onlyFuture: true,
+        }),
+        getEvents({
+          onlyFuture: true,
+          onlyJoined: true,
+        }),
+      ])
+        .then(([allEvents, joinedEvents]) => {
+          setEvents(allEvents);
+          setJoinedEventIds(new Set(joinedEvents.map((event) => event.event.id)));
+        })
         .then(() => setLoading(false));
     }
   }, [tabName]);
@@ -309,9 +330,15 @@ const FagfestivalEvents = () => {
               filteredEvents={filterEvents}
               loading={loading}
               returnTo={currentOverviewPath}
+              joinedEventIds={joinedEventIds}
             />
           ) : (
-            <EventList filteredEvents={filterEvents} loading={loading} returnTo={currentOverviewPath} />
+            <EventList
+              filteredEvents={filterEvents}
+              loading={loading}
+              returnTo={currentOverviewPath}
+              joinedEventIds={joinedEventIds}
+            />
           )}
         </div>
       </div>

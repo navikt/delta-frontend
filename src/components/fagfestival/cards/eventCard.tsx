@@ -152,7 +152,11 @@ export function EventCard({ event, returnTo, isJoined = false }: EventCardProps)
             </Tag>
           )}
           {event.categories.map((category) => {
-            if (category.name !== "fagfest" && category.name.toLowerCase() !== "påmeldt") {
+            if (
+              category.name !== "fagfest" &&
+              category.name !== "fagfestival" &&
+              category.name.toLowerCase() !== "påmeldt"
+            ) {
               return (
                 <Tag variant="neutral" size="small" key={category.id}>
                   {category.name}

@@ -13,7 +13,7 @@ enum TimeSelector {
   FUTURE = "future",
 }
 
-type HomeTab = "alle" | "påmeldte" | "mine";
+type HomeTab = "alle" | "mine";
 
 const DEFAULT_TAB: HomeTab = "alle";
 const VISIBLE_PREVIOUS_VALUE = "10";
@@ -25,7 +25,7 @@ function getUniqueCategories(categories: Category[]) {
 }
 
 function isHomeTab(value: string | null): value is HomeTab {
-  return value === "alle" || value === "påmeldte" || value === "mine";
+  return value === "alle" || value === "mine";
 }
 
 function isQuickFilterName(value: string): value is (typeof QUICK_FILTER_NAMES)[number] {
@@ -50,6 +50,7 @@ export default function EventFilters({
   joinedLink  = false,
   homeTabs  = false,
   ctaLink  = false,
+  userEmail,
 }: {
   categories?: Category[];
   selectTime?: boolean;
@@ -59,6 +60,7 @@ export default function EventFilters({
   joinedLink?: boolean;
   homeTabs?: boolean;
   ctaLink?: boolean;
+  userEmail?: string;
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -78,6 +80,7 @@ export default function EventFilters({
   const tabParam = searchParams.get("tab");
   const tabname: HomeTab = isHomeTab(tabParam) ? tabParam : DEFAULT_TAB;
   const showPrevious = searchParams.get("showPast") === "1";
+  const showOnlyRegistered = userEmail != null && searchParams.get("onlyRegistered") === "1";
   const selectedTime =
     searchParams.get("time") === TimeSelector.PAST ? TimeSelector.PAST : TimeSelector.FUTURE;
   const currentOverviewPath = useMemo(() => {
@@ -108,13 +111,23 @@ export default function EventFilters({
     [eventCategories, providedCategories, selectedCategoryNames],
   );
   const filterEvents = useMemo(
-    () =>
-      tabname !== "alle"
-        ? events
-        : events.filter((fullEvent) =>
-            fullEvent.event.title.toLowerCase().includes(searchInput.toLowerCase()),
-          ),
-    [events, searchInput, tabname],
+    () => {
+      let filtered =
+        tabname !== "alle"
+          ? events
+          : events.filter((fullEvent) =>
+              fullEvent.event.title.toLowerCase().includes(searchInput.toLowerCase()),
+            );
+
+      if (showOnlyRegistered && userEmail) {
+        filtered = filtered.filter((fullEvent) =>
+          fullEvent.participants.some((p) => p.email === userEmail),
+        );
+      }
+
+      return filtered;
+    },
+    [events, searchInput, tabname, showOnlyRegistered, userEmail],
   );
   const selectedQuickFilters = useMemo(
     () => QUICK_FILTER_NAMES.filter((categoryName) => selectedCategoryNames.includes(categoryName)),
@@ -137,6 +150,7 @@ export default function EventFilters({
     tab?: HomeTab | null;
     showPast?: boolean | null;
     time?: TimeSelector | null;
+    onlyRegistered?: boolean | null;
   }) => {
     const nextSearchParams = new URLSearchParams(searchParamsKey);
 
@@ -183,6 +197,14 @@ export default function EventFilters({
       }
     }
 
+    if (updates.onlyRegistered !== undefined) {
+      if (updates.onlyRegistered) {
+        nextSearchParams.set("onlyRegistered", "1");
+      } else {
+        nextSearchParams.delete("onlyRegistered");
+      }
+    }
+
     const nextSearch = nextSearchParams.toString();
     router.replace(nextSearch ? `${pathname}?${nextSearch}` : pathname, { scroll: false });
   };
@@ -191,6 +213,7 @@ export default function EventFilters({
     updateUrlState({
       tab: nextTab,
       showPast: nextTab === "alle" ? null : showPrevious,
+      onlyRegistered: false,
     });
   };
 
@@ -203,6 +226,7 @@ export default function EventFilters({
   };
 
   const handleQuickFilterChange = (values: string[]) => {
+    const nextOnlyRegistered = values.includes("onlyRegistered");
     const validValues = values.filter(isQuickFilterName);
 
     if (validValues.length > 1) {
@@ -216,7 +240,7 @@ export default function EventFilters({
       ...validValues,
     ];
 
-    updateUrlState({ categories: nextCategoryNames });
+    updateUrlState({ categories: nextCategoryNames, onlyRegistered: nextOnlyRegistered });
   };
 
   useEffect(() => {
@@ -247,7 +271,6 @@ export default function EventFilters({
           categories: categoriesForFetch,
           onlyFuture,
           onlyPast,
-          onlyJoined: tabname === "påmeldte",
           onlyMine: tabname === "mine",
         });
 
@@ -318,11 +341,6 @@ export default function EventFilters({
                   value="alle"
                   label="Alle"
                   onClick={() => handleTabChange("alle")}
-              />
-              <Tabs.Tab
-                  value="påmeldte"
-                  label="Mine påmeldinger"
-                  onClick={() => handleTabChange("påmeldte")}
               />
               <Tabs.Tab
                   value="mine"
@@ -428,12 +446,15 @@ export default function EventFilters({
             <CheckboxGroup
                 legend={"Vis"} hideLegend className={"-mt-5 -mb-2 ml-4"}
                 onChange={handleQuickFilterChange}
-                value={selectedQuickFilters}
+                value={[...selectedQuickFilters, ...(showOnlyRegistered ? ["onlyRegistered"] : [])]}
             >
               <div className="mt-1 flex flex-col ax-sm:flex-row gap-0 ax-sm:gap-4">
                 <Checkbox value="kompetanse" disabled={selectedCategories.some(category => category.name === "bedriftidrettslaget" || category.name === "sosialt")}>Kompetanse</Checkbox>
                 <Checkbox value="bedriftidrettslaget" disabled={selectedCategories.some(category => category.name === "kompetanse" || category.name === "sosialt")}>Bedriftidrettslaget</Checkbox>
                 <Checkbox value="sosialt" disabled={selectedCategories.some(category => category.name === "kompetanse" || category.name === "bedriftidrettslaget")}>Sosialt</Checkbox>
+                {userEmail && (
+                  <Checkbox value="onlyRegistered">Vis kun påmeldte</Checkbox>
+                )}
               </div>
             </CheckboxGroup>
           </>
@@ -445,6 +466,7 @@ export default function EventFilters({
           loading={loading}
           showAll={showPrevious ? [VISIBLE_PREVIOUS_VALUE] : []}
           tabname={tabname}
+          userEmail={userEmail}
         />
       </div>
       {ctaLink && (

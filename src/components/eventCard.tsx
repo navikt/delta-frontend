@@ -26,12 +26,16 @@ export function EventCard({
                               categories,
                               showAll,
                               tabname,
+                              userEmail,
                            }: {
     event: FullDeltaEvent;
     categories: Category[];
     showAll?: string[];
     tabname?: string;
+    userEmail?: string;
 }) {
+    const isRegistered =
+        userEmail != null && event.participants.some((p) => p.email === userEmail);
     const isUtløpt =
         !!event.event.signupDeadline &&
         new Date(event.event.signupDeadline) < new Date()
@@ -133,7 +137,6 @@ export function EventCard({
                                     <Detail className="leading-normal">
                 <span className="flex items-center gap-1 pb-1 leading-normal">
                   <PersonCheckmarkIcon title="person"/>
-                    {/*Maks {event.participants.length + event.hosts.length} av*/}
                     {event.participants.length + event.hosts.length >=
                     event.event.participantLimit ? (
                         <span className="bg-ax-danger-700 text-white rounded px-2">
@@ -141,17 +144,28 @@ export function EventCard({
                     </span>
                     ) : (<>
                         {event.event.participantLimit - event.participants.length - event.hosts.length > 9 ? (
-                            <>Maks {event.event.participantLimit} deltakere</>):(<>Kun {event.event.participantLimit - event.participants.length - event.hosts.length} plasser igjen</>)}
+                            <>{event.participants.length} / {event.event.participantLimit} deltakere</>):(<>Kun {event.event.participantLimit - event.participants.length - event.hosts.length} plasser igjen</>)}
                     </>)}
 
                 </span>
                                     </Detail>
                                 </>
                             )}
+                            {event.event.participantLimit === 0 && (
+                                <Detail className="leading-normal">
+                <span className="flex items-center gap-1 pb-1 leading-normal">
+                  <PersonCheckmarkIcon title="deltakere"/>
+                  {event.participants.length} {event.participants.length === 1 ? "deltaker" : "deltakere"}
+                </span>
+                                </Detail>
+                            )}
                         </div>
                         <div className="flex gap-2 flex-wrap items-end w-full">
                             {event.recurringSeries && (
                                 <RecurringBadge frequency={event.recurringSeries.frequency} />
+                            )}
+                            {isRegistered && (
+                                <Tag variant="success" size="small">Påmeldt</Tag>
                             )}
                             {categories.map((category) => (
                                 <Tag variant="neutral" size="small" key={category.id}>

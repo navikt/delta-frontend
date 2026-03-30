@@ -1,4 +1,4 @@
-import { checkToken } from "@/auth/token";
+import { checkToken, getUser } from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
 import EventFilters from "@/components/eventFilters";
 import { getAllCategories } from "@/service/eventActions";
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default async function Home() {
   await checkToken("/");
-  const categories = await getAllCategories();
+  const [categories, user] = await Promise.all([getAllCategories(), getUser()]);
 
   return (
      <CardWithBackground
@@ -20,6 +20,7 @@ export default async function Home() {
      >
       <EventFilters
         categories={categories}
+        userEmail={user.email}
         selectCategory
         searchName
         homeTabs

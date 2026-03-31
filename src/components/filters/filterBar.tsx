@@ -12,12 +12,9 @@ import {
 import { useMemo, useState, useEffect } from "react";
 import { FunnelIcon } from "@navikt/aksel-icons";
 import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useQueryStates } from "nuqs";
+import { filterParsers, HomeTab } from "./filterParams";
 
-type HomeTab = "alle" | "mine";
-
-const DEFAULT_TAB: HomeTab = "alle";
-const VISIBLE_PREVIOUS_VALUE = "10";
 const QUICK_FILTER_NAMES = ["kompetanse", "bedriftidrettslaget", "sosialt"] as const;
 const HIDDEN_CATEGORY_NAMES = new Set(["fagfestival", "biljard", "fagdag_utvikling_og_data"]);
 
@@ -25,22 +22,8 @@ function getUniqueCategories(categories: Category[]) {
   return Array.from(new Map(categories.map((c) => [c.name, c])).values());
 }
 
-function isHomeTab(value: string | null): value is HomeTab {
-  return value === "alle" || value === "mine";
-}
-
 function isQuickFilterName(value: string): value is (typeof QUICK_FILTER_NAMES)[number] {
   return QUICK_FILTER_NAMES.includes(value as (typeof QUICK_FILTER_NAMES)[number]);
-}
-
-function getSelectedCategoryNames(searchParams: Pick<URLSearchParams, "get">) {
-  const categories = searchParams.get("categories");
-  return (
-    categories
-      ?.split(",")
-      .map((name) => name.trim())
-      .filter(Boolean) ?? []
-  );
 }
 
 export default function FilterBar({
@@ -50,34 +33,36 @@ export default function FilterBar({
   categories?: Category[];
   userEmail?: string;
 }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const [filters, setFilters] = useQueryStates(filterParsers, {
+    history: "replace",
+    scroll: false,
+    shallow: false,
+  });
+
   const [isMobile, setIsMobile] = useState(false);
 
-  const searchParamsKey = searchParams.toString();
-  const selectedCategoryNames = useMemo(
-    () => getSelectedCategoryNames(new URLSearchParams(searchParamsKey)),
-    [searchParamsKey],
-  );
-  const searchInput = searchParams.get("search") ?? "";
-  const tabParam = searchParams.get("tab");
-  const tabname: HomeTab = isHomeTab(tabParam) ? tabParam : DEFAULT_TAB;
-  const showPrevious = searchParams.get("showPast") === "1";
-  const showOnlyRegistered = userEmail != null && searchParams.get("onlyRegistered") === "1";
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const providedCategories = useMemo(() => getUniqueCategories(allCategories), [allCategories]);
+
   const selectedCategories = useMemo(
     () =>
-      selectedCategoryNames
+      filters.categories
         .map((name) => providedCategories.find((c) => c.name === name))
         .filter((c): c is Category => c !== undefined),
-    [providedCategories, selectedCategoryNames],
+    [providedCategories, filters.categories],
   );
+
   const selectedQuickFilters = useMemo(
-    () => QUICK_FILTER_NAMES.filter((name) => selectedCategoryNames.includes(name)),
-    [selectedCategoryNames],
+    () => QUICK_FILTER_NAMES.filter((name) => filters.categories.includes(name)),
+    [filters.categories],
   );
+
   const visibleCategoryOptions = useMemo(
     () =>
       providedCategories
@@ -87,63 +72,19 @@ export default function FilterBar({
     [providedCategories],
   );
 
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  const updateUrlState = (updates: {
-    categories?: string[] | null;
-    search?: string | null;
-    tab?: HomeTab | null;
-    showPast?: boolean | null;
-    onlyRegistered?: boolean | null;
-  }) => {
-    const next = new URLSearchParams(searchParamsKey);
-
-    if (updates.categories !== undefined) {
-      if (updates.categories?.length) {
-        next.set("categories", [...updates.categories].sort((a, b) => a.localeCompare(b)).join(","));
-      } else {
-        next.delete("categories");
-      }
-    }
-
-    if (updates.search !== undefined) {
-      updates.search ? next.set("search", updates.search) : next.delete("search");
-    }
-
-    if (updates.tab !== undefined) {
-      updates.tab && updates.tab !== DEFAULT_TAB ? next.set("tab", updates.tab) : next.delete("tab");
-    }
-
-    if (updates.showPast !== undefined) {
-      updates.showPast ? next.set("showPast", "1") : next.delete("showPast");
-    }
-
-    if (updates.onlyRegistered !== undefined) {
-      updates.onlyRegistered ? next.set("onlyRegistered", "1") : next.delete("onlyRegistered");
-    }
-
-    const nextSearch = next.toString();
-    router.replace(nextSearch ? `${pathname}?${nextSearch}` : pathname, { scroll: false });
-  };
-
   const handleTabChange = (nextTab: HomeTab) => {
-    updateUrlState({
+    setFilters({
       tab: nextTab,
-      showPast: nextTab === "alle" ? null : showPrevious,
+      showPast: nextTab === "alle" ? false : filters.showPast,
       onlyRegistered: false,
     });
   };
 
   const handleCategoryToggle = (categoryName: string, isSelected: boolean) => {
     const nextNames = isSelected
-      ? [...selectedCategoryNames, categoryName]
-      : selectedCategoryNames.filter((n) => n !== categoryName);
-    updateUrlState({ categories: nextNames });
+      ? [...filters.categories, categoryName]
+      : filters.categories.filter((n) => n !== categoryName);
+    setFilters({ categories: nextNames.length ? nextNames.sort((a, b) => a.localeCompare(b)) : [] });
   };
 
   const handleQuickFilterChange = (values: string[]) => {
@@ -152,16 +93,18 @@ export default function FilterBar({
     if (validValues.length > 1) return;
 
     const nextNames = [
-      ...selectedCategoryNames.filter((name) => !isQuickFilterName(name)),
+      ...filters.categories.filter((name) => !isQuickFilterName(name)),
       ...validValues,
     ];
-    updateUrlState({ categories: nextNames, onlyRegistered: nextOnlyRegistered });
+    setFilters({ categories: nextNames, onlyRegistered: nextOnlyRegistered });
   };
+
+  const showOnlyRegistered = userEmail != null && filters.onlyRegistered;
 
   return (
     <div className="flex flex-col w-full gap-6 items-start">
       {/* Home tabs */}
-      <Tabs className="self-start w-full" value={tabname}>
+      <Tabs className="self-start w-full" value={filters.tab}>
         <Tabs.List>
           <Tabs.Tab value="alle" label="Alle" onClick={() => handleTabChange("alle")} />
           <Tabs.Tab value="mine" label="Arrangør" onClick={() => handleTabChange("mine")} />
@@ -169,7 +112,7 @@ export default function FilterBar({
       </Tabs>
 
       {/* Fagfest CTA */}
-      {tabname === "alle" && (
+      {filters.tab === "alle" && (
         <div className="px-4 inline-block">
           <LinkPanel
             data-umami-event="Fagfest CTA"
@@ -190,12 +133,12 @@ export default function FilterBar({
         <Search
           label="Søk alle kommende arrangementer"
           variant="simple"
-          value={searchInput}
+          value={filters.search}
           size="small"
           className="w-full ax-md:w-auto order-2 ax-md:order-1"
-          onChange={(e) => updateUrlState({ search: e || null })}
+          onChange={(e) => setFilters({ search: e || "" })}
         />
-        {tabname === "alle" && (
+        {filters.tab === "alle" && (
           <div className="mt-5 ax-md:mt-0 w-full ax-md:w-fit flex items-center flex-wrap flex-row-reverse ax-md:flex-row gap-2 order-1 ax-md:order-2">
             <span className="gap-2 items-center hidden ax-md:flex">
               <FunnelIcon title="trakt" />
@@ -219,20 +162,20 @@ export default function FilterBar({
       </div>
 
       {/* Quick filters / show past */}
-      {tabname !== "alle" && (
+      {filters.tab !== "alle" && (
         <CheckboxGroup
           legend="Vis"
           hideLegend
           className="-mt-5 -mb-2 ml-4"
           onChange={(values: string[]) =>
-            updateUrlState({ showPast: values.includes(VISIBLE_PREVIOUS_VALUE) })
+            setFilters({ showPast: values.includes("showPast") })
           }
-          value={showPrevious ? [VISIBLE_PREVIOUS_VALUE] : []}
+          value={filters.showPast ? ["showPast"] : []}
         >
-          <Checkbox value={VISIBLE_PREVIOUS_VALUE}>Vis tidligere</Checkbox>
+          <Checkbox value="showPast">Vis tidligere</Checkbox>
         </CheckboxGroup>
       )}
-      {tabname === "alle" && (
+      {filters.tab === "alle" && (
         <CheckboxGroup
           legend="Vis"
           hideLegend
@@ -285,3 +228,4 @@ export default function FilterBar({
     </div>
   );
 }
+

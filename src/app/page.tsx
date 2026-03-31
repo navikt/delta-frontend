@@ -6,12 +6,14 @@ import EventListSection from "@/components/eventListSection";
 import EventListSkeleton from "@/components/eventListSkeleton";
 import { getAllCategories } from "@/service/eventQueries";
 import { Metadata } from 'next';
+import { createSearchParamsCache } from "nuqs/server";
+import { filterParsers } from "@/components/filters/filterParams";
 
 export const metadata: Metadata = {
   title: 'Delta Δ Nav',
 };
 
-type HomeTab = "alle" | "mine";
+const searchParamsCache = createSearchParamsCache(filterParsers);
 
 export default async function Home({
   searchParams,
@@ -19,26 +21,19 @@ export default async function Home({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   await checkToken("/");
-  const params = await searchParams;
+  const params = searchParamsCache.parse(await searchParams);
 
   const [categories, user] = await Promise.all([getAllCategories(), getUser()]);
 
-  // Extract filter state from URL params
-  const tabname = (params.tab === "mine" ? "mine" : "alle") as HomeTab;
-  const showPast = params.showPast === "1";
-  const categoryNames = typeof params.categories === "string"
-    ? params.categories.split(",").map((s) => s.trim()).filter(Boolean)
-    : [];
-
   // Resolve category names to IDs
-  const categoryIds = categoryNames
+  const categoryIds = params.categories
     .map((name) => categories.find((c) => c.name === name)?.id)
     .filter((id): id is number => id !== undefined);
 
   // Determine API-level time filters
-  const onlyFuture = tabname === "alle" || !showPast;
-  const onlyPast = tabname !== "alle" && showPast;
-  const onlyMine = tabname === "mine";
+  const onlyFuture = params.tab === "alle" || !params.showPast;
+  const onlyPast = params.tab !== "alle" && params.showPast;
+  const onlyMine = params.tab === "mine";
 
   return (
     <CardWithBackground
@@ -53,7 +48,7 @@ export default async function Home({
           onlyFuture={onlyFuture}
           onlyPast={onlyPast}
           onlyMine={onlyMine}
-          tabname={tabname}
+          tabname={params.tab}
           userEmail={user.email}
         />
       </Suspense>

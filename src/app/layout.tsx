@@ -4,6 +4,7 @@ import ScrollToTop from "@/components/ScrollToTop";
 import "./globals.css";
 import { Metadata } from "next";
 import Script from 'next/script';
+import { NuqsAdapter } from "nuqs/adapters/next";
 
 type RootLayoutProps = {
   children: React.ReactNode;
@@ -53,6 +54,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         )}
       </head>
       <body>
+        <NuqsAdapter>
         <div className="flex flex-col min-h-screen" style={{ background: "rgba(19,17,54)" }}>
           <div className="relative z-50">
             <Header />
@@ -63,6 +65,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
           <Footer />
           <ScrollToTop />
         </div>
+        </NuqsAdapter>
       </body>
     </html>
   );

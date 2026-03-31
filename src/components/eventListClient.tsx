@@ -2,7 +2,8 @@
 
 import { FullDeltaEvent } from "@/types/event";
 import { EventCard } from "@/components/eventCard";
-import { useSearchParams } from "next/navigation";
+import { useQueryStates } from "nuqs";
+import { filterParsers } from "@/components/filters/filterParams";
 import { useMemo } from "react";
 
 type Props = {
@@ -12,9 +13,7 @@ type Props = {
 };
 
 export default function EventListClient({ events, tabname, userEmail }: Props) {
-  const searchParams = useSearchParams();
-  const search = searchParams.get("search") ?? "";
-  const onlyRegistered = userEmail != null && searchParams.get("onlyRegistered") === "1";
+  const [{ search, onlyRegistered }] = useQueryStates(filterParsers);
 
   const filtered = useMemo(() => {
     let result = events;
@@ -82,3 +81,4 @@ export default function EventListClient({ events, tabname, userEmail }: Props) {
     </div>
   );
 }
+

@@ -8,8 +8,8 @@ const scope = () =>
 
 export async function POST(request: Request) {
     const apiUrl = process.env.NODE_ENV === 'production'
-        ? 'http://delta-backend/api/groups'
-        : 'http://localhost:8080/api/groups';
+        ? 'http://delta-backend/api/faggrupper'
+        : 'http://localhost:8080/api/faggrupper';
 
     const tokenResult = await getOboTokenFromRequest(request, scope());
     if (tokenResult instanceof Response) return tokenResult;

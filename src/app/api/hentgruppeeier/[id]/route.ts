@@ -12,8 +12,8 @@ export async function GET(
 ) {
     const { id } = await params;
     const apiUrl = process.env.NODE_ENV === 'production'
-        ? `http://delta-backend/api/groups/${id}/is-owner`
-        : `http://localhost:8080/api/groups/${id}/is-owner`;
+        ? `http://delta-backend/api/faggrupper/${id}/eier`
+        : `http://localhost:8080/api/faggrupper/${id}/eier`;
 
     const tokenResult = await getOboTokenFromRequest(request, scope());
     if (tokenResult instanceof Response) return tokenResult;

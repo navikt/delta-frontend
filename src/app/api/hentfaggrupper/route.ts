@@ -12,8 +12,8 @@ export async function GET(request: Request) {
     const queryString = groupTypes.map(t => `group_type=${encodeURIComponent(t)}`).join('&');
 
     const baseUrl = process.env.NODE_ENV === 'production'
-        ? 'http://delta-backend/api/groups'
-        : 'http://localhost:8080/api/groups';
+        ? 'http://delta-backend/api/faggrupper'
+        : 'http://localhost:8080/api/faggrupper';
     const apiUrl = queryString ? `${baseUrl}?${queryString}` : baseUrl;
 
     const tokenResult = await getOboTokenFromRequest(request, scope());

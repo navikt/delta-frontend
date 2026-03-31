@@ -1,10 +1,9 @@
 import { getDeltaBackendAccessToken } from "@/auth/token";
-import { backendUrl, getApi } from "@/api/instance";
+import { backendUrl } from "@/api/instance";
 import { Category, FullDeltaEvent } from "@/types/event";
 import { AxiosError } from "axios";
 import { notFound } from "next/navigation";
-
-const SHARED_EVENT_LIST_REVALIDATE_SECONDS = 60;
+import { cacheLife, cacheTag } from "next/cache";
 
 type EventListQuery = {
   categoryIds: number[];
@@ -95,20 +94,21 @@ function createEventListSearchParams(query: EventListQuery) {
   return params;
 }
 
-async function fetchEventList(
+async function fetchCachedEventList(
+  token: string | null,
   query: EventListQuery,
-  accessToken: string | null,
 ): Promise<FullDeltaEvent[]> {
-  const params = createEventListSearchParams(query);
-  const headers: HeadersInit = { "Content-Type": "application/json" };
+  "use cache";
+  cacheLife("minutes");
+  cacheTag("events");
 
-  if (accessToken !== null) {
-    headers.Authorization = `Bearer ${accessToken}`;
-  }
+  const params = createEventListSearchParams(query);
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  if (token !== null) headers.Authorization = `Bearer ${token}`;
 
   const response = await fetch(
     `${backendUrl()}/event${params.size > 0 ? `?${params.toString()}` : ""}`,
-    { headers, cache: "no-store" },
+    { headers },
   );
 
   if (!response.ok) {
@@ -139,33 +139,62 @@ export async function getEvents({
       onlyJoined,
       onlyMine,
     });
-    const accessToken = await getDeltaBackendAccessToken();
-    return await fetchEventList(query, accessToken);
+    const token = await getDeltaBackendAccessToken();
+    return await fetchCachedEventList(token, query);
   } catch (error) {
     console.error("Failed to fetch events:", error);
     return [];
   }
 }
 
-export async function getEvent(id: string): Promise<FullDeltaEvent> {
-  try {
-    validateEventId(id);
-    const api = await getApi();
-    const response = await api.get<FullDeltaEvent>(`/event/${id}`);
-    return response.data;
-  } catch (error) {
-    if (error instanceof AxiosError && error.status === 404) {
-      notFound();
-    }
-    throw handleApiError(error);
+async function fetchCachedEvent(
+  token: string | null,
+  id: string,
+): Promise<FullDeltaEvent> {
+  "use cache";
+  cacheLife("minutes");
+  cacheTag("events");
+  cacheTag(`event-${id}`);
+
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  if (token !== null) headers.Authorization = `Bearer ${token}`;
+
+  const response = await fetch(`${backendUrl()}/event/${id}`, { headers });
+
+  if (response.status === 404) notFound();
+  if (!response.ok) {
+    throw new ApiError(`Failed to fetch event: ${response.status}`, response.status);
   }
+
+  return response.json();
+}
+
+export async function getEvent(id: string): Promise<FullDeltaEvent> {
+  validateEventId(id);
+  const token = await getDeltaBackendAccessToken();
+  return fetchCachedEvent(token, id);
+}
+
+async function fetchCachedCategories(token: string | null): Promise<Category[]> {
+  "use cache";
+  cacheLife("hours");
+  cacheTag("categories");
+
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  if (token !== null) headers.Authorization = `Bearer ${token}`;
+
+  const response = await fetch(`${backendUrl()}/category`, { headers });
+  if (!response.ok) {
+    throw new Error(`Categories fetch failed with status ${response.status}`);
+  }
+
+  return response.json();
 }
 
 export async function getAllCategories(): Promise<Category[]> {
   try {
-    const api = await getApi();
-    const response = await api.get<Category[]>("/category");
-    return response.data;
+    const token = await getDeltaBackendAccessToken();
+    return await fetchCachedCategories(token);
   } catch (error) {
     console.error("Failed to fetch categories:", error);
     return [];

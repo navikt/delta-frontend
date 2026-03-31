@@ -1,16 +1,18 @@
 import { Suspense } from "react";
-import { getUser } from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
-import FilterBar from "@/components/filters/filterBar";
-import EventListSection from "@/components/eventListSection";
 import EventListSkeleton from "@/components/eventListSkeleton";
-import { getAllCategories } from "@/service/eventQueries";
+import UserAwareSection from "@/components/userAwareSection";
 import { Metadata } from 'next';
 import { createSearchParamsCache } from "nuqs/server";
 import { filterParsers } from "@/components/filters/filterParams";
 
 export const metadata: Metadata = {
   title: 'Delta Δ Nav',
+};
+
+export const unstable_instant = {
+  prefetch: "runtime",
+  samples: [{ headers: [["authorization", null]] }],
 };
 
 const searchParamsCache = createSearchParamsCache(filterParsers);
@@ -22,34 +24,14 @@ export default async function Home({
 }) {
   const params = searchParamsCache.parse(await searchParams);
 
-  const [categories, user] = await Promise.all([getAllCategories(), getUser()]);
-
-  // Resolve category names to IDs
-  const categoryIds = params.categories
-    .map((name) => categories.find((c) => c.name === name)?.id)
-    .filter((id): id is number => id !== undefined);
-
-  // Determine API-level time filters
-  const onlyFuture = params.tab === "alle" || !params.showPast;
-  const onlyPast = params.tab !== "alle" && params.showPast;
-  const onlyMine = params.tab === "mine";
-
   return (
     <CardWithBackground
       title="Arrangementer"
       newEvent
       scrollToTopOnMount={false}
     >
-      <FilterBar categories={categories} userEmail={user.email} />
       <Suspense fallback={<EventListSkeleton />}>
-        <EventListSection
-          categoryIds={categoryIds}
-          onlyFuture={onlyFuture}
-          onlyPast={onlyPast}
-          onlyMine={onlyMine}
-          tabname={params.tab}
-          userEmail={user.email}
-        />
+        <UserAwareSection params={params} />
       </Suspense>
     </CardWithBackground>
   );

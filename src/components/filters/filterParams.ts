@@ -15,3 +15,11 @@ export const filterParsers = {
   showPast: parseAsBoolean.withDefault(false),
   onlyRegistered: parseAsBoolean.withDefault(false),
 };
+
+export type ParsedFilters = {
+  tab: HomeTab;
+  search: string;
+  categories: string[];
+  showPast: boolean;
+  onlyRegistered: boolean;
+};

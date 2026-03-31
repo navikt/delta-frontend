@@ -53,3 +53,32 @@ export async function introspectToken(
   const data = await res.json();
   return data.active ? data : null;
 }
+
+/**
+ * Extracts the user token from an API route request and exchanges it for an
+ * OBO token scoped to the given target service. Returns the OBO token string,
+ * or a NextResponse error if the exchange fails.
+ *
+ * In development, returns a placeholder token (no exchange needed).
+ * The proxy.ts auth guard already ensures the Authorization header is present
+ * in production before requests reach API routes.
+ */
+export async function getOboTokenFromRequest(
+  request: Request,
+  target: string,
+): Promise<string | Response> {
+  if (process.env.NODE_ENV !== "production") return "placeholder-token";
+
+  const authHeader = request.headers.get("Authorization");
+  if (!authHeader) {
+    return Response.json({ error: "Missing token" }, { status: 401 });
+  }
+
+  const userToken = authHeader.replace("Bearer ", "");
+  const token = await exchangeForOboToken(userToken, target);
+  if (!token) {
+    return Response.json({ error: "Token exchange failed" }, { status: 401 });
+  }
+
+  return token;
+}

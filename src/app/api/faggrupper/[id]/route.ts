@@ -1,5 +1,10 @@
 import { NextResponse } from 'next/server';
-import { getOboToken } from '../obo';
+import { getOboTokenFromRequest } from '@/auth/texas';
+
+const scope = () =>
+    process.env.NEXT_PUBLIC_CLUSTER === 'prod'
+        ? 'api://prod-gcp.delta.delta-backend/.default'
+        : 'api://dev-gcp.delta.delta-backend/.default';
 
 const backendUrl = (id: string) =>
     process.env.NODE_ENV === 'production'
@@ -11,8 +16,8 @@ export async function GET(
     { params }: { params: Promise<{ id: string }> }
 ) {
     const { id } = await params;
-    const tokenResult = await getOboToken(request);
-    if (typeof tokenResult !== 'string') return tokenResult.error;
+    const tokenResult = await getOboTokenFromRequest(request, scope());
+    if (tokenResult instanceof Response) return tokenResult;
 
     try {
         const response = await fetch(backendUrl(id), {
@@ -34,8 +39,8 @@ export async function DELETE(
     { params }: { params: Promise<{ id: string }> }
 ) {
     const { id } = await params;
-    const tokenResult = await getOboToken(request);
-    if (typeof tokenResult !== 'string') return tokenResult.error;
+    const tokenResult = await getOboTokenFromRequest(request, scope());
+    if (tokenResult instanceof Response) return tokenResult;
 
     try {
         const response = await fetch(backendUrl(id), {
@@ -58,8 +63,8 @@ export async function PUT(
     { params }: { params: Promise<{ id: string }> }
 ) {
     const { id } = await params;
-    const tokenResult = await getOboToken(request);
-    if (typeof tokenResult !== 'string') return tokenResult.error;
+    const tokenResult = await getOboTokenFromRequest(request, scope());
+    if (tokenResult instanceof Response) return tokenResult;
 
     try {
         const body = await request.json();

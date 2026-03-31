@@ -1,13 +1,18 @@
 import { NextResponse } from 'next/server';
-import { getOboToken } from '../../obo';
+import { getOboTokenFromRequest } from '@/auth/texas';
+
+const scope = () =>
+    process.env.NEXT_PUBLIC_CLUSTER === 'prod'
+        ? 'api://prod-gcp.delta.delta-backend/.default'
+        : 'api://dev-gcp.delta.delta-backend/.default';
 
 export async function GET(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
 ) {
     const { id } = await params;
-    const tokenResult = await getOboToken(request);
-    if (typeof tokenResult !== 'string') return tokenResult.error;
+    const tokenResult = await getOboTokenFromRequest(request, scope());
+    if (tokenResult instanceof Response) return tokenResult;
 
     const apiUrl = process.env.NODE_ENV === 'production'
         ? `http://delta-backend/api/faggrupper/${id}/eier`

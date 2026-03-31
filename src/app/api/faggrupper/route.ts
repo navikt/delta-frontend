@@ -1,5 +1,10 @@
 import { NextResponse } from 'next/server';
-import { getOboToken } from './obo';
+import { getOboTokenFromRequest } from '@/auth/texas';
+
+const scope = () =>
+    process.env.NEXT_PUBLIC_CLUSTER === 'prod'
+        ? 'api://prod-gcp.delta.delta-backend/.default'
+        : 'api://dev-gcp.delta.delta-backend/.default';
 
 const backendUrl = () =>
     process.env.NODE_ENV === 'production'
@@ -7,8 +12,8 @@ const backendUrl = () =>
         : 'http://localhost:8080/api/faggrupper';
 
 export async function GET(request: Request) {
-    const tokenResult = await getOboToken(request);
-    if (typeof tokenResult !== 'string') return tokenResult.error;
+    const tokenResult = await getOboTokenFromRequest(request, scope());
+    if (tokenResult instanceof Response) return tokenResult;
 
     try {
         const response = await fetch(backendUrl(), {
@@ -26,8 +31,8 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-    const tokenResult = await getOboToken(request);
-    if (typeof tokenResult !== 'string') return tokenResult.error;
+    const tokenResult = await getOboTokenFromRequest(request, scope());
+    if (tokenResult instanceof Response) return tokenResult;
 
     try {
         const body = await request.json();

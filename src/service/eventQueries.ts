@@ -108,7 +108,7 @@ async function fetchEventList(
 
   const response = await fetch(
     `${backendUrl()}/event${params.size > 0 ? `?${params.toString()}` : ""}`,
-    { headers },
+    { headers, cache: "no-store" },
   );
 
   if (!response.ok) {

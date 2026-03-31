@@ -1,4 +1,3 @@
-import { cacheLife, cacheTag } from "next/cache";
 import { Category } from "@/types/event";
 import { getEvents } from "@/service/eventQueries";
 import EventListClient from "./eventListClient";
@@ -20,10 +19,6 @@ export default async function EventListSection({
   tabname,
   userEmail,
 }: Props) {
-  "use cache";
-  cacheLife("minutes");
-  cacheTag("events");
-
   const categories: Category[] = categoryIds.map((id) => ({ id, name: "" }));
 
   const events = await getEvents({

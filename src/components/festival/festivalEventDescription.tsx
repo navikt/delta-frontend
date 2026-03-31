@@ -46,9 +46,9 @@ export default function FestivalEventDescription({
     a.name.split(", ").reverse()[0] > b.name.split(", ").reverse()[0] ? 1 : -1;
 
   const filterParticipants = useMemo(() => {
-    return hosts
+    return [...hosts]
       .sort(sortParticipant)
-      .concat(participants.sort(sortParticipant))
+      .concat([...participants].sort(sortParticipant))
       .filter((p) =>
         p.name
           .split(", ")
@@ -63,10 +63,11 @@ export default function FestivalEventDescription({
 
   function convertTextToLinks(text: string) {
     const urlRegex = /(https?:\/\/\S+)/g;
+    const urlTest = /https?:\/\/\S+/;
     const parts = text.split(urlRegex);
     // @ts-ignore
     return parts.map((part, index) => {
-      if (urlRegex.test(part)) {
+      if (urlTest.test(part)) {
         let url = part.trim();
         if (!url.startsWith("http")) {
           url = "https://" + url;

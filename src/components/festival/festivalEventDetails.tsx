@@ -70,10 +70,11 @@ export default function FestivalEventDetails({
 
   function convertTextToLinks(text: string) {
     const urlRegex = /(https?:\/\/\S+)/g;
+    const urlTest = /https?:\/\/\S+/;
     const parts = text.split(urlRegex);
     // @ts-ignore
     return parts.map((part, index) => {
-      if (urlRegex.test(part)) {
+      if (urlTest.test(part)) {
         let url = part.trim();
         if (!url.startsWith("http")) {
           url = "https://" + url;

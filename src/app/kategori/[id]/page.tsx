@@ -1,4 +1,3 @@
-import { checkToken } from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
 import EventFilters from "@/components/eventFiltersCategory";
 import { getAllCategories } from "@/service/eventQueries";
@@ -17,7 +16,6 @@ export async function generateMetadata(
 
 export default async function Page({ params }: CategoryPageProps) {
     const { id } = await params;
-    await checkToken(`/kategori/${id}`);
     const allCategories = await getAllCategories();
     const category = id
     const theCategory = allCategories.find(item => item.name === category);

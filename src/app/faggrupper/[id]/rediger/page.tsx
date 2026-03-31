@@ -1,4 +1,4 @@
-import { checkToken, getDeltaBackendAccessToken, getUser, isFaggruppeAdmin } from "@/auth/token";
+import { getDeltaBackendAccessToken, getUser, isFaggruppeAdmin } from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
 import EditFaggruppeForm from "@/components/faggrupper/EditFaggruppeForm";
 import ManageEiereForm from "@/components/faggrupper/ManageEiereForm";
@@ -22,7 +22,6 @@ interface Group {
 // @ts-ignore
 export default async function RedigerFaggrupePage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
-    await checkToken(`/faggrupper/${id}/rediger`);
 
     const token = await getDeltaBackendAccessToken();
     const apiUrl = process.env.NODE_ENV === 'production'

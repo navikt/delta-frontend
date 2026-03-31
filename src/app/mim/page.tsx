@@ -1,4 +1,3 @@
-import { checkToken } from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
 import { mimConfig } from "@/components/festival/festivalConfig";
 import FestivalEventsSection from "@/components/festival/festivalEventsSection";
@@ -11,7 +10,6 @@ export const metadata: Metadata = {
 };
 
 export default async function MimPage() {
-  await checkToken("/mim");
 
   return (
     <div className="flex flex-col w-full pb-10 colorful">

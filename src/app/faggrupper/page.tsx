@@ -1,10 +1,9 @@
-import { checkToken, getDeltaBackendAccessToken } from "@/auth/token";
+import { getDeltaBackendAccessToken } from "@/auth/token";
 import CardWithBackground from '@/components/cardWithBackground';
 import SearchArticles from '@/components/faggrupper/SearchArticles';
 import Link from "next/link";
 
 export default async function ArticlesPage() {
-    await checkToken("/faggrupper");
 
     const token = await getDeltaBackendAccessToken();
     const apiUrl = process.env.NODE_ENV === 'production'

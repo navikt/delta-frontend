@@ -1,5 +1,5 @@
 import type { FullDeltaEvent } from "@/types/event";
-import { checkToken, getUser } from "@/auth/token";
+import { getUser } from "@/auth/token";
 import EventDetails from "./eventDetails";
 import { getEvent } from "@/service/eventQueries";
 import { Metadata, ResolvingMetadata } from "next";
@@ -57,7 +57,6 @@ export async function generateMetadata(
 export default async function Page({ params, searchParams }: EventPageProps) {
   const { id } = await params;
   const { returnTo } = await searchParams;
-  await checkToken(`/fagfest/${id}`);
   const hostname = process.env.NEXT_PUBLIC_HOSTNAME;
   const backLink = getSafeReturnTo(returnTo);
 

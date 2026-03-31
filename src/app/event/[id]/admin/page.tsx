@@ -1,4 +1,4 @@
-import { checkToken, getUser } from "@/auth/token";
+import { getUser } from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
 import ParticipantPage from "./participantPage";
 import Link from "next/link";
@@ -15,7 +15,6 @@ export default async function ParticipantsPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  await checkToken(`/event/${id}/admin`);
 
   const fullEvent = await getEvent(id);
   const user = await getUser();

@@ -1,4 +1,3 @@
-import { checkToken } from "@/auth/token";
 import CreateEventForm from "@/components/createEventForm";
 import CardWithBackground from "@/components/cardWithBackground";
 import { Metadata } from "next";
@@ -12,7 +11,6 @@ export const metadata: Metadata = {
 export default async function NewEvent(props: {
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  await checkToken("/event/new");
   const categories = await getAllCategories();
 
   const searchParams = await props.searchParams;

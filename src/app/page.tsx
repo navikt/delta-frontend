@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { checkToken, getUser } from "@/auth/token";
+import { getUser } from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
 import FilterBar from "@/components/filters/filterBar";
 import EventListSection from "@/components/eventListSection";
@@ -20,7 +20,6 @@ export default async function Home({
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  await checkToken("/");
   const params = searchParamsCache.parse(await searchParams);
 
   const [categories, user] = await Promise.all([getAllCategories(), getUser()]);

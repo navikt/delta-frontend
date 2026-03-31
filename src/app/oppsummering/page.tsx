@@ -1,7 +1,7 @@
-import { checkToken } from "@/auth/token";
 import { getUserWrappedStats } from "@/service/wrappedActions";
 import { Metadata } from 'next';
 import WrappedClient from "./wrappedClient";
+import { connection } from "next/server";
 
 export const metadata: Metadata = {
     title: "Din deltakelse - Delta Δ Nav",
@@ -13,7 +13,7 @@ export default async function WrappedPage({
 }: {
     params: Promise<{ year?: string }>;
 }) {
-    await checkToken("/oppsummering");
+    await connection();
 
     const resolvedParams = await params;
 

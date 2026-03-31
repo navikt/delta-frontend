@@ -1,4 +1,3 @@
-import {checkToken} from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
 import Link from "next/link";
 import {Metadata} from "next";
@@ -8,7 +7,6 @@ export const metadata: Metadata = {
 };
 
 export default async function Accessibility() {
-    await checkToken("/legal/accessibility");
 
     return (
         <CardWithBackground

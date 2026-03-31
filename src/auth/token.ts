@@ -1,29 +1,19 @@
-import { requestOboToken, validateToken, getToken } from "@navikt/oasis";
 import type { User } from "@/types/user";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { cache } from "react";
+import { exchangeForOboToken, introspectToken } from "./texas";
 
-export async function checkToken(redirectTo?: string) {
-  if (process.env.NODE_ENV === "development") return;
+// Cached per render — reads the Authorization header once and introspects the token
+const getClaims = cache(async (): Promise<Record<string, unknown> | null> => {
+  if (process.env.NODE_ENV === "development") return null;
 
-  const token = getToken(await headers());
-  if (!token) {
-    if (redirectTo) {
-      redirect(`/oauth2/login?redirect=${redirectTo}`);
-    }
-    redirect("/oauth2/login");
-  }
+  const authHeader = (await headers()).get("Authorization");
+  if (!authHeader) return null;
 
-  const result = await validateToken(token);
-  if (!result.ok) {
-    console.log(`Tokenvalidering gikk galt`);
-    redirectTo
-      ? redirect(`/oauth2/login?redirect=${redirectTo}`)
-      : redirect("/oauth2/login");
-  }
-}
-// fjernet : ${result.error.message}
+  const token = authHeader.replace("Bearer ", "");
+  return introspectToken(token);
+});
 
 // Deduplicate user lookups within a single server render
 export const getUser = cache(async (): Promise<User> => {
@@ -35,44 +25,23 @@ export const getUser = cache(async (): Promise<User> => {
     };
   }
 
-  const authHeader = (await headers()).get("Authorization");
-  if (!authHeader) {
-    redirect("/oauth2/login");
-  }
+  const claims = await getClaims();
+  if (!claims) redirect("/oauth2/login");
 
-  const token = authHeader.replace("Bearer ", "");
-  const jwtPayload = token.split(".")[1];
-  const payload = JSON.parse(Buffer.from(jwtPayload, "base64").toString());
+  const [lastName, firstName] = (claims.name as string).split(", ");
+  const email = (claims.preferred_username as string).toLowerCase();
 
-  const [lastName, firstName] = payload.name.split(", ");
-  const email = payload.preferred_username.toLowerCase();
-
-  return {
-    firstName,
-    lastName,
-    email,
-  };
+  return { firstName, lastName, email };
 });
 
-export async function getAccessToken(
-  scope: string = "",
-): Promise<string | null> {
+async function getAccessToken(scope: string): Promise<string | null> {
   if (process.env.NODE_ENV === "development") return null;
 
-  const token = getToken(await headers());
-  if (!token) {
-    throw new Error("No access token, please log in...");
-  }
+  const authHeader = (await headers()).get("Authorization");
+  if (!authHeader) throw new Error("No access token, please log in...");
 
-  const result = await requestOboToken(token, scope);
-
-  if (!result.ok) {
-    console.log(`Grant azure obo token failed`);
-    return null;
-  }
-  // fjernet : ${result.error.message}
-
-  return result.token;
+  const userToken = authHeader.replace("Bearer ", "");
+  return exchangeForOboToken(userToken, scope);
 }
 
 // Deduplicate OBO token requests within a single server render
@@ -87,14 +56,10 @@ export const getDeltaBackendAccessToken = cache(
 export async function getUserGroups(): Promise<string[]> {
   if (process.env.NODE_ENV === "development") return [];
 
-  const authHeader = (await headers()).get("Authorization");
-  if (!authHeader) return [];
+  const claims = await getClaims();
+  if (!claims) return [];
 
-  const token = authHeader.replace("Bearer ", "");
-  const jwtPayload = token.split(".")[1];
-  const payload = JSON.parse(Buffer.from(jwtPayload, "base64").toString());
-
-  return Array.isArray(payload.groups) ? payload.groups : [];
+  return Array.isArray(claims.groups) ? (claims.groups as string[]) : [];
 }
 
 export async function isFaggruppeAdmin(): Promise<boolean> {
@@ -106,3 +71,4 @@ export async function isFaggruppeAdmin(): Promise<boolean> {
   const groups = await getUserGroups();
   return groups.includes(adminGroupId);
 }
+

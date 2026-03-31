@@ -1,4 +1,3 @@
-import { checkToken } from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
 import { getEventStatistics } from "@/service/statsActions";
 import { Metadata } from 'next';
@@ -27,7 +26,6 @@ export default async function StatsPage({
 }: {
   searchParams: Promise<{ year?: string }>;
 }) {
-  await checkToken("/statistikk");
 
   const params = await searchParams;
   const currentYear = new Date().getFullYear();

@@ -1,4 +1,3 @@
-import { checkToken } from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
 import { fagtorsdagConfig } from "@/components/festival/festivalConfig";
 import FestivalEventsSection from "@/components/festival/festivalEventsSection";
@@ -10,7 +9,6 @@ export const metadata: Metadata = {
 };
 
 export default async function FagtorsdagPage() {
-  await checkToken("/fagtorsdag");
 
   return (
     <div className="flex flex-col w-full pb-10 colorful_fagtorsdag">

@@ -1,5 +1,10 @@
 import { NextResponse } from 'next/server';
-import { getToken, validateToken, requestOboToken } from '@navikt/oasis';
+import { exchangeForOboToken } from '@/auth/texas';
+
+const deltaBackendScope = () =>
+    process.env.NEXT_PUBLIC_CLUSTER === 'prod'
+        ? 'api://prod-gcp.delta.delta-backend/.default'
+        : 'api://dev-gcp.delta.delta-backend/.default';
 
 export async function POST(request: Request) {
     const apiUrl = process.env.NODE_ENV === 'production'
@@ -8,51 +13,29 @@ export async function POST(request: Request) {
 
     try {
         const body = await request.json();
-        let token: string | null;
+        let token: string;
 
         if (process.env.NODE_ENV === 'production') {
-            token = getToken(request);
-            if (!token) {
-                return NextResponse.json({ error: 'Missing token' }, { status: 401 });
-            }
+            const authHeader = request.headers.get('Authorization');
+            if (!authHeader) return NextResponse.json({ error: 'Missing token' }, { status: 401 });
 
-            const validation = await validateToken(token);
-            if (!validation.ok) {
-                return NextResponse.json({ error: 'Token validation failed' }, { status: 401 });
-            }
-
-            const obo = await requestOboToken(token, process.env.NEXT_PUBLIC_CLUSTER === 'prod'
-                ? 'api://prod-gcp.delta.delta-backend/.default'
-                : 'api://dev-gcp.delta.delta-backend/.default');
-            if (!obo.ok) {
-                return NextResponse.json({ error: 'OBO token request failed' }, { status: 401 });
-            }
-
-            token = obo.token;
+            const oboToken = await exchangeForOboToken(authHeader.replace('Bearer ', ''), deltaBackendScope());
+            if (!oboToken) return NextResponse.json({ error: 'Token exchange failed' }, { status: 401 });
+            token = oboToken;
         } else {
             token = 'placeholder-token';
         }
 
         const response = await fetch(apiUrl, {
             method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
             body: JSON.stringify(body),
         });
 
-        if (!response.ok) {
-            throw new Error(`Failed to create group: ${response.status}`);
-        }
-
-        const data = await response.json();
-        return NextResponse.json(data);
+        if (!response.ok) throw new Error(`Failed to create group: ${response.status}`);
+        return NextResponse.json(await response.json());
     } catch (error) {
         console.error('Error creating group:', error);
-        return NextResponse.json(
-            { error: 'Failed to create group' },
-            { status: 500 }
-        );
+        return NextResponse.json({ error: 'Failed to create group' }, { status: 500 });
     }
 }

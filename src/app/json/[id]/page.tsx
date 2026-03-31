@@ -1,4 +1,3 @@
-import { checkToken } from "@/auth/token";
 import EventJSONFilters from "@/components/eventJSONFilters";
 import { getAllCategories } from "@/service/eventQueries";
 import { Metadata } from "next";
@@ -16,7 +15,6 @@ export async function generateMetadata(
 
 export default async function Page({ params }: CategoryPageProps) {
     const { id } = await params;
-    await checkToken(`/json/${id}`);
     const allCategories = await getAllCategories();
     const category = id
     const theCategory = allCategories.find(item => item.name === category);

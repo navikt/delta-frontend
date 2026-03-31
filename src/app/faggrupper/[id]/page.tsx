@@ -1,4 +1,4 @@
-import { checkToken, getDeltaBackendAccessToken, getUser, isFaggruppeAdmin } from "@/auth/token";
+import { getDeltaBackendAccessToken, getUser, isFaggruppeAdmin } from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
 import { Detail } from "@navikt/ds-react";
 import { PersonGroupIcon, CalendarIcon, ClockIcon } from "@navikt/aksel-icons";
@@ -23,7 +23,6 @@ interface Group {
 // @ts-ignore
 export default async function ArticlePage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
-    await checkToken(`/faggrupper/${id}`);
 
     const token = await getDeltaBackendAccessToken();
     const apiUrl = process.env.NODE_ENV === 'production'

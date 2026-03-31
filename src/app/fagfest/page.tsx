@@ -1,4 +1,3 @@
-import { checkToken } from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
 import "./fagfestival.css";
 import Image from "next/image";
@@ -13,7 +12,6 @@ export const metadata: Metadata = {
 };
 
 export default async function Fagfestival() {
-  await checkToken("/fagfest");
 
   return (
     <>

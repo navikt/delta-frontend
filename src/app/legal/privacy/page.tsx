@@ -1,4 +1,3 @@
-import {checkToken} from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
 import Link from "next/link";
 import {Metadata} from "next";
@@ -7,7 +6,6 @@ export const metadata: Metadata = {
     title: "Personvern Δ Delta",
 };
 export default async function Privacy() {
-    await checkToken("/legal/privacy");
     return (
         <CardWithBackground
             title="Personvernerærklæring"

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getToken, validateToken, requestOboToken } from '@navikt/oasis';
+import { exchangeForOboToken } from '@/auth/texas';
 
 export async function GET(
     request: Request,
@@ -11,42 +11,24 @@ export async function GET(
         : `http://0.0.0.0:8087/api/groups/${id}/is-owner`;
 
     try {
-        let token: string | null;
+        let token: string;
         if (process.env.NODE_ENV === 'production') {
-            token = getToken(request);
-            if (!token) {
-                return NextResponse.json({ isOwner: false });
-            }
+            const authHeader = request.headers.get('Authorization');
+            if (!authHeader) return NextResponse.json({ isOwner: false });
 
-            const validation = await validateToken(token);
-            if (!validation.ok) {
-                return NextResponse.json({ isOwner: false });
-            }
-
-            const obo = await requestOboToken(token, 'api://prod-gcp.delta.delta-fastapi/.default');
-            if (!obo.ok) {
-                return NextResponse.json({ isOwner: false });
-            }
-
-            token = obo.token;
+            const oboToken = await exchangeForOboToken(authHeader.replace('Bearer ', ''), 'api://prod-gcp.delta.delta-fastapi/.default');
+            if (!oboToken) return NextResponse.json({ isOwner: false });
+            token = oboToken;
         } else {
             token = 'placeholder-token';
         }
 
         const response = await fetch(apiUrl, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            },
+            headers: { 'Authorization': `Bearer ${token}` },
         });
 
-        if (!response.ok) {
-            return NextResponse.json({ isOwner: false });
-        }
-
-        // Just pass through the response from the API
-        const data = await response.json();
-        return NextResponse.json(data);
-
+        if (!response.ok) return NextResponse.json({ isOwner: false });
+        return NextResponse.json(await response.json());
     } catch (error) {
         console.error('Error checking ownership:', error);
         return NextResponse.json({ isOwner: false });

@@ -1,4 +1,3 @@
-import { checkToken } from "@/auth/token";
 import CardWithBackground from '@/components/cardWithBackground';
 import NewGroupForm from '@/components/grupper/NewGroupForm';
 import { Metadata } from 'next';
@@ -8,7 +7,6 @@ export const metadata: Metadata = {
 };
 
 export default async function NewGroupPage() {
-    await checkToken("/grupper/ny");
 
     return (
         <div className="flex flex-col w-full">

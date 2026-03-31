@@ -1,4 +1,3 @@
-import { checkToken } from "@/auth/token";
 import CardWithBackground from '@/components/cardWithBackground';
 import FaggruppeListe from '@/components/grupper/FaggruppeListe';
 import Link from "next/link";
@@ -10,7 +9,6 @@ export const metadata: Metadata = {
 
 // Server component using server-side rendering (SSR)
 export default async function ArticlesPage() {
-    await checkToken("/grupper");
 
     return (
         <div className="flex flex-col w-full">

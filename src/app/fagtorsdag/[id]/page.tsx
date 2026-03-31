@@ -1,5 +1,5 @@
 import type { FullDeltaEvent } from "@/types/event";
-import { checkToken, getUser } from "@/auth/token";
+import { getUser } from "@/auth/token";
 import FestivalEventDetails from "@/components/festival/festivalEventDetails";
 import { fagtorsdagConfig } from "@/components/festival/festivalConfig";
 import { getEvent } from "@/service/eventQueries";
@@ -32,7 +32,6 @@ export async function generateMetadata(
 export default async function Page({ params }: EventPageProps) {
   const { id } = await params;
   const config = fagtorsdagConfig;
-  await checkToken(`/${config.basePath}/${id}`);
   const hostname = process.env.NEXT_PUBLIC_HOSTNAME;
   const user = await getUser();
   const { event, participants, hosts, categories }: FullDeltaEvent =

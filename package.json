@@ -10,9 +10,9 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
-    "@navikt/aksel-icons": "^8.8.0",
-    "@navikt/ds-css": "^8.8.0",
-    "@navikt/ds-react": "^8.8.0",
+    "@navikt/aksel-icons": "^8.9.0",
+    "@navikt/ds-css": "^8.9.0",
+    "@navikt/ds-react": "^8.9.0",
     "@navikt/oasis": "^4.1.4",
     "axios": "^1.13.6",
     "date-fns": "^4.1.0",
@@ -32,8 +32,8 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.5",
     "@mdx-js/loader": "^3.1.1",
-    "@navikt/aksel": "^8.8.0",
-    "@navikt/ds-tailwind": "^8.8.0",
+    "@navikt/aksel": "^8.9.0",
+    "@navikt/ds-tailwind": "^8.9.0",
     "@next/mdx": "^16.2.1",
     "@tailwindcss/typography": "^0.5.19",
     "@types/jsdom": "^28.0.0",

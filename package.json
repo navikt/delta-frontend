@@ -14,7 +14,7 @@
     "@navikt/ds-css": "^8.8.0",
     "@navikt/ds-react": "^8.8.0",
     "@navikt/oasis": "^4.1.4",
-    "axios": "^1.13.6",
+    "axios": "^1.14.0",
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",
     "exceljs": "^4.4.0",
@@ -36,16 +36,16 @@
     "@navikt/ds-tailwind": "^8.8.0",
     "@next/mdx": "^16.2.1",
     "@tailwindcss/typography": "^0.5.19",
-    "@types/jsdom": "^28.0.0",
-    "@types/node": "^25.4.0",
+    "@types/jsdom": "^28.0.1",
+    "@types/node": "^25.5.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "autoprefixer": "^10.4.27",
-    "eslint": "^9.39.4",
+    "eslint": "^10.1.0",
     "eslint-config-next": "^16.2.1",
     "postcss": "^8.5.8",
     "postcss-import": "^16.1.1",
-    "tailwindcss": "^3.4.19",
-    "typescript": "^5.9.3"
+    "tailwindcss": "^4.2.2",
+    "typescript": "^6.0.2"
   }
 }

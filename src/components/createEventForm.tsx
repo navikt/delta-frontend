@@ -13,12 +13,14 @@ import {
   CheckboxGroup,
   Alert,
   Label,
+  Chips,
 } from "@navikt/ds-react";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import {
   createCategory,
   createEvent,
   getEvent,
+  searchUsers,
   setCategories,
   updateEvent,
 } from "@/service/eventActions";
@@ -34,6 +36,7 @@ import {
   RecurringSeriesSummary,
   EditScope,
   TemplateDeltaEvent,
+  UserSearchResult,
 } from "@/types/event";
 import { midnightDate } from "@/service/format";
 import { format } from "date-fns";
@@ -288,6 +291,28 @@ function InternalCreateEventForm({
     ...newTags,
   ];
 
+  const [coHosts, setCoHosts] = useState<UserSearchResult[]>([]);
+  const [coHostInput, setCoHostInput] = useState("");
+  const [coHostSuggestions, setCoHostSuggestions] = useState<UserSearchResult[]>([]);
+  const coHostQueryRef = useRef("");
+
+  useEffect(() => {
+    if (coHostInput.length < 2) {
+      setCoHostSuggestions([]);
+      return;
+    }
+    coHostQueryRef.current = coHostInput;
+    const timer = setTimeout(() => {
+      const query = coHostInput;
+      searchUsers(query).then((results) => {
+        if (coHostQueryRef.current === query) {
+          setCoHostSuggestions(results);
+        }
+      });
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [coHostInput]);
+
   const {
     register,
     trigger,
@@ -412,7 +437,7 @@ function InternalCreateEventForm({
             );
           }
         } else {
-          createAndRedirect(values, newTags, selectedCategories);
+          createAndRedirect(values, newTags, selectedCategories, coHosts.map(h => h.email));
         }
       })}
       className="flex flex-col gap-5"
@@ -826,6 +851,59 @@ function InternalCreateEventForm({
           )}
         </div>
       )}
+      {richEvent.type !== EditTypeEnum.EDIT && (
+        <div className="flex flex-col gap-2">
+          <Label>Legg til med-arrangører</Label>
+          <div className="relative max-w-prose">
+            <TextField
+              label="Legg til med-arrangører"
+              hideLabel
+              placeholder="Søk på navn eller e-post..."
+              value={coHostInput}
+              onChange={(e) => setCoHostInput(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") e.preventDefault(); }}
+              autoComplete="off"
+            />
+            {(() => {
+              const filtered = coHostSuggestions.filter(s => !coHosts.some(h => h.email === s.email));
+              return filtered.length > 0 ? (
+                <ul className="absolute z-10 w-full bg-white border border-gray-200 rounded shadow-lg mt-1 max-h-48 overflow-y-auto">
+                  {filtered.map(s => (
+                    <li key={s.email}>
+                      <button
+                        type="button"
+                        className="w-full px-4 py-2 text-left hover:bg-gray-100 text-sm"
+                        onClick={() => {
+                          setCoHosts(prev =>
+                            prev.some(h => h.email === s.email) ? prev : [...prev, s]
+                          );
+                          setCoHostInput("");
+                          setCoHostSuggestions([]);
+                        }}
+                      >
+                        <span className="font-medium">{s.name}</span>
+                        <span className="text-gray-500 ml-1">({s.email})</span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : null;
+            })()}
+          </div>
+          {coHosts.length > 0 && (
+            <Chips>
+              {coHosts.map(h => (
+                <Chips.Removable
+                  key={h.email}
+                  onClick={() => setCoHosts(prev => prev.filter(x => x.email !== h.email))}
+                >
+                  {h.name}
+                </Chips.Removable>
+              ))}
+            </Chips>
+          )}
+        </div>
+      )}
       {richEvent.type === EditTypeEnum.EDIT && (
         <div>
           <Checkbox {...register("sendNotificationEmail")}>
@@ -881,8 +959,9 @@ async function createAndRedirect(
   formData: CreateEventSchema,
   newTags: string[],
   categories: Category[],
+  additionalHosts: string[] = [],
 ) {
-  const { event } = await createEvent(formData);
+  const { event } = await createEvent(formData, additionalHosts);
 
   const newCategories = newTags.length
     ? await Promise.all(newTags.map((c) => createCategory(c)))

@@ -65,10 +65,10 @@ export default async function Page({ params, searchParams }: EventPageProps) {
   const { event, participants, hosts, categories }: FullDeltaEvent = await getEvent(id);
 
   return (
-    <div className="w-full bg-fagfestival pb-10">
+    <div className="w-full colorful pb-10">
       <CardWithBackground
         title={event.title}
-        titleColor="#ec38a7"
+        titleColor="#021841"
         className="bg-fagfestival"
         home
         backText={"Arrangementer"}

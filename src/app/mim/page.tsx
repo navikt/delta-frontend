@@ -17,18 +17,12 @@ export default async function Fagfestival() {
     <>
       <div className="flex flex-col w-full colorful pb-10 -mb-4">
         <div className="w-full relative z-20">
-          <CardWithBackground className="bg-fagfestival" newEvent>
-            <CardWithBackground
-              compactHeader
-              titleNode={"Mangfold i mai"}
-              titleColor={"#021841"}
-            >
-            </CardWithBackground>
-          </CardWithBackground>
-        </div>
-
-        <div className="w-full -mt-28 relative z-10">
-          <CardWithBackground className="bg-fagfestival" newEvent>
+          <CardWithBackground
+            title="Mangfold i mai"
+            titleColor="#021841"
+            className="bg-fagfestival"
+            newEvent
+          >
             <FagfestivalEvents
               category="mim"
               activeDays={["20", "21"]}

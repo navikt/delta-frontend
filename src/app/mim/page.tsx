@@ -3,7 +3,6 @@ import CardWithBackground from "@/components/cardWithBackground";
 import "./fagfestival.css";
 
 import { Metadata } from "next";
-import Intro from "@/components/fagfestival/intro";
 import FagfestivalEvents from "@/components/fagfestival/fagfestivalEvents";
 
 export const metadata: Metadata = {
@@ -24,9 +23,7 @@ export default async function Fagfestival() {
             titleColor={"#021841"}
             backLink="/"
           >
-            <div className="mx-3 mt-1 mb-0 font-serif">
-              <Intro />
-            </div>
+            <br />
           </CardWithBackground>
         </div>
 

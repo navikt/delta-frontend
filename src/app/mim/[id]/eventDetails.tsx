@@ -271,7 +271,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                     </Modal>
                     <SecondaryCopyButton
                         className="ax-md:whitespace-nowrap w-full"
-                        copyText={`${hostname}/fagfest/${event.id}`}
+                        copyText={`${hostname}/mim/${event.id}`}
                         text="Kopier lenke"
                     />
                 </div>
@@ -307,7 +307,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                     <div className="flex gap-3 mt-2 mb-6">
                         <SecondaryCopyButton
                             className="ax-md:whitespace-nowrap w-fit h-fit"
-                            copyText={`${hostname}/fagfest/${event.id}`}
+                            copyText={`${hostname}/mim/${event.id}`}
                             text="Kopier lenke"
                             size="small"
                         />
@@ -330,7 +330,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                                 Δ Delta
                             </Heading>
                             <Canvas
-                                text={'https://delta.nav.no/fagfest/' + event.id}
+                                text={'https://delta.nav.no/mim/' + event.id}
                                 options={{
                                     errorCorrectionLevel: 'M',
                                     margin: 3,

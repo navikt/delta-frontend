@@ -7,7 +7,7 @@ import { FilterOption, FullDeltaEvent } from "@/types/event";
 import { Checkbox, CheckboxGroup, Search, Tabs } from "@navikt/ds-react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 const DEFAULT_FILTER_OPTION: FilterOption = "vis-programoversikt";
 const JOINED_TAB = "påmeldte";
@@ -108,7 +108,7 @@ function FagfestivalEvents({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const searchParamsKey = searchParams.toString();
-  const searchInput = searchParams.get("search") ?? "";
+  const searchInputFromUrl = searchParams.get("search") ?? "";
   const defaultTab = getCurrentDayAsString(activeDays, festivalMonthIndex);
   const tabParam = searchParams.get("tab");
   const tabName: FestivalTab = isFestivalTab(tabParam, activeDays) ? tabParam : defaultTab;
@@ -120,9 +120,10 @@ function FagfestivalEvents({
   const [joinedEventIds, setJoinedEventIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const [searchInputValue, setSearchInputValue] = useState(searchInputFromUrl);
   const hasRestoredScroll = useRef(false);
 
-  const updateUrlState = (updates: {
+  const updateUrlState = useCallback((updates: {
     tab?: FestivalTab | null;
     search?: string | null;
     view?: "program" | null;
@@ -154,8 +155,13 @@ function FagfestivalEvents({
     }
 
     const nextSearch = nextSearchParams.toString();
+
+    if (nextSearch === searchParamsKey) {
+      return;
+    }
+
     router.replace(nextSearch ? `${pathname}?${nextSearch}` : pathname, { scroll: false });
-  };
+  }, [defaultTab, pathname, router, searchParamsKey]);
 
   useEffect(() => {
     const filteredEvents = events.filter((fullEvent) => {
@@ -168,13 +174,31 @@ function FagfestivalEvents({
       }
 
       return (
-        fullEvent.event.title.toLowerCase().includes(searchInput.toLowerCase()) &&
+        fullEvent.event.title.toLowerCase().includes(searchInputValue.toLowerCase()) &&
         fullEvent.categories.some((eventCategory) => eventCategory.name === category) &&
         passesDayFilter
       );
     });
     setFilterEvents(filteredEvents);
-  }, [activeDays, category, events, searchInput, tabName]);
+  }, [activeDays, category, events, searchInputValue, tabName]);
+
+  useEffect(() => {
+    setSearchInputValue(searchInputFromUrl);
+  }, [searchInputFromUrl]);
+
+  useEffect(() => {
+    if (searchInputValue === searchInputFromUrl) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      updateUrlState({ search: searchInputValue || null });
+    }, 350);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [searchInputFromUrl, searchInputValue, updateUrlState]);
 
   useEffect(() => {
     // Load initial events
@@ -216,7 +240,7 @@ function FagfestivalEvents({
         updateUrlState({ view: null });
       }
     }
-  }, [isMobile, showProgramOverview, tabName]);
+  }, [isMobile, showProgramOverview, tabName, updateUrlState]);
 
   const prevTabNameRef = useRef<string | undefined>(undefined);
 
@@ -325,11 +349,11 @@ function FagfestivalEvents({
         <Search
           label="Søk alle kommende arrangementer"
           variant="simple"
-          value={searchInput}
+          value={searchInputValue}
           size="small"
           className="w-full ax-md:w-auto"
           onChange={(value) => {
-            updateUrlState({ search: value || null });
+            setSearchInputValue(value);
           }}
         />
       </div>

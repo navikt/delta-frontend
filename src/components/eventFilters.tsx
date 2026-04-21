@@ -2,7 +2,7 @@
 import { Category, FullDeltaEvent } from "@/types/event";
 import { Search, Tabs, UNSAFE_Combobox, CheckboxGroup, Checkbox, LinkPanel } from "@navikt/ds-react";
 import EventList from "./eventList";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getEvents } from "@/service/eventActions";
 import { FunnelIcon } from "@navikt/aksel-icons";
 import Link from "next/link";
@@ -65,9 +65,11 @@ export default function EventFilters({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const searchInputFromUrl = searchParams.get("search") ?? "";
   const [loading, setLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const [events, setEvents] = useState<FullDeltaEvent[]>([]);
+  const [searchInputValue, setSearchInputValue] = useState(searchInputFromUrl);
   const hasRestoredScroll = useRef(false);
 
   const searchParamsKey = searchParams.toString();
@@ -76,7 +78,6 @@ export default function EventFilters({
     [searchParamsKey],
   );
   const selectedCategoryNamesKey = selectedCategoryNames.join(",");
-  const searchInput = searchParams.get("search") ?? "";
   const tabParam = searchParams.get("tab");
   const tabname: HomeTab = isHomeTab(tabParam) ? tabParam : DEFAULT_TAB;
   const showPrevious = searchParams.get("showPast") === "1";
@@ -116,7 +117,7 @@ export default function EventFilters({
         tabname !== "alle"
           ? events
           : events.filter((fullEvent) =>
-              fullEvent.event.title.toLowerCase().includes(searchInput.toLowerCase()),
+              fullEvent.event.title.toLowerCase().includes(searchInputValue.toLowerCase()),
             );
 
       if (showOnlyRegistered && userEmail) {
@@ -127,7 +128,7 @@ export default function EventFilters({
 
       return filtered;
     },
-    [events, searchInput, tabname, showOnlyRegistered, userEmail],
+    [events, searchInputValue, tabname, showOnlyRegistered, userEmail],
   );
   const selectedQuickFilters = useMemo(
     () => QUICK_FILTER_NAMES.filter((categoryName) => selectedCategoryNames.includes(categoryName)),
@@ -144,7 +145,7 @@ export default function EventFilters({
   const onlyFuture = tabname === "alle" || !showPrevious;
   const onlyPast = tabname !== "alle" && showPrevious;
 
-  const updateUrlState = (updates: {
+  const updateUrlState = useCallback((updates: {
     categories?: string[] | null;
     search?: string | null;
     tab?: HomeTab | null;
@@ -206,8 +207,13 @@ export default function EventFilters({
     }
 
     const nextSearch = nextSearchParams.toString();
+
+    if (nextSearch === searchParamsKey) {
+      return;
+    }
+
     router.replace(nextSearch ? `${pathname}?${nextSearch}` : pathname, { scroll: false });
-  };
+  }, [pathname, router, searchParamsKey]);
 
   const handleTabChange = (nextTab: HomeTab) => {
     updateUrlState({
@@ -246,6 +252,24 @@ export default function EventFilters({
   useEffect(() => {
     hasRestoredScroll.current = false;
   }, [currentOverviewPath]);
+
+  useEffect(() => {
+    setSearchInputValue(searchInputFromUrl);
+  }, [searchInputFromUrl]);
+
+  useEffect(() => {
+    if (searchInputValue === searchInputFromUrl) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      updateUrlState({ search: searchInputValue || null });
+    }, 350);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [searchInputFromUrl, searchInputValue, updateUrlState]);
 
   const selectedCategoryIdsKey = useMemo(
     () => selectedCategories.map((category) => category.id).sort((a, b) => a - b).join(","),
@@ -392,11 +416,11 @@ export default function EventFilters({
                 <Search
                     label="Søk alle kommende arrangementer"
                     variant="simple"
-                    value={searchInput}
+                    value={searchInputValue}
                     size="small"
                     className="w-full ax-md:w-auto order-2 ax-md:order-1"
-                    onChange={(e) => {
-                      updateUrlState({ search: e || null });
+                    onChange={(value) => {
+                      setSearchInputValue(value);
                     }}
                 />
             )}

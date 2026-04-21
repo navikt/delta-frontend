@@ -9,61 +9,107 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 
-const fagfestivalCategory = "fagfest";
-const activeDays = ["28", "29", "30"];
-const fagfestivalMonth = "April";
-const fagfestivalMonthIndex = new Date(`${fagfestivalMonth} 1, 2000`).getMonth();
 const DEFAULT_FILTER_OPTION: FilterOption = "vis-programoversikt";
-const TAB_VALUES = [...activeDays, "påmeldte"] as const;
-type FagfestTab = (typeof TAB_VALUES)[number];
+const JOINED_TAB = "påmeldte";
 
-function isFagfestTab(value: string | null): value is FagfestTab {
-  return value !== null && TAB_VALUES.includes(value as FagfestTab);
+export type FagfestivalEventsProps = {
+  category?: string;
+  activeDays?: string[];
+  month?: string;
+};
+
+type FestivalTab = string;
+
+const monthIndexByName: Record<string, number> = {
+  january: 0,
+  januar: 0,
+  february: 1,
+  februar: 1,
+  march: 2,
+  mars: 2,
+  april: 3,
+  may: 4,
+  mai: 4,
+  june: 5,
+  juni: 5,
+  july: 6,
+  juli: 6,
+  august: 7,
+  september: 8,
+  october: 9,
+  oktober: 9,
+  november: 10,
+  december: 11,
+  desember: 11,
+};
+
+function isFestivalTab(value: string | null, activeDays: string[]): value is FestivalTab {
+  return value !== null && (value === JOINED_TAB || activeDays.includes(value));
 }
 
-const getRemainingActiveDays = () => {
+function getMonthIndex(month: string): number {
+  const normalizedMonth = month.trim().toLowerCase();
+
+  if (normalizedMonth in monthIndexByName) {
+    return monthIndexByName[normalizedMonth];
+  }
+
+  const parsedMonthIndex = new Date(`${month} 1, 2000`).getMonth();
+  return Number.isFinite(parsedMonthIndex) ? parsedMonthIndex : 0;
+}
+
+const getRemainingActiveDays = (activeDays: string[], monthIndex: number) => {
   const today = new Date();
 
-  if (today.getMonth() !== fagfestivalMonthIndex) {
+  if (today.getMonth() !== monthIndex) {
     return activeDays;
   }
 
   const dayOfMonth = today.getDate();
-  return activeDays.filter((day) => parseInt(day) >= dayOfMonth);
+  return activeDays.filter((day) => parseInt(day, 10) >= dayOfMonth);
 };
 
-const getCurrentDayAsString = () => {
+const getCurrentDayAsString = (activeDays: string[], monthIndex: number) => {
+  if (activeDays.length === 0) {
+    return JOINED_TAB;
+  }
+
   const today = new Date();
   const currentMonth = today.getMonth();
 
-  if (currentMonth < fagfestivalMonthIndex) {
+  if (currentMonth < monthIndex) {
     return activeDays[0];
   }
 
-  if (currentMonth > fagfestivalMonthIndex) {
-    return "påmeldte";
+  if (currentMonth > monthIndex) {
+    return JOINED_TAB;
   }
 
   const dayOfMonth = today.getDate().toString();
 
   if (activeDays.includes(dayOfMonth)) {
     return dayOfMonth;
-  } else if (parseInt(activeDays[0]) > today.getDate()) {
+  } else if (parseInt(activeDays[0], 10) > today.getDate()) {
     return activeDays[0];
   } else {
-    return "påmeldte";
+    return JOINED_TAB;
   }
 };
 
-const FagfestivalEvents = () => {
+function FagfestivalEvents({
+  category = "fagfest",
+  activeDays = ["28", "29", "30"],
+  month = "April",
+}: FagfestivalEventsProps) {
+  const festivalMonthIndex = getMonthIndex(month);
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const searchParamsKey = searchParams.toString();
   const searchInput = searchParams.get("search") ?? "";
-  const tabName: FagfestTab = isFagfestTab(searchParams.get("tab"))
-    ? (searchParams.get("tab") as FagfestTab)
-    : getCurrentDayAsString();
+  const defaultTab = getCurrentDayAsString(activeDays, festivalMonthIndex);
+  const tabParam = searchParams.get("tab");
+  const tabName: FestivalTab = isFestivalTab(tabParam, activeDays) ? tabParam : defaultTab;
   const showProgramOverview = searchParams.get("view") === "program";
   const currentOverviewPath = `${pathname}${searchParamsKey ? `?${searchParamsKey}` : ""}`;
 
@@ -75,14 +121,14 @@ const FagfestivalEvents = () => {
   const hasRestoredScroll = useRef(false);
 
   const updateUrlState = (updates: {
-    tab?: FagfestTab | null;
+    tab?: FestivalTab | null;
     search?: string | null;
     view?: "program" | null;
   }) => {
     const nextSearchParams = new URLSearchParams(searchParamsKey);
 
     if (updates.tab !== undefined) {
-      if (updates.tab && updates.tab !== getCurrentDayAsString()) {
+      if (updates.tab && updates.tab !== defaultTab) {
         nextSearchParams.set("tab", updates.tab);
       } else {
         nextSearchParams.delete("tab");
@@ -121,12 +167,12 @@ const FagfestivalEvents = () => {
 
       return (
         fullEvent.event.title.toLowerCase().includes(searchInput.toLowerCase()) &&
-        fullEvent.categories.some((category) => category.name === fagfestivalCategory) &&
+        fullEvent.categories.some((eventCategory) => eventCategory.name === category) &&
         passesDayFilter
       );
     });
     setFilterEvents(filteredEvents);
-  }, [events, searchInput, tabName]);
+  }, [activeDays, category, events, searchInput, tabName]);
 
   useEffect(() => {
     // Load initial events
@@ -163,14 +209,14 @@ const FagfestivalEvents = () => {
     // Disables programoversikt in Mobile for "Mine Påmeldinger":
     // - No mobile compatibility when we have events for multiple days
 
-    if (tabName === "påmeldte" && isMobile) {
+    if (tabName === JOINED_TAB && isMobile) {
       if (showProgramOverview) {
         updateUrlState({ view: null });
       }
     }
   }, [isMobile, showProgramOverview, tabName]);
 
-  const prevTabNameRef = useRef<string>(undefined);
+  const prevTabNameRef = useRef<string | undefined>(undefined);
 
   useEffect(() => {
     const hasNoNeedToReload = () => {
@@ -190,7 +236,7 @@ const FagfestivalEvents = () => {
 
     setLoading(true);
 
-    if (tabName === "påmeldte") {
+    if (tabName === JOINED_TAB) {
       getEvents({
         onlyFuture: true,
         onlyJoined: true,
@@ -218,7 +264,7 @@ const FagfestivalEvents = () => {
     }
   }, [tabName]);
 
-  const showProgramoversiktFilterOption = tabName !== "påmeldte" || !isMobile;
+  const showProgramoversiktFilterOption = tabName !== JOINED_TAB || !isMobile;
 
   useEffect(() => {
     hasRestoredScroll.current = false;
@@ -255,20 +301,20 @@ const FagfestivalEvents = () => {
     <div className="flex flex-col w-full gap-6 items-start">
       <Tabs className="self-start w-full" value={tabName}>
         <Tabs.List>
-          {getRemainingActiveDays().map((day, index) => {
+          {getRemainingActiveDays(activeDays, festivalMonthIndex).map((day) => {
             return (
               <Tabs.Tab
-                key={index}
+                key={day}
                 value={day}
-                label={`${day}. ${fagfestivalMonth}`}
-                onClick={() => updateUrlState({ tab: day as FagfestTab })}
+                label={`${day}. ${month}`}
+                onClick={() => updateUrlState({ tab: day })}
               />
             );
           })}
           <Tabs.Tab
-            value="påmeldte"
+            value={JOINED_TAB}
             label="Mine påmeldinger"
-            onClick={() => updateUrlState({ tab: "påmeldte" })}
+            onClick={() => updateUrlState({ tab: JOINED_TAB })}
           />
         </Tabs.List>
       </Tabs>
@@ -344,6 +390,6 @@ const FagfestivalEvents = () => {
       </div>
     </div>
   );
-};
+}
 
 export default FagfestivalEvents;

@@ -13,13 +13,7 @@ import {
 import {useEffect, useRef, useState} from "react";
 import {Link, Modal, Search, Button} from "@navikt/ds-react";
 import Participant from "./participant";
-import {
-    formatEventDates,
-    formatEventTimes,
-    formatDeadline,
-    formatEventDuration,
-    formatEventTimeRangeOrComingSoon,
-} from "@/service/format";
+import {formatEventDates, formatEventTimes, formatDeadline, formatEventDuration} from "@/service/format";
 
 type EventDescriptionProps = FullDeltaEvent & {
     className?: string;
@@ -104,7 +98,10 @@ export default function EventDescription({
                 {displayTime ? (
                     <span className="flex flex-row justify-start gap-2 items-center pb-1">
           <ClockIcon aria-label="tid"/>
-                        {formatEventTimeRangeOrComingSoon(event)}
+                        {`${event.startTime.substring(11, 16)} – ${event.endTime.substring(
+                            11,
+                            16,
+                        )}`}
           </span>
                 ) : (
                     <span className="flex flex-row justify-start gap-2 items-center pb-1">
@@ -121,13 +118,6 @@ export default function EventDescription({
           </span>
                 )}
             </div>
-            {!event.public && (
-                <div>
-                    <span className="flex flex-row justify-start items-center pb-1 pl-1 text-ax-neutral-700">
-                        • Privat arrangement
-                    </span>
-                </div>
-            )}
             {event.signupDeadline && (
                 <div>
                     <label className="flex items-center gap-2">
@@ -147,11 +137,11 @@ export default function EventDescription({
                 <ul className="list-none p-0 m-0">
                         <li className="flex ml-[0.2rem] pl-6 gap-2">
                             <Link
-                                title={`Send e-post til fagfestival@nav.no`}
-                                href={`mailto:fagfestival@nav.no`}
+                                title={`Send e-post til uu@nav.no`}
+                                href={`mailto:uu@nav.no`}
                                 className="leading-relaxed"
                             >
-                              Mangfold i mai
+                              MIM 25
                             </Link>
                         </li>
                 </ul>

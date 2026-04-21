@@ -44,7 +44,11 @@ export default async function Fagfestival() {
 
         <div className="w-full -mt-28 relative z-10">
           <CardWithBackground className="bg-fagfestival" newEvent>
-            <FagfestivalEvents />
+            <FagfestivalEvents
+              category="fagfest"
+              activeDays={["28", "29", "30"]}
+              month="April"
+            />
           </CardWithBackground>
         </div>
       </div>

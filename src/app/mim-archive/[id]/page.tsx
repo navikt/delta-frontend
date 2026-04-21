@@ -5,28 +5,7 @@ import { getEvent } from "@/service/eventActions";
 import { Metadata, ResolvingMetadata } from "next";
 import CardWithBackground from "@/components/cardWithBackground";
 
-type EventPageProps = {
-  params: Promise<{ id: string }>;
-  searchParams: Promise<{ returnTo?: string | string[] }>;
-};
-
-function normalizeSearchParamValue(value?: string | string[]) {
-  return Array.isArray(value) ? value[0] : value;
-}
-
-function getSafeReturnTo(returnTo?: string | string[]) {
-  const normalizedReturnTo = normalizeSearchParamValue(returnTo);
-
-  if (
-    !normalizedReturnTo ||
-    !normalizedReturnTo.startsWith("/") ||
-    normalizedReturnTo.startsWith("//")
-  ) {
-    return "/mim";
-  }
-
-  return normalizedReturnTo;
-}
+type EventPageProps = { params: Promise<{ id: string }> };
 
 async function getOptionalEventFromId(id: string) {
   try {
@@ -54,25 +33,22 @@ export async function generateMetadata(
   };
 }
 
-export default async function Page({ params, searchParams }: EventPageProps) {
+export default async function Page({ params }: EventPageProps) {
   const { id } = await params;
-  const { returnTo } = await searchParams;
   await checkToken(`/mim/${id}`);
   const hostname = process.env.NEXT_PUBLIC_HOSTNAME;
-  const backLink = getSafeReturnTo(returnTo);
 
   const user = await getUser();
   const { event, participants, hosts, categories }: FullDeltaEvent = await getEvent(id);
 
   return (
-    <div className="w-full bg-fagfestival pb-10">
+    <div className="w-full colorful pb-10">
       <CardWithBackground
         title={event.title}
-        titleColor="#ec38a7"
-        className="bg-fagfestival"
+        titleColor="#021841"
         home
-        backText={"Mangfold i mai"}
-        backLink={backLink}
+        backText={"Programmet"}
+        backLink={"/mim"}
       >
         <EventDetails
           event={event}

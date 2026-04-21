@@ -48,6 +48,7 @@ export default async function Fagfestival() {
               category="fagfest"
               activeDays={["28", "29", "30"]}
               month="April"
+              slug="fagfest"
             />
           </CardWithBackground>
         </div>

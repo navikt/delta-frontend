@@ -10,6 +10,7 @@ type EventProgramOverviewProps = {
   loading: boolean;
   returnTo: string;
   joinedEventIds: Set<string>;
+  slug?: string;
 };
 
 const generateTimeSlots = (events: FullDeltaEvent[]): string[] => {
@@ -29,6 +30,7 @@ export default function EventProgramOverview({
   loading,
   returnTo,
   joinedEventIds,
+  slug,
 }: EventProgramOverviewProps) {
   if (loading) {
     return (
@@ -93,6 +95,7 @@ export default function EventProgramOverview({
                           key={`event-${event.event.id}`}
                           returnTo={returnTo}
                           isJoined={joinedEventIds.has(event.event.id)}
+                          slug={slug}
                         />
                       </div>
                     ))}

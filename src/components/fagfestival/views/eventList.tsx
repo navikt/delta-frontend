@@ -8,9 +8,10 @@ type EventListProps = {
   loading: boolean;
   returnTo: string;
   joinedEventIds: Set<string>;
+  slug?: string;
 };
 
-export default function EventList({ filteredEvents, loading, returnTo, joinedEventIds }: EventListProps) {
+export default function EventList({ filteredEvents, loading, returnTo, joinedEventIds, slug }: EventListProps) {
   if (loading) {
     return (
       <div className="space-y-4">
@@ -34,6 +35,7 @@ export default function EventList({ filteredEvents, loading, returnTo, joinedEve
           key={`event-${fullEvent.event.id}`}
           returnTo={returnTo}
           isJoined={joinedEventIds.has(fullEvent.event.id)}
+          slug={slug}
         />
       ))}
     </div>

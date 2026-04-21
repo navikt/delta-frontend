@@ -23,9 +23,10 @@ type EventCardProps = {
   event: FullDeltaEvent;
   returnTo: string;
   isJoined?: boolean;
+  slug?: string;
 };
 
-export function EventCard({ event, returnTo, isJoined = false }: EventCardProps) {
+export function EventCard({ event, returnTo, isJoined = false, slug = "fagfest" }: EventCardProps) {
   const hasEventExpired =
     !!event.event.signupDeadline && new Date(event.event.signupDeadline) < new Date()
       ? true
@@ -33,7 +34,7 @@ export function EventCard({ event, returnTo, isJoined = false }: EventCardProps)
   const startDay = format(new Date(event.event.startTime), "MMMd");
   const endDay = format(new Date(event.event.endTime), "MMMd");
 
-  const href = `/fagfest/${event.event.id}?returnTo=${encodeURIComponent(returnTo)}`;
+  const href = `/${slug}/${event.event.id}?returnTo=${encodeURIComponent(returnTo)}`;
 
   const handleNavigation = () => {
     sessionStorage.setItem(`event-overview-scroll:${returnTo}`, `${window.scrollY}`);
@@ -153,8 +154,7 @@ export function EventCard({ event, returnTo, isJoined = false }: EventCardProps)
           )}
           {event.categories.map((category) => {
             if (
-              category.name !== "fagfest" &&
-              category.name !== "fagfestival" &&
+              category.name !== slug &&
               category.name.toLowerCase() !== "påmeldt"
             ) {
               return (

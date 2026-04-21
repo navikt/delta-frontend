@@ -71,7 +71,7 @@ export default async function Page({ params, searchParams }: EventPageProps) {
         titleColor="#ec38a7"
         className="bg-fagfestival"
         home
-        backText={"Mangfold i mai"}
+        backText={"Arrangementer"}
         backLink={backLink}
       >
         <EventDetails

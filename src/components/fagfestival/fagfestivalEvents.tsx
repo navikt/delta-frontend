@@ -16,6 +16,7 @@ export type FagfestivalEventsProps = {
   category?: string;
   activeDays?: string[];
   month?: string;
+  slug?: string;
 };
 
 type FestivalTab = string;
@@ -100,6 +101,7 @@ function FagfestivalEvents({
   category = "fagfest",
   activeDays = ["28", "29", "30"],
   month = "April",
+  slug = "fagfest",
 }: FagfestivalEventsProps) {
   const festivalMonthIndex = getMonthIndex(month);
   const router = useRouter();
@@ -377,6 +379,7 @@ function FagfestivalEvents({
               loading={loading}
               returnTo={currentOverviewPath}
               joinedEventIds={joinedEventIds}
+              slug={slug}
             />
           ) : (
             <EventList
@@ -384,6 +387,7 @@ function FagfestivalEvents({
               loading={loading}
               returnTo={currentOverviewPath}
               joinedEventIds={joinedEventIds}
+              slug={slug}
             />
           )}
         </div>

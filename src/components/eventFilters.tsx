@@ -405,6 +405,17 @@ export default function EventFilters({
                       Se programmet og meld deg på arrangementer
                     </LinkPanel.Description>
                   </LinkPanel>
+                  <LinkPanel
+                      data-umami-event="Fagfest CTA"
+                      href="/mim"
+                      border
+                      className="colorful text-white"
+                  >
+                    <LinkPanel.Title className="!text-white">Mangfold i mai</LinkPanel.Title>
+                    <LinkPanel.Description className="!text-white">
+                      Se programmet og meld deg på arrangementer
+                    </LinkPanel.Description>
+                  </LinkPanel>
                 </div>
             )}
           </>

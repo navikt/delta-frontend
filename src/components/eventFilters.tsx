@@ -393,12 +393,12 @@ export default function EventFilters({
     {tabname == "alle" && (
           <>
             {joinedLink && (
-                <div className="px-4 inline-block">
+                <div className="px-4 flex flex-col ax-md:flex-row gap-2 w-full">
                   <LinkPanel
                     data-umami-event="Fagfest CTA"
                     href="/fagfest"
                     border
-                    className="bg-fagfestival text-white"
+                    className="bg-fagfestival text-white w-full"
                   >
                     <LinkPanel.Title className="!text-white">Fagfest</LinkPanel.Title>
                     <LinkPanel.Description className="!text-white">
@@ -406,13 +406,13 @@ export default function EventFilters({
                     </LinkPanel.Description>
                   </LinkPanel>
                   <LinkPanel
-                      data-umami-event="Fagfest CTA"
+                      data-umami-event="MIM CTA"
                       href="/mim"
                       border
-                      className="colorful text-white"
+                      className="colorful w-full"
                   >
-                    <LinkPanel.Title className="!text-white">Mangfold i mai</LinkPanel.Title>
-                    <LinkPanel.Description className="!text-white">
+                    <LinkPanel.Title>Mangfold i mai</LinkPanel.Title>
+                    <LinkPanel.Description>
                       Se programmet og meld deg på arrangementer
                     </LinkPanel.Description>
                   </LinkPanel>

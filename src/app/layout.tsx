@@ -44,7 +44,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
       <head>
         {isProd && (
           <>
-            <Script id="umami" strategy="afterInteractive" data-domains="delta.nav.no" defer src="https://cdn.nav.no/team-researchops/sporing/sporing.js"
+            <Script id="umami" strategy="afterInteractive" data-domains="delta.nav.no" data-opt-out-filters="uuid" defer src="https://cdn.nav.no/team-researchops/sporing/sporing.js"
               data-host-url="https://umami.nav.no"
               data-website-id="efe951d8-ebbb-4fad-938e-91eee190f6aa"></Script>
             <Script id="skyra-config" strategy="beforeInteractive">{`window.SKYRA_CONFIG = { org: 'arbeids-og-velferdsetaten-nav' }`}</Script>

@@ -153,9 +153,15 @@ export function EventCard({ event, returnTo, isJoined = false, slug = "fagfest" 
             </Tag>
           )}
           {event.categories.map((category) => {
+            const normalizedCategoryName = category.name.toLowerCase().trim();
+            const shouldHideMimAttendanceTag =
+              slug === "mim" &&
+              (normalizedCategoryName === "fysisk" || normalizedCategoryName === "digitalt");
+
             if (
               category.name !== slug &&
-              category.name.toLowerCase() !== "påmeldt"
+              normalizedCategoryName !== "påmeldt" &&
+              !shouldHideMimAttendanceTag
             ) {
               return (
                 <Tag variant="neutral" size="small" key={category.id}>
@@ -163,6 +169,8 @@ export function EventCard({ event, returnTo, isJoined = false, slug = "fagfest" 
                 </Tag>
               );
             }
+
+            return null;
           })}
         </div>
       </div>

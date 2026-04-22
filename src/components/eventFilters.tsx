@@ -398,7 +398,7 @@ export default function EventFilters({
                     data-umami-event="Fagfest CTA"
                     href="/fagfest"
                     border
-                    className="bg-fagfestival text-white w-full"
+                    className="bg-fagfestival text-white w-full ax-md:w-auto"
                   >
                     <LinkPanel.Title className="!text-white">Fagfest</LinkPanel.Title>
                     <LinkPanel.Description className="!text-white">
@@ -409,7 +409,7 @@ export default function EventFilters({
                       data-umami-event="MIM CTA"
                       href="/mim"
                       border
-                      className="colorful w-full"
+                      className="colorful w-full ax-md:w-auto"
                   >
                     <LinkPanel.Title>Mangfold i mai</LinkPanel.Title>
                     <LinkPanel.Description>

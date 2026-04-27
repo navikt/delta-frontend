@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           persist-credentials: false
-      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
         with:
           node-version: 22.x
           registry-url: https://npm.pkg.github.com
@@ -31,7 +31,7 @@ jobs:
         run: npm run build
 
       - name: Push docker image to GAR
-        uses: nais/docker-build-push@078e460885ed0424b60d45ce9220b4be1748be9d
+        uses: nais/docker-build-push@cd5ec5663feb0e05c3fa374d1fb442605b046c6b
         id: docker-build-push
         with:
           team: delta
@@ -72,7 +72,7 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           persist-credentials: false
-      - uses: nais/login@c88ada9ce583928e1c84d2fd5c45cfacdd18d5de
+      - uses: nais/login@d6ab5d83f735e9f155eb9d7d29cd20ae46820ea9
         with:
           team: delta
       - name: Scan docker image for secrets
@@ -82,6 +82,6 @@ jobs:
           format: 'sarif'
           scanners: 'secret'
           output: 'trivy.sarif'
-      - uses: github/codeql-action/upload-sarif@c10b8064de6f491fea524254123dbe5e09572f13
+      - uses: github/codeql-action/upload-sarif@95e58e9a2cdfd71adc6e0353d5c52f41a045d225
         with:
           sarif_file: 'trivy.sarif'

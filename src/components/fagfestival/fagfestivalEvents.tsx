@@ -4,13 +4,14 @@ import EventList from "@/components/fagfestival/views/eventList";
 import EventProgramOverview from "@/components/fagfestival/views/eventProgramOverview";
 import { getEvents } from "@/service/eventActions";
 import { FilterOption, FullDeltaEvent } from "@/types/event";
-import { Checkbox, CheckboxGroup, Search, Tabs } from "@navikt/ds-react";
+import { Checkbox, CheckboxGroup, Radio, RadioGroup, Search, Tabs } from "@navikt/ds-react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 
 const DEFAULT_FILTER_OPTION: FilterOption = "vis-programoversikt";
 const JOINED_TAB = "påmeldte";
+const DEFAULT_MIM_ATTENDANCE_FILTER = "fysisk";
 
 export type FagfestivalEventsProps = {
   category?: string;
@@ -20,6 +21,7 @@ export type FagfestivalEventsProps = {
 };
 
 type FestivalTab = string;
+type MimAttendanceFilter = "fysisk" | "digitalt";
 
 const monthIndexByName: Record<string, number> = {
   january: 0,
@@ -103,6 +105,7 @@ function FagfestivalEvents({
   month = "April",
   slug = "fagfest",
 }: FagfestivalEventsProps) {
+  const isMimCategory = category === "mim";
   const festivalMonthIndex = getMonthIndex(month);
   const router = useRouter();
   const pathname = usePathname();
@@ -113,6 +116,10 @@ function FagfestivalEvents({
   const tabParam = searchParams.get("tab");
   const tabName: FestivalTab = isFestivalTab(tabParam, activeDays) ? tabParam : defaultTab;
   const showProgramOverview = searchParams.get("view") === "program";
+  const attendanceFilterParam = searchParams.get("attendance");
+  const attendanceFilter: MimAttendanceFilter =
+    isMimCategory && attendanceFilterParam === "digitalt" ? "digitalt" : DEFAULT_MIM_ATTENDANCE_FILTER;
+  const showMimAttendanceFilter = isMimCategory && tabName !== JOINED_TAB;
   const currentOverviewPath = `${pathname}${searchParamsKey ? `?${searchParamsKey}` : ""}`;
 
   const [filterEvents, setFilterEvents] = useState<FullDeltaEvent[]>([]);
@@ -126,6 +133,7 @@ function FagfestivalEvents({
     tab?: FestivalTab | null;
     search?: string | null;
     view?: "program" | null;
+    attendance?: MimAttendanceFilter | null;
   }) => {
     const nextSearchParams = new URLSearchParams(searchParamsKey);
 
@@ -153,6 +161,14 @@ function FagfestivalEvents({
       }
     }
 
+    if (updates.attendance !== undefined) {
+      if (updates.attendance && updates.attendance !== DEFAULT_MIM_ATTENDANCE_FILTER) {
+        nextSearchParams.set("attendance", updates.attendance);
+      } else {
+        nextSearchParams.delete("attendance");
+      }
+    }
+
     const nextSearch = nextSearchParams.toString();
     router.replace(nextSearch ? `${pathname}?${nextSearch}` : pathname, { scroll: false });
   };
@@ -160,6 +176,7 @@ function FagfestivalEvents({
   useEffect(() => {
     const filteredEvents = events.filter((fullEvent) => {
       let passesDayFilter = true;
+      let passesAttendanceFilter = true;
 
       if (activeDays.includes(tabName)) {
         const startTime = new Date(fullEvent.event.startTime);
@@ -167,14 +184,21 @@ function FagfestivalEvents({
         passesDayFilter = dayOfMonth.toString() === tabName;
       }
 
+      if (showMimAttendanceFilter) {
+        passesAttendanceFilter = fullEvent.categories.some(
+          (eventCategory) => eventCategory.name.toLowerCase() === attendanceFilter,
+        );
+      }
+
       return (
         fullEvent.event.title.toLowerCase().includes(searchInput.toLowerCase()) &&
         fullEvent.categories.some((eventCategory) => eventCategory.name === category) &&
-        passesDayFilter
+        passesDayFilter &&
+        passesAttendanceFilter
       );
     });
     setFilterEvents(filteredEvents);
-  }, [activeDays, category, events, searchInput, tabName]);
+  }, [activeDays, attendanceFilter, category, events, searchInput, showMimAttendanceFilter, tabName]);
 
   useEffect(() => {
     // Load initial events
@@ -348,6 +372,21 @@ function FagfestivalEvents({
         >
           <Checkbox value="vis-programoversikt">Programoversikt</Checkbox>
         </CheckboxGroup>
+      )}
+
+      {showMimAttendanceFilter && (
+        <RadioGroup
+          legend="Vis arrangementstype"
+          hideLegend
+          className="-mt-3 -mb-2 ml-4"
+          value={attendanceFilter}
+          onChange={(value) => {
+            updateUrlState({ attendance: value as MimAttendanceFilter });
+          }}
+        >
+          <Radio value="fysisk">Fysiske arrangementer</Radio>
+          <Radio value="digitalt">Digitale arrangementer</Radio>
+        </RadioGroup>
       )}
 
       <div className="w-full p-4">

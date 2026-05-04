@@ -4,14 +4,13 @@ import EventList from "@/components/fagfestival/views/eventList";
 import EventProgramOverview from "@/components/fagfestival/views/eventProgramOverview";
 import { getEvents } from "@/service/eventActions";
 import { FilterOption, FullDeltaEvent } from "@/types/event";
-import { Checkbox, CheckboxGroup, Radio, RadioGroup, Search, Tabs } from "@navikt/ds-react";
+import { Checkbox, CheckboxGroup, Search, Tabs } from "@navikt/ds-react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const DEFAULT_FILTER_OPTION: FilterOption = "vis-programoversikt";
 const JOINED_TAB = "påmeldte";
-const DEFAULT_MIM_ATTENDANCE_FILTER = "fysisk";
 
 export type FagfestivalEventsProps = {
   category?: string;
@@ -21,7 +20,6 @@ export type FagfestivalEventsProps = {
 };
 
 type FestivalTab = string;
-type MimAttendanceFilter = "fysisk" | "digitalt";
 
 const monthIndexByName: Record<string, number> = {
   january: 0,
@@ -105,22 +103,16 @@ function FagfestivalEvents({
   month = "April",
   slug = "fagfest",
 }: FagfestivalEventsProps) {
-  const isMimCategory = category === "mim";
   const festivalMonthIndex = getMonthIndex(month);
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const searchParamsKey = searchParams.toString();
-  const searchInputFromUrl = searchParams.get("search") ?? "";
+  const searchInput = searchParams.get("search") ?? "";
   const defaultTab = getCurrentDayAsString(activeDays, festivalMonthIndex);
   const tabParam = searchParams.get("tab");
   const tabName: FestivalTab = isFestivalTab(tabParam, activeDays) ? tabParam : defaultTab;
-  const isForcedProgramOverview = isMimCategory;
-  const showProgramOverview = isForcedProgramOverview || searchParams.get("view") === "program";
-  const attendanceFilterParam = searchParams.get("attendance");
-  const attendanceFilter: MimAttendanceFilter =
-    isMimCategory && attendanceFilterParam === "digitalt" ? "digitalt" : DEFAULT_MIM_ATTENDANCE_FILTER;
-  const showMimAttendanceFilter = isMimCategory && tabName !== JOINED_TAB;
+  const showProgramOverview = searchParams.get("view") === "program";
   const currentOverviewPath = `${pathname}${searchParamsKey ? `?${searchParamsKey}` : ""}`;
 
   const [filterEvents, setFilterEvents] = useState<FullDeltaEvent[]>([]);
@@ -128,14 +120,12 @@ function FagfestivalEvents({
   const [joinedEventIds, setJoinedEventIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
-  const [searchInputValue, setSearchInputValue] = useState(searchInputFromUrl);
   const hasRestoredScroll = useRef(false);
 
-  const updateUrlState = useCallback((updates: {
+  const updateUrlState = (updates: {
     tab?: FestivalTab | null;
     search?: string | null;
     view?: "program" | null;
-    attendance?: MimAttendanceFilter | null;
   }) => {
     const nextSearchParams = new URLSearchParams(searchParamsKey);
 
@@ -163,27 +153,13 @@ function FagfestivalEvents({
       }
     }
 
-    if (updates.attendance !== undefined) {
-      if (updates.attendance && updates.attendance !== DEFAULT_MIM_ATTENDANCE_FILTER) {
-        nextSearchParams.set("attendance", updates.attendance);
-      } else {
-        nextSearchParams.delete("attendance");
-      }
-    }
-
     const nextSearch = nextSearchParams.toString();
-
-    if (nextSearch === searchParamsKey) {
-      return;
-    }
-
     router.replace(nextSearch ? `${pathname}?${nextSearch}` : pathname, { scroll: false });
-  }, [defaultTab, pathname, router, searchParamsKey]);
+  };
 
   useEffect(() => {
     const filteredEvents = events.filter((fullEvent) => {
       let passesDayFilter = true;
-      let passesAttendanceFilter = true;
 
       if (activeDays.includes(tabName)) {
         const startTime = new Date(fullEvent.event.startTime);
@@ -191,39 +167,14 @@ function FagfestivalEvents({
         passesDayFilter = dayOfMonth.toString() === tabName;
       }
 
-      if (showMimAttendanceFilter) {
-        passesAttendanceFilter = fullEvent.categories.some(
-          (eventCategory) => eventCategory.name.toLowerCase() === attendanceFilter,
-        );
-      }
-
       return (
-        fullEvent.event.title.toLowerCase().includes(searchInputValue.toLowerCase()) &&
+        fullEvent.event.title.toLowerCase().includes(searchInput.toLowerCase()) &&
         fullEvent.categories.some((eventCategory) => eventCategory.name === category) &&
-        passesDayFilter &&
-        passesAttendanceFilter
+        passesDayFilter
       );
     });
     setFilterEvents(filteredEvents);
-  }, [activeDays, attendanceFilter, category, events, searchInputValue, showMimAttendanceFilter, tabName]);
-
-  useEffect(() => {
-    setSearchInputValue(searchInputFromUrl);
-  }, [searchInputFromUrl]);
-
-  useEffect(() => {
-    if (searchInputValue === searchInputFromUrl) {
-      return;
-    }
-
-    const timeoutId = window.setTimeout(() => {
-      updateUrlState({ search: searchInputValue || null });
-    }, 350);
-
-    return () => {
-      window.clearTimeout(timeoutId);
-    };
-  }, [searchInputFromUrl, searchInputValue, updateUrlState]);
+  }, [activeDays, category, events, searchInput, tabName]);
 
   useEffect(() => {
     // Load initial events
@@ -260,12 +211,12 @@ function FagfestivalEvents({
     // Disables programoversikt in Mobile for "Mine Påmeldinger":
     // - No mobile compatibility when we have events for multiple days
 
-    if (tabName === JOINED_TAB && isMobile && !isForcedProgramOverview) {
+    if (tabName === JOINED_TAB && isMobile) {
       if (showProgramOverview) {
         updateUrlState({ view: null });
       }
     }
-  }, [isForcedProgramOverview, isMobile, showProgramOverview, tabName, updateUrlState]);
+  }, [isMobile, showProgramOverview, tabName]);
 
   const prevTabNameRef = useRef<string | undefined>(undefined);
 
@@ -313,10 +264,9 @@ function FagfestivalEvents({
         })
         .then(() => setLoading(false));
     }
-  }, [activeDays, tabName]);
+  }, [tabName]);
 
-  const showProgramoversiktFilterOption =
-    !isForcedProgramOverview && (tabName !== JOINED_TAB || !isMobile);
+  const showProgramoversiktFilterOption = tabName !== JOINED_TAB || !isMobile;
 
   useEffect(() => {
     hasRestoredScroll.current = false;
@@ -375,11 +325,11 @@ function FagfestivalEvents({
         <Search
           label="Søk alle kommende arrangementer"
           variant="simple"
-          value={searchInputValue}
+          value={searchInput}
           size="small"
           className="w-full ax-md:w-auto"
           onChange={(value) => {
-            setSearchInputValue(value);
+            updateUrlState({ search: value || null });
           }}
         />
       </div>
@@ -400,21 +350,6 @@ function FagfestivalEvents({
         </CheckboxGroup>
       )}
 
-      {showMimAttendanceFilter && (
-        <RadioGroup
-          legend="Vis arrangementstype"
-          hideLegend
-          className="-mt-3 -mb-2 ml-4"
-          value={attendanceFilter}
-          onChange={(value) => {
-            updateUrlState({ attendance: value as MimAttendanceFilter });
-          }}
-        >
-          <Radio value="fysisk">Fysiske arrangementer</Radio>
-          <Radio value="digitalt">Digitale arrangementer</Radio>
-        </RadioGroup>
-      )}
-
       <div className="w-full p-4">
         {tabName == "25" && (
           <div className="pb-10 prose">
@@ -433,7 +368,7 @@ function FagfestivalEvents({
               >
                 husfest etter fagfestival
               </Link>{" "}
-              💃🕺
+              
             </p>
           </div>
         )}

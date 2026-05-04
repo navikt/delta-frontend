@@ -8,17 +8,17 @@ import { UserWrappedStats } from "@/service/wrappedActions";
 type MimretidClientProps = {
   stats: UserWrappedStats;
   year: number;
+  nowMs: number;
 };
 
-export default function MimretidClient({ stats, year }: MimretidClientProps) {
+export default function MimretidClient({ stats, year, nowMs }: MimretidClientProps) {
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState<{ orderBy: string; direction: "ascending" | "descending" }>({
     orderBy: "date",
     direction: "ascending",
   });
   const rowsPerPage = 10;
-
-  const events = stats.attendedEvents || [];
+  const events = (stats.attendedEvents || []).filter((event) => new Date(event.date).getTime() <= nowMs);
   const count = events.length;
   const totalPages = Math.ceil(count / rowsPerPage);
 
@@ -43,6 +43,10 @@ export default function MimretidClient({ stats, year }: MimretidClientProps) {
       <div className="flex flex-wrap items-center gap-3">
         <span className="text-sm text-ax-neutral-800">År:</span>
         <YearLinks selectedYear={year} />
+      </div>
+      <div className="bg-ax-bg-neutral-soft border border-ax-neutral-300 rounded-lg px-4 py-3">
+        <p className="text-sm text-ax-neutral-800">Totalt antall arrangementer</p>
+        <p className="text-2xl font-ax-bold text-ax-neutral-1000">{count}</p>
       </div>
 
       {count === 0 ? (

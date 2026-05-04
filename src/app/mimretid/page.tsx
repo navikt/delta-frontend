@@ -20,6 +20,7 @@ export default async function MimretidPage({
   const currentYear = new Date().getFullYear();
   const queryYear = params.year ? parseInt(params.year, 10) : currentYear;
   const selectedYear = Number.isNaN(queryYear) || queryYear < 2000 || queryYear > 2100 ? currentYear : queryYear;
+  const nowMs = new Date().getTime();
 
   const stats = await getUserWrappedStats(selectedYear);
 
@@ -33,7 +34,7 @@ export default async function MimretidPage({
 
   return (
     <CardWithBackground title="Mimretid" subtitle="Historiske arrangementer du har deltatt på">
-      <MimretidClient stats={stats} year={selectedYear} />
+      <MimretidClient stats={stats} year={selectedYear} nowMs={nowMs} />
     </CardWithBackground>
   );
 }

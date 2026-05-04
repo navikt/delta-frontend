@@ -18,7 +18,7 @@ type HomeTab = "alle" | "mine";
 const DEFAULT_TAB: HomeTab = "alle";
 const VISIBLE_PREVIOUS_VALUE = "10";
 const QUICK_FILTER_NAMES = ["kompetanse", "bedriftidrettslaget", "sosialt"] as const;
-const HIDDEN_CATEGORY_NAMES = new Set(["fagfestival", "biljard", "fagdag_utvikling_og_data"]);
+const HIDDEN_CATEGORY_NAMES = new Set(["fagdag_utvikling_og_data"]);
 
 function getUniqueCategories(categories: Category[]) {
   return Array.from(new Map(categories.map((category) => [category.name, category])).values());
@@ -394,17 +394,6 @@ export default function EventFilters({
           <>
             {joinedLink && (
                 <div className="px-4 flex flex-col ax-md:flex-row gap-2 w-full">
-                  <LinkPanel
-                    data-umami-event="Fagfest CTA"
-                    href="/fagfest"
-                    border
-                    className="bg-fagfestival text-white w-full ax-md:w-auto"
-                  >
-                    <LinkPanel.Title className="!text-white">Fagfest</LinkPanel.Title>
-                    <LinkPanel.Description className="!text-white">
-                      Se programmet og meld deg på arrangementer
-                    </LinkPanel.Description>
-                  </LinkPanel>
                   <LinkPanel
                       data-umami-event="MIM CTA"
                       href="/mim"

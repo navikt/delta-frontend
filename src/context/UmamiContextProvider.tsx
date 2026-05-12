@@ -41,14 +41,6 @@ export const UmamiContextProvider: React.FC<UmamiProviderProps> = ({ children })
                     "data-host-url": "https://umami.nav.no",
                     "data-website-id": "efe951d8-ebbb-4fad-938e-91eee190f6aa",
                 });
-
-                await loadScript("https://cdn.nav.no/team-researchops/ping/v1/ping.js", {
-                    "data-ping-endpoint": "https://ping.nav.no/event",
-                    "data-ping-team": "delta",
-                    "data-ping-app": "delta-frontend",
-                    "data-ping-environment": "prod",
-                    "data-ping-track-pageviews": "true",
-                });
             } catch (error) {
                 console.error(error);
             }

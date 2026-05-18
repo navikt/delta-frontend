@@ -14,7 +14,7 @@
     "@navikt/ds-css": "^8.10.2",
     "@navikt/ds-react": "^8.10.2",
     "@navikt/oasis": "^4.1.4",
-    "axios": "^1.15.2",
+    "axios": "^1.16.0",
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",
     "exceljs": "^4.4.0",
@@ -27,7 +27,7 @@
     "react-hook-form": "^7.72.0",
     "react-markdown": "^10.1.0",
     "remark-gfm": "^4.0.1",
-    "zod": "^4.3.6"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.5",
@@ -36,16 +36,16 @@
     "@navikt/ds-tailwind": "^8.10.2",
     "@next/mdx": "^16.2.1",
     "@tailwindcss/typography": "^0.5.19",
-    "@types/jsdom": "^28.0.0",
-    "@types/node": "^25.4.0",
+    "@types/jsdom": "^28.0.1",
+    "@types/node": "^25.6.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "autoprefixer": "^10.4.27",
-    "eslint": "^9.39.4",
+    "autoprefixer": "^10.5.0",
+    "eslint": "^10.3.0",
     "eslint-config-next": "^16.2.1",
-    "postcss": "^8.5.10",
+    "postcss": "^8.5.14",
     "postcss-import": "^16.1.1",
-    "tailwindcss": "^3.4.19",
-    "typescript": "^5.9.3"
+    "tailwindcss": "^4.3.0",
+    "typescript": "^6.0.3"
   }
 }

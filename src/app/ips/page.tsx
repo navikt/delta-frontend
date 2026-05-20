@@ -24,9 +24,9 @@ export default async function Fagfestival() {
             newEvent
           >
             <FagfestivalEvents
-              category="IPS"
+              category="ips"
               activeDays={["4"]}
-              month="juni"
+              month="jun"
               slug="ips"
             />
           </CardWithBackground>

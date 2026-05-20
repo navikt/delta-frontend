@@ -24,7 +24,7 @@ export default async function Fagfestival() {
             newEvent
           >
             <FagfestivalEvents
-              category="ips"
+              category="IPS"
               activeDays={["4"]}
               month="juni"
               slug="ips"

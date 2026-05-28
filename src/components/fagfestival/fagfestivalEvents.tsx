@@ -21,6 +21,12 @@ export type FagfestivalEventsProps = {
   slug?: string;
   showProgramOverviewCheckbox?: boolean;
   combineDays?: boolean;
+  timeWindowTabs?: {
+    id: string;
+    label: string;
+    startTime: string;
+    endTime: string;
+  }[];
 };
 
 type FestivalTab = string;
@@ -49,10 +55,18 @@ const monthIndexByName: Record<string, number> = {
   desember: 11,
 };
 
-function isFestivalTab(value: string | null, activeDays: string[], combineDays: boolean): value is FestivalTab {
+function isFestivalTab(
+  value: string | null,
+  activeDays: string[],
+  combineDays: boolean,
+  timeWindowTabs: { id: string }[],
+): value is FestivalTab {
   return (
     value !== null &&
-    (value === JOINED_TAB || (combineDays && value === ALL_TAB) || activeDays.includes(value))
+    (value === JOINED_TAB ||
+      (combineDays && value === ALL_TAB) ||
+      activeDays.includes(value) ||
+      timeWindowTabs.some((timeWindowTab) => timeWindowTab.id === value))
   );
 }
 
@@ -113,6 +127,29 @@ const getDefaultTab = (activeDays: string[], monthIndex: number, combineDays: bo
   return getCurrentDayAsString(activeDays, monthIndex);
 };
 
+const getDefaultTabWithTimeWindows = (
+  activeDays: string[],
+  monthIndex: number,
+  combineDays: boolean,
+  timeWindowTabs: { id: string }[],
+) => {
+  if (timeWindowTabs.length > 0) {
+    return timeWindowTabs[0].id;
+  }
+
+  return getDefaultTab(activeDays, monthIndex, combineDays);
+};
+
+const parseTimeToMinutes = (time: string) => {
+  const [hours, minutes] = time.split(":").map(Number);
+
+  if (!Number.isFinite(hours) || !Number.isFinite(minutes)) {
+    return null;
+  }
+
+  return hours * 60 + minutes;
+};
+
 function FagfestivalEvents({
   category = "fagfest",
   activeDays = ["28", "29", "30"],
@@ -120,6 +157,7 @@ function FagfestivalEvents({
   slug = "fagfest",
   showProgramOverviewCheckbox = true,
   combineDays = false,
+  timeWindowTabs = [],
 }: FagfestivalEventsProps) {
   const isMimCategory = category === "mim";
   const festivalMonthIndex = getMonthIndex(month);
@@ -128,9 +166,11 @@ function FagfestivalEvents({
   const searchParams = useSearchParams();
   const searchParamsKey = searchParams.toString();
   const searchInput = searchParams.get("search") ?? "";
-  const defaultTab = getDefaultTab(activeDays, festivalMonthIndex, combineDays);
+  const defaultTab = getDefaultTabWithTimeWindows(activeDays, festivalMonthIndex, combineDays, timeWindowTabs);
   const tabParam = searchParams.get("tab");
-  const tabName: FestivalTab = isFestivalTab(tabParam, activeDays, combineDays) ? tabParam : defaultTab;
+  const tabName: FestivalTab = isFestivalTab(tabParam, activeDays, combineDays, timeWindowTabs)
+    ? tabParam
+    : defaultTab;
   const showProgramOverview = searchParams.get("view") === "program";
   const attendanceFilterParam = searchParams.get("attendance");
   const attendanceFilter: MimAttendanceFilter =
@@ -193,11 +233,27 @@ function FagfestivalEvents({
     const filteredEvents = events.filter((fullEvent) => {
       let passesDayFilter = true;
       let passesAttendanceFilter = true;
+      let passesTimeWindowFilter = true;
 
       if (!combineDays && activeDays.includes(tabName)) {
         const startTime = new Date(fullEvent.event.startTime);
         const dayOfMonth = startTime.getDate();
         passesDayFilter = dayOfMonth.toString() === tabName;
+      }
+
+      const selectedTimeWindowTab = timeWindowTabs.find((timeWindowTab) => timeWindowTab.id === tabName);
+
+      if (selectedTimeWindowTab) {
+        const eventStart = new Date(fullEvent.event.startTime);
+        const eventStartMinutes = eventStart.getHours() * 60 + eventStart.getMinutes();
+        const startWindowMinutes = parseTimeToMinutes(selectedTimeWindowTab.startTime);
+        const endWindowMinutes = parseTimeToMinutes(selectedTimeWindowTab.endTime);
+
+        passesTimeWindowFilter =
+          startWindowMinutes !== null &&
+          endWindowMinutes !== null &&
+          eventStartMinutes >= startWindowMinutes &&
+          eventStartMinutes <= endWindowMinutes;
       }
 
       if (showMimAttendanceFilter) {
@@ -210,11 +266,22 @@ function FagfestivalEvents({
         fullEvent.event.title.toLowerCase().includes(searchInput.toLowerCase()) &&
         fullEvent.categories.some((eventCategory) => eventCategory.name === category) &&
         passesDayFilter &&
+        passesTimeWindowFilter &&
         passesAttendanceFilter
       );
     });
     setFilterEvents(filteredEvents);
-  }, [activeDays, attendanceFilter, category, events, searchInput, showMimAttendanceFilter, tabName]);
+  }, [
+    activeDays,
+    attendanceFilter,
+    category,
+    combineDays,
+    events,
+    searchInput,
+    showMimAttendanceFilter,
+    tabName,
+    timeWindowTabs,
+  ]);
 
   useEffect(() => {
     // Load initial events
@@ -268,7 +335,9 @@ function FagfestivalEvents({
       return (
         prevTabName &&
         (prevTabName === tabName ||
-          (activeDays.includes(tabName) && activeDays.includes(prevTabName)))
+          (activeDays.includes(tabName) && activeDays.includes(prevTabName)) ||
+          (timeWindowTabs.some((timeWindowTab) => timeWindowTab.id === tabName) &&
+            timeWindowTabs.some((timeWindowTab) => timeWindowTab.id === prevTabName)))
       );
     };
 
@@ -304,7 +373,7 @@ function FagfestivalEvents({
         })
         .then(() => setLoading(false));
     }
-  }, [tabName]);
+  }, [activeDays, tabName, timeWindowTabs]);
 
   const showProgramoversiktFilterOption =
     showProgramOverviewCheckbox && (tabName !== JOINED_TAB || !isMobile);
@@ -344,7 +413,16 @@ function FagfestivalEvents({
     <div className="flex flex-col w-full gap-6 items-start">
       <Tabs className="self-start w-full" value={tabName}>
         <Tabs.List>
-          {combineDays ? (
+          {timeWindowTabs.length > 0 ? (
+            timeWindowTabs.map((timeWindowTab) => (
+              <Tabs.Tab
+                key={timeWindowTab.id}
+                value={timeWindowTab.id}
+                label={timeWindowTab.label}
+                onClick={() => updateUrlState({ tab: timeWindowTab.id })}
+              />
+            ))
+          ) : combineDays ? (
             <Tabs.Tab value={ALL_TAB} label="Alle" onClick={() => updateUrlState({ tab: ALL_TAB })} />
           ) : (
             getRemainingActiveDays(activeDays, festivalMonthIndex).map((day) => {

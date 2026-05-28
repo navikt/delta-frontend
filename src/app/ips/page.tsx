@@ -29,6 +29,20 @@ export default async function Fagfestival() {
               month="jun"
               slug="ips"
               showProgramOverviewCheckbox={false}
+              timeWindowTabs={[
+                {
+                  id: "bolk-1",
+                  label: "Bolk 1",
+                  startTime: "14:15",
+                  endTime: "15:00",
+                },
+                {
+                  id: "bolk-2",
+                  label: "Bolk 2",
+                  startTime: "15:30",
+                  endTime: "16:15",
+                },
+              ]}
             />
           </CardWithBackground>
         </div>

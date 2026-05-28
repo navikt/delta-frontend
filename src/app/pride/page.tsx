@@ -6,7 +6,7 @@ import { Metadata } from "next";
 import FagfestivalEvents from "@/components/fagfestival/fagfestivalEvents";
 
 export const metadata: Metadata = {
-  title: "PRID Δ Delta",
+  title: "Pride Δ Delta",
   description: "Påmeldingsapp",
 };
 
@@ -18,7 +18,7 @@ export default async function Fagfestival() {
       <div className="flex flex-col w-full colorful pb-10 -mb-4">
         <div className="w-full relative z-20">
           <CardWithBackground
-            title="PRIDE"
+            title="Pride"
             titleColor="#021841"
             className="bg-fagfestival"
             newEvent

@@ -18,6 +18,7 @@ export type FagfestivalEventsProps = {
   activeDays?: string[];
   month?: string;
   slug?: string;
+  showProgramOverviewCheckbox?: boolean;
 };
 
 type FestivalTab = string;
@@ -104,6 +105,7 @@ function FagfestivalEvents({
   activeDays = ["28", "29", "30"],
   month = "April",
   slug = "fagfest",
+  showProgramOverviewCheckbox = true,
 }: FagfestivalEventsProps) {
   const isMimCategory = category === "mim";
   const festivalMonthIndex = getMonthIndex(month);
@@ -290,7 +292,8 @@ function FagfestivalEvents({
     }
   }, [tabName]);
 
-  const showProgramoversiktFilterOption = tabName !== JOINED_TAB || !isMobile;
+  const showProgramoversiktFilterOption =
+    showProgramOverviewCheckbox && (tabName !== JOINED_TAB || !isMobile);
 
   useEffect(() => {
     hasRestoredScroll.current = false;

@@ -28,6 +28,7 @@ export default async function Fagfestival() {
               activeDays={["4"]}
               month="jun"
               slug="ips"
+              showProgramOverviewCheckbox={false}
             />
           </CardWithBackground>
         </div>

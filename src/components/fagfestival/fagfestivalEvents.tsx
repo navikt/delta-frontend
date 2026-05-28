@@ -11,6 +11,7 @@ import React, { useEffect, useRef, useState } from "react";
 
 const DEFAULT_FILTER_OPTION: FilterOption = "vis-programoversikt";
 const JOINED_TAB = "påmeldte";
+const ALL_TAB = "alle";
 const DEFAULT_MIM_ATTENDANCE_FILTER = "fysisk";
 
 export type FagfestivalEventsProps = {
@@ -19,6 +20,7 @@ export type FagfestivalEventsProps = {
   month?: string;
   slug?: string;
   showProgramOverviewCheckbox?: boolean;
+  combineDays?: boolean;
 };
 
 type FestivalTab = string;
@@ -47,8 +49,11 @@ const monthIndexByName: Record<string, number> = {
   desember: 11,
 };
 
-function isFestivalTab(value: string | null, activeDays: string[]): value is FestivalTab {
-  return value !== null && (value === JOINED_TAB || activeDays.includes(value));
+function isFestivalTab(value: string | null, activeDays: string[], combineDays: boolean): value is FestivalTab {
+  return (
+    value !== null &&
+    (value === JOINED_TAB || (combineDays && value === ALL_TAB) || activeDays.includes(value))
+  );
 }
 
 function getMonthIndex(month: string): number {
@@ -100,12 +105,21 @@ const getCurrentDayAsString = (activeDays: string[], monthIndex: number) => {
   }
 };
 
+const getDefaultTab = (activeDays: string[], monthIndex: number, combineDays: boolean) => {
+  if (combineDays) {
+    return ALL_TAB;
+  }
+
+  return getCurrentDayAsString(activeDays, monthIndex);
+};
+
 function FagfestivalEvents({
   category = "fagfest",
   activeDays = ["28", "29", "30"],
   month = "April",
   slug = "fagfest",
   showProgramOverviewCheckbox = true,
+  combineDays = false,
 }: FagfestivalEventsProps) {
   const isMimCategory = category === "mim";
   const festivalMonthIndex = getMonthIndex(month);
@@ -114,9 +128,9 @@ function FagfestivalEvents({
   const searchParams = useSearchParams();
   const searchParamsKey = searchParams.toString();
   const searchInput = searchParams.get("search") ?? "";
-  const defaultTab = getCurrentDayAsString(activeDays, festivalMonthIndex);
+  const defaultTab = getDefaultTab(activeDays, festivalMonthIndex, combineDays);
   const tabParam = searchParams.get("tab");
-  const tabName: FestivalTab = isFestivalTab(tabParam, activeDays) ? tabParam : defaultTab;
+  const tabName: FestivalTab = isFestivalTab(tabParam, activeDays, combineDays) ? tabParam : defaultTab;
   const showProgramOverview = searchParams.get("view") === "program";
   const attendanceFilterParam = searchParams.get("attendance");
   const attendanceFilter: MimAttendanceFilter =
@@ -180,7 +194,7 @@ function FagfestivalEvents({
       let passesDayFilter = true;
       let passesAttendanceFilter = true;
 
-      if (activeDays.includes(tabName)) {
+      if (!combineDays && activeDays.includes(tabName)) {
         const startTime = new Date(fullEvent.event.startTime);
         const dayOfMonth = startTime.getDate();
         passesDayFilter = dayOfMonth.toString() === tabName;
@@ -330,16 +344,20 @@ function FagfestivalEvents({
     <div className="flex flex-col w-full gap-6 items-start">
       <Tabs className="self-start w-full" value={tabName}>
         <Tabs.List>
-          {getRemainingActiveDays(activeDays, festivalMonthIndex).map((day) => {
-            return (
-              <Tabs.Tab
-                key={day}
-                value={day}
-                label={`${day}. ${month}`}
-                onClick={() => updateUrlState({ tab: day })}
-              />
-            );
-          })}
+          {combineDays ? (
+            <Tabs.Tab value={ALL_TAB} label="Alle" onClick={() => updateUrlState({ tab: ALL_TAB })} />
+          ) : (
+            getRemainingActiveDays(activeDays, festivalMonthIndex).map((day) => {
+              return (
+                <Tabs.Tab
+                  key={day}
+                  value={day}
+                  label={`${day}. ${month}`}
+                  onClick={() => updateUrlState({ tab: day })}
+                />
+              );
+            })
+          )}
           <Tabs.Tab
             value={JOINED_TAB}
             label="Mine påmeldinger"

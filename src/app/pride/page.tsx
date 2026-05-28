@@ -29,6 +29,7 @@ export default async function Fagfestival() {
               month="jun"
               slug="pride"
               showProgramOverviewCheckbox={false}
+              combineDays
             />
           </CardWithBackground>
         </div>

@@ -10,7 +10,6 @@ import {
   PersonCheckmarkIcon,
   LocationPinIcon,
 } from "@navikt/aksel-icons";
-import Link from "next/link";
 import {
   formatDeadline,
   formatEventDuration,
@@ -37,16 +36,13 @@ export function EventCard({ event, returnTo, isJoined = false, slug = "fagfest" 
   const href = `/${slug}/${event.event.id}?returnTo=${encodeURIComponent(returnTo)}`;
 
   const handleNavigation = () => {
-    try {
-      sessionStorage.setItem(`event-overview-scroll:${returnTo}`, `${window.scrollY}`);
-    } catch {}
+    sessionStorage.setItem(`event-overview-scroll:${returnTo}`, `${window.scrollY}`);
   };
 
   return (
-    <Link
+    <a
       href={href}
       onClick={handleNavigation}
-      key={`event-${event.event.id}`}
       className="flex flex-col h-full p-4 border rounded-xl text-ax-text-neutral border-ax-neutral-400 transition-all hover:-translate-y-1 hover:scale-105 hover:text-ax-text-action hover:border-ax-border-accent no-underline event-card"
     >
       <Heading level="2" size="small">
@@ -176,6 +172,6 @@ export function EventCard({ event, returnTo, isJoined = false, slug = "fagfest" 
           })}
         </div>
       </div>
-    </Link>
+    </a>
   );
 }

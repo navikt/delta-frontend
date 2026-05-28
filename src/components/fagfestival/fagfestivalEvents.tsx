@@ -168,9 +168,10 @@ function FagfestivalEvents({
   const searchInput = searchParams.get("search") ?? "";
   const defaultTab = getDefaultTabWithTimeWindows(activeDays, festivalMonthIndex, combineDays, timeWindowTabs);
   const tabParam = searchParams.get("tab");
-  const tabName: FestivalTab = isFestivalTab(tabParam, activeDays, combineDays, timeWindowTabs)
+  const tabNameFromUrl: FestivalTab = isFestivalTab(tabParam, activeDays, combineDays, timeWindowTabs)
     ? tabParam
     : defaultTab;
+  const [tabName, setTabName] = useState<FestivalTab>(tabNameFromUrl);
   const showProgramOverview = searchParams.get("view") === "program";
   const attendanceFilterParam = searchParams.get("attendance");
   const attendanceFilter: MimAttendanceFilter =
@@ -194,6 +195,8 @@ function FagfestivalEvents({
     const nextSearchParams = new URLSearchParams(searchParamsKey);
 
     if (updates.tab !== undefined) {
+      setTabName(updates.tab ?? defaultTab);
+
       if (updates.tab && updates.tab !== defaultTab) {
         nextSearchParams.set("tab", updates.tab);
       } else {
@@ -226,8 +229,18 @@ function FagfestivalEvents({
     }
 
     const nextSearch = nextSearchParams.toString();
-    router.replace(nextSearch ? `${pathname}?${nextSearch}` : pathname, { scroll: false });
+
+    try {
+      router.replace(nextSearch ? `${pathname}?${nextSearch}` : pathname, { scroll: false });
+    } catch {
+      const nextUrl = nextSearch ? `${pathname}?${nextSearch}` : pathname;
+      window.history.replaceState(null, "", nextUrl);
+    }
   };
+
+  useEffect(() => {
+    setTabName(tabNameFromUrl);
+  }, [tabNameFromUrl]);
 
   useEffect(() => {
     const filteredEvents = events.filter((fullEvent) => {

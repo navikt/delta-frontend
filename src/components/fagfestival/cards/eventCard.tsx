@@ -37,7 +37,9 @@ export function EventCard({ event, returnTo, isJoined = false, slug = "fagfest" 
   const href = `/${slug}/${event.event.id}?returnTo=${encodeURIComponent(returnTo)}`;
 
   const handleNavigation = () => {
-    sessionStorage.setItem(`event-overview-scroll:${returnTo}`, `${window.scrollY}`);
+    try {
+      sessionStorage.setItem(`event-overview-scroll:${returnTo}`, `${window.scrollY}`);
+    } catch {}
   };
 
   return (

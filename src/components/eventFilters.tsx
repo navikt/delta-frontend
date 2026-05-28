@@ -19,6 +19,7 @@ const DEFAULT_TAB: HomeTab = "alle";
 const VISIBLE_PREVIOUS_VALUE = "10";
 const QUICK_FILTER_NAMES = ["kompetanse", "bedriftidrettslaget", "sosialt"] as const;
 const HIDDEN_CATEGORY_NAMES = new Set(["fagdag_utvikling_og_data"]);
+const HOMEPAGE_HIDDEN_CATEGORIES = new Set(["ips"]);
 
 function getUniqueCategories(categories: Category[]) {
   return Array.from(new Map(categories.map((category) => [category.name, category])).values());
@@ -120,6 +121,15 @@ export default function EventFilters({
               fullEvent.event.title.toLowerCase().includes(searchInputValue.toLowerCase()),
             );
 
+      if (homeTabs && tabname === "alle") {
+        filtered = filtered.filter(
+          (fullEvent) =>
+            !fullEvent.categories.some((category) =>
+              HOMEPAGE_HIDDEN_CATEGORIES.has(category.name.toLowerCase()),
+            ),
+        );
+      }
+
       if (showOnlyRegistered && userEmail) {
         filtered = filtered.filter((fullEvent) =>
           fullEvent.participants.some((p) => p.email === userEmail),
@@ -128,7 +138,7 @@ export default function EventFilters({
 
       return filtered;
     },
-    [events, searchInputValue, tabname, showOnlyRegistered, userEmail],
+    [events, homeTabs, searchInputValue, showOnlyRegistered, tabname, userEmail],
   );
   const selectedQuickFilters = useMemo(
     () => QUICK_FILTER_NAMES.filter((categoryName) => selectedCategoryNames.includes(categoryName)),

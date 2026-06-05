@@ -150,9 +150,15 @@ const parseTimeToMinutes = (time: string) => {
   return hours * 60 + minutes;
 };
 
+const getAllDaysInMonth = (monthIndex: number, year: number) => {
+  const numberOfDays = new Date(year, monthIndex + 1, 0).getDate();
+
+  return Array.from({ length: numberOfDays }, (_, index) => (index + 1).toString());
+};
+
 function FagfestivalEvents({
   category = "fagfest",
-  activeDays = ["28", "29", "30"],
+  activeDays = [],
   month = "April",
   slug = "fagfest",
   showProgramOverviewCheckbox = true,
@@ -161,14 +167,21 @@ function FagfestivalEvents({
 }: FagfestivalEventsProps) {
   const isMimCategory = category === "mim";
   const festivalMonthIndex = getMonthIndex(month);
+  const festivalYear = new Date().getFullYear();
+  const resolvedActiveDays = activeDays.length > 0 ? activeDays : getAllDaysInMonth(festivalMonthIndex, festivalYear);
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const searchParamsKey = searchParams.toString();
   const searchInput = searchParams.get("search") ?? "";
-  const defaultTab = getDefaultTabWithTimeWindows(activeDays, festivalMonthIndex, combineDays, timeWindowTabs);
+  const defaultTab = getDefaultTabWithTimeWindows(
+    resolvedActiveDays,
+    festivalMonthIndex,
+    combineDays,
+    timeWindowTabs,
+  );
   const tabParam = searchParams.get("tab");
-  const tabNameFromUrl: FestivalTab = isFestivalTab(tabParam, activeDays, combineDays, timeWindowTabs)
+  const tabNameFromUrl: FestivalTab = isFestivalTab(tabParam, resolvedActiveDays, combineDays, timeWindowTabs)
     ? tabParam
     : defaultTab;
   const [tabName, setTabName] = useState<FestivalTab>(tabNameFromUrl);
@@ -248,10 +261,18 @@ function FagfestivalEvents({
       let passesAttendanceFilter = true;
       let passesTimeWindowFilter = true;
 
-      if (!combineDays && activeDays.includes(tabName)) {
-        const startTime = new Date(fullEvent.event.startTime);
-        const dayOfMonth = startTime.getDate();
-        passesDayFilter = dayOfMonth.toString() === tabName;
+      const startTime = new Date(fullEvent.event.startTime);
+      const dayOfMonth = startTime.getDate().toString();
+      const isFestivalMonthAndYear =
+        startTime.getMonth() === festivalMonthIndex && startTime.getFullYear() === festivalYear;
+      const isActiveFestivalDay = isFestivalMonthAndYear && resolvedActiveDays.includes(dayOfMonth);
+
+      if (tabName !== JOINED_TAB && !isActiveFestivalDay) {
+        passesDayFilter = false;
+      }
+
+      if (!combineDays && resolvedActiveDays.includes(tabName)) {
+        passesDayFilter = isActiveFestivalDay && dayOfMonth === tabName;
       }
 
       const selectedTimeWindowTab = timeWindowTabs.find((timeWindowTab) => timeWindowTab.id === tabName);
@@ -285,15 +306,17 @@ function FagfestivalEvents({
     });
     setFilterEvents(filteredEvents);
   }, [
-    activeDays,
     attendanceFilter,
     category,
     combineDays,
     events,
+    festivalMonthIndex,
+    festivalYear,
     searchInput,
     showMimAttendanceFilter,
     tabName,
     timeWindowTabs,
+    resolvedActiveDays,
   ]);
 
   useEffect(() => {
@@ -348,7 +371,7 @@ function FagfestivalEvents({
       return (
         prevTabName &&
         (prevTabName === tabName ||
-          (activeDays.includes(tabName) && activeDays.includes(prevTabName)) ||
+          (resolvedActiveDays.includes(tabName) && resolvedActiveDays.includes(prevTabName)) ||
           (timeWindowTabs.some((timeWindowTab) => timeWindowTab.id === tabName) &&
             timeWindowTabs.some((timeWindowTab) => timeWindowTab.id === prevTabName)))
       );
@@ -386,7 +409,7 @@ function FagfestivalEvents({
         })
         .then(() => setLoading(false));
     }
-  }, [activeDays, tabName, timeWindowTabs]);
+  }, [resolvedActiveDays, tabName, timeWindowTabs]);
 
   const showProgramoversiktFilterOption =
     showProgramOverviewCheckbox && (tabName !== JOINED_TAB || !isMobile);
@@ -438,7 +461,7 @@ function FagfestivalEvents({
           ) : combineDays ? (
             <Tabs.Tab value={ALL_TAB} label="Alle" onClick={() => updateUrlState({ tab: ALL_TAB })} />
           ) : (
-            getRemainingActiveDays(activeDays, festivalMonthIndex).map((day) => {
+            getRemainingActiveDays(resolvedActiveDays, festivalMonthIndex).map((day) => {
               return (
                 <Tabs.Tab
                   key={day}

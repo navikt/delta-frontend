@@ -25,7 +25,6 @@ export default async function Fagfestival() {
           >
             <FagfestivalEvents
               category="pride"
-              activeDays={["11", "17", "27"]}
               month="jun"
               slug="pride"
               showProgramOverviewCheckbox={false}

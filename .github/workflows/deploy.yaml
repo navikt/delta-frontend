@@ -13,10 +13,10 @@ jobs:
     outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
         with:
           persist-credentials: false
-      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
         with:
           node-version: 22.x
           registry-url: https://npm.pkg.github.com
@@ -31,7 +31,7 @@ jobs:
         run: npm run build
 
       - name: Push docker image to GAR
-        uses: nais/docker-build-push@078e460885ed0424b60d45ce9220b4be1748be9d
+        uses: nais/docker-build-push@05dbb6091b30bd84279c6d64a45ef8782fd410a5
         id: docker-build-push
         with:
           team: delta
@@ -44,7 +44,7 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
         with:
           persist-credentials: false
       - uses: nais/deploy/actions/deploy@fa754451577294aae42872a69b888b3470478ec1
@@ -69,19 +69,19 @@ jobs:
       id-token: write
       actions: read # require for non-public repos
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
         with:
           persist-credentials: false
-      - uses: nais/login@c88ada9ce583928e1c84d2fd5c45cfacdd18d5de
+      - uses: nais/login@5b34cb6e280f8eda678746fcbe14cba7636e6129
         with:
           team: delta
       - name: Scan docker image for secrets
-        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25
         with:
           image-ref: '${{ needs.build.outputs.image }}'
           format: 'sarif'
           scanners: 'secret'
           output: 'trivy.sarif'
-      - uses: github/codeql-action/upload-sarif@c10b8064de6f491fea524254123dbe5e09572f13
+      - uses: github/codeql-action/upload-sarif@8aad20d150bbac5944a9f9d289da16a4b0d87c1e
         with:
           sarif_file: 'trivy.sarif'

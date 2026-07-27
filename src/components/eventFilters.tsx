@@ -400,6 +400,7 @@ export default function EventFilters({
           </Tabs.List>
         </Tabs>
       )}
+    {/*
     {tabname == "alle" && (
           <>
             {joinedLink && (
@@ -419,6 +420,7 @@ export default function EventFilters({
             )}
           </>
       )}
+      */}
       {(searchName || selectCategory) && (
           <div
               className="flex flex-col-reverse gap-2 items-start ax-md:flex-row justify-between w-full ax-md:items-center px-4">

@@ -19,7 +19,7 @@
     "date-fns-tz": "^3.2.0",
     "exceljs": "^4.4.0",
     "framer-motion": "^12.40.0",
-    "next": "^16.2.10",
+    "next": "^16.3.4",
     "next-logger": "^5.0.2",
     "next-qrcode": "^2.5.1",
     "react": "^19.2.6",

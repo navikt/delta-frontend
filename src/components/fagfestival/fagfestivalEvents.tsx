@@ -167,7 +167,8 @@ function FagfestivalEvents({
 }: FagfestivalEventsProps) {
   const isMimCategory = category === "mim";
   const festivalMonthIndex = getMonthIndex(month);
-  const festivalYear = new Date().getFullYear();
+  const now = new Date();
+  const festivalYear = festivalMonthIndex < now.getMonth() ? now.getFullYear() + 1 : now.getFullYear();
   const resolvedActiveDays = activeDays.length > 0 ? activeDays : getAllDaysInMonth(festivalMonthIndex, festivalYear);
   const router = useRouter();
   const pathname = usePathname();

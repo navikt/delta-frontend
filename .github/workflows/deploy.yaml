@@ -13,10 +13,10 @@ jobs:
     outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
-      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
           node-version: 22.x
           registry-url: https://npm.pkg.github.com
@@ -31,7 +31,7 @@ jobs:
         run: npm run build
 
       - name: Push docker image to GAR
-        uses: nais/docker-build-push@31c3a7321909bcb20799fdf46153fec721fd9512
+        uses: nais/docker-build-push@0e73849f69ff260ee27597553c0a7848ca4e9795
         id: docker-build-push
         with:
           team: delta
@@ -44,15 +44,15 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
-      - uses: nais/deploy/actions/deploy@2d18f050f07b6a007864c6a57070ed915d571beb
+      - uses: nais/deploy/actions/deploy@027a91857992525139798892f2804b0ca21f4af6
         env:
           CLUSTER: dev-gcp
           RESOURCE: nais-dev.yaml
           IMAGE: ${{ needs.build.outputs.image }}
-      - uses: nais/deploy/actions/deploy@2d18f050f07b6a007864c6a57070ed915d571beb
+      - uses: nais/deploy/actions/deploy@027a91857992525139798892f2804b0ca21f4af6
         if: github.ref == 'refs/heads/main'
         env:
           CLUSTER: prod-gcp
@@ -69,10 +69,10 @@ jobs:
       id-token: write
       actions: read # require for non-public repos
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
-      - uses: nais/login@bb6c3e1e14e53d40d69d0d092bd2fce2e39ae3bf
+      - uses: nais/login@40b72a35a18ddf2ad74b632461139ab838cc2a2f
         with:
           team: delta
       - name: Scan docker image for secrets
@@ -82,6 +82,6 @@ jobs:
           format: 'sarif'
           scanners: 'secret'
           output: 'trivy.sarif'
-      - uses: github/codeql-action/upload-sarif@8aad20d150bbac5944a9f9d289da16a4b0d87c1e
+      - uses: github/codeql-action/upload-sarif@cdf488f595d80d6e07e03d4674febd5ab45fa938
         with:
           sarif_file: 'trivy.sarif'

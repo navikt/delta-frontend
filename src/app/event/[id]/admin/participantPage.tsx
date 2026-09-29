@@ -1,4 +1,5 @@
 "use client";
+import { RoomStatusTag } from "@/components/roomStatusTag";
 import {FullDeltaEvent} from "@/types/event";
 import {BodyLong, Button, Heading, Modal, Search} from "@navikt/ds-react";
 import ParticipantTable from "./participantTable";
@@ -13,11 +14,13 @@ import {formatEventDates, formatEventDuration} from "@/service/format";
 type ParticipantPageProps = {
     fullEvent: FullDeltaEvent;
     user: User;
+    showRoomStatus?: boolean;
 };
 
 export default function ParticipantPage({
                                       fullEvent: eventWithParticipants,
                                       user,
+                                      showRoomStatus = false,
                                   }: ParticipantPageProps) {
     const [openConfirmation, setOpenConfirmation] = useState(false);
 
@@ -110,6 +113,7 @@ export default function ParticipantPage({
               {`${event.startTime.substring(11, 16)} – ${event.endTime.substring(11, 16)}`}
               <LocationPinIcon aria-label="sted"/>
               {event.location}
+              {showRoomStatus && event.roomName && <RoomStatusTag status={event.roomStatus}/>}
             </span>
         </div>
     );

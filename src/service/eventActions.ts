@@ -10,6 +10,7 @@ import {
   EditScope,
   FullDeltaEvent,
 } from "@/types/event";
+import { ActionResult } from "@/types/room";
 import { formatInTimeZone } from "date-fns-tz";
 import { AxiosError } from 'axios';
 import { unstable_cache } from "next/cache";
@@ -307,17 +308,16 @@ export async function getEvent(id: string): Promise<FullDeltaEvent> {
 
 export async function createEvent(
   formData: CreateEventSchema,
-): Promise<FullDeltaEvent> {
+): Promise<ActionResult<FullDeltaEvent>> {
   try {
     const api = await getApi();
 
     const event = createDeltaEventFromFormData(formData);
-    const response = await api.put("/admin/event", event);
+    const response = await api.put<FullDeltaEvent>("/admin/event", event);
 
-    return response.data;
+    return { ok: true, data: response.data };
   } catch (error) {
-    handleApiError(error);
-    throw error;
+    return toSaveErrorResult(error);
   }
 }
 
@@ -325,7 +325,7 @@ export async function updateEvent(
   formData: CreateEventSchema,
   eventId: string,
   editScope?: EditScope,
-): Promise<FullDeltaEvent> {
+): Promise<ActionResult<FullDeltaEvent>> {
   try {
     validateEventId(eventId);
     const api = await getApi();
@@ -334,29 +334,55 @@ export async function updateEvent(
     if (editScope) {
       event.editScope = editScope;
     }
-    const response = await api.post(`/admin/event/${eventId}`, event);
+    const response = await api.post<FullDeltaEvent>(`/admin/event/${eventId}`, event);
 
-    return response.data;
+    return { ok: true, data: response.data };
   } catch (error) {
-    handleApiError(error);
-    throw error;
+    return toSaveErrorResult(error);
   }
+}
+
+function toSaveErrorResult(error: unknown): { ok: false; status?: number; message: string } {
+  console.error("Failed to save event:", error);
+  if (error instanceof ApiError) {
+    return { ok: false, status: error.status, message: error.message };
+  }
+  if (error instanceof AxiosError) {
+    const status = error.status;
+    const backendMessage = (error as AxiosError & { responseMessage?: string }).responseMessage;
+    if (status === 502) {
+      return {
+        ok: false,
+        status,
+        message:
+          "Kunne ikke booke rommet eller opprette Teams-møtet. Ingenting er lagret – prøv igjen.",
+      };
+    }
+    if (status === 400) {
+      return { ok: false, status, message: backendMessage || "Ugyldig forespørsel." };
+    }
+    if (status === 401 || status === 403) {
+      return { ok: false, status, message: "Du har ikke tilgang til å lagre dette arrangementet." };
+    }
+    return {
+      ok: false,
+      status,
+      message: "Kunne ikke lagre arrangementet. Vennligst prøv igjen senere.",
+    };
+  }
+  return { ok: false, message: "Kunne ikke koble til serveren. Sjekk internettforbindelsen." };
+}
+
+/** Local (Europe/Oslo) time in the backend's event time format. */
+function formatBackendDateTime(date: Date, time: string): string {
+  return `${formatInTimeZone(date, "Europe/Oslo", "yyyy-MM-dd")}T${time}:00Z`;
 }
 
 function createDeltaEventFromFormData(
   formData: CreateEventSchema,
 ): CreateDeltaEvent {
-  const start = `${formatInTimeZone(
-    formData.startDate,
-    "Europe/Oslo",
-    "yyyy-MM-dd",
-  )}T${formData.startTime}:00Z`;
-
-  const end = `${formatInTimeZone(
-    formData.endDate,
-    "Europe/Oslo",
-    "yyyy-MM-dd",
-  )}T${formData.endTime}:00Z`;
+  const start = formatBackendDateTime(formData.startDate, formData.startTime);
+  const end = formatBackendDateTime(formData.endDate, formData.endTime);
 
   const deadline = formData.signupDeadlineDate
     ? `${formatInTimeZone(
@@ -397,6 +423,14 @@ function createDeltaEventFromFormData(
     signupDeadline: formData.hasSignupDeadline && !formData.isRecurring ? deadline : undefined,
     sendNotificationEmail: sendNotificationEmail,
     recurrence: recurrence,
+    // Room/Teams: the form only sets these when the feature is on and the value should change.
+    // Omitted means "keep current" on update. Never sent for recurring events (backend 400).
+    ...(!formData.isRecurring && formData.roomEmail && formData.roomName
+      ? { roomEmail: formData.roomEmail, roomName: formData.roomName }
+      : {}),
+    ...(!formData.isRecurring && formData.isOnlineMeeting === true
+      ? { isOnlineMeeting: true }
+      : {}),
   };
 }
 

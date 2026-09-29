@@ -19,11 +19,18 @@ export async function getApi() {
     (response) => response,
     (error) => {
       const status = error.response?.status;
+      const data = error.response?.data;
       delete error.config;
       delete error.response;
       delete error.request;
       if (status !== undefined) {
         error.status = status;
+      }
+      // Keep only the backend's plain-text/message body (no headers/tokens).
+      if (typeof data === "string" && data.length > 0) {
+        error.responseMessage = data.slice(0, 500);
+      } else if (data && typeof data.message === "string") {
+        error.responseMessage = data.message.slice(0, 500);
       }
       return Promise.reject(error);
     },

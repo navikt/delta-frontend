@@ -22,6 +22,7 @@ import SecondaryCopyButton from "@/components/SecondaryCopyButton";
 import {TrashIcon, PencilIcon, BarChartIcon, FilePlusIcon} from "@navikt/aksel-icons";
 import EditScopeModal from "@/components/editScopeModal";
 import { RecurringBadge } from "@/components/RecurringBadge";
+import { Features } from "@/types/room";
 
 export default function EventDetails({
      event,
@@ -31,9 +32,11 @@ export default function EventDetails({
      recurringSeries,
      user,
      hostname,
+     features,
  }: FullDeltaEvent & {
     user: User;
     hostname?: string;
+    features?: Features;
 }) {
     const [reactiveParticipants, setParticipants] = useState(participants);
     const isParticipant = reactiveParticipants
@@ -370,6 +373,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                     hosts={hosts}
                     categories={categories}
                     displayTime={isSameDay}
+                    features={features}
                     className="flex flex-col gap-2 max-w-xs"
                 />
                 <div className="flex-grow flex flex-col gap-2 ax-md:w-2/4">

@@ -13,6 +13,7 @@ import {
   CheckboxGroup,
   Alert,
   Label,
+  BodyShort,
 } from "@navikt/ds-react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import {
@@ -23,7 +24,7 @@ import {
   updateEvent,
 } from "@/service/eventActions";
 import { z } from "zod";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import EventDatepicker from "../app/event/new/eventDatepicker";
 import {
@@ -40,6 +41,10 @@ import { format } from "date-fns";
 import { Spraksjekk } from "@/components/library";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import EditScopeModal from "@/components/editScopeModal";
+import RoomPicker, { SelectedRoom } from "@/components/roomPicker";
+import { RoomStatusTag } from "@/components/roomStatusTag";
+import { Features, NO_FEATURES } from "@/types/room";
+import { formatInTimeZone } from "date-fns-tz";
 
 function isValidParticipantLimit(limit?: string) {
   if (!limit) return false;
@@ -75,6 +80,10 @@ const createEventSchema = z
     recurrenceFrequency: z.enum(["WEEKLY", "BIWEEKLY", "MONTHLY"]).optional(),
     recurrenceUntilDate: z.optional(z.date()),
     signupDeadlineOffsetDays: z.string().optional(),
+    // Room/Teams (feature toggled). Only set by the form when they should be sent.
+    roomEmail: z.string().optional(),
+    roomName: z.string().optional(),
+    isOnlineMeeting: z.boolean().optional(),
   })
   .refine((data) => data.endDate >= data.startDate, {
     message: "Sluttdato må være etter startdato",
@@ -178,10 +187,15 @@ function req(label: string) {
 export type EditType =
   | { type: EditTypeEnum.NEW }
   | { type: EditTypeEnum.EDIT | EditTypeEnum.TEMPLATE; eventId: string };
-type CreateEventFormProps = { editType: EditType; allCategories: Category[] };
+type CreateEventFormProps = {
+  editType: EditType;
+  allCategories: Category[];
+  features?: Features;
+};
 export default function CreateEventForm({
   editType,
   allCategories,
+  features = NO_FEATURES,
 }: CreateEventFormProps) {
   const [loading, setLoading] = useState(editType.type !== EditTypeEnum.NEW);
   const [richEvent, setRichEvent] = useState<RichEvent>({
@@ -237,6 +251,7 @@ export default function CreateEventForm({
       allCategories={allCategories}
       selectedCategories={selectedCategories || []}
       setSelectedCategories={setSelectedCategories}
+      features={features}
     />)
   );
 }
@@ -250,12 +265,14 @@ type InternalCreateEventFormProps = {
   selectedCategories: Category[];
   setSelectedCategories: Dispatch<Category[]>;
   allCategories: Category[];
+  features: Features;
 };
 function InternalCreateEventForm({
   richEvent,
   selectedCategories,
   setSelectedCategories,
   allCategories,
+  features,
 }: InternalCreateEventFormProps) {
   const [hasParticipantLimit, setHasParticipantLimit] = useState(
     ((richEvent.type !== EditTypeEnum.NEW &&
@@ -395,24 +412,89 @@ function InternalCreateEventForm({
 
   const [selectedType, setSelectedType] = useState<string | null>(getInitialEventType());
 
+  // Room booking / Teams meeting (feature toggled)
+  const editEvent = richEvent.type === EditTypeEnum.EDIT ? richEvent.event : null;
+  const initialRoom: SelectedRoom | null =
+    editEvent?.roomEmail && editEvent.roomName
+      ? { email: editEvent.roomEmail, name: editEvent.roomName }
+      : null;
+  const teamsAlreadyOn = !!editEvent?.isOnlineMeeting;
+  const [selectedRoom, setSelectedRoom] = useState<SelectedRoom | null>(initialRoom);
+  const [wantsTeams, setWantsTeams] = useState(teamsAlreadyOn);
+  const [selectedPlatform, setSelectedPlatform] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  const roomTeamsAllowed = !isRecurring && !isEditingRecurring;
+  const canPickRoom =
+    features.roomBooking &&
+    roomTeamsAllowed &&
+    (richEvent.type === EditTypeEnum.EDIT ||
+      selectedAttendanceType === "fysisk" ||
+      selectedAttendanceType === "hybrid");
+  const canToggleTeams =
+    features.teamsMeeting &&
+    roomTeamsAllowed &&
+    (richEvent.type === EditTypeEnum.EDIT ||
+      selectedAttendanceType === "hybrid" ||
+      (selectedAttendanceType === "digitalt" && selectedPlatform === "Teams"));
+
+  const selectRoom = (room: SelectedRoom | null) => {
+    // Removing a booked room is not supported; fall back to the current booking.
+    const next = room ?? initialRoom;
+    setSelectedRoom(next);
+    if (room) {
+      setValue("location", room.name, { shouldValidate: true, shouldDirty: true });
+    }
+  };
+
+  const [watchedStartDate, watchedStartTime, watchedEndDate, watchedEndTime] = useWatch({
+    control,
+    name: ["startDate", "startTime", "endDate", "endTime"],
+  });
+  const availabilityStart = toLocalBackendTime(watchedStartDate, watchedStartTime);
+  const availabilityEnd = toLocalBackendTime(watchedEndDate, watchedEndTime);
+
+  /**
+   * Room/Teams fields follow the backend's update rules: omit = keep current value.
+   * Only send a room when it's new/changed, and only ever send isOnlineMeeting: true.
+   * Never send anything when the feature is off or the event is recurring (backend 400).
+   */
+  const withRoomTeams = (values: CreateEventSchema): CreateEventSchema => {
+    const roomChanged = selectedRoom && selectedRoom.email !== initialRoom?.email;
+    const sendRoom = canPickRoom && roomChanged;
+    const sendTeams = canToggleTeams && wantsTeams && !teamsAlreadyOn;
+    return {
+      ...values,
+      roomEmail: sendRoom ? selectedRoom.email : undefined,
+      roomName: sendRoom ? selectedRoom.name : undefined,
+      isOnlineMeeting: sendTeams ? true : undefined,
+    };
+  };
+
+  const save = async (values: CreateEventSchema, editScope?: EditScope) => {
+    setSaving(true);
+    setSaveError(null);
+    const error =
+      richEvent.type === EditTypeEnum.EDIT
+        ? await updateAndRedirect(values, richEvent.event.id, newTags, selectedCategories, editScope)
+        : await createAndRedirect(values, newTags, selectedCategories);
+    if (error) {
+      setSaveError(error);
+      setSaving(false);
+    }
+    // On success we keep `saving` while the browser navigates.
+  };
 
   return (
     <form
-      onSubmit={handleSubmit(async (values) => {
-        if (richEvent.type === EditTypeEnum.EDIT) {
-          if (isEditingRecurring) {
-            setPendingFormValues(values);
-            setOpenEditScopeModal(true);
-          } else {
-            updateAndRedirect(
-              values,
-              richEvent.event.id,
-              newTags,
-              selectedCategories,
-            );
-          }
+      onSubmit={handleSubmit(async (formValues) => {
+        const values = withRoomTeams(formValues);
+        if (richEvent.type === EditTypeEnum.EDIT && isEditingRecurring) {
+          setPendingFormValues(values);
+          setOpenEditScopeModal(true);
         } else {
-          createAndRedirect(values, newTags, selectedCategories);
+          await save(values);
         }
       })}
       className="flex flex-col gap-5"
@@ -514,6 +596,7 @@ function InternalCreateEventForm({
               legend="Platform"
               onChange={(value) => {
                 setShowAlert(true);
+                setSelectedPlatform(value);
                 if (value === "Teams") {
                   setValue("location", "Teams");
                 } else if (value === "Zoom") {
@@ -532,8 +615,17 @@ function InternalCreateEventForm({
             </RadioGroup>
           )}
 
-          {showAlert && (
+          {showAlert && !(canToggleTeams && wantsTeams) && (
             <Alert className="max-w-prose" variant="info">Vi anbefaler at du limer inn lenken til Teams/Zoom/etc. på bunnen av beskrivelsen til arrangementet.</Alert>
+          )}
+
+          {canPickRoom && (
+            <RoomPicker
+              selectedRoom={selectedRoom}
+              onSelect={selectRoom}
+              startTime={availabilityStart}
+              endTime={availabilityEnd}
+            />
           )}
 
           {showLocationField && (
@@ -544,14 +636,67 @@ function InternalCreateEventForm({
               className="max-w-prose"
             />
           )}
+
+          {canToggleTeams && (
+            <Switch
+              checked={wantsTeams}
+              onChange={(e) => setWantsTeams(e.target.checked)}
+              description="Teams-lenken vises for påmeldte og verter på arrangementssiden."
+            >
+              Opprett Teams-møte automatisk
+            </Switch>
+          )}
         </>
       ) : (
         <>
+          {editEvent?.roomName && (
+            <div className="flex flex-col gap-1 max-w-prose">
+              <Label as="p">Nåværende møterom</Label>
+              <div className="flex flex-wrap items-center gap-2">
+                <span>{editEvent.roomName}</span>
+                <RoomStatusTag status={editEvent.roomStatus} />
+              </div>
+              {editEvent.roomStatus === "DECLINED" && (
+                <Alert variant="warning" size="small">
+                  Rommet avslo bookingen. Velg et annet rom under.
+                </Alert>
+              )}
+            </div>
+          )}
+          {canPickRoom && (
+            <RoomPicker
+              label={initialRoom ? "Bytt møterom (valgfritt)" : "Møterom (valgfritt)"}
+              selectedRoom={selectedRoom}
+              onSelect={selectRoom}
+              startTime={availabilityStart}
+              endTime={availabilityEnd}
+              skipAvailabilityFor={initialRoom?.email}
+            />
+          )}
           <TextField
             label={req("Sted")}
             {...register("location")}
             error={errors.location?.message}
           />
+          {teamsAlreadyOn ? (
+            <Switch
+              checked
+              readOnly
+              description="Teams-møtet kan ikke fjernes. Slett arrangementet om det ikke lenger skal ha Teams-møte."
+            >
+              Teams-møte
+            </Switch>
+          ) : (
+            canToggleTeams && (
+              <Switch
+                checked={wantsTeams}
+                onChange={(e) => setWantsTeams(e.target.checked)}
+                description="Kan ikke skrus av igjen når arrangementet er lagret."
+              >
+                Opprett Teams-møte automatisk
+              </Switch>
+            )
+          )}
         </>
       )}
 
@@ -833,6 +978,16 @@ function InternalCreateEventForm({
           </Checkbox>
         </div>
       )}
+      {(features.roomBooking || features.teamsMeeting) && isRecurring && (
+        <BodyShort size="small" className="max-w-prose">
+          Møterom og Teams-møte kan ikke brukes på gjentakende arrangementer.
+        </BodyShort>
+      )}
+      {saveError && (
+        <Alert variant="error" className="max-w-prose" role="alert">
+          {saveError}
+        </Alert>
+      )}
       <div className="mt-6 mb-12 flex items-center gap-4">
         {/*              <Link
                   className="w-fit h-fit"
@@ -844,7 +999,7 @@ function InternalCreateEventForm({
               >
                   Avbryt
               </Link>*/}
-        <Button type="submit" loading={isSubmitting}>
+        <Button type="submit" loading={isSubmitting || saving}>
           {richEvent.type === EditTypeEnum.EDIT ? "Oppdater" : "Opprett"}
         </Button>
       </div>
@@ -858,13 +1013,7 @@ function InternalCreateEventForm({
           onConfirm={async (scope) => {
             setOpenEditScopeModal(false);
             if (pendingFormValues) {
-              updateAndRedirect(
-                pendingFormValues,
-                richEvent.event.id,
-                newTags,
-                selectedCategories,
-                scope,
-              );
+              await save(pendingFormValues, scope);
             }
           }}
           title="Endre gjentakende arrangement"
@@ -877,38 +1026,65 @@ function InternalCreateEventForm({
   );
 }
 
+/** Same local-time format as the backend's event times; null if incomplete. */
+function toLocalBackendTime(date: Date | undefined, time: string | undefined): string | null {
+  if (!date || Number.isNaN(date.getTime?.()) || !time || !/^[0-9]{2}:[0-9]{2}$/.test(time)) {
+    return null;
+  }
+  return `${formatInTimeZone(date, "Europe/Oslo", "yyyy-MM-dd")}T${time}:00Z`;
+}
+
+/** Returns an error message on failure; navigates away on success. */
 async function createAndRedirect(
   formData: CreateEventSchema,
   newTags: string[],
   categories: Category[],
-) {
-  const { event } = await createEvent(formData);
+): Promise<string | null> {
+  const result = await createEvent(formData);
+  if (!result.ok) return result.message;
+  const { event } = result.data;
 
-  const newCategories = newTags.length
-    ? await Promise.all(newTags.map((c) => createCategory(c)))
-    : [];
-  await setCategories(
-    event.id,
-    categories.concat(newCategories).map((c) => c.id),
-  );
+  try {
+    const newCategories = newTags.length
+      ? await Promise.all(newTags.map((c) => createCategory(c)))
+      : [];
+    await setCategories(
+      event.id,
+      categories.concat(newCategories).map((c) => c.id),
+    );
+  } catch (e) {
+    // The event is already created; don't let a category failure trap the user in the form.
+    console.error("Failed to set categories:", e);
+  }
   window.location.href = `/event/${event.id}`;
+  return null;
 }
 
+/** Returns an error message on failure; navigates away on success. */
 async function updateAndRedirect(
   formData: CreateEventSchema,
   eventId: string,
   newTags: string[],
   categories: Category[],
   editScope?: EditScope,
-) {
-  const newCategories = newTags.length
-    ? await Promise.all(newTags.map((c) => createCategory(c)))
-    : [];
-  await setCategories(
-    eventId,
-    categories.concat(newCategories).map((c) => c.id),
-  );
+): Promise<string | null> {
+  // Update the event first: a 400/502 (room/Teams) means nothing was saved, so
+  // categories must not be changed either.
+  const result = await updateEvent(formData, eventId, editScope);
+  if (!result.ok) return result.message;
 
-  const { event } = await updateEvent(formData, eventId, editScope);
-  window.location.href = `/event/${event.id}`;
+  try {
+    const newCategories = newTags.length
+      ? await Promise.all(newTags.map((c) => createCategory(c)))
+      : [];
+    await setCategories(
+      eventId,
+      categories.concat(newCategories).map((c) => c.id),
+    );
+  } catch (e) {
+    console.error("Failed to set categories:", e);
+  }
+
+  window.location.href = `/event/${result.data.event.id}`;
+  return null;
 }

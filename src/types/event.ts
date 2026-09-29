@@ -27,7 +27,14 @@ export type CreateDeltaEvent = {
   sendNotificationEmail?: boolean;
   recurrence?: RecurrenceRequest;
   editScope?: EditScope;
+  /** Feature toggled. Must be sent together with roomName. Omit to keep current room. */
+  roomEmail?: string;
+  roomName?: string;
+  /** Feature toggled. Only ever send true; omit to keep current value. */
+  isOnlineMeeting?: boolean;
 };
+
+export type RoomStatus = "PENDING" | "ACCEPTED" | "DECLINED";
 
 export type FullDeltaEvent = {
   event: DeltaEvent;
@@ -47,6 +54,13 @@ export type DeltaEvent = {
   public: boolean;
   participantLimit: number;
   signupDeadline?: string;
+  roomEmail?: string | null;
+  roomName?: string | null;
+  roomStatus?: RoomStatus | null;
+  isOnlineMeeting?: boolean;
+  teamsJoinUrl?: string | null;
+  teamsConferenceId?: string | null;
+  teamsDialIn?: string | null;
 };
 
 export type TemplateDeltaEvent = {

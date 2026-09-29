@@ -442,9 +442,12 @@ function InternalCreateEventForm({
   const selectRoom = (room: SelectedRoom | null) => {
     // Removing a booked room is not supported; fall back to the current booking.
     const next = room ?? initialRoom;
+    const previousName = selectedRoom?.name;
     setSelectedRoom(next);
-    if (room) {
-      setValue("location", room.name, { shouldValidate: true, shouldDirty: true });
+    // Keep "Sted" in sync with the room, unless the user has typed their own location.
+    const currentLocation = getValues("location");
+    if (room || currentLocation === previousName) {
+      setValue("location", next?.name ?? "", { shouldValidate: !!next, shouldDirty: true });
     }
   };
 

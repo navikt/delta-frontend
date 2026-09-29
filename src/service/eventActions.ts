@@ -167,7 +167,7 @@ export async function joinEvent(eventId: string): Promise<void> {
   try {
     validateEventId(eventId);
     const api = await getApi();
-    await api.post(`/user/event/${eventId}`);
+    await api.post(`/user/event/${encodeURIComponent(eventId)}`);
   } catch (error) {
     if (error instanceof AxiosError && error.response?.status === 500) {
       console.error('Server error while joining event:', error);
@@ -181,7 +181,7 @@ export async function leaveEvent(eventId: string): Promise<void> {
   try {
     validateEventId(eventId);
     const api = await getApi();
-    await api.delete(`/user/event/${eventId}`);
+    await api.delete(`/user/event/${encodeURIComponent(eventId)}`);
   } catch (error) {
     handleApiError(error);
   }
@@ -191,7 +191,7 @@ export async function deleteEvent(eventId: string, editScope?: EditScope): Promi
   try {
     validateEventId(eventId);
     const api = await getApi();
-    await api.delete(`/admin/event/${eventId}`, {
+    await api.delete(`/admin/event/${encodeURIComponent(eventId)}`, {
       ...(editScope ? { params: { editScope } } : {}),
     });
   } catch (error) {
@@ -204,7 +204,7 @@ export async function deleteParticipant(eventId: string, userEmail: string): Pro
     validateEventId(eventId);
     const api = await getApi();
     const payload = { email: userEmail };
-    await api.delete(`/admin/event/${eventId}/participant`, { data: payload });
+    await api.delete(`/admin/event/${encodeURIComponent(eventId)}/participant`, { data: payload });
   } catch (error) {
     handleApiError(error);
   }
@@ -217,7 +217,7 @@ export async function changeParticipant(
   try {
     validateEventId(eventId);
     const api = await getApi();
-    await api.post(`/admin/event/${eventId}/participant`, changeDeltaParticipant);
+    await api.post(`/admin/event/${encodeURIComponent(eventId)}/participant`, changeDeltaParticipant);
   } catch (error) {
     handleApiError(error);
   }
@@ -238,7 +238,7 @@ export async function setCategories(eventId: string, categories: number[]): Prom
     validateEventId(eventId);
     const api = await getApi();
     await api.post<string>(
-      `/admin/event/${eventId}/category`,
+      `/admin/event/${encodeURIComponent(eventId)}/category`,
       categories,
     );
   } catch (error) {
@@ -296,7 +296,7 @@ export async function getEvent(id: string): Promise<FullDeltaEvent> {
   try {
     validateEventId(id);
     const api = await getApi();
-    const response = await api.get<FullDeltaEvent>(`/event/${id}`);
+    const response = await api.get<FullDeltaEvent>(`/event/${encodeURIComponent(id)}`);
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError && error.status === 404) {
@@ -334,7 +334,7 @@ export async function updateEvent(
     if (editScope) {
       event.editScope = editScope;
     }
-    const response = await api.post<FullDeltaEvent>(`/admin/event/${eventId}`, event);
+    const response = await api.post<FullDeltaEvent>(`/admin/event/${encodeURIComponent(eventId)}`, event);
 
     return { ok: true, data: response.data };
   } catch (error) {

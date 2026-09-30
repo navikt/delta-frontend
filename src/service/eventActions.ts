@@ -10,6 +10,7 @@ import {
   EditScope,
   FullDeltaEvent,
 } from "@/types/event";
+import { ActionResult } from "@/types/room";
 import { formatInTimeZone } from "date-fns-tz";
 import { AxiosError } from 'axios';
 import { unstable_cache } from "next/cache";
@@ -166,7 +167,7 @@ export async function joinEvent(eventId: string): Promise<void> {
   try {
     validateEventId(eventId);
     const api = await getApi();
-    await api.post(`/user/event/${eventId}`);
+    await api.post(`/user/event/${encodeURIComponent(eventId)}`);
   } catch (error) {
     if (error instanceof AxiosError && error.response?.status === 500) {
       console.error('Server error while joining event:', error);
@@ -180,7 +181,7 @@ export async function leaveEvent(eventId: string): Promise<void> {
   try {
     validateEventId(eventId);
     const api = await getApi();
-    await api.delete(`/user/event/${eventId}`);
+    await api.delete(`/user/event/${encodeURIComponent(eventId)}`);
   } catch (error) {
     handleApiError(error);
   }
@@ -190,7 +191,7 @@ export async function deleteEvent(eventId: string, editScope?: EditScope): Promi
   try {
     validateEventId(eventId);
     const api = await getApi();
-    await api.delete(`/admin/event/${eventId}`, {
+    await api.delete(`/admin/event/${encodeURIComponent(eventId)}`, {
       ...(editScope ? { params: { editScope } } : {}),
     });
   } catch (error) {
@@ -203,7 +204,7 @@ export async function deleteParticipant(eventId: string, userEmail: string): Pro
     validateEventId(eventId);
     const api = await getApi();
     const payload = { email: userEmail };
-    await api.delete(`/admin/event/${eventId}/participant`, { data: payload });
+    await api.delete(`/admin/event/${encodeURIComponent(eventId)}/participant`, { data: payload });
   } catch (error) {
     handleApiError(error);
   }
@@ -216,7 +217,7 @@ export async function changeParticipant(
   try {
     validateEventId(eventId);
     const api = await getApi();
-    await api.post(`/admin/event/${eventId}/participant`, changeDeltaParticipant);
+    await api.post(`/admin/event/${encodeURIComponent(eventId)}/participant`, changeDeltaParticipant);
   } catch (error) {
     handleApiError(error);
   }
@@ -237,7 +238,7 @@ export async function setCategories(eventId: string, categories: number[]): Prom
     validateEventId(eventId);
     const api = await getApi();
     await api.post<string>(
-      `/admin/event/${eventId}/category`,
+      `/admin/event/${encodeURIComponent(eventId)}/category`,
       categories,
     );
   } catch (error) {
@@ -295,7 +296,7 @@ export async function getEvent(id: string): Promise<FullDeltaEvent> {
   try {
     validateEventId(id);
     const api = await getApi();
-    const response = await api.get<FullDeltaEvent>(`/event/${id}`);
+    const response = await api.get<FullDeltaEvent>(`/event/${encodeURIComponent(id)}`);
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError && error.status === 404) {
@@ -307,17 +308,16 @@ export async function getEvent(id: string): Promise<FullDeltaEvent> {
 
 export async function createEvent(
   formData: CreateEventSchema,
-): Promise<FullDeltaEvent> {
+): Promise<ActionResult<FullDeltaEvent>> {
   try {
     const api = await getApi();
 
     const event = createDeltaEventFromFormData(formData);
-    const response = await api.put("/admin/event", event);
+    const response = await api.put<FullDeltaEvent>("/admin/event", event);
 
-    return response.data;
+    return { ok: true, data: response.data };
   } catch (error) {
-    handleApiError(error);
-    throw error;
+    return toSaveErrorResult(error);
   }
 }
 
@@ -325,7 +325,7 @@ export async function updateEvent(
   formData: CreateEventSchema,
   eventId: string,
   editScope?: EditScope,
-): Promise<FullDeltaEvent> {
+): Promise<ActionResult<FullDeltaEvent>> {
   try {
     validateEventId(eventId);
     const api = await getApi();
@@ -334,29 +334,55 @@ export async function updateEvent(
     if (editScope) {
       event.editScope = editScope;
     }
-    const response = await api.post(`/admin/event/${eventId}`, event);
+    const response = await api.post<FullDeltaEvent>(`/admin/event/${encodeURIComponent(eventId)}`, event);
 
-    return response.data;
+    return { ok: true, data: response.data };
   } catch (error) {
-    handleApiError(error);
-    throw error;
+    return toSaveErrorResult(error);
   }
+}
+
+function toSaveErrorResult(error: unknown): { ok: false; status?: number; message: string } {
+  console.error("Failed to save event:", error);
+  if (error instanceof ApiError) {
+    return { ok: false, status: error.status, message: error.message };
+  }
+  if (error instanceof AxiosError) {
+    const status = error.status;
+    const backendMessage = (error as AxiosError & { responseMessage?: string }).responseMessage;
+    if (status === 502) {
+      return {
+        ok: false,
+        status,
+        message:
+          "Kunne ikke booke rommet eller opprette Teams-møtet. Ingenting er lagret – prøv igjen.",
+      };
+    }
+    if (status === 400) {
+      return { ok: false, status, message: backendMessage || "Ugyldig forespørsel." };
+    }
+    if (status === 401 || status === 403) {
+      return { ok: false, status, message: "Du har ikke tilgang til å lagre dette arrangementet." };
+    }
+    return {
+      ok: false,
+      status,
+      message: "Kunne ikke lagre arrangementet. Vennligst prøv igjen senere.",
+    };
+  }
+  return { ok: false, message: "Kunne ikke koble til serveren. Sjekk internettforbindelsen." };
+}
+
+/** Local (Europe/Oslo) time in the backend's event time format. */
+function formatBackendDateTime(date: Date, time: string): string {
+  return `${formatInTimeZone(date, "Europe/Oslo", "yyyy-MM-dd")}T${time}:00Z`;
 }
 
 function createDeltaEventFromFormData(
   formData: CreateEventSchema,
 ): CreateDeltaEvent {
-  const start = `${formatInTimeZone(
-    formData.startDate,
-    "Europe/Oslo",
-    "yyyy-MM-dd",
-  )}T${formData.startTime}:00Z`;
-
-  const end = `${formatInTimeZone(
-    formData.endDate,
-    "Europe/Oslo",
-    "yyyy-MM-dd",
-  )}T${formData.endTime}:00Z`;
+  const start = formatBackendDateTime(formData.startDate, formData.startTime);
+  const end = formatBackendDateTime(formData.endDate, formData.endTime);
 
   const deadline = formData.signupDeadlineDate
     ? `${formatInTimeZone(
@@ -397,6 +423,14 @@ function createDeltaEventFromFormData(
     signupDeadline: formData.hasSignupDeadline && !formData.isRecurring ? deadline : undefined,
     sendNotificationEmail: sendNotificationEmail,
     recurrence: recurrence,
+    // Room/Teams: the form only sets these when the feature is on and the value should change.
+    // Omitted means "keep current" on update. Never sent for recurring events (backend 400).
+    ...(!formData.isRecurring && formData.roomEmail && formData.roomName
+      ? { roomEmail: formData.roomEmail, roomName: formData.roomName }
+      : {}),
+    ...(!formData.isRecurring && formData.isOnlineMeeting === true
+      ? { isOnlineMeeting: true }
+      : {}),
   };
 }
 

@@ -3,6 +3,7 @@ import { checkToken, getUser } from "@/auth/token";
 import EventDetails from "./eventDetails";
 import CardWithBackground from "@/components/cardWithBackground";
 import { getEvent } from "@/service/eventActions";
+import { getFeatures } from "@/service/roomActions";
 import { Metadata, ResolvingMetadata } from "next";
 import Head from "next/head";
 
@@ -62,9 +63,8 @@ export default async function Page({ params, searchParams }: EventPageProps) {
   const hostname = process.env.NEXT_PUBLIC_HOSTNAME;
   const backLink = getSafeReturnTo(returnTo);
 
-  const user = await getUser();
-  const { event, participants, hosts, categories, recurringSeries }: FullDeltaEvent =
-    await getEvent(id);
+  const [user, fullEvent, features] = await Promise.all([getUser(), getEvent(id), getFeatures()]);
+  const { event, participants, hosts, categories, recurringSeries }: FullDeltaEvent = fullEvent;
 
   return (
     <>
@@ -85,6 +85,7 @@ export default async function Page({ params, searchParams }: EventPageProps) {
           recurringSeries={recurringSeries}
           user={user}
           hostname={hostname}
+          features={features}
         />
       </CardWithBackground>
     </>

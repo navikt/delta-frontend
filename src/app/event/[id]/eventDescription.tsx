@@ -9,17 +9,33 @@ import {
     PersonCircleIcon,
     HourglassBottomFilledIcon,
     LocationPinIcon,
+    Buildings3Icon,
+    VideoIcon,
 } from "@navikt/aksel-icons";
 import {useEffect, useRef, useState} from "react";
-import {Link, Modal, Search, Button} from "@navikt/ds-react";
+import {Alert, Link, Modal, Search, Button} from "@navikt/ds-react";
 import Participant from "./participant";
 import {formatEventDates, formatEventTimes, formatDeadline, formatEventDuration, formatRecurrenceUntilDate} from "@/service/format";
 import { RecurringBadge } from "@/components/RecurringBadge";
+import { RoomStatusTag } from "@/components/roomStatusTag";
+import { Features, NO_FEATURES } from "@/types/room";
+
+/** Only render server-provided join links that are real https URLs. */
+function safeHttpsUrl(url?: string | null): string | null {
+    if (!url) return null;
+    try {
+        return new URL(url).protocol === "https:" ? url : null;
+    } catch {
+        return null;
+    }
+}
 
 type EventDescriptionProps = FullDeltaEvent & {
     className?: string;
     displayTime: boolean;
     user: User;
+    /** Room/Teams info is only shown to users with the feature enabled (maintainers during testing). */
+    features?: Features;
 };
 export default function EventDescription({
      event,
@@ -29,6 +45,7 @@ export default function EventDescription({
      user,
      className,
      displayTime,
+     features = NO_FEATURES,
  }: EventDescriptionProps) {
     const [openParticipantList, setOpenParticipantList] = useState(false);
     const [searchInput, setSearchInput] = useState("");
@@ -54,6 +71,8 @@ export default function EventDescription({
     }, [participants, searchInput]);
 
     const ref = useRef<HTMLDialogElement>(null);
+    const isHost = hosts.some((h) => h.email === user.email);
+    const teamsJoinUrl = safeHttpsUrl(event.teamsJoinUrl);
 
     function convertTextToLinks(text: string) {
         const urlRegex = /(https?:\/\/\S+)/g;
@@ -120,6 +139,41 @@ export default function EventDescription({
           </span>
                 )}
             </div>
+            {features.roomBooking && event.roomName && (
+                <div className="flex flex-col gap-1 pb-1">
+                    <span className="flex flex-row flex-wrap justify-start gap-2 items-center">
+                        <Buildings3Icon aria-label="møterom"/>
+                        {event.roomName}
+                        <RoomStatusTag status={event.roomStatus}/>
+                    </span>
+                    {event.roomStatus === "DECLINED" && isHost && (
+                        <Alert variant="warning" size="small">
+                            Rommet avslo bookingen, og rommet er ikke reservert.{" "}
+                            <Link href={`/event/${event.id}/edit`}>Velg et annet rom</Link>
+                        </Alert>
+                    )}
+                </div>
+            )}
+            {features.teamsMeeting && event.isOnlineMeeting && (
+                <div className="flex flex-col gap-1 pb-1">
+                    <span className="flex flex-row justify-start gap-2 items-center">
+                        <VideoIcon aria-label="Teams-møte"/>
+                        {teamsJoinUrl ? (
+                            <Link href={teamsJoinUrl} target="_blank" rel="noopener noreferrer">
+                                Bli med i Teams-møtet
+                            </Link>
+                        ) : (
+                            <span>Teams-møte – meld deg på for å se lenken</span>
+                        )}
+                    </span>
+                    {teamsJoinUrl && (event.teamsConferenceId || event.teamsDialIn) && (
+                        <span className="pl-6 text-sm text-ax-text-neutral-subtle flex flex-col">
+                            {event.teamsDialIn && <span>Ring inn: {event.teamsDialIn}</span>}
+                            {event.teamsConferenceId && <span>Konferanse-ID: {event.teamsConferenceId}</span>}
+                        </span>
+                    )}
+                </div>
+            )}
             {event.signupDeadline && (
                 <div>
                     <label className="flex items-center gap-2">

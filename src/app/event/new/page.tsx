@@ -3,6 +3,7 @@ import CreateEventForm from "@/components/createEventForm";
 import CardWithBackground from "@/components/cardWithBackground";
 import { Metadata } from "next";
 import { getAllCategories } from "@/service/eventActions";
+import { getFeatures } from "@/service/roomActions";
 import { EditTypeEnum } from "@/types/event";
 
 export const metadata: Metadata = {
@@ -13,7 +14,7 @@ export default async function NewEvent(props: {
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   await checkToken("/event/new");
-  const categories = await getAllCategories();
+  const [categories, features] = await Promise.all([getAllCategories(), getFeatures()]);
 
   const searchParams = await props.searchParams;
   let eventId = searchParams?.template;
@@ -36,6 +37,7 @@ export default async function NewEvent(props: {
             : { type: EditTypeEnum.NEW }
         }
         allCategories={categories}
+        features={features}
       />
     </CardWithBackground>
   );

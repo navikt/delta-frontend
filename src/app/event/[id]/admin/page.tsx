@@ -3,6 +3,7 @@ import CardWithBackground from "@/components/cardWithBackground";
 import ParticipantPage from "./participantPage";
 import Link from "next/link";
 import { getEvent } from "@/service/eventActions";
+import { getFeatures } from "@/service/roomActions";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -17,8 +18,7 @@ export default async function ParticipantsPage({
   const { id } = await params;
   await checkToken(`/event/${id}/admin`);
 
-  const fullEvent = await getEvent(id);
-  const user = await getUser();
+  const [fullEvent, user, features] = await Promise.all([getEvent(id), getUser(), getFeatures()]);
 
   if (fullEvent.hosts.some((host) => host.email === user.email)) {
     return (
@@ -28,7 +28,7 @@ export default async function ParticipantsPage({
         backText="Arrangementet"
         backLink={`/event/${id}`}
       >
-        <ParticipantPage fullEvent={fullEvent} user={user} />
+        <ParticipantPage fullEvent={fullEvent} user={user} showRoomStatus={features.roomBooking} />
       </CardWithBackground>
     );
   } else {

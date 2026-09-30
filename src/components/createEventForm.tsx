@@ -652,7 +652,7 @@ function InternalCreateEventForm({
         </>
       ) : (
         <>
-          {editEvent?.roomName && (
+          {features.roomBooking && editEvent?.roomName && (
             <div className="flex flex-col gap-1 max-w-prose">
               <Label as="p">Nåværende møterom</Label>
               <div className="flex flex-wrap items-center gap-2">
@@ -681,7 +681,7 @@ function InternalCreateEventForm({
             {...register("location")}
             error={errors.location?.message}
           />
-          {teamsAlreadyOn ? (
+          {features.teamsMeeting && teamsAlreadyOn ? (
             <Switch
               checked
               readOnly

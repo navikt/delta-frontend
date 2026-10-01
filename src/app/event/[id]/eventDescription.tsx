@@ -142,8 +142,10 @@ export default function EventDescription({
             {features.roomBooking && event.roomName && (
                 <div className="flex flex-col gap-1 pb-1">
                     <span className="flex flex-row flex-wrap justify-start gap-2 items-center">
-                        <Buildings3Icon aria-label="møterom"/>
-                        {event.roomName}
+                        <span className="flex min-w-0 items-center gap-2">
+                            <Buildings3Icon aria-label="møterom" className="shrink-0"/>
+                            <span className="min-w-0">{event.roomName}</span>
+                        </span>
                         <RoomStatusTag status={event.roomStatus}/>
                     </span>
                     {event.roomStatus === "DECLINED" && isHost && (

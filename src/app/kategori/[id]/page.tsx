@@ -19,8 +19,9 @@ export default async function Page({ params }: CategoryPageProps) {
     const { id } = await params;
     await checkToken(`/kategori/${id}`);
     const allCategories = await getAllCategories();
-    const category = id
-    const theCategory = allCategories.find(item => item.name === category);
+    const theCategory = allCategories.find(item => item.name === id)
+        ?? allCategories.find(item => item.name === id.replace(/\+/g, " "));
+    const category = theCategory?.name ?? id;
     const title = category.charAt(0).toUpperCase() + category.slice(1);
 
     return (

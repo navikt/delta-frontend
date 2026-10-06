@@ -6,6 +6,22 @@ import { Metadata } from "next";
 
 type CategoryPageProps = { params: Promise<{ id: string }> };
 
+function getCategoryNameCandidates(id: string) {
+    let decodedId = id;
+
+    try {
+        decodedId = decodeURIComponent(id);
+    } catch {
+    }
+
+    return Array.from(new Set([
+        id,
+        decodedId,
+        id.replace(/\+/g, " "),
+        decodedId.replace(/\+/g, " "),
+    ]));
+}
+
 export async function generateMetadata(
     { params }: CategoryPageProps
 ): Promise<Metadata> {
@@ -22,8 +38,8 @@ export default async function Page({ params }: CategoryPageProps) {
     const categories = allCategories.length > 0
         ? allCategories
         : (await getEvents({ onlyFuture: true })).flatMap(item => item.categories);
-    const theCategory = categories.find(item => item.name === id)
-        ?? categories.find(item => item.name === id.replace(/\+/g, " "));
+    const categoryNames = getCategoryNameCandidates(id);
+    const theCategory = categories.find(item => categoryNames.includes(item.name));
     const category = theCategory?.name ?? id;
     const title = category.charAt(0).toUpperCase() + category.slice(1);
 

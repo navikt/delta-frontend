@@ -35,11 +35,13 @@ export default async function Page({ params }: CategoryPageProps) {
     const { id } = await params;
     await checkToken(`/kategori/${id}`);
     const allCategories = await getAllCategories();
-    const categories = allCategories.length > 0
-        ? allCategories
-        : (await getEvents({ onlyFuture: true })).flatMap(item => item.categories);
     const categoryNames = getCategoryNameCandidates(id);
-    const theCategory = categories.find(item => categoryNames.includes(item.name));
+    const categoryFromCatalog = allCategories.find(item => categoryNames.includes(item.name));
+    const eventCategories = categoryFromCatalog
+        ? []
+        : (await getEvents({ onlyFuture: true })).flatMap(item => item.categories);
+    const theCategory = categoryFromCatalog
+        ?? eventCategories.find(item => categoryNames.includes(item.name));
     const category = theCategory?.name ?? id;
     const title = category.charAt(0).toUpperCase() + category.slice(1);
 

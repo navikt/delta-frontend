@@ -1,7 +1,7 @@
 import { checkToken } from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
 import EventFilters from "@/components/eventFiltersCategory";
-import { getAllCategories } from "@/service/eventActions";
+import { getAllCategories, getEvents } from "@/service/eventActions";
 import { Metadata } from "next";
 
 type CategoryPageProps = { params: Promise<{ id: string }> };
@@ -19,8 +19,11 @@ export default async function Page({ params }: CategoryPageProps) {
     const { id } = await params;
     await checkToken(`/kategori/${id}`);
     const allCategories = await getAllCategories();
-    const theCategory = allCategories.find(item => item.name === id)
-        ?? allCategories.find(item => item.name === id.replace(/\+/g, " "));
+    const categories = allCategories.length > 0
+        ? allCategories
+        : (await getEvents({ onlyFuture: true })).flatMap(item => item.categories);
+    const theCategory = categories.find(item => item.name === id)
+        ?? categories.find(item => item.name === id.replace(/\+/g, " "));
     const category = theCategory?.name ?? id;
     const title = category.charAt(0).toUpperCase() + category.slice(1);
 

@@ -400,18 +400,18 @@ export default function EventFilters({
           </Tabs.List>
         </Tabs>
       )}
-    {/*
+    
     {tabname == "alle" && (
           <>
             {joinedLink && (
                 <div className="px-4 flex flex-col ax-md:flex-row gap-2 w-full">
                   <LinkPanel
-                      data-umami-event="PRIDE CTA"
-                      href="/pride"
+                      data-umami-event="STATSDAY CTA"
+                      href="/delta.nav.no/?categories=statistikkens+dag"
                       border
-                      className="colorful w-full ax-md:w-auto"
+                      className="w-full ax-md:w-auto"
                   >
-                    <LinkPanel.Title>Pride</LinkPanel.Title>
+                    <LinkPanel.Title>Statistikkens dag</LinkPanel.Title>
                     <LinkPanel.Description>
                       Se programmet og meld deg på arrangementer
                     </LinkPanel.Description>
@@ -420,7 +420,7 @@ export default function EventFilters({
             )}
           </>
       )}
-      */}
+      
       {(searchName || selectCategory) && (
           <div
               className="flex flex-col-reverse gap-2 items-start ax-md:flex-row justify-between w-full ax-md:items-center px-4">

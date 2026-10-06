@@ -407,7 +407,7 @@ export default function EventFilters({
                 <div className="px-4 flex flex-col ax-md:flex-row gap-2 w-full">
                   <LinkPanel
                       data-umami-event="STATSDAY CTA"
-                      href="/delta.nav.no/?categories=statistikkens+dag"
+                      href="?categories=statistikkens+dag"
                       border
                       className="w-full ax-md:w-auto"
                   >

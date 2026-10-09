@@ -71,7 +71,12 @@ export default function PersonPicker({
   }, [attempt, shouldSearch, trimmedQuery]);
 
   return (
-    <div className="flex flex-col gap-2 max-w-prose">
+    <div
+      className="flex flex-col gap-2 max-w-prose"
+      onKeyDown={(event) => {
+        if (event.key === "Enter") event.preventDefault();
+      }}
+    >
       <UNSAFE_Combobox
         label={label}
         description="Søk blant personer i Nav. Invitasjonen sendes fra ikkesvar.delta@nav.no. Outlook-svar oppdaterer Delta, men kommentarer i e-postsvar blir ikke lest."

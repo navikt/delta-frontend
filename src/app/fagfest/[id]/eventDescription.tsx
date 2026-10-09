@@ -13,8 +13,7 @@ import {
 import {useEffect, useRef, useState} from "react";
 import {Link, Modal, Search, Button} from "@navikt/ds-react";
 import Participant from "./participant";
-import { countCapacityAttendees } from "@/service/eventCapacity";
-import InvitationList from "@/components/invitationList";
+import { countCapacityAttendees, InvitationCapacity } from "@/service/eventCapacity";
 import {
     formatEventDates,
     formatEventTimes,
@@ -27,12 +26,13 @@ type EventDescriptionProps = FullDeltaEvent & {
     className?: string;
     displayTime: boolean;
     user: User;
+    invitationCapacity: InvitationCapacity;
 };
 export default function EventDescription({
      event,
      participants,
      hosts,
-     invited = [],
+     invitationCapacity,
      user,
      className,
      displayTime,
@@ -44,7 +44,7 @@ export default function EventDescription({
     const displayedAttendeeCount =
         event.participantLimit === 0
             ? participantsAndHosts.length
-            : countCapacityAttendees(participants, hosts, invited, event.signupDeadline);
+            : countCapacityAttendees(participants, hosts, invitationCapacity.reservedInvitations, event.signupDeadline);
 
     const sortParticipant = (a: DeltaParticipant, b: DeltaParticipant) =>
         a.name.split(", ").reverse()[0] > b.name.split(", ").reverse()[0] ? 1 : -1;
@@ -223,9 +223,6 @@ export default function EventDescription({
                                 </li>
                             ))}
                         </ul>
-                        {event.inviteMode === "SHARED" && (
-                            <InvitationList invitations={invited} />
-                        )}
                     </div>
                 </Modal.Body>
             </Modal>

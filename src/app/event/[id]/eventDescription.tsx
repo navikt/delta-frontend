@@ -19,8 +19,7 @@ import {formatEventDates, formatEventTimes, formatDeadline, formatEventDuration,
 import { RecurringBadge } from "@/components/RecurringBadge";
 import { RoomStatusTag } from "@/components/roomStatusTag";
 import { Features, NO_FEATURES } from "@/types/room";
-import { countCapacityAttendees } from "@/service/eventCapacity";
-import InvitationList from "@/components/invitationList";
+import { countCapacityAttendees, InvitationCapacity } from "@/service/eventCapacity";
 
 /** Only render server-provided join links that are real https URLs. */
 function safeHttpsUrl(url?: string | null): string | null {
@@ -36,6 +35,7 @@ type EventDescriptionProps = FullDeltaEvent & {
     className?: string;
     displayTime: boolean;
     user: User;
+    invitationCapacity: InvitationCapacity;
     /** Room/Teams info is only shown to users with the feature enabled (maintainers during testing). */
     features?: Features;
 };
@@ -43,7 +43,7 @@ export default function EventDescription({
      event,
      participants,
      hosts,
-     invited = [],
+     invitationCapacity,
      recurringSeries,
      user,
      className,
@@ -57,7 +57,12 @@ export default function EventDescription({
     const displayedAttendeeCount =
         event.participantLimit === 0
             ? participantsAndHosts.length
-            : countCapacityAttendees(participants, hosts, invited, event.signupDeadline);
+            : countCapacityAttendees(
+                  participants,
+                  hosts,
+                  invitationCapacity.reservedInvitations,
+                  event.signupDeadline,
+              );
 
     const sortParticipant = (a: DeltaParticipant, b: DeltaParticipant) =>
         a.name.split(", ").reverse()[0] > b.name.split(", ").reverse()[0] ? 1 : -1;
@@ -283,9 +288,6 @@ export default function EventDescription({
                                 </li>
                             ))}
                         </ul>
-                        {event.inviteMode === "SHARED" && (
-                            <InvitationList invitations={invited} />
-                        )}
                     </div>
                 </Modal.Body>
             </Modal>

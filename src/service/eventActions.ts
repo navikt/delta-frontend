@@ -1,18 +1,20 @@
 "use server";
 
-import { getDeltaBackendAccessToken } from "@/auth/token";
+import { getDeltaBackendAccessToken, getUser } from "@/auth/token";
 import { backendUrl, getApi } from "@/api/instance";
 import { CreateEventSchema } from "@/components/createEventForm";
 import {
   Category,
   ChangeDeltaParticipant,
   CreateDeltaEvent,
+  DeltaParticipant,
   DirectoryPerson,
   EditScope,
   FullDeltaEvent,
   InviteeRequest,
 } from "@/types/event";
 import { ActionResult } from "@/types/room";
+import { getInvitationCapacity, InvitationCapacity } from "@/service/eventCapacity";
 import { formatInTimeZone } from "date-fns-tz";
 import { AxiosError } from 'axios';
 import { unstable_cache } from "next/cache";
@@ -304,8 +306,26 @@ export async function getEvent(id: string): Promise<FullDeltaEvent> {
     if (error instanceof AxiosError && error.status === 404) {
       notFound();
     }
+
     throw handleApiError(error);
   }
+}
+
+export async function getEventRegistrationState(eventId: string): Promise<{
+  participants: DeltaParticipant[];
+  invitationCapacity: InvitationCapacity;
+}> {
+  const [event, user] = await Promise.all([getEvent(eventId), getUser()]);
+  return {
+    participants: event.participants,
+    invitationCapacity: getInvitationCapacity(
+      event.participants,
+      event.hosts,
+      event.invited,
+      user.email,
+      event.event.signupDeadline,
+    ),
+  };
 }
 
 export async function searchPeople(query: string): Promise<ActionResult<DirectoryPerson[]>> {

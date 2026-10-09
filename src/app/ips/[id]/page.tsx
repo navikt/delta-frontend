@@ -4,6 +4,7 @@ import EventDetails from "./eventDetails";
 import { getEvent } from "@/service/eventActions";
 import { Metadata, ResolvingMetadata } from "next";
 import CardWithBackground from "@/components/cardWithBackground";
+import { getInvitationCapacity } from "@/service/eventCapacity";
 
 type EventPageProps = {
   params: Promise<{ id: string }>;
@@ -64,6 +65,14 @@ export default async function Page({ params, searchParams }: EventPageProps) {
   const user = await getUser();
   const { event, participants, hosts, categories, invited = [], calendarSyncError }: FullDeltaEvent =
     await getEvent(id);
+  const isHost = hosts.some((host) => host.email.toLowerCase() === user.email.toLowerCase());
+  const invitationCapacity = getInvitationCapacity(
+    participants,
+    hosts,
+    invited,
+    user.email,
+    event.signupDeadline,
+  );
 
   return (
     <div className="w-full colorful pb-10">
@@ -80,8 +89,8 @@ export default async function Page({ params, searchParams }: EventPageProps) {
           participants={participants}
           hosts={hosts}
           categories={categories}
-          invited={invited}
-          calendarSyncError={calendarSyncError}
+          invitationCapacity={invitationCapacity}
+          calendarSyncError={isHost ? calendarSyncError : null}
           user={user}
           hostname={hostname}
         />

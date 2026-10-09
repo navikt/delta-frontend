@@ -4,6 +4,7 @@ import EventDetails from "./eventDetails";
 import CardWithBackground from "@/components/cardWithBackground";
 import { getEvent } from "@/service/eventActions";
 import { getFeatures } from "@/service/roomActions";
+import { getInvitationCapacity } from "@/service/eventCapacity";
 import { Metadata, ResolvingMetadata } from "next";
 import Head from "next/head";
 
@@ -73,6 +74,14 @@ export default async function Page({ params, searchParams }: EventPageProps) {
     invited = [],
     calendarSyncError,
   }: FullDeltaEvent = fullEvent;
+  const isHost = hosts.some((host) => host.email.toLowerCase() === user.email.toLowerCase());
+  const invitationCapacity = getInvitationCapacity(
+    participants,
+    hosts,
+    invited,
+    user.email,
+    event.signupDeadline,
+  );
 
   return (
     <>
@@ -90,8 +99,8 @@ export default async function Page({ params, searchParams }: EventPageProps) {
           participants={participants}
           hosts={hosts}
           categories={categories}
-          invited={invited}
-          calendarSyncError={calendarSyncError}
+          invitationCapacity={invitationCapacity}
+          calendarSyncError={isHost ? calendarSyncError : null}
           recurringSeries={recurringSeries}
           user={user}
           hostname={hostname}

@@ -28,7 +28,12 @@ export default async function ParticipantsPage({
         backText="Arrangementet"
         backLink={`/event/${id}`}
       >
-        <ParticipantPage fullEvent={fullEvent} user={user} showRoomStatus={features.roomBooking} />
+        <ParticipantPage
+          fullEvent={fullEvent}
+          user={user}
+          showRoomStatus={features.roomBooking}
+          peopleSearchEnabled={features.peopleSearch}
+        />
       </CardWithBackground>
     );
   } else {

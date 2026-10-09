@@ -18,6 +18,7 @@ import {
     formatEventDates,
     formatEventTimes,
 } from "@/service/format";
+import { countCapacityAttendees } from "@/service/eventCapacity";
 import { RecurringBadge } from "@/components/RecurringBadge";
 import { usePathname, useSearchParams } from "next/navigation";
 
@@ -34,6 +35,12 @@ export function EventCard({
     tabname?: string;
     userEmail?: string;
 }) {
+    const attendeeCount = countCapacityAttendees(
+        event.participants,
+        event.hosts,
+        event.invited,
+        event.event.signupDeadline,
+    );
     const isRegistered =
         userEmail != null && event.participants.some((p) => p.email === userEmail);
     const isUtløpt =
@@ -137,14 +144,13 @@ export function EventCard({
                                     <Detail className="leading-normal">
                 <span className="flex items-center gap-1 pb-1 leading-normal">
                   <PersonCheckmarkIcon title="person"/>
-                    {event.participants.length + event.hosts.length >=
-                    event.event.participantLimit ? (
+                    {attendeeCount >= event.event.participantLimit ? (
                         <span className="bg-ax-danger-700 text-white rounded px-2">
                       Arrangementet er fullt
                     </span>
                     ) : (<>
-                        {event.event.participantLimit - event.participants.length - event.hosts.length > 9 ? (
-                            <>{event.participants.length} / {event.event.participantLimit} deltakere</>):(<>Kun {event.event.participantLimit - event.participants.length - event.hosts.length} plasser igjen</>)}
+                        {event.event.participantLimit - attendeeCount > 9 ? (
+                            <>{attendeeCount} / {event.event.participantLimit} plasser</>):(<>Kun {event.event.participantLimit - attendeeCount} plasser igjen</>)}
                     </>)}
 
                 </span>

@@ -39,7 +39,8 @@ export default async function Page({ params }: EventPageProps) {
   const hostname = process.env.NEXT_PUBLIC_HOSTNAME;
 
   const user = await getUser();
-  const { event, participants, hosts, categories }: FullDeltaEvent = await getEvent(id);
+  const { event, participants, hosts, categories, invited = [], calendarSyncError }: FullDeltaEvent =
+    await getEvent(id);
 
   return (
     <div className="w-full colorful_fagtorsdag pb-10">
@@ -55,6 +56,8 @@ export default async function Page({ params }: EventPageProps) {
           participants={participants}
           hosts={hosts}
           categories={categories}
+          invited={invited}
+          calendarSyncError={calendarSyncError}
           user={user}
           hostname={hostname}
         />

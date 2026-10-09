@@ -10,17 +10,21 @@ import {useEffect, useState} from "react";
 import {CalendarIcon, ClockIcon, LocationPinIcon, TrashIcon} from "@navikt/aksel-icons";
 import {User} from "@/types/user";
 import {formatEventDates, formatEventDuration} from "@/service/format";
+import InvitationManager from "./invitationManager";
+import CalendarSyncStatus from "@/components/calendarSyncStatus";
 
 type ParticipantPageProps = {
     fullEvent: FullDeltaEvent;
     user: User;
     showRoomStatus?: boolean;
+    peopleSearchEnabled?: boolean;
 };
 
 export default function ParticipantPage({
                                       fullEvent: eventWithParticipants,
                                       user,
                                       showRoomStatus = false,
+                                      peopleSearchEnabled = false,
                                   }: ParticipantPageProps) {
     const [openConfirmation, setOpenConfirmation] = useState(false);
 
@@ -105,6 +109,20 @@ export default function ParticipantPage({
                 user={user}
                 searchInput={searchInput}
             />
+            {event.inviteMode === "SHARED" && (
+              <div className="flex flex-col gap-4">
+                <CalendarSyncStatus
+                  eventId={event.id}
+                  status={event.calendarSyncStatus}
+                  error={eventWithParticipants.calendarSyncError}
+                  isHost
+                />
+                <InvitationManager
+                  event={eventWithParticipants}
+                  peopleSearchEnabled={peopleSearchEnabled}
+                />
+              </div>
+            )}
             <h2 className="aksel-heading aksel-heading--medium">Detaljer</h2>
             <span className="flex flex-col ax-md:flex-row justify-start gap-2 -mt-6 mb-5 items-center">
               <CalendarIcon aria-label="dato"/>

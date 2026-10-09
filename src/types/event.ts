@@ -25,6 +25,7 @@ export type CreateDeltaEvent = {
   participantLimit: number;
   signupDeadline?: string;
   sendNotificationEmail?: boolean;
+  invitees?: InviteeRequest[];
   recurrence?: RecurrenceRequest;
   editScope?: EditScope;
   /** Feature toggled. Must be sent together with roomName. Omit to keep current room. */
@@ -36,12 +37,34 @@ export type CreateDeltaEvent = {
 
 export type RoomStatus = "PENDING" | "ACCEPTED" | "DECLINED";
 
+export type InviteMode = "PER_PARTICIPANT" | "SHARED";
+
+export type CalendarSyncStatus = "PENDING" | "SYNCED" | "FAILED";
+
+export type InvitationStatus = "INVITED" | "REGISTERED" | "DECLINED" | "FORWARDED";
+
+export type Invitation = {
+  email: string;
+  name: string;
+  status: InvitationStatus;
+};
+
+export type InviteeRequest = { email: string };
+
+export type DirectoryPerson = {
+  id: string;
+  name: string;
+  email: string;
+};
+
 export type FullDeltaEvent = {
   event: DeltaEvent;
   participants: DeltaParticipant[];
   hosts: DeltaParticipant[];
   categories: Category[];
   recurringSeries?: RecurringSeriesSummary;
+  invited?: Invitation[];
+  calendarSyncError?: string | null;
 };
 
 export type DeltaEvent = {
@@ -61,6 +84,8 @@ export type DeltaEvent = {
   teamsJoinUrl?: string | null;
   teamsConferenceId?: string | null;
   teamsDialIn?: string | null;
+  inviteMode?: InviteMode;
+  calendarSyncStatus?: CalendarSyncStatus | null;
 };
 
 export type TemplateDeltaEvent = {

@@ -12,6 +12,8 @@ export async function getFeatures(): Promise<Features> {
     return {
       roomBooking: response.data?.roomBooking === true,
       teamsMeeting: response.data?.teamsMeeting === true,
+      sharedCalendar: response.data?.sharedCalendar === true,
+      peopleSearch: response.data?.peopleSearch === true,
     };
   } catch (error) {
     console.error("Failed to fetch features:", error);

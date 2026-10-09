@@ -13,6 +13,8 @@ import {
 import {useEffect, useRef, useState} from "react";
 import {Link, Modal, Search, Button} from "@navikt/ds-react";
 import Participant from "./participant";
+import { countCapacityAttendees } from "@/service/eventCapacity";
+import InvitationList from "@/components/invitationList";
 import {
     formatEventDates,
     formatEventTimes,
@@ -30,6 +32,7 @@ export default function EventDescription({
      event,
      participants,
      hosts,
+     invited = [],
      user,
      className,
      displayTime,
@@ -38,6 +41,10 @@ export default function EventDescription({
     const [searchInput, setSearchInput] = useState("");
     const [filterParticipants, setFilterParticipants] = useState<DeltaParticipant[]>([]);
     const participantsAndHosts = participants.concat(hosts);
+    const displayedAttendeeCount =
+        event.participantLimit === 0
+            ? participantsAndHosts.length
+            : countCapacityAttendees(participants, hosts, invited, event.signupDeadline);
 
     const sortParticipant = (a: DeltaParticipant, b: DeltaParticipant) =>
         a.name.split(", ").reverse()[0] > b.name.split(", ").reverse()[0] ? 1 : -1;
@@ -158,9 +165,9 @@ export default function EventDescription({
             </div>
             <span className="flex flex-row justify-start gap-2 items-center cursor-pointer">
           <PersonCheckmarkIcon aria-hidden/>
-                {participantsAndHosts.length}
-                {event.participantLimit == 0 ? "" : ` av ${event.participantLimit}`}
-                {" deltakere"}
+                {event.participantLimit === 0
+                    ? `${displayedAttendeeCount} deltakere`
+                    : `${displayedAttendeeCount} av ${event.participantLimit} plasser`}
         </span>
             <div className="flex flex-row ml-[0.3rem] pl-6">
                 {hosts.map((h) => h.email).includes(user.email) ? (<>
@@ -216,6 +223,9 @@ export default function EventDescription({
                                 </li>
                             ))}
                         </ul>
+                        {event.inviteMode === "SHARED" && (
+                            <InvitationList invitations={invited} />
+                        )}
                     </div>
                 </Modal.Body>
             </Modal>

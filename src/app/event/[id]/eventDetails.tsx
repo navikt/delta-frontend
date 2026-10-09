@@ -23,6 +23,8 @@ import {TrashIcon, PencilIcon, BarChartIcon, FilePlusIcon} from "@navikt/aksel-i
 import EditScopeModal from "@/components/editScopeModal";
 import { RecurringBadge } from "@/components/RecurringBadge";
 import { Features } from "@/types/room";
+import { countCapacityAttendees, hasReservedInvitation } from "@/service/eventCapacity";
+import CalendarSyncStatus from "@/components/calendarSyncStatus";
 
 export default function EventDetails({
      event,
@@ -30,6 +32,8 @@ export default function EventDetails({
      hosts,
      categories,
      recurringSeries,
+     invited = [],
+     calendarSyncError,
      user,
      hostname,
      features,
@@ -39,9 +43,22 @@ export default function EventDetails({
     features?: Features;
 }) {
     const [reactiveParticipants, setParticipants] = useState(participants);
+    const [reactiveInvited, setInvited] = useState(invited);
+    const isHost = hosts.some((host) => host.email === user.email);
     const isParticipant = reactiveParticipants
         .map((p) => p.email)
         .includes(user.email);
+    const hasInvitationReservation = hasReservedInvitation(
+        user.email,
+        reactiveInvited,
+        event.signupDeadline,
+    );
+    const attendeeCount = countCapacityAttendees(
+        reactiveParticipants,
+        hosts,
+        reactiveInvited,
+        event.signupDeadline,
+    );
 
     const [showRegistration, setRegistration] = useState(false);
     const [showUnregistration, setUnregistration] = useState(false);
@@ -91,6 +108,16 @@ export default function EventDetails({
 
     return (
         <div>
+            {event.inviteMode === "SHARED" && (
+                <div className="mb-4">
+                    <CalendarSyncStatus
+                        eventId={event.id}
+                        status={event.calendarSyncStatus}
+                        error={calendarSyncError}
+                        isHost={isHost}
+                    />
+                </div>
+            )}
             <div className="flex w-full justify-between items-start gap-4">
                 {isSameDay ? (
                     <div className="flex flex-col gap-2">
@@ -208,8 +235,9 @@ export default function EventDetails({
                         }
                         if (
                             event.participantLimit &&
-                            event.participantLimit <= hosts.length + participants.length &&
-                            !isParticipant
+                            event.participantLimit <= attendeeCount &&
+                            !isParticipant &&
+                            !hasInvitationReservation
                         ) {
                             return (
                                 <>
@@ -350,6 +378,9 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                                     toggleEventStatus(event.id, isParticipant, (state) => {
                                         showAlert();
                                         setParticipants(state);
+                                        setInvited((current) =>
+                                            current.filter((invitation) => invitation.email.toLowerCase() !== user.email.toLowerCase()),
+                                        );
                                         setOpenConfirmation((x) => !x);
                                     })
                                 }
@@ -371,6 +402,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                     event={event}
                     participants={reactiveParticipants}
                     hosts={hosts}
+                    invited={reactiveInvited}
                     categories={categories}
                     displayTime={isSameDay}
                     features={features}

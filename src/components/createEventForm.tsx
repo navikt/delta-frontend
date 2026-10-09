@@ -30,6 +30,7 @@ import EventDatepicker from "../app/event/new/eventDatepicker";
 import {
   Category,
   DeltaEvent,
+  DirectoryPerson,
   EditTypeEnum,
   RecurrenceFrequency,
   RecurringSeriesSummary,
@@ -42,6 +43,7 @@ import { Spraksjekk } from "@/components/library";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import EditScopeModal from "@/components/editScopeModal";
 import RoomPicker, { SelectedRoom } from "@/components/roomPicker";
+import PersonPicker from "@/components/personPicker";
 import { RoomStatusTag } from "@/components/roomStatusTag";
 import { Features, NO_FEATURES } from "@/types/room";
 import { formatInTimeZone } from "date-fns-tz";
@@ -204,6 +206,7 @@ export default function CreateEventForm({
   const [selectedCategories, _setSelectedCategories] = useState<
     Category[] | undefined
   >(undefined);
+  const [existingAttendeeEmails, setExistingAttendeeEmails] = useState<string[]>([]);
   const setSelectedCategories: Dispatch<SetStateAction<Category[]>> = (
     setState: SetStateAction<Category[]>,
   ) =>
@@ -234,6 +237,11 @@ export default function CreateEventForm({
         }
         setRichEvent(richEvent);
         setSelectedCategories(e.categories);
+        setExistingAttendeeEmails([
+          ...e.hosts.map((person) => person.email),
+          ...e.participants.map((person) => person.email),
+          ...(e.invited ?? []).map((person) => person.email),
+        ]);
       })
       .then(() => setLoading(false));
   }, [editType]);
@@ -252,6 +260,13 @@ export default function CreateEventForm({
       selectedCategories={selectedCategories || []}
       setSelectedCategories={setSelectedCategories}
       features={features}
+      allowInvitations={
+        features.peopleSearch &&
+        (richEvent.type === EditTypeEnum.EDIT
+          ? richEvent.event.inviteMode === "SHARED"
+          : features.sharedCalendar)
+      }
+      excludedEmails={existingAttendeeEmails}
     />)
   );
 }
@@ -266,6 +281,8 @@ type InternalCreateEventFormProps = {
   setSelectedCategories: Dispatch<Category[]>;
   allCategories: Category[];
   features: Features;
+  allowInvitations: boolean;
+  excludedEmails: string[];
 };
 function InternalCreateEventForm({
   richEvent,
@@ -273,6 +290,8 @@ function InternalCreateEventForm({
   setSelectedCategories,
   allCategories,
   features,
+  allowInvitations,
+  excludedEmails,
 }: InternalCreateEventFormProps) {
   const [hasParticipantLimit, setHasParticipantLimit] = useState(
     ((richEvent.type !== EditTypeEnum.NEW &&
@@ -424,6 +443,7 @@ function InternalCreateEventForm({
   const [selectedPlatform, setSelectedPlatform] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [selectedInvitees, setSelectedInvitees] = useState<DirectoryPerson[]>([]);
 
   const roomTeamsAllowed = !isRecurring && !isEditingRecurring;
   const canPickRoom =
@@ -478,10 +498,14 @@ function InternalCreateEventForm({
   const save = async (values: CreateEventSchema, editScope?: EditScope) => {
     setSaving(true);
     setSaveError(null);
+    const invitees =
+      allowInvitations && !isRecurring && !isEditingRecurring
+        ? selectedInvitees.map(({ email }) => ({ email }))
+        : undefined;
     const error =
       richEvent.type === EditTypeEnum.EDIT
-        ? await updateAndRedirect(values, richEvent.event.id, newTags, selectedCategories, editScope)
-        : await createAndRedirect(values, newTags, selectedCategories);
+        ? await updateAndRedirect(values, richEvent.event.id, newTags, selectedCategories, editScope, invitees)
+        : await createAndRedirect(values, newTags, selectedCategories, invitees);
     if (error) {
       setSaveError(error);
       setSaving(false);
@@ -981,6 +1005,19 @@ function InternalCreateEventForm({
           </Checkbox>
         </div>
       )}
+      {allowInvitations && !isRecurring && !isEditingRecurring && (
+        <PersonPicker
+          selectedPeople={selectedInvitees}
+          onChange={setSelectedInvitees}
+          excludedEmails={excludedEmails}
+        />
+      )}
+      {(features.sharedCalendar || editEvent?.inviteMode === "SHARED") &&
+        (isRecurring || isEditingRecurring) && (
+        <BodyShort size="small" className="max-w-prose">
+          Du kan ikke invitere personer til gjentakende arrangementer.
+        </BodyShort>
+      )}
       {(features.roomBooking || features.teamsMeeting) && isRecurring && (
         <BodyShort size="small" className="max-w-prose">
           Møterom og Teams-møte kan ikke brukes på gjentakende arrangementer.
@@ -1042,8 +1079,9 @@ async function createAndRedirect(
   formData: CreateEventSchema,
   newTags: string[],
   categories: Category[],
+  invitees?: { email: string }[],
 ): Promise<string | null> {
-  const result = await createEvent(formData);
+  const result = await createEvent(formData, invitees);
   if (!result.ok) return result.message;
   const { event } = result.data;
 
@@ -1070,10 +1108,11 @@ async function updateAndRedirect(
   newTags: string[],
   categories: Category[],
   editScope?: EditScope,
+  invitees?: { email: string }[],
 ): Promise<string | null> {
   // Update the event first: a 400/502 (room/Teams) means nothing was saved, so
   // categories must not be changed either.
-  const result = await updateEvent(formData, eventId, editScope);
+  const result = await updateEvent(formData, eventId, editScope, invitees);
   if (!result.ok) return result.message;
 
   try {

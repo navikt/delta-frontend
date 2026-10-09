@@ -9,7 +9,7 @@ import { Button, Dropdown } from "@navikt/ds-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-export default function Header() {
+export default function Header({ isMaintainer }: { isMaintainer: boolean }) {
   const [isMobile, setIsMobile] = useState(true);
   useEffect(() => {
     const handleResize = () => {
@@ -38,6 +38,11 @@ export default function Header() {
           </Button>
           <Dropdown.Menu className="w-auto">
             <Dropdown.Menu.List>
+              {isMaintainer && (
+                <Dropdown.Menu.List.Item as={Link} href="/admin" prefetch={false}>
+                  <span className="whitespace-nowrap">Administrasjon</span>
+                </Dropdown.Menu.List.Item>
+              )}
               <Dropdown.Menu.List.Item data-umami-event="Hovedmeny-snarvei besøkt" data-umami-event-lenke="Kompasset" as={Link} href="https://nav.grade.no/LuvitPortal/activitycentre/activitycentre.aspx">
                 <HatSchoolIcon aria-hidden fontSize="1.5rem" />
                 <span className="whitespace-nowrap">Kompasset</span>
@@ -59,6 +64,11 @@ export default function Header() {
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center w-full"></div>
           <div className="flex flex-grow">
+            {isMaintainer && (
+              <Link href="/admin" prefetch={false} className={linkButton}>
+                <span className="whitespace-nowrap">Administrasjon</span>
+              </Link>
+            )}
             <Link data-umami-event="Hovedmeny-snarvei besøkt" data-umami-event-lenke="Kompasset" href="https://nav.grade.no/LuvitPortal/activitycentre/activitycentre.aspx" className={linkButton}>
               <HatSchoolIcon aria-hidden fontSize="1.5rem" />
               <span className="whitespace-nowrap">Kompasset</span>

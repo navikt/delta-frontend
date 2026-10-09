@@ -45,6 +45,21 @@ hook-avhengigheter og array-indekser som React-nøkler gir advarsler.
 Biome formaterer ikke koden og erstatter ikke alle reglene i `eslint-config-next`.
 `npm run build` bygger appen og kontrollerer TypeScript-typene.
 
+## Administrasjon
+
+`/admin` er bare synlig og tilgjengelig for Delta-forvaltere. Frontenden og
+backenden må ha samme `DELTA_MAINTAINERS_GROUP_ID`, og gruppen må stå under
+`azure.application.claims.groups` i begge Nais-manifestene.
+
+Oversikten teller alle lagrede arrangementer per kalendermodell, og viser også
+kommende og pågående arrangementer (sluttid senere enn hentetidspunktet).
+Private arrangementer er inkludert, og hver forekomst i en gjentakende serie
+telles separat. Tallene hentes på nytt når siden lastes inn.
+
+I lokal utvikling vises administrasjon i frontenden. Start backenden med
+`DELTA_MAINTAINERS_GROUP_ID=local-principal-group ./gradlew run` for å gi
+den lokale testbrukeren tilgang til statistikken.
+
 # Bruk av AI
 
 Delta er utviklet med hjelp av AI.

@@ -101,3 +101,18 @@ export async function isFaggruppeAdmin(): Promise<boolean> {
   const groups = await getUserGroups();
   return groups.includes(adminGroupId);
 }
+
+export async function isDeltaMaintainer(): Promise<boolean> {
+  if (process.env.NODE_ENV === "development") return true;
+
+  const groupId = process.env.DELTA_MAINTAINERS_GROUP_ID;
+  if (!groupId) return false;
+
+  const token = getToken(await headers());
+  if (!token) return false;
+
+  const result = await validateToken(token);
+  if (!result.ok) return false;
+
+  return (await getUserGroups()).includes(groupId);
+}

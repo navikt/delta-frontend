@@ -4,6 +4,7 @@ import ScrollToTop from "@/components/ScrollToTop";
 import "./globals.css";
 import { Metadata } from "next";
 import Script from 'next/script';
+import { isDeltaMaintainer } from "@/auth/token";
 
 type RootLayoutProps = {
   children: React.ReactNode;
@@ -39,6 +40,7 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: RootLayoutProps) {
   const isProd = process.env.NEXT_PUBLIC_CLUSTER === "prod";
+  const isMaintainer = await isDeltaMaintainer();
   return (
     <html lang="no" className="min-h-screen">
       <head>
@@ -55,7 +57,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
       <body>
         <div className="flex flex-col min-h-screen" style={{ background: "rgba(19,17,54)" }}>
           <div className="relative z-50">
-            <Header />
+            <Header isMaintainer={isMaintainer} />
           </div>
           <main className="svelte-reugtu winter bg-ax-bg-neutral-soft flex-grow flex justify-center relative z-0">
             {children}

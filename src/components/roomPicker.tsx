@@ -2,6 +2,7 @@
 
 import { Alert, BodyShort, Button, Tag, UNSAFE_Combobox } from "@navikt/ds-react";
 import { useEffect, useState } from "react";
+import { roomAvailabilityErrorMessage } from "@/api/roomAvailabilityProblem";
 import { getRoomAvailability, searchRooms } from "@/service/roomActions";
 import { RoomAvailability, RoomInfo } from "@/types/room";
 
@@ -136,7 +137,17 @@ export default function RoomPicker({
 
 type AvailabilityResult =
   | { state: "done"; availability: RoomAvailability | undefined }
-  | { state: "error"; message: string };
+  | {
+      state: "error";
+      message: string;
+      type?: string;
+      title?: string;
+      status?: number;
+      detail?: string;
+      code?: string | null;
+      upstreamStatus?: number | null;
+      requestId?: string | null;
+    };
 
 function RoomAvailabilityStatus({
   roomEmail,
@@ -165,7 +176,17 @@ function RoomAvailabilityStatus({
               availability:
                 result.data.find((a) => a.emailAddress === roomEmail) ?? result.data[0],
             }
-          : { state: "error", message: result.message },
+          : {
+              state: "error",
+              message: result.message,
+              type: result.type,
+              title: result.title,
+              status: result.status,
+              detail: result.detail,
+              code: result.code,
+              upstreamStatus: result.upstreamStatus,
+              requestId: result.requestId,
+            },
       });
     });
     return () => {
@@ -197,7 +218,10 @@ function RoomAvailabilityStatus({
   );
 
   if (status.state === "error" || !status.availability || status.availability.error || !status.availability.availabilityView) {
-    const message = status.state === "error" ? status.message : "Kunne ikke hente ledighet for rommet.";
+    const message =
+      status.state === "error"
+        ? roomAvailabilityErrorMessage(status)
+        : "Kunne ikke hente ledighet for rommet.";
     return (
       <Alert variant="warning" size="small">
         {message} {retry}

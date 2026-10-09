@@ -10,7 +10,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "biome lint ."
+    "lint": "biome lint .",
+    "test": "node --test"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",

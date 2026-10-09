@@ -1,6 +1,7 @@
 "use server";
 
 import { getApi } from "@/api/instance";
+import { toRoomAvailabilityFailure } from "@/api/roomAvailabilityProblem";
 import { ActionResult, Features, NO_FEATURES, RoomAvailability, RoomInfo } from "@/types/room";
 import { AxiosError } from "axios";
 
@@ -56,7 +57,20 @@ export async function getRoomAvailability(
     });
     return { ok: true, data: response.data };
   } catch (error) {
-    return toRoomErrorResult(error, "Kunne ikke hente ledighet for rommet.");
+    console.error("Room API error:", error);
+    if (error instanceof AxiosError) {
+      const roomError = error as AxiosError & {
+        responseMessage?: string;
+        responseData?: unknown;
+      };
+      return toRoomAvailabilityFailure(
+        error.status,
+        roomError.responseMessage,
+        roomError.responseData,
+        "Kunne ikke hente ledighet for rommet.",
+      );
+    }
+    return { ok: false, message: "Kunne ikke hente ledighet for rommet." };
   }
 }
 

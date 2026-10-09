@@ -30,4 +30,14 @@ export type RoomAvailability = {
 
 export type ActionResult<T> =
   | { ok: true; data: T }
-  | { ok: false; status?: number; message: string };
+  | {
+      ok: false;
+      status?: number;
+      message: string;
+      type?: string;
+      title?: string;
+      detail?: string;
+      code?: string | null;
+      upstreamStatus?: number | null;
+      requestId?: string | null;
+    };

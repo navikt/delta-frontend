@@ -1,4 +1,5 @@
 import { getDeltaBackendAccessToken } from "@/auth/token";
+import { parseRoomAvailabilityProblem } from "@/api/roomAvailabilityProblem";
 import axios from "axios";
 
 export async function getApi() {
@@ -26,7 +27,11 @@ export async function getApi() {
       if (status !== undefined) {
         error.status = status;
       }
-      // Keep only the backend's plain-text/message body (no headers/tokens).
+      const problem = parseRoomAvailabilityProblem(data);
+      if (problem) {
+        error.responseData = problem;
+      }
+      // Keep only safe response text and structured problem fields (no headers/tokens).
       if (typeof data === "string" && data.length > 0) {
         error.responseMessage = data.slice(0, 500);
       } else if (data && typeof data.message === "string") {

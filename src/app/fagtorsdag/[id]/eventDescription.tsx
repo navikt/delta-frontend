@@ -13,17 +13,20 @@ import {
 import {useEffect, useRef, useState} from "react";
 import {Link, Modal, Search, Button} from "@navikt/ds-react";
 import Participant from "./participant";
+import { countCapacityAttendees, InvitationCapacity } from "@/service/eventCapacity";
 import {formatEventDates, formatEventTimes, formatDeadline, formatEventDuration} from "@/service/format";
 
 type EventDescriptionProps = FullDeltaEvent & {
     className?: string;
     displayTime: boolean;
     user: User;
+    invitationCapacity: InvitationCapacity;
 };
 export default function EventDescription({
      event,
      participants,
      hosts,
+     invitationCapacity,
      user,
      className,
      displayTime,
@@ -32,6 +35,10 @@ export default function EventDescription({
     const [searchInput, setSearchInput] = useState("");
     const [filterParticipants, setFilterParticipants] = useState<DeltaParticipant[]>([]);
     const participantsAndHosts = participants.concat(hosts);
+    const displayedAttendeeCount =
+        event.participantLimit === 0
+            ? participantsAndHosts.length
+            : countCapacityAttendees(participants, hosts, invitationCapacity.reservedInvitations, event.signupDeadline);
 
     const sortParticipant = (a: DeltaParticipant, b: DeltaParticipant) =>
         a.name.split(", ").reverse()[0] > b.name.split(", ").reverse()[0] ? 1 : -1;
@@ -148,9 +155,9 @@ export default function EventDescription({
             </div>
             <span className="flex flex-row justify-start gap-2 items-center cursor-pointer">
           <PersonCheckmarkIcon aria-hidden/>
-                {participantsAndHosts.length}
-                {event.participantLimit == 0 ? "" : ` av ${event.participantLimit}`}
-                {" deltakere"}
+                {event.participantLimit === 0
+                    ? `${displayedAttendeeCount} deltakere`
+                    : `${displayedAttendeeCount} av ${event.participantLimit} plasser`}
         </span>
             <div className="flex flex-row ml-[0.3rem] pl-6">
                 {hosts.map((h) => h.email).includes(user.email) ? (<>

@@ -17,12 +17,19 @@ import {
   formatEventDates,
   formatEventTimes,
 } from "@/service/format";
+import { countCapacityAttendees } from "@/service/eventCapacity";
 
 type EventCardProps = {
   event: FullDeltaEvent;
 };
 
 export function EventCard({ event }: EventCardProps) {
+  const attendeeCount = countCapacityAttendees(
+    event.participants,
+    event.hosts,
+    event.invited,
+    event.event.signupDeadline,
+  );
   const hasEventExpired =
     !!event.event.signupDeadline && new Date(event.event.signupDeadline) < new Date()
       ? true
@@ -101,24 +108,18 @@ export function EventCard({ event }: EventCardProps) {
               <Detail className="leading-normal">
                 <span className="flex items-center gap-1 pb-1 leading-normal">
                   <PersonCheckmarkIcon title="person" />
-                  {event.participants.length + event.hosts.length >=
-                  event.event.participantLimit ? (
+                  {attendeeCount >= event.event.participantLimit ? (
                     <span className="bg-ax-danger-700 text-white rounded px-2">
                       Arrangementet er fullt
                     </span>
                   ) : (
                     <>
-                      {event.event.participantLimit -
-                        event.participants.length -
-                        event.hosts.length >
-                      9 ? (
+                      {event.event.participantLimit - attendeeCount > 9 ? (
                         <>Maks {event.event.participantLimit} deltakere</>
                       ) : (
                         <>
                           Kun{" "}
-                          {event.event.participantLimit -
-                            event.participants.length -
-                            event.hosts.length}{" "}
+                          {event.event.participantLimit - attendeeCount}{" "}
                           plasser igjen
                         </>
                       )}

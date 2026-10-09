@@ -1,6 +1,6 @@
 "use client";
 
-import {Dispatch, SetStateAction, useState} from "react";
+import {useState} from "react";
 import {User} from "@/types/user";
 import EventDescription from "./eventDescription";
 import {
@@ -13,27 +13,48 @@ import {
 } from "@navikt/ds-react";
 import Link from "next/link";
 import {useQRCode} from 'next-qrcode';
-import {FullDeltaEvent, DeltaParticipant} from "@/types/event";
-import {getEvent, joinEvent, leaveEvent} from "@/service/eventActions";
+import {FullDeltaEvent} from "@/types/event";
+import {getEventRegistrationState, joinEvent, leaveEvent} from "@/service/eventActions";
 import {format} from "date-fns";
 import Calendar from "@/components/calendar";
 import SecondaryCopyButton from "@/components/SecondaryCopyButton";
+import {
+    countCapacityAttendees,
+    InvitationCapacity,
+    isInvitationReservationActive,
+} from "@/service/eventCapacity";
+import CalendarSyncStatus from "@/components/calendarSyncStatus";
 
 export default function EventDetails({
      event,
      participants,
      hosts,
      categories,
+     invitationCapacity,
+     calendarSyncError,
      user,
      hostname,
  }: FullDeltaEvent & {
+    invitationCapacity: InvitationCapacity;
     user: User;
     hostname?: string;
 }) {
     const [reactiveParticipants, setParticipants] = useState(participants);
+    const [reactiveInvitationCapacity, setInvitationCapacity] = useState(invitationCapacity);
+    const isHost = hosts.some((host) => host.email === user.email);
     const isParticipant = reactiveParticipants
         .map((p) => p.email)
         .includes(user.email);
+    const hasInvitationReservation = isInvitationReservationActive(
+        reactiveInvitationCapacity.hasOwnReservation,
+        event.signupDeadline,
+    );
+    const attendeeCount = countCapacityAttendees(
+        reactiveParticipants,
+        hosts,
+        reactiveInvitationCapacity.reservedInvitations,
+        event.signupDeadline,
+    );
 
     const [showRegistration, setRegistration] = useState(false);
     const [showUnregistration, setUnregistration] = useState(false);
@@ -81,6 +102,11 @@ export default function EventDetails({
 
     return (
         <div>
+            {event.inviteMode === "SHARED" && (
+                <div className="mb-4">
+                    <CalendarSyncStatus eventId={event.id} status={event.calendarSyncStatus} error={calendarSyncError} isHost={isHost} />
+                </div>
+            )}
             <div className="flex w-full justify-between items-start gap-4">
                 {isSameDay ? (
                     <Calendar dateString={event.startTime} displayTime={!isSameDay}/>
@@ -164,8 +190,9 @@ export default function EventDetails({
                         }
                         if (
                             event.participantLimit &&
-                            event.participantLimit <= hosts.length + participants.length &&
-                            !isParticipant
+                            event.participantLimit <= attendeeCount &&
+                            !isParticipant &&
+                            !hasInvitationReservation
                         ) {
                             return (
                                 <>
@@ -257,13 +284,13 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                             <Button
                                 variant={isParticipant ? "danger" : "primary"}
                                 className="w-fit h-fit font-ax-bold"
-                                onClick={() =>
-                                    toggleEventStatus(event.id, isParticipant, (state) => {
-                                        showAlert();
-                                        setParticipants(state);
-                                        setOpenConfirmation((x) => !x);
-                                    })
-                                }
+                                onClick={async () => {
+                                    const updatedEvent = await toggleEventStatus(event.id, isParticipant);
+                                    showAlert();
+                                    setParticipants(updatedEvent.participants);
+                                    setInvitationCapacity(updatedEvent.invitationCapacity);
+                                    setOpenConfirmation((x) => !x);
+                                }}
                             >
                                 {isParticipant ? <>{new Date(event.endTime) < new Date() ? "Ja, slett meg" : "Ja, meld meg av"}</> : "Godta og bli med"}
                             </Button>
@@ -282,6 +309,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                     event={event}
                     participants={reactiveParticipants}
                     hosts={hosts}
+                    invitationCapacity={reactiveInvitationCapacity}
                     categories={categories}
                     displayTime={isSameDay}
                     className="flex flex-col gap-2 max-w-xs"
@@ -361,8 +389,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
 async function toggleEventStatus(
     eventId: string,
     isParticipant: boolean,
-    setParticipants: Dispatch<SetStateAction<DeltaParticipant[]>>,
 ) {
     await (isParticipant ? leaveEvent(eventId) : joinEvent(eventId));
-    setParticipants((await getEvent(eventId)).participants);
+    return getEventRegistrationState(eventId);
 }

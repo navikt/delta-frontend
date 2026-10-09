@@ -4,6 +4,7 @@ import EventDetails from "./eventDetails";
 import { getEvent } from "@/service/eventActions";
 import { Metadata, ResolvingMetadata } from "next";
 import CardWithBackground from "@/components/cardWithBackground";
+import { getInvitationCapacity } from "@/service/eventCapacity";
 
 type EventPageProps = { params: Promise<{ id: string }> };
 
@@ -39,7 +40,16 @@ export default async function Page({ params }: EventPageProps) {
   const hostname = process.env.NEXT_PUBLIC_HOSTNAME;
 
   const user = await getUser();
-  const { event, participants, hosts, categories }: FullDeltaEvent = await getEvent(id);
+  const { event, participants, hosts, categories, invited = [], calendarSyncError }: FullDeltaEvent =
+    await getEvent(id);
+  const isHost = hosts.some((host) => host.email.toLowerCase() === user.email.toLowerCase());
+  const invitationCapacity = getInvitationCapacity(
+    participants,
+    hosts,
+    invited,
+    user.email,
+    event.signupDeadline,
+  );
 
   return (
     <div className="w-full colorful_fagtorsdag pb-10">
@@ -55,6 +65,8 @@ export default async function Page({ params }: EventPageProps) {
           participants={participants}
           hosts={hosts}
           categories={categories}
+          invitationCapacity={invitationCapacity}
+          calendarSyncError={isHost ? calendarSyncError : null}
           user={user}
           hostname={hostname}
         />

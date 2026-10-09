@@ -1,9 +1,16 @@
 export type Features = {
   roomBooking: boolean;
   teamsMeeting: boolean;
+  sharedCalendar: boolean;
+  peopleSearch: boolean;
 };
 
-export const NO_FEATURES: Features = { roomBooking: false, teamsMeeting: false };
+export const NO_FEATURES: Features = {
+  roomBooking: false,
+  teamsMeeting: false,
+  sharedCalendar: false,
+  peopleSearch: false,
+};
 
 export type RoomInfo = {
   displayName: string | null;

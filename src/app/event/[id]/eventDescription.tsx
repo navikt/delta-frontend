@@ -73,6 +73,8 @@ export default function EventDescription({
     const ref = useRef<HTMLDialogElement>(null);
     const isHost = hosts.some((h) => h.email === user.email);
     const teamsJoinUrl = safeHttpsUrl(event.teamsJoinUrl);
+    const hasDuplicateRoomAndLocation =
+        features.roomBooking && event.roomName?.trim() === event.location.trim();
 
     function convertTextToLinks(text: string) {
         const urlRegex = /(https?:\/\/\S+)/g;
@@ -132,7 +134,7 @@ export default function EventDescription({
                 )}
             </div>
             <div>
-                {event.location && (
+                {event.location && !hasDuplicateRoomAndLocation && (
                     <span className="flex flex-row justify-start gap-2 items-center pb-1">
             <LocationPinIcon aria-label="sted"/>
                         {convertTextToLinks(event.location)}

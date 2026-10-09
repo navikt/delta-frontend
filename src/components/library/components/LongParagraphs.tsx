@@ -8,14 +8,12 @@ interface Props {
 }
 
 function LongParagraphs({ value }: Props) {
+    const [page, setPage] = useState(1);
     const longParagraphs = checkLongParagraphs(value);
 
     if (longParagraphs.length === 0) {
         return null;
     }
-
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const [page, setPage] = useState(1);
 
     const firstSentenceRegex = /^[^.!?]*[.!?]/;
 

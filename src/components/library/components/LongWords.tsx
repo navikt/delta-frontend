@@ -8,14 +8,13 @@ interface Props {
 }
 
 function LongWords({ value }: Props) {
+    const [page, setPage] = useState(1);
     const longWords = checkLongWords(value);
 
     if (longWords.length === 0) {
         return null;
     }
 
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const [page, setPage] = useState(1);
     const pageSize = 10;
 
     // Pagination pages

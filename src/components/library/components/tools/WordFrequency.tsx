@@ -7,14 +7,13 @@ interface Props {
 }
 
 function WordFrequency(props: Props) {
+    const [page, setPage] = useState(1);
     const frequencies = checkWordFrequency(props.value);
 
     if (Object.keys(frequencies).length === 0) {
         return null;
     }
 
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const [page, setPage] = useState(1);
     const pageSize = 10;
 
     const indexOfLastPost = page * 10;

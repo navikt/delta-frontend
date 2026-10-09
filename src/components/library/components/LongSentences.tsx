@@ -8,14 +8,12 @@ interface Props {
 }
 
 function LongSentences({ value }: Props) {
+    const [page, setPage] = useState(1);
     const longSentences = checkLongSentences(value);
 
     if (longSentences.length === 0) {
         return null;
     }
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const [page, setPage] = useState(1);
-
     const pageSize = 3;
     const indexOfLastPost = page * pageSize;
     const indexOfFirstPost = indexOfLastPost - pageSize;

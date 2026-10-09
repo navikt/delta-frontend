@@ -7,7 +7,7 @@ Delta is NAV's internal event registration app. This is the Next.js frontend; th
 ```bash
 npm run dev       # Start dev server (requires backend running)
 npm run build     # Production build + type-check
-npm run lint      # ESLint
+npm run lint      # Biome (React/Next.js lint rules; no formatting)
 ```
 
 There are no automated tests.

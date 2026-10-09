@@ -34,7 +34,6 @@ updates:
           - "next-*"
           - "@next/*"
           - "@mdx-js/*"
-          - "eslint-config-next"
       npm:
         patterns:
           - "*"

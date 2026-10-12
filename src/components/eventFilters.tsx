@@ -4,6 +4,10 @@ import { Search, Tabs, UNSAFE_Combobox, CheckboxGroup, Checkbox, LinkPanel } fro
 import EventList from "./eventList";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getEvents } from "@/service/eventActions";
+import {
+  filterActiveJoinedEvents,
+  getEventListQuery,
+} from "@/service/eventListQuery";
 import { FunnelIcon } from "@navikt/aksel-icons";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -114,14 +118,15 @@ export default function EventFilters({
   );
   const filterEvents = useMemo(
     () => {
-      let filtered =
-        tabname !== "alle"
+      let filtered = showOnlyRegistered
+        ? filterActiveJoinedEvents(events)
+        : tabname !== "alle"
           ? events
           : events.filter((fullEvent) =>
               fullEvent.event.title.toLowerCase().includes(searchInputValue.toLowerCase()),
             );
 
-      if (homeTabs && tabname === "alle") {
+      if (homeTabs && tabname === "alle" && !showOnlyRegistered) {
         filtered = filtered.filter(
           (fullEvent) =>
             !fullEvent.categories.some((category) =>
@@ -130,15 +135,9 @@ export default function EventFilters({
         );
       }
 
-      if (showOnlyRegistered && userEmail) {
-        filtered = filtered.filter((fullEvent) =>
-          fullEvent.participants.some((p) => p.email === userEmail),
-        );
-      }
-
       return filtered;
     },
-    [events, homeTabs, searchInputValue, showOnlyRegistered, tabname, userEmail],
+    [events, homeTabs, searchInputValue, showOnlyRegistered, tabname],
   );
   const selectedQuickFilters = useMemo(
     () => QUICK_FILTER_NAMES.filter((categoryName) => selectedCategoryNames.includes(categoryName)),
@@ -301,12 +300,14 @@ export default function EventFilters({
                 .filter((categoryId) => Number.isFinite(categoryId))
                 .map((categoryId) => ({ id: categoryId, name: "" }));
 
-        const eventsData = await getEvents({
+        const query = getEventListQuery({
           categories: categoriesForFetch,
           onlyFuture,
           onlyPast,
           onlyMine: tabname === "mine",
+          onlyJoined: showOnlyRegistered,
         });
+        const eventsData = await getEvents(query);
 
         if (!cancelled) {
           setEvents(eventsData);
@@ -323,7 +324,7 @@ export default function EventFilters({
     return () => {
       cancelled = true;
     };
-  }, [categoryIdsKeyForFetch, onlyFuture, onlyPast, tabname]);
+  }, [categoryIdsKeyForFetch, onlyFuture, onlyPast, showOnlyRegistered, tabname]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -503,6 +504,7 @@ export default function EventFilters({
           showAll={showPrevious ? [VISIBLE_PREVIOUS_VALUE] : []}
           tabname={tabname}
           userEmail={userEmail}
+          showOnlyRegistered={showOnlyRegistered}
         />
       </div>
       {ctaLink && (

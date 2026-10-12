@@ -9,8 +9,16 @@ type EventListProps = {
   showAll?: string[];
   tabname?: string;
   userEmail?: string;
+  showOnlyRegistered?: boolean;
 };
-export default function EventList({ fullEvents, loading, showAll, tabname, userEmail}: EventListProps) {
+export default function EventList({
+  fullEvents,
+  loading,
+  showAll,
+  tabname,
+  userEmail,
+  showOnlyRegistered,
+}: EventListProps) {
   return (
     <div className="grid grid-cols-1 ax-md:grid-cols-3 gap-4">
       {loading ? (
@@ -28,6 +36,7 @@ export default function EventList({ fullEvents, loading, showAll, tabname, userE
             tabname={tabname}
             categories={fullEvent.categories}
             userEmail={userEmail}
+            showOnlyRegistered={showOnlyRegistered}
             key={`event-${fullEvent.event.id}`}
           />
         ))

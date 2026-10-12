@@ -21,6 +21,7 @@ import {
 import { countCapacityAttendees } from "@/service/eventCapacity";
 import { RecurringBadge } from "@/components/RecurringBadge";
 import { usePathname, useSearchParams } from "next/navigation";
+import { shouldHideEventCard } from "@/components/eventCardVisibility";
 
 export function EventCard({
                               event,
@@ -28,12 +29,14 @@ export function EventCard({
                               showAll,
                               tabname,
                               userEmail,
+                              showOnlyRegistered,
                            }: {
     event: FullDeltaEvent;
     categories: Category[];
     showAll?: string[];
     tabname?: string;
     userEmail?: string;
+    showOnlyRegistered?: boolean;
 }) {
     const attendeeCount = countCapacityAttendees(
         event.participants,
@@ -45,22 +48,19 @@ export function EventCard({
         userEmail != null && event.participants.some((p) => p.email === userEmail);
     const isUtløpt =
         !!event.event.signupDeadline &&
-        new Date(event.event.signupDeadline) < new Date()
-            ? true
-            : false;
+        new Date(event.event.signupDeadline) < new Date();
     const pathname = usePathname();
     const searchParams = useSearchParams();
 
-    // Check if the tab is "alle"
-    const shouldHide = tabname === "alle" && event.categories.some(category =>
-        category.name === "fagdag_utvikling_og_data"
-    );
+    const shouldHide = shouldHideEventCard({
+        tabname,
+        categories: event.categories,
+        signupDeadlineExpired: isUtløpt,
+        showPast: showAll?.includes("10") ?? false,
+        showOnlyRegistered,
+    });
 
-    // If the condition is true, do not render the event
-    if (shouldHide) {
-        return null;
-    }
-
+    if (shouldHide) return null;
     const currentSearch = searchParams.toString();
     const returnTo = `${pathname}${currentSearch ? `?${currentSearch}` : ""}`;
     const href = `/event/${event.event.id}?returnTo=${encodeURIComponent(returnTo)}`;
@@ -70,10 +70,6 @@ export function EventCard({
     };
 
     return (
-        <>
-            {isUtløpt && tabname == "alle" && !showAll?.includes("10") ? (
-                <></>
-            ) : (
                 <Link
                     href={href}
                     onClick={handleNavigation}
@@ -181,7 +177,5 @@ export function EventCard({
                         </div>
                     </div>
                 </Link>
-            )}
-        </>
     );
 }

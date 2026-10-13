@@ -364,7 +364,7 @@ function FunFactsSection({ stats }: { stats: UserWrappedStats }) {
                 <div className="grid gap-6 ax-md:grid-cols-2 mb-12">
                     {stats.funFacts.map((fact, index) => (
                         <motion.div
-                            key={index}
+                            key={fact}
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
@@ -407,5 +407,4 @@ function StatBox({ icon, value, label }: { icon: string; value: string | number;
         </div>
     );
 }
-
 

@@ -60,8 +60,8 @@ export default function EventProgramOverview({
           </tr>
           </thead>
           <tbody>
-          {timeSlots.map((time, idx) => (
-              <tr key={idx}>
+          {timeSlots.map((time) => (
+              <tr key={time}>
                   <td className="align-top pt-4">{time}</td>
                   {days.map((day) => (
                       <td key={`${time}-${day}`}>

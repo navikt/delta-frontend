@@ -7,7 +7,7 @@ import { FilterOption, FullDeltaEvent } from "@/types/event";
 import { Checkbox, CheckboxGroup, Radio, RadioGroup, Search, Tabs } from "@navikt/ds-react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 const DEFAULT_FILTER_OPTION: FilterOption = "vis-programoversikt";
 const JOINED_TAB = "påmeldte";
@@ -192,6 +192,7 @@ function FagfestivalEvents({
     isMimCategory && attendanceFilterParam === "digitalt" ? "digitalt" : DEFAULT_MIM_ATTENDANCE_FILTER;
   const showMimAttendanceFilter = isMimCategory && tabName !== JOINED_TAB;
   const currentOverviewPath = `${pathname}${searchParamsKey ? `?${searchParamsKey}` : ""}`;
+  const previousOverviewPath = useRef(currentOverviewPath);
 
   const [filterEvents, setFilterEvents] = useState<FullDeltaEvent[]>([]);
   const [events, setEvents] = useState([] as FullDeltaEvent[]);
@@ -200,7 +201,7 @@ function FagfestivalEvents({
   const [isMobile, setIsMobile] = useState(false);
   const hasRestoredScroll = useRef(false);
 
-  const updateUrlState = (updates: {
+  const updateUrlState = useCallback((updates: {
     tab?: FestivalTab | null;
     search?: string | null;
     view?: "program" | null;
@@ -250,7 +251,7 @@ function FagfestivalEvents({
       const nextUrl = nextSearch ? `${pathname}?${nextSearch}` : pathname;
       window.history.replaceState(null, "", nextUrl);
     }
-  };
+  }, [defaultTab, pathname, router, searchParamsKey]);
 
   useEffect(() => {
     setTabName(tabNameFromUrl);
@@ -360,7 +361,7 @@ function FagfestivalEvents({
         updateUrlState({ view: null });
       }
     }
-  }, [isMobile, showProgramOverview, tabName]);
+  }, [isMobile, showProgramOverview, tabName, updateUrlState]);
 
   const prevTabNameRef = useRef<string | undefined>(undefined);
 
@@ -416,7 +417,10 @@ function FagfestivalEvents({
     showProgramOverviewCheckbox && (tabName !== JOINED_TAB || !isMobile);
 
   useEffect(() => {
-    hasRestoredScroll.current = false;
+    if (previousOverviewPath.current !== currentOverviewPath) {
+      previousOverviewPath.current = currentOverviewPath;
+      hasRestoredScroll.current = false;
+    }
   }, [currentOverviewPath]);
 
   useEffect(() => {

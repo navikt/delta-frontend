@@ -90,13 +90,13 @@ function ExpandedTable({
   event,
   searchInput,
 }: ParticipantTableProps) {
-  const [openConfirmations, setOpenConfirmations] = useState<boolean[]>(
-    participants.map(() => false),
+  const [openConfirmationFor, setOpenConfirmationFor] = useState<string | null>(
+    null,
   );
-  const toggleConfirmation = (index: number) => {
-    const newConfirmations = [...openConfirmations];
-    newConfirmations[index] = !newConfirmations[index];
-    setOpenConfirmations(newConfirmations);
+  const toggleConfirmation = (email: string) => {
+    setOpenConfirmationFor((currentEmail) =>
+      currentEmail === email ? null : email,
+    );
   };
 
   const data = hosts.concat(participants);
@@ -110,10 +110,10 @@ function ExpandedTable({
     );
   });
 
-  return filteredData.map(({ name, email }, i) => {
+  return filteredData.map(({ name, email }) => {
     return (
       <Table.ExpandableRow
-        key={i}
+        key={email}
         content={
           <div className="flex gap-2">
             {email === user.email && hosts.length === 1 ? (
@@ -152,7 +152,7 @@ function ExpandedTable({
                 <Button
                   variant="danger"
                   size="small"
-                  onClick={() => toggleConfirmation(i)}
+                  onClick={() => toggleConfirmation(email)}
                 >
                   Meld av
                 </Button>
@@ -170,8 +170,8 @@ function ExpandedTable({
           </Link>
         </Table.DataCell>
         <Modal
-          open={openConfirmations[i]}
-          onClose={() => toggleConfirmation(i)}
+          open={openConfirmationFor === email}
+          onClose={() => toggleConfirmation(email)}
           aria-label={`Fjern deltaker ${name} fra arrangementet`}
         >
           <Modal.Body>
@@ -184,7 +184,7 @@ function ExpandedTable({
             </BodyLong>
           </Modal.Body>
           <Modal.Footer>
-              <Button variant="secondary" onClick={() => toggleConfirmation(i)}>
+              <Button variant="secondary" onClick={() => toggleConfirmation(email)}>
                 Avbryt
               </Button>
               <Button
@@ -192,7 +192,7 @@ function ExpandedTable({
                 className="w-fit h-fit font-ax-bold"
                 onClick={async () => {
                   await removeUser(event.id, email);
-                  toggleConfirmation(i);
+                  toggleConfirmation(email);
                   window.location.reload();
                 }}
               >
@@ -212,13 +212,13 @@ function FullTable({
   event,
   searchInput,
 }: ParticipantTableProps) {
-  const [openConfirmations, setOpenConfirmations] = useState<boolean[]>(
-    participants.map(() => false),
+  const [openConfirmationFor, setOpenConfirmationFor] = useState<string | null>(
+    null,
   );
-  const toggleConfirmation = (index: number) => {
-    const newConfirmations = [...openConfirmations];
-    newConfirmations[index] = !newConfirmations[index];
-    setOpenConfirmations(newConfirmations);
+  const toggleConfirmation = (email: string) => {
+    setOpenConfirmationFor((currentEmail) =>
+      currentEmail === email ? null : email,
+    );
   };
 
   const data = hosts.concat(participants);
@@ -232,9 +232,9 @@ function FullTable({
     );
   });
 
-  return filteredData.map(({ name, email }, i) => {
+  return filteredData.map(({ name, email }) => {
     return (
-      <Table.Row key={i}>
+      <Table.Row key={email}>
         <Table.HeaderCell className="font-normal" scope="row">
           {name.split(", ").reverse().join(" ")}
         </Table.HeaderCell>
@@ -279,7 +279,7 @@ function FullTable({
                 <Button
                   variant="danger"
                   size="small"
-                  onClick={() => toggleConfirmation(i)}
+                  onClick={() => toggleConfirmation(email)}
                 >
                   Meld av
                 </Button>
@@ -288,8 +288,8 @@ function FullTable({
           </div>
         </Table.DataCell>
         <Modal
-          open={openConfirmations[i]}
-          onClose={() => toggleConfirmation(i)}
+          open={openConfirmationFor === email}
+          onClose={() => toggleConfirmation(email)}
           aria-label={`Fjern deltaker ${name} fra arrangementet`}
         >
           <Modal.Body>
@@ -302,7 +302,7 @@ function FullTable({
             </BodyLong>
             </Modal.Body>
             <Modal.Footer>
-              <Button variant="secondary" onClick={() => toggleConfirmation(i)}>
+              <Button variant="secondary" onClick={() => toggleConfirmation(email)}>
                 Avbryt
               </Button>
               <Button
@@ -310,7 +310,7 @@ function FullTable({
                 className="w-fit h-fit font-ax-bold"
                 onClick={async () => {
                   await removeUser(event.id, email);
-                  toggleConfirmation(i);
+                  toggleConfirmation(email);
                   window.location.reload();
                 }}
               >

@@ -93,6 +93,7 @@ export default function EventFilters({
     const currentSearch = searchParamsKey;
     return `${pathname}${currentSearch ? `?${currentSearch}` : ""}`;
   }, [pathname, searchParamsKey]);
+  const previousOverviewPath = useRef(currentOverviewPath);
 
   const providedCategories = useMemo(
     () => getUniqueCategories(allCategories),
@@ -259,7 +260,10 @@ export default function EventFilters({
   };
 
   useEffect(() => {
-    hasRestoredScroll.current = false;
+    if (previousOverviewPath.current !== currentOverviewPath) {
+      previousOverviewPath.current = currentOverviewPath;
+      hasRestoredScroll.current = false;
+    }
   }, [currentOverviewPath]);
 
   useEffect(() => {

@@ -12,7 +12,7 @@ import {
     Buildings3Icon,
     VideoIcon,
 } from "@navikt/aksel-icons";
-import {useEffect, useRef, useState} from "react";
+import {useMemo, useRef, useState} from "react";
 import {Alert, Link, Modal, Search, Button} from "@navikt/ds-react";
 import Participant from "./participant";
 import {formatEventDates, formatEventTimes, formatDeadline, formatEventDuration, formatRecurrenceUntilDate} from "@/service/format";
@@ -52,7 +52,6 @@ export default function EventDescription({
  }: EventDescriptionProps) {
     const [openParticipantList, setOpenParticipantList] = useState(false);
     const [searchInput, setSearchInput] = useState("");
-    const [filterParticipants, setFilterParticipants] = useState<DeltaParticipant[]>([]);
     const participantsAndHosts = participants.concat(hosts);
     const displayedAttendeeCount =
         event.participantLimit === 0
@@ -64,13 +63,13 @@ export default function EventDescription({
                   event.signupDeadline,
               );
 
-    const sortParticipant = (a: DeltaParticipant, b: DeltaParticipant) =>
-        a.name.split(", ").reverse()[0] > b.name.split(", ").reverse()[0] ? 1 : -1;
+    const filterParticipants = useMemo(() => {
+        const sortParticipant = (a: DeltaParticipant, b: DeltaParticipant) =>
+            a.name.split(", ").reverse()[0] > b.name.split(", ").reverse()[0] ? 1 : -1;
 
-    useEffect(() => {
-        const filtered = hosts
+        return [...hosts]
             .sort(sortParticipant)
-            .concat(participants.sort(sortParticipant))
+            .concat([...participants].sort(sortParticipant))
             .filter((p) => {
                 return p.name
                     .split(", ")
@@ -79,8 +78,7 @@ export default function EventDescription({
                     .toLowerCase()
                     .includes(searchInput.toLocaleLowerCase());
             });
-        setFilterParticipants(filtered);
-    }, [participants, searchInput]);
+    }, [hosts, participants, searchInput]);
 
     const ref = useRef<HTMLDialogElement>(null);
     const isHost = hosts.some((h) => h.email === user.email);
@@ -92,16 +90,18 @@ export default function EventDescription({
         const urlRegex = /(https?:\/\/\S+)/g;
 
         const parts = text.split(urlRegex);
-        // @ts-ignore
-        return parts.map((part, index) => {
-            if (urlRegex.test(part)) {
+        const linkOccurrences = new Map<string, number>();
+        return parts.map((part) => {
+            if (part.startsWith("http://") || part.startsWith("https://")) {
                 let url = part.trim(); // Remove leading/trailing spaces
                 if (!url.startsWith('http')) {
                     url = 'https://' + url; // Add 'https://' if it's missing
                 }
+                const occurrence = linkOccurrences.get(url) ?? 0;
+                linkOccurrences.set(url, occurrence + 1);
                 return (
                     <Link
-                        key={index}
+                        key={`${url}-${occurrence}`}
                         href={url}
                         target="_blank"
                         rel="noopener noreferrer"

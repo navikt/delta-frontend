@@ -88,16 +88,18 @@ export default function EventDetails({
         const urlRegex = /(https?:\/\/\S+)/g;
 
         const parts = text.split(urlRegex);
-        // @ts-ignore
-        return parts.map((part, index) => {
-            if (urlRegex.test(part)) {
+        const linkOccurrences = new Map<string, number>();
+        return parts.map((part) => {
+            if (part.startsWith("http://") || part.startsWith("https://")) {
                 let url = part.trim(); // Remove leading/trailing spaces
                 if (!url.startsWith('http')) {
                     url = 'https://' + url; // Add 'https://' if it's missing
                 }
+                const occurrence = linkOccurrences.get(url) ?? 0;
+                linkOccurrences.set(url, occurrence + 1);
                 return (
                     <Link
-                        key={index}
+                        key={`${url}-${occurrence}`}
                         href={url}
                         target="_blank"
                         rel="noopener noreferrer"

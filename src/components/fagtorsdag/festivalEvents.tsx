@@ -85,15 +85,17 @@ const FestivalEvents = () => {
     // Disables programoversikt in Mobile for "Mine Påmeldinger":
     // - No mobile compatibility when we have events for multiple days
 
-    if (tabName === "påmeldte" && isMobile) {
-      const filteredOptions = filterOptions.filter((option) => option !== "vis-programoversikt");
-      setFilterOptions(filteredOptions);
-    } else {
-      // If the tab is not "påmeldte" or the device is not mobile, revert the filterOptions to its original state
-      if (!filterOptions.includes("vis-programoversikt")) {
-        setFilterOptions([...filterOptions, "vis-programoversikt"]);
+    setFilterOptions((currentOptions) => {
+      if (tabName === "påmeldte" && isMobile) {
+        return currentOptions.includes("vis-programoversikt")
+          ? currentOptions.filter((option) => option !== "vis-programoversikt")
+          : currentOptions;
       }
-    }
+
+      return currentOptions.includes("vis-programoversikt")
+        ? currentOptions
+        : [...currentOptions, "vis-programoversikt"];
+    });
   }, [isMobile, tabName]);
 
   const prevTabNameRef = useRef<string>(undefined);
@@ -139,7 +141,7 @@ const FestivalEvents = () => {
       <Tabs className="self-start w-full" value={tabName}>
         <Tabs.List>
           {getRemainingActiveDays().map((day, index) => {
-            return <Tabs.Tab key={index} value={day} label={`${day}. ${fagfestivalMonth}`} onClick={() => setTabName(day)} />
+            return <Tabs.Tab key={day} value={day} label={`${day}. ${fagfestivalMonth}`} onClick={() => setTabName(day)} />
           })}
           <Tabs.Tab
             value="påmeldte"

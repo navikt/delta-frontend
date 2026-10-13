@@ -34,6 +34,7 @@ export default async function StatsPage({
   const selectedYear = params.year ? parseInt(params.year) : currentYear;
 
   const stats = await getEventStatistics(selectedYear);
+  const popularEventKeyOccurrences = new Map<string, number>();
 
   return (
     <CardWithBackground
@@ -94,7 +95,7 @@ export default async function StatsPage({
               <h3 className="font-semibold text-lg text-ax-neutral-1000 mb-4">Arrangert flest arrangementer</h3>
               <div className="space-y-3">
                 {stats.topOrganizersByEvents.map((org, index) => (
-                  <div key={index} className="flex items-center justify-between border-b border-ax-neutral-200 last:border-0 pb-2 last:pb-0">
+                  <div key={org.name} className="flex items-center justify-between border-b border-ax-neutral-200 last:border-0 pb-2 last:pb-0">
                     <div className="flex items-center gap-3">
                       <span className="text-xl font-ax-bold text-ax-success-700 w-6">
                         {index + 1}
@@ -112,7 +113,7 @@ export default async function StatsPage({
               <h3 className="font-semibold text-lg text-ax-neutral-1000 mb-4">Samlet flest deltakere</h3>
               <div className="space-y-3">
                 {stats.topOrganizersByParticipants.map((org, index) => (
-                  <div key={index} className="flex items-center justify-between border-b border-ax-neutral-200 last:border-0 pb-2 last:pb-0">
+                  <div key={org.name} className="flex items-center justify-between border-b border-ax-neutral-200 last:border-0 pb-2 last:pb-0">
                     <div className="flex items-center gap-3">
                       <span className="text-xl font-ax-bold text-ax-meta-purple-700 w-6">
                         {index + 1}
@@ -160,30 +161,36 @@ export default async function StatsPage({
                   <h3 className="font-semibold text-lg text-ax-neutral-1000">Mest populære arrangementer</h3>
                 </div>
                 <div className="space-y-4">
-                  {stats.mostPopularEvents.map((event, index) => (
-                    <div key={`${event.id}-${index}`} className="flex items-start gap-3 pb-4 last:pb-0 border-b last:border-b-0 border-ax-neutral-300">
-                      <span className="text-2xl font-ax-bold text-ax-accent-700 min-w-[2rem]">
-                        {index + 1}
-                      </span>
-                      <div className="flex-1">
-                        {event.id ? (
-                          <Link
-                            href={`/event/${event.id}`}
-                            className="text-ax-accent-800 hover:text-ax-accent-900 hover:underline font-medium"
-                          >
-                            {event.title}
-                          </Link>
-                        ) : (
-                          <span className="text-ax-neutral-800 font-medium">
-                            {event.title}
-                          </span>
-                        )}
-                        <p className="text-sm text-ax-neutral-800 mt-1">
-                          {event.participants.toLocaleString('nb-NO')} påmeldte deltakere
-                        </p>
+                  {stats.mostPopularEvents.map((event, index) => {
+                    const baseKey = event.id || `${event.title}-${event.participants}`;
+                    const occurrence = popularEventKeyOccurrences.get(baseKey) ?? 0;
+                    popularEventKeyOccurrences.set(baseKey, occurrence + 1);
+
+                    return (
+                      <div key={`${baseKey}-${occurrence}`} className="flex items-start gap-3 pb-4 last:pb-0 border-b last:border-b-0 border-ax-neutral-300">
+                        <span className="text-2xl font-ax-bold text-ax-accent-700 min-w-[2rem]">
+                          {index + 1}
+                        </span>
+                        <div className="flex-1">
+                          {event.id ? (
+                            <Link
+                              href={`/event/${event.id}`}
+                              className="text-ax-accent-800 hover:text-ax-accent-900 hover:underline font-medium"
+                            >
+                              {event.title}
+                            </Link>
+                          ) : (
+                            <span className="text-ax-neutral-800 font-medium">
+                              {event.title}
+                            </span>
+                          )}
+                          <p className="text-sm text-ax-neutral-800 mt-1">
+                            {event.participants.toLocaleString('nb-NO')} påmeldte deltakere
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             )}

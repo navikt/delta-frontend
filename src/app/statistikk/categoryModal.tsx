@@ -164,8 +164,8 @@ export default function CategoryModal({
                     </Table.Row>
                   </Table.Header>
                   <Table.Body>
-                    {currentEvents.map((event, index) => (
-                      <Table.Row key={`${event.id}-${index}`}>
+                    {currentEvents.map((event) => (
+                      <Table.Row key={event.id}>
                         <Table.DataCell>
                           {event.isPublic ? (
                             <Link

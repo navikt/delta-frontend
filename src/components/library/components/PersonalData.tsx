@@ -5,12 +5,25 @@ interface Props {
     value: string;
 }
 
+function createOccurrenceKey() {
+    const occurrences = new Map<string, number>();
+    return (value: string) => {
+        const occurrence = occurrences.get(value) ?? 0;
+        occurrences.set(value, occurrence + 1);
+        return `${value}-${occurrence}`;
+    };
+}
+
 function PersonalData({ value }: Props) {
     const { emails, names, phonenumbers } = checkPersonalData(value);
 
     if (emails.length === 0 && names.length === 0 && phonenumbers.length === 0) {
         return null;
     }
+
+    const emailKey = createOccurrenceKey();
+    const phoneKey = createOccurrenceKey();
+    const nameKey = createOccurrenceKey();
 
     return (
         <Accordion.Item>
@@ -29,8 +42,8 @@ function PersonalData({ value }: Props) {
                             E-postadresser
                         </Heading>
                         <List>
-                            {emails.map((email, index) => (
-                                <List.Item key={index}>"{email}"</List.Item>
+                            {emails.map((email) => (
+                                <List.Item key={emailKey(email)}>"{email}"</List.Item>
                             ))}
                         </List>
                     </BodyShort>
@@ -41,8 +54,8 @@ function PersonalData({ value }: Props) {
                             Telefonnummer
                         </Heading>
                         <List>
-                            {phonenumbers.map((phonenumber, index) => (
-                                <List.Item key={index}>"{phonenumber}"</List.Item>
+                            {phonenumbers.map((phonenumber) => (
+                                <List.Item key={phoneKey(phonenumber)}>"{phonenumber}"</List.Item>
                             ))}
                         </List>
                     </BodyShort>
@@ -53,8 +66,8 @@ function PersonalData({ value }: Props) {
                             Navn
                         </Heading>
                         <List>
-                            {names.map((name, index) => (
-                                <List.Item key={index}>"{name}"</List.Item>
+                            {names.map((name) => (
+                                <List.Item key={nameKey(name)}>"{name}"</List.Item>
                             ))}
                         </List>
                     </BodyShort>

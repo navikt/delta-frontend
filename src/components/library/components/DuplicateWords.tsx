@@ -7,6 +7,7 @@ interface Props {
 
 function DuplicateWords({ value: val }: Props) {
     const duplicateWords = checkDuplicateWords(val);
+    const occurrences = new Map<string, number>();
 
     if (duplicateWords.length === 0) {
         return null;
@@ -24,9 +25,15 @@ function DuplicateWords({ value: val }: Props) {
             <Accordion.Content>
                 <BodyShort spacing> Like ord som er gjentatt etter hverandre: </BodyShort>
                 <List>
-                    {duplicateWords.map((duplicateWord, index) => (
-                        <List.Item key={index}>"{duplicateWord}"</List.Item>
-                    ))}
+                    {duplicateWords.map((duplicateWord) => {
+                        const occurrence = occurrences.get(duplicateWord) ?? 0;
+                        occurrences.set(duplicateWord, occurrence + 1);
+                        return (
+                            <List.Item key={`${duplicateWord}-${occurrence}`}>
+                                "{duplicateWord}"
+                            </List.Item>
+                        );
+                    })}
                 </List>
             </Accordion.Content>
         </Accordion.Item>

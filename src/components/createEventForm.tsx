@@ -15,7 +15,7 @@ import {
   Label,
   BodyShort,
 } from "@navikt/ds-react";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, useEffect, useState } from "react";
 import {
   createCategory,
   createEvent,
@@ -203,14 +203,8 @@ export default function CreateEventForm({
   const [richEvent, setRichEvent] = useState<RichEvent>({
     type: EditTypeEnum.NEW,
   });
-  const [selectedCategories, _setSelectedCategories] = useState<
-    Category[] | undefined
-  >(undefined);
+  const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
   const [existingAttendeeEmails, setExistingAttendeeEmails] = useState<string[]>([]);
-  const setSelectedCategories: Dispatch<SetStateAction<Category[]>> = (
-    setState: SetStateAction<Category[]>,
-  ) =>
-    _setSelectedCategories(setState as SetStateAction<Category[] | undefined>);
 
   useEffect(() => {
     if (editType.type === EditTypeEnum.NEW) return;
@@ -257,7 +251,7 @@ export default function CreateEventForm({
     (<InternalCreateEventForm
       richEvent={richEvent}
       allCategories={allCategories}
-      selectedCategories={selectedCategories || []}
+      selectedCategories={selectedCategories}
       setSelectedCategories={setSelectedCategories}
       features={features}
       allowInvitations={

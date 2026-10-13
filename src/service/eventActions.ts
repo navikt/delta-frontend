@@ -1,6 +1,11 @@
 "use server";
 
-import { getDeltaBackendAccessToken, getUser } from "@/auth/token";
+import {
+  checkToken,
+  getDeltaBackendAccessToken,
+  getUser,
+  isDeltaMaintainer,
+} from "@/auth/token";
 import { backendUrl, getApi } from "@/api/instance";
 import { CreateEventSchema } from "@/components/createEventForm";
 import {
@@ -151,6 +156,20 @@ async function fetchEventList(query: EventListQuery, accessToken: string | null)
   }
 
   return response.json();
+}
+
+export async function fetchAllEventsForAdmin(): Promise<FullDeltaEvent[]> {
+  await checkToken("/admin");
+  if (!(await isDeltaMaintainer())) notFound();
+
+  const query = normalizeEventListQuery({});
+  const accessToken = await getDeltaBackendAccessToken();
+  try {
+    return await fetchEventList(query, accessToken);
+  } catch (error) {
+    console.error("Failed to fetch events for admin:", error);
+    throw error;
+  }
 }
 
 async function getSharedEventList(query: EventListQuery, accessToken: string | null) {

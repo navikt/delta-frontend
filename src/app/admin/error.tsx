@@ -8,7 +8,7 @@ export default function AdminError() {
     <CardWithBackground title="Administrasjon" compactHeader>
       <VStack gap="space-24" align="start">
         <BodyLong role="alert">
-          Kunne ikke hente statistikken. Prøv å laste inn siden på nytt.
+          Kunne ikke hente administrasjonssiden. Prøv å laste inn siden på nytt.
         </BodyLong>
         <Button onClick={() => window.location.reload()}>Last inn på nytt</Button>
       </VStack>

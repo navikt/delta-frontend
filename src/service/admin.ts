@@ -2,6 +2,7 @@ import "server-only";
 
 import { getApi } from "@/api/instance";
 import { checkToken, isDeltaMaintainer } from "@/auth/token";
+import { fetchAllEventsForAdmin } from "@/service/eventActions";
 import type { FullDeltaEvent, InviteMode } from "@/types/event";
 import { notFound } from "next/navigation";
 
@@ -28,18 +29,10 @@ export async function getAdminStatistics(): Promise<AdminStatistics> {
 }
 
 export async function getAdminSharedCalendarEvents(): Promise<FullDeltaEvent[]> {
-  await checkAdminAccess();
-
-  const api = await getApi();
-  try {
-    const response = await api.get<FullDeltaEvent[]>("/event");
-    return response.data.filter(
-      ({ event }) => event.public && event.inviteMode === "SHARED",
-    );
-  } catch (error) {
-    console.error("Failed to fetch public shared-calendar events:", error);
-    throw error;
-  }
+  const events = await fetchAllEventsForAdmin();
+  return events.filter(
+    ({ event }) => event.public && event.inviteMode === "SHARED",
+  );
 }
 
 async function checkAdminAccess(): Promise<void> {

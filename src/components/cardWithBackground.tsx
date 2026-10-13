@@ -25,9 +25,8 @@ type CardWithBackgroundProps = {
 export default function CardWithBackground(props: CardWithBackgroundProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const headerPaddingClass = props.compactHeader ? "pb-12" : "pb-24";
-  const headerLayoutClass = props.compactHeader
-    ? "relative mt-12 mx-auto grid w-full place-items-center px-4 text-center ax-sm:max-w-[632px] ax-sm:px-6"
-    : "relative mt-28 mx-auto grid w-full place-items-center px-4 text-center ax-sm:max-w-[632px] ax-sm:px-6";
+  const headerLayoutClass =
+    "relative mt-28 mx-auto grid w-full place-items-center px-4 text-center ax-sm:max-w-[632px] ax-sm:px-6";
   const titleTopClass = props.compactHeader ? "mt-2" : "mt-8";
 
   useEffect(() => {

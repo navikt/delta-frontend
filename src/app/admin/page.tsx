@@ -5,13 +5,13 @@ import {
 } from "@/service/admin";
 import { formatEventTimes } from "@/service/format";
 import type { InviteMode } from "@/types/event";
-import { BodyLong, Heading, Link as AkselLink, VStack } from "@navikt/ds-react";
+import AdminEventLink from "@/app/admin/adminEventLink";
+import { BodyLong, Heading, VStack } from "@navikt/ds-react";
 import {
   Table, TableBody, TableDataCell, TableHeader, TableHeaderCell, TableRow,
 } from "@navikt/ds-react/Table";
 import { formatInTimeZone } from "date-fns-tz";
 import type { Metadata } from "next";
-import NextLink from "next/link";
 
 export const metadata: Metadata = {
   title: "Administrasjon Δ Delta",
@@ -81,13 +81,10 @@ export default async function AdminPage() {
             <ul className="list-disc space-y-2 pl-6">
               {publicSharedCalendarEvents.map(({ event }) => (
                 <li key={event.id}>
-                  <AkselLink
-                    as={NextLink}
+                  <AdminEventLink
                     href={`/event/${event.id}`}
-                    prefetch={false}
-                  >
-                    {event.title}
-                  </AkselLink>
+                    title={event.title}
+                  />
                   {" — "}
                   {formatEventTimes(event)}
                 </li>

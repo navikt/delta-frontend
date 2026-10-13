@@ -1,12 +1,17 @@
 import CardWithBackground from "@/components/cardWithBackground";
-import { getAdminStatistics } from "@/service/admin";
+import {
+  getAdminSharedCalendarEvents,
+  getAdminStatistics,
+} from "@/service/admin";
+import { formatEventTimes } from "@/service/format";
 import type { InviteMode } from "@/types/event";
-import { BodyLong, Heading, VStack } from "@navikt/ds-react";
+import { BodyLong, Heading, Link as AkselLink, VStack } from "@navikt/ds-react";
 import {
   Table, TableBody, TableDataCell, TableHeader, TableHeaderCell, TableRow,
 } from "@navikt/ds-react/Table";
 import { formatInTimeZone } from "date-fns-tz";
 import type { Metadata } from "next";
+import NextLink from "next/link";
 
 export const metadata: Metadata = {
   title: "Administrasjon Δ Delta",
@@ -19,7 +24,16 @@ const labels: Record<InviteMode, string> = {
 };
 
 export default async function AdminPage() {
-  const statistics = await getAdminStatistics();
+  const [statistics, sharedCalendarEvents] = await Promise.all([
+    getAdminStatistics(),
+    getAdminSharedCalendarEvents(),
+  ]);
+  const publicSharedCalendarEvents = sharedCalendarEvents
+    .sort(
+      (a, b) =>
+        new Date(a.event.startTime).getTime() -
+        new Date(b.event.startTime).getTime(),
+    );
 
   return (
     <CardWithBackground title="Administrasjon" compactHeader>
@@ -59,6 +73,32 @@ export default async function AdminPage() {
           i en gjentakende serie telles som ett arrangement. Kommende og pågående
           arrangementer har en sluttid som er senere enn tidspunktet tallene ble hentet.
         </BodyLong>
+        <section aria-labelledby="shared-calendar-events">
+          <Heading id="shared-calendar-events" level="2" size="medium" spacing>
+            Offentlige arrangementer med felles kalenderinvitasjon
+          </Heading>
+          {publicSharedCalendarEvents.length > 0 ? (
+            <ul className="list-disc space-y-2 pl-6">
+              {publicSharedCalendarEvents.map(({ event }) => (
+                <li key={event.id}>
+                  <AkselLink
+                    as={NextLink}
+                    href={`/event/${event.id}`}
+                    prefetch={false}
+                  >
+                    {event.title}
+                  </AkselLink>
+                  {" — "}
+                  {formatEventTimes(event)}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <BodyLong>
+              Ingen offentlige arrangementer bruker denne kalendermodellen ennå.
+            </BodyLong>
+          )}
+        </section>
         <BodyLong>
           Når det ikke er flere kommende eller pågående arrangementer med den eldre
           kalendermodellen, gjenstår bare historiske arrangementer. Disse må også

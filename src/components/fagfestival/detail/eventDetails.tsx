@@ -25,8 +25,10 @@ import {
     isInvitationReservationActive,
 } from "@/service/eventCapacity";
 import CalendarSyncStatus from "@/components/calendarSyncStatus";
+import { type FestivalConfig, getFestivalEventUrl } from "../festivals";
 
 export default function EventDetails({
+     festival,
      event,
      participants,
      hosts,
@@ -36,10 +38,12 @@ export default function EventDetails({
      user,
      hostname,
  }: FullDeltaEvent & {
+    festival: FestivalConfig;
     invitationCapacity: InvitationCapacity;
     user: User;
     hostname?: string;
 }) {
+    const eventUrl = getFestivalEventUrl(festival, event.id, hostname);
     const [reactiveParticipants, setParticipants] = useState(participants);
     const [reactiveInvitationCapacity, setInvitationCapacity] = useState(invitationCapacity);
     const isHost = hosts.some((host) => host.email === user.email);
@@ -301,13 +305,14 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                     </Modal>
                     <SecondaryCopyButton
                         className="ax-md:whitespace-nowrap w-full"
-                        copyText={`${hostname}/pride/${event.id}`}
+                        copyText={eventUrl}
                         text="Kopier lenke"
                     />
                 </div>
             </div>
             <div className="flex-col ax-md:flex-row flex justify-between gap-4 ax-md:gap-28 pt-4">
                 <EventDescription
+                    contact={festival.contact}
                     user={user}
                     event={event}
                     participants={reactiveParticipants}
@@ -338,7 +343,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                     <div className="flex gap-3 mt-2 mb-6">
                         <SecondaryCopyButton
                             className="ax-md:whitespace-nowrap w-fit h-fit"
-                            copyText={`${hostname}/pride/${event.id}`}
+                            copyText={eventUrl}
                             text="Kopier lenke"
                             size="small"
                         />
@@ -361,7 +366,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                                 Δ Delta
                             </Heading>
                             <Canvas
-                                text={'https://delta.nav.no/pride/' + event.id}
+                                text={eventUrl}
                                 options={{
                                     errorCorrectionLevel: 'M',
                                     margin: 3,

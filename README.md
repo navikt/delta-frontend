@@ -60,6 +60,19 @@ I lokal utvikling vises administrasjon i frontenden. Start backenden med
 `DELTA_MAINTAINERS_GROUP_ID=local-principal-group ./gradlew run` for å gi
 den lokale testbrukeren tilgang til statistikken.
 
+## Festival detail routes
+
+Festival details keep literal routes for `/fagfest`, `/ips`, `/mim`, `/pride` and
+`/markedsuka`. Their pages and metadata delegate to
+`src/components/fagfestival/detail/festivalEventPage.tsx`; themes and organizer
+contacts live in `src/components/fagfestival/festivals.ts`. Registration,
+participant search and sharing use one shared client component. Generic
+`/event/[id]` details and festival overview filtering remain separate.
+
+Copy links and QR codes use the same festival URL, with `NEXT_PUBLIC_HOSTNAME`
+when configured and `https://delta.nav.no` otherwise. Legacy `/fagtorsdag` URLs
+use temporary redirects in `next.config.js`; the category remains available.
+
 # Bruk av AI
 
 Delta er utviklet med hjelp av AI.

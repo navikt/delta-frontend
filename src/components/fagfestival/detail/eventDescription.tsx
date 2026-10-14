@@ -1,5 +1,3 @@
-"use client";
-
 import {FullDeltaEvent, DeltaParticipant} from "@/types/event";
 import {User} from "@/types/user";
 import {
@@ -13,6 +11,7 @@ import {
 import {useMemo, useRef, useState} from "react";
 import {Link, Modal, Search, Button} from "@navikt/ds-react";
 import Participant from "./participant";
+import type { FestivalConfig } from "../festivals";
 import { countCapacityAttendees, InvitationCapacity } from "@/service/eventCapacity";
 import {
     formatEventDates,
@@ -23,12 +22,14 @@ import {
 } from "@/service/format";
 
 type EventDescriptionProps = FullDeltaEvent & {
+    contact: FestivalConfig["contact"];
     className?: string;
     displayTime: boolean;
     user: User;
     invitationCapacity: InvitationCapacity;
 };
 export default function EventDescription({
+     contact,
      event,
      participants,
      hosts,
@@ -152,15 +153,29 @@ export default function EventDescription({
                     Arrangeres av:
                 </label>
                 <ul className="list-none p-0 m-0">
-                        <li className="flex ml-[0.2rem] pl-6 gap-2">
-                            <Link
-                                title={`Send e-post til komiteen`}
-                                href={`mailto:mangfold.i.mai@nav.no`}
+                    {contact.kind === "hosts" ? hosts.map((host) => (
+                        <li className="flex ml-[0.2rem] pl-6 gap-2" key={host.email}>
+                            <Link data-umami-event="kontaker arrangør"
+                                title={`Send e-post til ${host.name.split(", ").reverse().join(" ")}`}
+                                href={`mailto:${host.email}`}
                                 className="leading-relaxed"
                             >
-                              Mangfold i mai
+                                {host.name.split(", ").reverse().join(" ")}
                             </Link>
                         </li>
+                    )) : (
+                        <li className="flex ml-[0.2rem] pl-6 gap-2">
+                            {contact.kind === "committee" ? (
+                                <Link
+                                    title={`Send e-post til komiteen`}
+                                    href={`mailto:${contact.email}`}
+                                    className="leading-relaxed"
+                                >
+                                    {contact.label}
+                                </Link>
+                            ) : contact.label}
+                        </li>
+                    )}
                 </ul>
             </div>
             <span className="flex flex-row justify-start gap-2 items-center cursor-pointer">

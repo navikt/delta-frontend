@@ -1,6 +1,6 @@
 import { checkToken } from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
-import "./fagfestival.css";
+import "@/components/fagfestival/fagfestival.css";
 
 import { Metadata } from "next";
 import FagfestivalEvents from "@/components/fagfestival/fagfestivalEvents";

@@ -1,34 +1,26 @@
+import { Suspense } from "react";
 import { checkToken } from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
 import CreateEventForm from "@/components/createEventForm";
-import { getAllCategories } from "@/service/eventActions";
-import { getFeatures } from "@/service/roomActions";
-import { EditTypeEnum } from "@/types/event";
-import { Metadata } from "next";
+import EventResultsSkeleton from "@/components/eventResultsSkeleton";
+import { getAllCategories, getEvent } from "@/service/eventQueries";
+import { getFeatures } from "@/service/roomQueries";
+import type { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "Rediger arrangement Δ Delta",
-};
+export const metadata: Metadata = { title: "Rediger arrangement Δ Delta" };
 
-export default async function EditEvent({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+async function Form({ id }: { id: string }) {
+  const returnTo = `/event/${id}/edit`;
+  await checkToken(returnTo);
+  const [categories, features, source] = await Promise.all([
+    getAllCategories(returnTo), getFeatures(), getEvent(id, returnTo),
+  ]);
+  return <CreateEventForm initial={{ mode: "edit", source }} allCategories={categories} features={features} />;
+}
+
+export default async function EditEvent({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  await checkToken(`/event/${id}/edit`);
-  const [categories, features] = await Promise.all([getAllCategories(), getFeatures()]);
-  return (
-    <CardWithBackground
-      title="Rediger arrangement"
-      home
-      backLink={`/event/${id}/admin`}
-    >
-      <CreateEventForm
-        editType={{ type: EditTypeEnum.EDIT, eventId: id }}
-        allCategories={categories}
-        features={features}
-      />
-    </CardWithBackground>
-  );
+  return <CardWithBackground title="Rediger arrangement" home backLink={`/event/${id}/admin`}>
+    <Suspense fallback={<EventResultsSkeleton />}><Form id={id} /></Suspense>
+  </CardWithBackground>;
 }

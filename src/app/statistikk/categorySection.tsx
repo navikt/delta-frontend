@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { BarChartIcon, MagnifyingGlassIcon } from "@navikt/aksel-icons";
 import { UNSAFE_Combobox } from "@navikt/ds-react";
-import { CategoryStat } from "@/service/statsActions";
+import type { CategoryStat } from "@/service/statsActions";
 import CategoryModal from "./categoryModal";
 
 export default function CategorySection({

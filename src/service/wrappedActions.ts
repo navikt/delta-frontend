@@ -1,8 +1,9 @@
-"use server";
+import "server-only";
 
-import { getEvents } from "./eventActions";
+import { getEvents } from "./eventQueries";
 import { getUser } from "@/auth/token";
 import { FullDeltaEvent } from "@/types/event";
+import { unstable_rethrow } from "next/navigation";
 
 export type UserWrappedStats = {
     userName: string;
@@ -245,6 +246,7 @@ export async function getUserWrappedStats(year?: number): Promise<UserWrappedSta
             }).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()),
         };
     } catch (error) {
+        unstable_rethrow(error);
         console.error('Failed to fetch user wrapped stats:', error);
         return null;
     }

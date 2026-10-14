@@ -5,6 +5,7 @@ import "./globals.css";
 import { Metadata } from "next";
 import Script from 'next/script';
 import { isDeltaMaintainer } from "@/auth/token";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 type RootLayoutProps = {
   children: React.ReactNode;
@@ -60,7 +61,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
             <Header isMaintainer={isMaintainer} />
           </div>
           <main className="svelte-reugtu winter bg-ax-bg-neutral-soft flex-grow flex justify-center relative z-0">
-            {children}
+            <NuqsAdapter>{children}</NuqsAdapter>
           </main>
           <Footer />
           <ScrollToTop />

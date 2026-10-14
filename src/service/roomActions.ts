@@ -2,27 +2,12 @@
 
 import { getApi } from "@/api/instance";
 import { toRoomAvailabilityFailure } from "@/api/roomAvailabilityProblem";
-import { ActionResult, Features, NO_FEATURES, RoomAvailability, RoomInfo } from "@/types/room";
+import { ActionResult, RoomAvailability, RoomInfo } from "@/types/room";
 import { AxiosError } from "axios";
-
-/** Feature toggles for the calling user. Falls back to everything off on error. */
-export async function getFeatures(): Promise<Features> {
-  try {
-    const api = await getApi();
-    const response = await api.get<Partial<Features>>("/features");
-    return {
-      roomBooking: response.data?.roomBooking === true,
-      teamsMeeting: response.data?.teamsMeeting === true,
-      sharedCalendar: response.data?.sharedCalendar === true,
-      peopleSearch: response.data?.peopleSearch === true,
-    };
-  } catch (error) {
-    console.error("Failed to fetch features:", error);
-    return NO_FEATURES;
-  }
-}
+import { checkToken } from "@/auth/token";
 
 export async function searchRooms(q: string): Promise<ActionResult<RoomInfo[]>> {
+  await checkToken();
   const query = q.trim();
   if (query.length < 2) {
     return { ok: true, data: [] };
@@ -44,6 +29,7 @@ export async function getRoomAvailability(
   startTime: string,
   endTime: string,
 ): Promise<ActionResult<RoomAvailability[]>> {
+  await checkToken();
   if (roomEmails.length === 0) {
     return { ok: true, data: [] };
   }

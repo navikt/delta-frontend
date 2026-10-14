@@ -2,7 +2,7 @@
 
 import { Alert, BodyShort, Button, UNSAFE_Combobox } from "@navikt/ds-react";
 import { useEffect, useState } from "react";
-import { searchPeople } from "@/service/eventActions";
+import { searchPeople } from "@/service/eventInteractiveReads";
 import { DirectoryPerson } from "@/types/event";
 
 const SEARCH_DEBOUNCE_MS = 250;

@@ -2,7 +2,7 @@ import "server-only";
 
 import { getApi } from "@/api/instance";
 import { checkToken, isDeltaMaintainer } from "@/auth/token";
-import { fetchAllEventsForAdmin } from "@/service/eventActions";
+import { fetchAllEventsForAdmin } from "@/service/eventQueries";
 import type { FullDeltaEvent, InviteMode } from "@/types/event";
 import { notFound } from "next/navigation";
 

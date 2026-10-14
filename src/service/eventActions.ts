@@ -1,39 +1,19 @@
 "use server";
 
-import {
-  checkToken,
-  getDeltaBackendAccessToken,
-  getUser,
-  isDeltaMaintainer,
-} from "@/auth/token";
-import { backendUrl, getApi } from "@/api/instance";
-import { CreateEventSchema } from "@/components/createEventForm";
+import { getApi } from "@/api/instance";
+import type { CreateEventSchema } from "@/components/createEventForm";
 import {
   Category,
   ChangeDeltaParticipant,
   CreateDeltaEvent,
-  DeltaParticipant,
-  DirectoryPerson,
   EditScope,
   FullDeltaEvent,
   InviteeRequest,
 } from "@/types/event";
 import { ActionResult } from "@/types/room";
-import { getInvitationCapacity, InvitationCapacity } from "@/service/eventCapacity";
 import { formatInTimeZone } from "date-fns-tz";
 import { AxiosError } from 'axios';
-import { unstable_cache } from "next/cache";
-import { notFound } from "next/navigation";
-
-const SHARED_EVENT_LIST_REVALIDATE_SECONDS = 60;
-
-type EventListQuery = {
-  categoryIds: number[];
-  onlyFuture: boolean;
-  onlyPast: boolean;
-  onlyMine: boolean;
-  onlyJoined: boolean;
-};
+import { unstable_rethrow } from "next/navigation";
 
 class ApiError extends Error {
   constructor(
@@ -47,6 +27,7 @@ class ApiError extends Error {
 }
 
 const handleApiError = (error: unknown): never => {
+  unstable_rethrow(error);
   if (error instanceof ApiError) {
     throw error;
   }
@@ -72,119 +53,6 @@ const handleApiError = (error: unknown): never => {
   
   throw new ApiError('Kunne ikke koble til serveren. Sjekk internettforbindelsen.');
 };
-
-function normalizeEventListQuery({
-  categories = [],
-  onlyFuture = false,
-  onlyPast = false,
-  onlyMine = false,
-  onlyJoined = false,
-}: {
-  categories?: Category[];
-  onlyFuture?: boolean;
-  onlyPast?: boolean;
-  onlyMine?: boolean;
-  onlyJoined?: boolean;
-}): EventListQuery {
-  return {
-    categoryIds: Array.from(new Set(categories.map((category) => category.id))).sort((a, b) => a - b),
-    onlyFuture,
-    onlyPast,
-    onlyMine,
-    onlyJoined,
-  };
-}
-
-function isSharedEventListQuery(query: EventListQuery) {
-  return !query.onlyJoined && !query.onlyMine;
-}
-
-function createEventListSearchParams(query: EventListQuery) {
-  const params = new URLSearchParams();
-
-  if (query.categoryIds.length > 0) {
-    params.set("categories", query.categoryIds.join(","));
-  }
-
-  if (query.onlyFuture) {
-    params.set("onlyFuture", "true");
-  }
-
-  if (query.onlyPast) {
-    params.set("onlyPast", "true");
-  }
-
-  if (query.onlyJoined) {
-    params.set("onlyJoined", "true");
-  }
-
-  if (query.onlyMine) {
-    params.set("onlyMine", "true");
-  }
-
-  return params;
-}
-
-function createSharedEventListCacheKey(query: EventListQuery) {
-  return [
-    query.categoryIds.join(","),
-    query.onlyFuture ? "future" : "all",
-    query.onlyPast ? "past" : "not-past",
-  ].join("|");
-}
-
-async function fetchEventList(query: EventListQuery, accessToken: string | null): Promise<FullDeltaEvent[]> {
-  const params = createEventListSearchParams(query);
-  const headers: HeadersInit = {
-    "Content-Type": "application/json",
-  };
-
-  if (accessToken !== null) {
-    headers.Authorization = `Bearer ${accessToken}`;
-  }
-
-  const response = await fetch(
-    `${backendUrl()}/event${params.size > 0 ? `?${params.toString()}` : ""}`,
-    {
-      headers,
-      cache: "no-store",
-    },
-  );
-
-  if (!response.ok) {
-    throw new Error(`Event list fetch failed with status ${response.status}`);
-  }
-
-  return response.json();
-}
-
-export async function fetchAllEventsForAdmin(): Promise<FullDeltaEvent[]> {
-  await checkToken("/admin");
-  if (!(await isDeltaMaintainer())) notFound();
-
-  const query = normalizeEventListQuery({});
-  const accessToken = await getDeltaBackendAccessToken();
-  try {
-    return await fetchEventList(query, accessToken);
-  } catch (error) {
-    console.error("Failed to fetch events for admin:", error);
-    throw error;
-  }
-}
-
-async function getSharedEventList(query: EventListQuery, accessToken: string | null) {
-  const cacheKey = createSharedEventListCacheKey(query);
-
-  return unstable_cache(
-    async () => fetchEventList(query, accessToken),
-    ["shared-event-list", cacheKey],
-    { revalidate: SHARED_EVENT_LIST_REVALIDATE_SECONDS },
-  )();
-}
-
-function canUseSharedEventListCache(query: EventListQuery, accessToken: string | null) {
-  return isSharedEventListQuery(query) && accessToken === null;
-}
 
 export async function joinEvent(eventId: string): Promise<void> {
   try {
@@ -269,101 +137,6 @@ export async function setCategories(eventId: string, categories: number[]): Prom
   }
 }
 
-export async function getAllCategories(): Promise<Category[]> {
-  try {
-    const api = await getApi();
-    const response = await api.get<Category[]>("/category");
-    return response.data;
-  } catch (error) {
-    console.error('Failed to fetch categories:', error);
-    return [];
-  }
-}
-
-export async function getEvents({
-  categories = [],
-  onlyFuture = false,
-  onlyPast = false,
-  onlyMine = false,
-  onlyJoined = false,
-}: {
-  categories?: Category[];
-  onlyFuture?: boolean;
-  onlyPast?: boolean;
-  onlyMine?: boolean;
-  onlyJoined?: boolean;
-}): Promise<FullDeltaEvent[]> {
-  try {
-    const query = normalizeEventListQuery({
-      categories,
-      onlyFuture,
-      onlyPast,
-      onlyJoined,
-      onlyMine,
-    });
-    const accessToken = await getDeltaBackendAccessToken();
-
-    if (canUseSharedEventListCache(query, accessToken)) {
-      return await getSharedEventList(query, accessToken);
-    }
-
-    return await fetchEventList(query, accessToken);
-  } catch (error) {
-    console.error('Failed to fetch events:', error);
-    // Always return empty array instead of throwing
-    return [];
-  }
-}
-
-export async function getEvent(id: string): Promise<FullDeltaEvent> {
-  try {
-    validateEventId(id);
-    const api = await getApi();
-    const response = await api.get<FullDeltaEvent>(`/event/${encodeURIComponent(id)}`);
-    return response.data;
-  } catch (error) {
-    if (error instanceof AxiosError && error.status === 404) {
-      notFound();
-    }
-
-    throw handleApiError(error);
-  }
-}
-
-export async function getEventRegistrationState(eventId: string): Promise<{
-  participants: DeltaParticipant[];
-  invitationCapacity: InvitationCapacity;
-}> {
-  const [event, user] = await Promise.all([getEvent(eventId), getUser()]);
-  return {
-    participants: event.participants,
-    invitationCapacity: getInvitationCapacity(
-      event.participants,
-      event.hosts,
-      event.invited,
-      user.email,
-      event.event.signupDeadline,
-    ),
-  };
-}
-
-export async function searchPeople(query: string): Promise<ActionResult<DirectoryPerson[]>> {
-  const normalizedQuery = query.trim();
-  if (normalizedQuery.length < 2) {
-    return { ok: true, data: [] };
-  }
-
-  try {
-    const api = await getApi();
-    const response = await api.get<DirectoryPerson[]>("/directory/search", {
-      params: { q: normalizedQuery.slice(0, 100) },
-    });
-    return { ok: true, data: response.data };
-  } catch (error) {
-    return toSharedCalendarActionError(error, "Kunne ikke søke etter personer.");
-  }
-}
-
 export async function invitePeople(
   eventId: string,
   invitees: InviteeRequest[],
@@ -417,6 +190,7 @@ function toSharedCalendarActionError(
   error: unknown,
   fallback: string,
 ): { ok: false; status?: number; message: string } {
+  unstable_rethrow(error);
   console.error("Shared calendar API error:", error);
   if (error instanceof AxiosError) {
     const status = error.status;
@@ -480,6 +254,7 @@ export async function updateEvent(
 }
 
 function toSaveErrorResult(error: unknown): { ok: false; status?: number; message: string } {
+  unstable_rethrow(error);
   console.error("Failed to save event:", error);
   if (error instanceof ApiError) {
     return { ok: false, status: error.status, message: error.message };

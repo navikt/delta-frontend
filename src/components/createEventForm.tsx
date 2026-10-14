@@ -6,7 +6,6 @@ import {
   Link,
   Checkbox,
   Switch,
-  Skeleton,
   UNSAFE_Combobox,
   Radio,
   RadioGroup,
@@ -15,11 +14,10 @@ import {
   Label,
   BodyShort,
 } from "@navikt/ds-react";
-import { Dispatch, useEffect, useState } from "react";
+import { Dispatch, useState } from "react";
 import {
   createCategory,
   createEvent,
-  getEvent,
   setCategories,
   updateEvent,
 } from "@/service/eventActions";
@@ -29,13 +27,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import EventDatepicker from "../app/event/new/eventDatepicker";
 import {
   Category,
-  DeltaEvent,
   DirectoryPerson,
   EditTypeEnum,
   RecurrenceFrequency,
-  RecurringSeriesSummary,
   EditScope,
-  TemplateDeltaEvent,
 } from "@/types/event";
 import { midnightDate } from "@/service/format";
 import { format } from "date-fns";
@@ -47,6 +42,7 @@ import PersonPicker from "@/components/personPicker";
 import { RoomStatusTag } from "@/components/roomStatusTag";
 import { Features, NO_FEATURES } from "@/types/room";
 import { formatInTimeZone } from "date-fns-tz";
+import { initializeEventForm, eventFormIdentity, type InitialEventForm, type RichEvent } from "@/service/eventFormInitial";
 
 function isValidParticipantLimit(limit?: string) {
   if (!limit) return false;
@@ -186,69 +182,25 @@ function req(label: string) {
   );
 }
 
-export type EditType =
-  | { type: EditTypeEnum.NEW }
-  | { type: EditTypeEnum.EDIT | EditTypeEnum.TEMPLATE; eventId: string };
 type CreateEventFormProps = {
-  editType: EditType;
+  initial: InitialEventForm;
   allCategories: Category[];
   features?: Features;
 };
-export default function CreateEventForm({
-  editType,
+export default function CreateEventForm(props: CreateEventFormProps) {
+  return <InitializedEventForm key={eventFormIdentity(props.initial)} {...props} />;
+}
+
+function InitializedEventForm({
+  initial,
   allCategories,
   features = NO_FEATURES,
 }: CreateEventFormProps) {
-  const [loading, setLoading] = useState(editType.type !== EditTypeEnum.NEW);
-  const [richEvent, setRichEvent] = useState<RichEvent>({
-    type: EditTypeEnum.NEW,
-  });
-  const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
-  const [existingAttendeeEmails, setExistingAttendeeEmails] = useState<string[]>([]);
-
-  useEffect(() => {
-    if (editType.type === EditTypeEnum.NEW) return;
-    getEvent(editType.eventId)
-      .then((e) => {
-        let richEvent: RichEvent;
-        if (editType.type === EditTypeEnum.EDIT) {
-          richEvent = {
-            type: EditTypeEnum.EDIT,
-            event: e.event,
-            recurringSeries: e.recurringSeries,
-          };
-        } else {
-          richEvent = {
-            type: EditTypeEnum.TEMPLATE,
-            event: {
-              title: e.event.title,
-              description: e.event.description,
-              location: e.event.location,
-              public: e.event.public,
-              participantLimit: e.event.participantLimit,
-            },
-          };
-        }
-        setRichEvent(richEvent);
-        setSelectedCategories(e.categories);
-        setExistingAttendeeEmails([
-          ...e.hosts.map((person) => person.email),
-          ...e.participants.map((person) => person.email),
-          ...(e.invited ?? []).map((person) => person.email),
-        ]);
-      })
-      .then(() => setLoading(false));
-  }, [editType]);
-
-  return loading ? (
-    <>
-      <Skeleton variant="text" className="w-full" />
-      <Skeleton variant="text" className="w-full" />
-      <Skeleton variant="text" className="w-full" />
-    </>
-  ) : (
-    // @ts-ignore
-    (<InternalCreateEventForm
+  const [value] = useState(() => initializeEventForm(initial));
+  const { richEvent, existingAttendeeEmails } = value;
+  const [selectedCategories, setSelectedCategories] = useState(value.selectedCategories);
+  return (
+    <InternalCreateEventForm
       richEvent={richEvent}
       allCategories={allCategories}
       selectedCategories={selectedCategories}
@@ -261,13 +213,9 @@ export default function CreateEventForm({
           : features.sharedCalendar)
       }
       excludedEmails={existingAttendeeEmails}
-    />)
+    />
   );
 }
-type RichEvent =
-  | { type: EditTypeEnum.EDIT; event: DeltaEvent; recurringSeries?: RecurringSeriesSummary }
-  | { type: EditTypeEnum.TEMPLATE; event: TemplateDeltaEvent }
-  | { type: EditTypeEnum.NEW };
 
 type InternalCreateEventFormProps = {
   richEvent: RichEvent;

@@ -1,34 +1,31 @@
+import { Suspense } from "react";
 import { checkToken } from "@/auth/token";
-import EventJSONFilters from "@/components/eventJSONFilters";
-import { getAllCategories } from "@/service/eventActions";
-import { Metadata } from "next";
+import { getAllCategories, getEvents } from "@/service/eventQueries";
+import { getFixedCategoryQuery } from "@/service/eventListQuery";
+import EventResultsSkeleton from "@/components/eventResultsSkeleton";
+import ResultsBoundary from "@/components/resultsBoundary";
+import type { Category } from "@/types/event";
+import type { Metadata } from "next";
 
 type CategoryPageProps = { params: Promise<{ id: string }> };
+export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
+  const { id } = await params;
+  return { title: `${id} Δ Delta` };
+}
 
-export async function generateMetadata(
-    { params }: CategoryPageProps
-): Promise<Metadata> {
-    const { id } = await params;
-    return {
-        title: `${id} Δ Delta`
-    }
+async function Results({ category, returnTo }: { category: Category; returnTo: string }) {
+  const events = await getEvents(getFixedCategoryQuery(category), returnTo);
+  return <div className="flex flex-col w-full gap-6 items-start"><pre>{JSON.stringify(events, null, 2)}</pre></div>;
 }
 
 export default async function Page({ params }: CategoryPageProps) {
-    const { id } = await params;
-    await checkToken(`/json/${id}`);
-    const allCategories = await getAllCategories();
-    const category = id
-    const theCategory = allCategories.find(item => item.name === category);
-    const title = category.charAt(0).toUpperCase() + category.slice(1);
-
-    return (
-        <>
-            {theCategory ? (
-                <EventJSONFilters categories={[{ id: theCategory.id, name: theCategory.name }]} />
-            ) : (<section className="w-screen flex-grow flex justify-center items-center">
-                404 - Kategorien ble ikke funnet
-            </section>)}
-        </>
-    );
+  const { id } = await params;
+  const returnTo = `/json/${id}`;
+  await checkToken(returnTo);
+  const categories = await getAllCategories(returnTo);
+  const category = categories.find(item => item.name === id);
+  if (!category) return <section className="w-screen flex-grow flex justify-center items-center">404 - Kategorien ble ikke funnet</section>;
+  return <ResultsBoundary>
+    <Suspense fallback={<EventResultsSkeleton />}><Results category={category} returnTo={returnTo} /></Suspense>
+  </ResultsBoundary>;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { UserWrappedStats } from "@/service/wrappedActions";
+import type { UserWrappedStats } from "@/service/wrappedActions";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Table, Pagination } from "@navikt/ds-react";
@@ -407,4 +407,3 @@ function StatBox({ icon, value, label }: { icon: string; value: string | number;
         </div>
     );
 }
-

@@ -6,13 +6,14 @@ import Image from "next/image";
 import { Metadata } from "next";
 import Intro from "@/components/fagfestival/intro";
 import FagfestivalEvents from "@/components/fagfestival/fagfestivalEvents";
+import type { OverviewSearchParams } from "@/service/overviewState";
 
 export const metadata: Metadata = {
   title: "Fagfest Δ Delta",
   description: "Påmeldingsapp",
 };
 
-export default async function Fagfestival() {
+export default async function Fagfestival({ searchParams }: { searchParams: Promise<OverviewSearchParams> }) {
   await checkToken("/fagfest");
 
   return (
@@ -45,6 +46,7 @@ export default async function Fagfestival() {
         <div className="w-full -mt-28 relative z-10">
           <CardWithBackground className="bg-fagfestival" newEvent>
             <FagfestivalEvents
+              searchParams={searchParams}
               category="fagfest"
               activeDays={["28", "29", "30"]}
               month="April"

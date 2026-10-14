@@ -2,20 +2,17 @@ import { requestOboToken, validateToken, getToken } from "@navikt/oasis";
 import type { User } from "@/types/user";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { cache } from "react";
+
+const hasValidToken = cache(async () => {
+  const token = getToken(await headers());
+  return token ? (await validateToken(token)).ok : false;
+});
 
 export async function checkToken(redirectTo?: string) {
   if (process.env.NODE_ENV === "development") return;
 
-  const token = getToken(await headers());
-  if (!token) {
-    if (redirectTo) {
-      redirect(`/oauth2/login?redirect=${redirectTo}`);
-    }
-    redirect("/oauth2/login");
-  }
-
-  const result = await validateToken(token);
-  if (!result.ok) {
+  if (!(await hasValidToken())) {
     console.log(`Tokenvalidering gikk galt`);
     redirectTo
       ? redirect(`/oauth2/login?redirect=${redirectTo}`)
@@ -25,6 +22,7 @@ export async function checkToken(redirectTo?: string) {
 // fjernet : ${result.error.message}
 
 export async function getUser(): Promise<User> {
+  await checkToken();
   if (process.env.NODE_ENV === "development") {
     return {
       firstName: "Ola Kari",
@@ -56,6 +54,7 @@ export async function getAccessToken(
   scope: string = "",
 ): Promise<string | null> {
   if (process.env.NODE_ENV === "development") return null;
+  await checkToken();
 
   const token = getToken(await headers());
   if (!token) {
@@ -66,7 +65,7 @@ export async function getAccessToken(
 
   if (!result.ok) {
     console.log(`Grant azure obo token failed`);
-    return null;
+    throw new Error("Kunne ikke koble til Delta. Prøv igjen.");
   }
   // fjernet : ${result.error.message}
 
@@ -81,6 +80,7 @@ export async function getDeltaBackendAccessToken(): Promise<string | null> {
 
 export async function getUserGroups(): Promise<string[]> {
   if (process.env.NODE_ENV === "development") return [];
+  await checkToken();
 
   const authHeader = (await headers()).get("Authorization");
   if (!authHeader) return [];
@@ -111,8 +111,7 @@ export async function isDeltaMaintainer(): Promise<boolean> {
   const token = getToken(await headers());
   if (!token) return false;
 
-  const result = await validateToken(token);
-  if (!result.ok) return false;
+  if (!(await hasValidToken())) return false;
 
   return (await getUserGroups()).includes(groupId);
 }

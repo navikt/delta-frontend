@@ -1,44 +1,30 @@
+import { Suspense } from "react";
 import { checkToken } from "@/auth/token";
 import CreateEventForm from "@/components/createEventForm";
 import CardWithBackground from "@/components/cardWithBackground";
-import { Metadata } from "next";
-import { getAllCategories } from "@/service/eventActions";
-import { getFeatures } from "@/service/roomActions";
-import { EditTypeEnum } from "@/types/event";
+import EventResultsSkeleton from "@/components/eventResultsSkeleton";
+import { getAllCategories, getEvent } from "@/service/eventQueries";
+import { getFeatures } from "@/service/roomQueries";
+import type { OverviewSearchParams } from "@/service/overviewState";
+import type { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "Opprett nytt arrangement Δ Delta",
-};
+export const metadata: Metadata = { title: "Opprett nytt arrangement Δ Delta" };
 
-export default async function NewEvent(props: {
-  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
+async function Form({ searchParams }: { searchParams: Promise<OverviewSearchParams> }) {
   await checkToken("/event/new");
-  const [categories, features] = await Promise.all([getAllCategories(), getFeatures()]);
+  const params = await searchParams;
+  const template = Array.isArray(params.template) ? params.template[0] : params.template;
+  const [categories, features, source] = await Promise.all([
+    getAllCategories("/event/new"), getFeatures(),
+    template ? getEvent(template, "/event/new") : undefined,
+  ]);
+  if (template && !source) throw new Error("Missing event form source");
+  return <CreateEventForm initial={source ? { mode: "template", source } : { mode: "new" }}
+    allCategories={categories} features={features} />;
+}
 
-  const searchParams = await props.searchParams;
-  let eventId = searchParams?.template;
-  if (eventId && typeof eventId !== "string") {
-    eventId = eventId[0];
-  }
-
-
-  return (
-    <CardWithBackground
-      title="Opprett nytt arrangement"
-      home
-      backLink="/"
-    >
-      {/* @ts-ignore */}
-      <CreateEventForm
-        editType={
-          eventId
-            ? { type: EditTypeEnum.TEMPLATE, eventId }
-            : { type: EditTypeEnum.NEW }
-        }
-        allCategories={categories}
-        features={features}
-      />
-    </CardWithBackground>
-  );
+export default function NewEvent({ searchParams }: { searchParams: Promise<OverviewSearchParams> }) {
+  return <CardWithBackground title="Opprett nytt arrangement" home backLink="/">
+    <Suspense fallback={<EventResultsSkeleton />}><Form searchParams={searchParams} /></Suspense>
+  </CardWithBackground>;
 }

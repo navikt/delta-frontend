@@ -4,13 +4,14 @@ import "./fagfestival.css";
 
 import { Metadata } from "next";
 import FagfestivalEvents from "@/components/fagfestival/fagfestivalEvents";
+import type { OverviewSearchParams } from "@/service/overviewState";
 
 export const metadata: Metadata = {
   title: "markedsuka Δ Delta",
   description: "Påmeldingsapp",
 };
 
-export default async function Fagfestival() {
+export default async function Fagfestival({ searchParams }: { searchParams: Promise<OverviewSearchParams> }) {
   await checkToken("/markedsuka");
 
   return (
@@ -24,6 +25,7 @@ export default async function Fagfestival() {
             newEvent
           >
             <FagfestivalEvents
+              searchParams={searchParams}
               category="markedsuka"
               month="jan"
               slug="markedsuka"

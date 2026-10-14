@@ -14,7 +14,8 @@ import {
 import Link from "next/link";
 import {useQRCode} from 'next-qrcode';
 import {FullDeltaEvent} from "@/types/event";
-import {getEventRegistrationState, joinEvent, leaveEvent} from "@/service/eventActions";
+import {joinEvent, leaveEvent} from "@/service/eventActions";
+import { getEventRegistrationState } from "@/service/eventInteractiveReads";
 import {format} from "date-fns";
 import Calendar from "@/components/calendar";
 import SecondaryCopyButton from "@/components/SecondaryCopyButton";

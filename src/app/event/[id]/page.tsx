@@ -2,8 +2,9 @@ import type { FullDeltaEvent } from "@/types/event";
 import { checkToken, getUser } from "@/auth/token";
 import EventDetails from "./eventDetails";
 import CardWithBackground from "@/components/cardWithBackground";
-import { getEvent } from "@/service/eventActions";
-import { getFeatures } from "@/service/roomActions";
+import { getEvent } from "@/service/eventQueries";
+import { ApiError } from "@/service/eventListTransport";
+import { getFeatures } from "@/service/roomQueries";
 import { getInvitationCapacity } from "@/service/eventCapacity";
 import { Metadata, ResolvingMetadata } from "next";
 import Head from "next/head";
@@ -36,6 +37,7 @@ async function getOptionalEventFromId(id: string) {
     const { event }: FullDeltaEvent = await getEvent(id);
     return event;
   } catch (e) {
+    if (!(e instanceof ApiError)) throw e;
     return null;
   }
 }

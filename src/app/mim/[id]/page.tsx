@@ -1,7 +1,8 @@
 import type { FullDeltaEvent } from "@/types/event";
 import { checkToken, getUser } from "@/auth/token";
 import EventDetails from "./eventDetails";
-import { getEvent } from "@/service/eventActions";
+import { getEvent } from "@/service/eventQueries";
+import { ApiError } from "@/service/eventListTransport";
 import { Metadata, ResolvingMetadata } from "next";
 import CardWithBackground from "@/components/cardWithBackground";
 import { getInvitationCapacity } from "@/service/eventCapacity";
@@ -31,9 +32,10 @@ function getSafeReturnTo(returnTo?: string | string[]) {
 
 async function getOptionalEventFromId(id: string) {
   try {
-    const { event }: FullDeltaEvent = await getEvent(id);
+    const { event }: FullDeltaEvent = await getEvent(id, `/mim/${id}`);
     return event;
   } catch (e) {
+    if (!(e instanceof ApiError)) throw e;
     return null;
   }
 }
@@ -64,7 +66,7 @@ export default async function Page({ params, searchParams }: EventPageProps) {
 
   const user = await getUser();
   const { event, participants, hosts, categories, invited = [], calendarSyncError }: FullDeltaEvent =
-    await getEvent(id);
+    await getEvent(id, `/mim/${id}`);
   const isHost = hosts.some((host) => host.email.toLowerCase() === user.email.toLowerCase());
   const invitationCapacity = getInvitationCapacity(
     participants,

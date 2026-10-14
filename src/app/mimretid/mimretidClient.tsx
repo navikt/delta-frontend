@@ -3,7 +3,7 @@
 import { Pagination, Table } from "@navikt/ds-react";
 import Link from "next/link";
 import { useState } from "react";
-import { UserWrappedStats } from "@/service/wrappedActions";
+import type { UserWrappedStats } from "@/service/wrappedActions";
 
 type MimretidClientProps = {
   stats: UserWrappedStats;

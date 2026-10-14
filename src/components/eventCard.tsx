@@ -2,7 +2,7 @@
 import "./eventCard.css";
 import {Category, FullDeltaEvent} from "@/types/event";
 import {format} from "date-fns";
-import {Detail, Heading, Tag} from "@navikt/ds-react";
+import {Detail, Heading, Skeleton, Tag} from "@navikt/ds-react";
 import {
     CalendarIcon,
     ClockIcon,
@@ -20,8 +20,9 @@ import {
 } from "@/service/format";
 import { countCapacityAttendees } from "@/service/eventCapacity";
 import { RecurringBadge } from "@/components/RecurringBadge";
-import { usePathname, useSearchParams } from "next/navigation";
+import { useOverviewPath } from "@/components/useOverviewPath";
 import { shouldHideEventCard } from "@/components/eventCardVisibility";
+import { useBrowserNow } from "@/components/useBrowserNow";
 
 export function EventCard({
                               event,
@@ -38,19 +39,21 @@ export function EventCard({
     userEmail?: string;
     showOnlyRegistered?: boolean;
 }) {
+    const now = useBrowserNow();
     const attendeeCount = countCapacityAttendees(
         event.participants,
         event.hosts,
         event.invited,
         event.event.signupDeadline,
+        new Date(now ?? 0),
     );
     const isRegistered =
         userEmail != null && event.participants.some((p) => p.email === userEmail);
     const isUtløpt =
+        now !== null &&
         !!event.event.signupDeadline &&
-        new Date(event.event.signupDeadline) < new Date();
-    const pathname = usePathname();
-    const searchParams = useSearchParams();
+        new Date(event.event.signupDeadline).getTime() < now;
+    const returnTo = useOverviewPath();
 
     const shouldHide = shouldHideEventCard({
         tabname,
@@ -61,8 +64,9 @@ export function EventCard({
     });
 
     if (shouldHide) return null;
-    const currentSearch = searchParams.toString();
-    const returnTo = `${pathname}${currentSearch ? `?${currentSearch}` : ""}`;
+    if (now === null && event.event.signupDeadline && tabname === "alle" && !showOnlyRegistered) {
+        return <Skeleton variant="rounded" className="h-72 w-full" />;
+    }
     const href = `/event/${event.event.id}?returnTo=${encodeURIComponent(returnTo)}`;
 
     const handleNavigation = () => {
@@ -72,6 +76,7 @@ export function EventCard({
     return (
                 <Link
                     href={href}
+                    prefetch={false}
                     onClick={handleNavigation}
                     className="flex flex-col h-full p-4 border rounded-xl text-ax-text-neutral border-ax-neutral-400 transition-all hover:-translate-y-1 hover:scale-105 hover:text-ax-text-action hover:border-ax-border-accent no-underline event-card"
                 >
@@ -87,7 +92,8 @@ export function EventCard({
                     </Heading>
                     <div className="flex flex-col gap-2 h-full justify-between">
                         <div>
-                            {format(new Date(event.event.startTime), "MMMd") ===
+                            {now === null ? <Skeleton variant="text" className="w-full" /> :
+                            format(new Date(event.event.startTime), "MMMd") ===
                             format(new Date(event.event.endTime), "MMMd") ? (
                                 <><Detail className="flex gap-1 items-center pb-1 pt-1 leading-normal">
                                     <CalendarIcon title="dato"/>
@@ -125,7 +131,7 @@ export function EventCard({
               <span className="flex items-center gap-1 pb-1">
                 <HourglassBottomFilledIcon title="timeglass"/>
                 Påmeldingsfrist:{" "}
-                  {isUtløpt ? (
+                  {now === null ? <Skeleton variant="text" className="w-full" /> : isUtløpt ? (
                       <span className="text-white bg-ax-danger-700 rounded px-2">
                     Utløpt
                   </span>
@@ -140,7 +146,7 @@ export function EventCard({
                                     <Detail className="leading-normal">
                 <span className="flex items-center gap-1 pb-1 leading-normal">
                   <PersonCheckmarkIcon title="person"/>
-                    {attendeeCount >= event.event.participantLimit ? (
+                    {now === null ? <Skeleton variant="text" className="w-full" /> : attendeeCount >= event.event.participantLimit ? (
                         <span className="bg-ax-danger-700 text-white rounded px-2">
                       Arrangementet er fullt
                     </span>

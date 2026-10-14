@@ -2,8 +2,8 @@ import { checkToken, getUser } from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
 import ParticipantPage from "./participantPage";
 import Link from "next/link";
-import { getEvent } from "@/service/eventActions";
-import { getFeatures } from "@/service/roomActions";
+import { getEvent } from "@/service/eventQueries";
+import { getFeatures } from "@/service/roomQueries";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

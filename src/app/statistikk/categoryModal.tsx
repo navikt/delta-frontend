@@ -3,7 +3,7 @@
 import { Modal, Table, Pagination, Tabs, Search } from "@navikt/ds-react";
 import { ArrowUpIcon, ArrowDownIcon } from "@navikt/aksel-icons";
 import Link from "next/link";
-import { CategoryEvent, CategoryStat } from "@/service/statsActions";
+import type { CategoryEvent, CategoryStat } from "@/service/statsActions";
 import { format } from "date-fns";
 import { nb } from "date-fns/locale";
 import { useState } from "react";

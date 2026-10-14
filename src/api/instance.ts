@@ -1,8 +1,9 @@
-import { getDeltaBackendAccessToken } from "@/auth/token";
+import { checkToken, getDeltaBackendAccessToken } from "@/auth/token";
 import { parseRoomAvailabilityProblem } from "@/api/roomAvailabilityProblem";
 import axios from "axios";
 
 export async function getApi() {
+  await checkToken();
   const accessToken = await getDeltaBackendAccessToken();
   const headers: HeadersInit = {
     "Content-Type": "application/json",

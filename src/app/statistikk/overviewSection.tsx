@@ -6,7 +6,7 @@ import {
     PersonGroupIcon,
     LocationPinIcon,
 } from "@navikt/aksel-icons";
-import { CategoryEvent, CategoryStat, AttendanceTypeStat } from "@/service/statsActions";
+import type { CategoryEvent, CategoryStat, AttendanceTypeStat } from "@/service/statsActions";
 import CategoryModal from "./categoryModal";
 
 type OverviewSectionProps = {

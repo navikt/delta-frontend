@@ -10,6 +10,10 @@ spec:
   ingresses:
     - https://delta.nav.no
     - https://fagtorsdag.ansatt.nav.no
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: nodejs
   port: 3000
   resources:
     limits:

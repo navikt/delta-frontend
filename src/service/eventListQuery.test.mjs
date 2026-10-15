@@ -5,6 +5,7 @@ import {
   filterActiveJoinedEvents,
   getEventListQuery,
   getHomeEventQuery,
+  filterHomeCategories,
   eventDatasetKey,
   filterHomeOverview,
   getFixedCategoryQuery,
@@ -56,7 +57,7 @@ test("home resolves known category names, ignores legacy time and uses mine hist
   const categories = [{ id: 4, name: "sosialt" }, { id: 8, name: "blå" }];
   const state = { tab: "alle", categories: ["unknown", "blå", "sosialt"], showPast: true, onlyRegistered: false, time: "past" };
   assert.deepEqual(getHomeEventQuery(state, categories), {
-    categories, onlyFuture: true, onlyPast: false, onlyMine: false,
+    categories: [], onlyFuture: true, onlyPast: false, onlyMine: false,
   });
   assert.deepEqual(getHomeEventQuery({ ...state, tab: "mine" }, categories), {
     categories: [], onlyFuture: false, onlyPast: true, onlyMine: true,
@@ -125,4 +126,22 @@ test("joined LocalDateTime visibility retains each caller's local timezone inter
   };
   assert.deepEqual(runInZone("Asia/Tokyo"), []);
   assert.deepEqual(runInZone("America/Los_Angeles"), ["local-9am"]);
+});
+
+test("category selection filters the loaded list with the backend's AND semantics", () => {
+  const catalog = [{ id: 4, name: "sosialt" }, { id: 8, name: "blå" }];
+  const events = [
+    { event: { id: "a" }, categories: [catalog[0]] },
+    { event: { id: "b" }, categories: catalog },
+    { event: { id: "c" }, categories: [] },
+  ];
+  const state = { tab: "alle", categories: ["sosialt"], onlyRegistered: false };
+  const ids = (s) => filterHomeCategories(events, s, catalog).map(e => e.event.id);
+  assert.deepEqual(ids(state), ["a", "b"]);
+  assert.deepEqual(ids({ ...state, categories: ["sosialt", "blå"] }), ["b"]);
+  assert.deepEqual(ids({ ...state, categories: ["unknown"] }), ["a", "b", "c"]);
+  assert.deepEqual(ids({ ...state, tab: "mine" }), ["a", "b", "c"]);
+  assert.deepEqual(ids({ ...state, onlyRegistered: true }), ["a", "b", "c"]);
+  const key = (categories) => eventDatasetKey("home", getHomeEventQuery({ ...state, showPast: false, categories }, catalog));
+  assert.equal(key(["sosialt"]), key(["sosialt", "blå"]));
 });

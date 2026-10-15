@@ -3,7 +3,7 @@
 import type { Category, FullDeltaEvent } from "@/types/event";
 import { useQueryStates } from "nuqs";
 import { homeParsers } from "@/service/overviewState";
-import { eventDatasetKey, filterActiveJoinedEvents, getHomeEventQuery } from "@/service/eventListQuery";
+import { eventDatasetKey, filterActiveJoinedEvents, filterHomeCategories, getHomeEventQuery } from "@/service/eventListQuery";
 import EventList from "./eventList";
 import EventResultsSkeleton from "./eventResultsSkeleton";
 import { useOverviewScroll } from "./useOverviewScroll";
@@ -24,7 +24,8 @@ export default function OverviewResults({
     (!joined || now !== null);
   const visible = joined && now !== null ? filterActiveJoinedEvents(events, now)
     : !fixedCategory && state.tab === "mine" ? events
-    : events.filter(item => item.event.title.toLowerCase().includes(state.search.toLowerCase()));
+    : (fixedCategory ? events : filterHomeCategories(events, state, categories))
+      .filter(item => item.event.title.toLowerCase().includes(state.search.toLowerCase()));
   useOverviewScroll(path, ready && now !== null);
   if (!ready) return <EventResultsSkeleton />;
   return <div className="w-full p-4" aria-busy="false">

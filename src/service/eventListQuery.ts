@@ -34,13 +34,24 @@ export function filterHomeOverview(
   return events.filter(item => !item.categories.some(category => category.name.toLowerCase() === "ips"));
 }
 
-export function getHomeEventQuery(
-  state: { tab: string; categories: string[]; showPast: boolean; onlyRegistered: boolean },
+// The backend ANDs category filters, so selecting categories only narrows the already-loaded list.
+export function filterHomeCategories(
+  events: FullDeltaEvent[],
+  state: { tab: string; categories: string[]; onlyRegistered: boolean },
   catalog: Category[],
 ) {
+  if (state.onlyRegistered || state.tab !== "alle") return events;
+  const selected = catalog.filter(category => state.categories.includes(category.name));
+  if (!selected.length) return events;
+  return events.filter(item => selected.every(category => item.categories.some(c => c.id === category.id)));
+}
+
+export function getHomeEventQuery(
+  state: { tab: string; categories: string[]; showPast: boolean; onlyRegistered: boolean },
+  _catalog: Category[],
+) {
   return getEventListQuery({
-    categories: state.tab === "alle"
-      ? catalog.filter(category => state.categories.includes(category.name)) : [],
+    categories: [],
     onlyFuture: state.tab === "alle" || !state.showPast,
     onlyPast: state.tab === "mine" && state.showPast,
     onlyMine: state.tab === "mine",

@@ -1,48 +1,24 @@
-import { checkToken, getDeltaBackendAccessToken, getUser, isFaggruppeAdmin } from "@/auth/token";
+import { getUser, isFaggruppeAdmin } from "@/auth/token";
+import { getFaggruppe } from "@/service/faggruppeQueries";
 import CardWithBackground from "@/components/cardWithBackground";
 import EditFaggruppeForm from "@/components/faggrupper/EditFaggruppeForm";
 import ManageEiereForm from "@/components/faggrupper/ManageEiereForm";
 import DeleteFaggruppeButton from "@/components/faggrupper/DeleteFaggruppeButton";
-import { FaggruppeType } from "@/components/faggrupper/FaggruppeFormFields";
 import { redirect } from "next/navigation";
-
-interface Group {
-    id: string;
-    navn: string;
-    undertittel?: string;
-    beskrivelse?: string;
-    malgruppe?: string;
-    type?: FaggruppeType;
-    tidspunkt?: string;
-    starttid?: string;
-    sluttid?: string;
-    eiere?: { navn: string | null; epost: string }[];
-}
 
 // @ts-ignore
 export default async function RedigerFaggrupePage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
-    await checkToken(`/faggrupper/${id}/rediger`);
 
-    const token = await getDeltaBackendAccessToken();
-    const apiUrl = process.env.NODE_ENV === 'production'
-        ? `http://delta-backend/api/faggrupper/${id}`
-        : `http://localhost:8080/api/faggrupper/${id}`;
-
-    const [groupResponse, user, isAdmin] = await Promise.all([
-        fetch(apiUrl, {
-            headers: { Authorization: `Bearer ${token ?? 'placeholder-token'}` },
-            cache: 'no-store',
-        }),
+    const [group, user, isAdmin] = await Promise.all([
+        getFaggruppe(id),
         getUser(),
         isFaggruppeAdmin(),
     ]);
 
-    if (!groupResponse.ok) {
+    if (!group) {
         redirect('/faggrupper');
     }
-
-    const group: Group = await groupResponse.json();
 
     const isOwner = group.eiere?.some(
         (e) => e.epost.toLowerCase() === user.email.toLowerCase()

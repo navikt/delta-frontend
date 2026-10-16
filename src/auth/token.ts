@@ -3,6 +3,7 @@ import type { User } from "@/types/user";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { cache } from "react";
+import { backendScope } from "@/api/backendConfig";
 
 const hasValidToken = cache(async () => {
   const token = getToken(await headers());
@@ -50,32 +51,30 @@ export async function getUser(): Promise<User> {
   };
 }
 
-export async function getAccessToken(
-  scope: string = "",
-): Promise<string | null> {
-  if (process.env.NODE_ENV === "development") return null;
-  await checkToken();
+// Deduplicated per request so repeated backend calls share one OBO exchange.
+export const getAccessToken = cache(
+  async (scope: string = ""): Promise<string | null> => {
+    if (process.env.NODE_ENV === "development") return null;
+    await checkToken();
 
-  const token = getToken(await headers());
-  if (!token) {
-    throw new Error("No access token, please log in...");
-  }
+    const token = getToken(await headers());
+    if (!token) {
+      throw new Error("No access token, please log in...");
+    }
 
-  const result = await requestOboToken(token, scope);
+    const result = await requestOboToken(token, scope);
 
-  if (!result.ok) {
-    console.log(`Grant azure obo token failed`);
-    throw new Error("Kunne ikke koble til Delta. Prøv igjen.");
-  }
-  // fjernet : ${result.error.message}
+    if (!result.ok) {
+      console.log(`Grant azure obo token failed`);
+      throw new Error("Kunne ikke koble til Delta. Prøv igjen.");
+    }
 
-  return result.token;
-}
+    return result.token;
+  },
+);
 
 export async function getDeltaBackendAccessToken(): Promise<string | null> {
-  return process.env.NEXT_PUBLIC_CLUSTER === "prod"
-    ? await getAccessToken("api://prod-gcp.delta.delta-backend/.default")
-    : await getAccessToken("api://dev-gcp.delta.delta-backend/.default");
+  return getAccessToken(backendScope());
 }
 
 export async function getUserGroups(): Promise<string[]> {

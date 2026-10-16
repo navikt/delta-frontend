@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Button, ConfirmationPanel } from '@navikt/ds-react';
 import { TrashIcon } from '@navikt/aksel-icons';
 import { useRouter } from 'next/navigation';
+import { deleteFaggruppe } from '@/service/faggruppeActions';
 
 export default function DeleteFaggruppeButton({ faggruppeId }: { faggruppeId: string }) {
     const router = useRouter();
@@ -14,21 +15,13 @@ export default function DeleteFaggruppeButton({ faggruppeId }: { faggruppeId: st
         setLoading(true);
         setError(null);
 
-        try {
-            const response = await fetch(`/api/faggrupper/${faggruppeId}`, {
-                method: 'DELETE',
-            });
-            if (response.status === 403) throw new Error('Du har ikke tilgang til å slette denne faggruppen.');
-            if (!response.ok) {
-                const data = await response.json().catch(() => ({}));
-                throw new Error(data.error ?? 'Noe gikk galt');
-            }
-            router.push('/faggrupper');
-            router.refresh();
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'Noe gikk galt');
+        const result = await deleteFaggruppe(faggruppeId);
+        if (!result.ok) {
+            setError(result.message);
             setLoading(false);
+            return;
         }
+        router.push('/faggrupper');
     };
 
     if (!confirming) {

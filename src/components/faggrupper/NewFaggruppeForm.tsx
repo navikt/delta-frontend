@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { Button } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
+import { createFaggruppe } from '@/service/faggruppeActions';
 import FaggruppeFormFields, { defaultFaggruppeFormData, FaggruppeFormData, toSubmitData } from './FaggruppeFormFields';
 
 export default function NewFaggruppeForm() {
@@ -15,26 +16,13 @@ export default function NewFaggruppeForm() {
         setLoading(true);
         setError(null);
 
-        try {
-            const response = await fetch('/api/faggrupper', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(toSubmitData(formData)),
-            });
-
-            if (!response.ok) {
-                const data = await response.json();
-                throw new Error(data.error ?? 'Noe gikk galt');
-            }
-
-            const data = await response.json();
-            router.refresh();
-            router.push(`/faggrupper/${data.id}`);
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'Noe gikk galt');
-        } finally {
-            setLoading(false);
+        const result = await createFaggruppe(toSubmitData(formData));
+        if (result.ok) {
+            router.push(`/faggrupper/${result.data.id}`);
+        } else {
+            setError(result.message);
         }
+        setLoading(false);
     };
 
     return (

@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Button, TextField } from '@navikt/ds-react';
 import { TrashIcon } from '@navikt/aksel-icons';
-import { useRouter } from 'next/navigation';
+import { addFaggruppeEier, removeFaggruppeEier } from '@/service/faggruppeActions';
 
 interface Eier {
     epost: string;
@@ -16,7 +16,6 @@ interface Props {
 }
 
 export default function ManageEiereForm({ faggruppeId, eiere, isAdmin }: Props) {
-    const router = useRouter();
     const [currentEiere, setCurrentEiere] = useState<Eier[]>(eiere);
     const [nyEpost, setNyEpost] = useState('');
     const [addLoading, setAddLoading] = useState(false);
@@ -29,50 +28,27 @@ export default function ManageEiereForm({ faggruppeId, eiere, isAdmin }: Props) 
         setAddLoading(true);
         setError(null);
 
-        try {
-            const response = await fetch(`/api/faggrupper/${faggruppeId}/eiere`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ epost: nyEpost.trim() }),
-            });
-            if (response.status === 403) throw new Error('Du har ikke tilgang til å administrere eiere.');
-            if (!response.ok) {
-                const data = await response.json();
-                throw new Error(data.error ?? 'Noe gikk galt');
-            }
-            const nyEier: Eier = await response.json();
-            setCurrentEiere(prev => [...prev, nyEier]);
+        const result = await addFaggruppeEier(faggruppeId, nyEpost.trim());
+        if (result.ok) {
+            setCurrentEiere(prev => [...prev, result.data]);
             setNyEpost('');
-            router.refresh();
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'Noe gikk galt');
-        } finally {
-            setAddLoading(false);
+        } else {
+            setError(result.message);
         }
+        setAddLoading(false);
     };
 
     const handleRemove = async (epost: string) => {
         setRemoveLoading(epost);
         setError(null);
 
-        try {
-            const response = await fetch(`/api/faggrupper/${faggruppeId}/eiere`, {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ epost }),
-            });
-            if (response.status === 403) throw new Error('Du har ikke tilgang til å administrere eiere.');
-            if (!response.ok) {
-                const data = await response.json();
-                throw new Error(data.error ?? 'Noe gikk galt');
-            }
+        const result = await removeFaggruppeEier(faggruppeId, epost);
+        if (result.ok) {
             setCurrentEiere(prev => prev.filter((e) => e.epost !== epost));
-            router.refresh();
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'Noe gikk galt');
-        } finally {
-            setRemoveLoading(null);
+        } else {
+            setError(result.message);
         }
+        setRemoveLoading(null);
     };
 
     return (

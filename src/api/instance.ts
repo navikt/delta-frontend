@@ -1,5 +1,6 @@
 import { checkToken, getDeltaBackendAccessToken } from "@/auth/token";
 import { parseRoomAvailabilityProblem } from "@/api/roomAvailabilityProblem";
+import { backendUrl } from "@/api/backendConfig";
 import axios from "axios";
 
 export async function getApi() {
@@ -42,10 +43,4 @@ export async function getApi() {
     },
   );
   return client;
-}
-
-export function backendUrl() {
-  return process.env.NODE_ENV === "production"
-    ? "http://delta-backend"
-    : "http://localhost:8080";
 }

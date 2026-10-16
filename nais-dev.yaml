@@ -28,6 +28,7 @@ spec:
           - id: "74eafa90-c494-4913-9b96-76da786c8419"
     sidecar:
       enabled: true
+      autoLogin: true
   accessPolicy:
     outbound:
       rules:

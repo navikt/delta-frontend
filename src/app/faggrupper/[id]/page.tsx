@@ -1,63 +1,30 @@
-import { checkToken, getDeltaBackendAccessToken, getUser, isFaggruppeAdmin } from "@/auth/token";
+import { getUser, isFaggruppeAdmin } from "@/auth/token";
+import { getFaggruppe, getIsFaggruppeOwner } from "@/service/faggruppeQueries";
 import CardWithBackground from "@/components/cardWithBackground";
 import { Detail } from "@navikt/ds-react";
 import { PersonGroupIcon, CalendarIcon, ClockIcon } from "@navikt/aksel-icons";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import Link from "next/link";
 import { PencilIcon } from "@navikt/aksel-icons";
-import { FaggruppeType } from "@/components/faggrupper/FaggruppeFormFields";
-
-interface Group {
-    id: string;
-    navn: string;
-    type?: FaggruppeType;
-    beskrivelse?: string;
-    undertittel?: string;
-    tidspunkt?: string;
-    starttid?: string;
-    sluttid?: string;
-    malgruppe?: string;
-    eiere?: { navn: string | null; epost: string }[];
-}
 
 // @ts-ignore
 export default async function ArticlePage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
-    await checkToken(`/faggrupper/${id}`);
 
-    const token = await getDeltaBackendAccessToken();
-    const apiUrl = process.env.NODE_ENV === 'production'
-        ? `http://delta-backend/api/faggrupper/${id}`
-        : `http://localhost:8080/api/faggrupper/${id}`;
-
-    const [groupResponse, ownerResponse, user, isAdmin] = await Promise.all([
-        fetch(apiUrl, {
-            headers: { Authorization: `Bearer ${token ?? 'placeholder-token'}` },
-            cache: 'no-store',
-        }),
-        fetch(
-            process.env.NODE_ENV === 'production'
-                ? `http://delta-backend/api/faggrupper/${id}/eier`
-                : `http://localhost:8080/api/faggrupper/${id}/eier`,
-            { headers: { Authorization: `Bearer ${token ?? 'placeholder-token'}` }, cache: 'no-store' }
-        ).catch(() => null),
+    const [group, isOwnerFromBackend, user, isAdmin] = await Promise.all([
+        getFaggruppe(id),
+        getIsFaggruppeOwner(id),
         getUser(),
         isFaggruppeAdmin(),
     ]);
 
-    if (!groupResponse.ok) {
+    if (!group) {
         return <div>Faggruppen ble ikke funnet.</div>;
     }
 
-    const group: Group = await groupResponse.json();
-
-    let isOwner = false;
-    if (ownerResponse?.ok) {
-        const ownerData = await ownerResponse.json();
-        isOwner = ownerData.isOwner ?? false;
-    } else {
-        isOwner = group.eiere?.some(e => e.epost.toLowerCase() === user.email.toLowerCase()) ?? false;
-    }
+    const isOwner = isOwnerFromBackend
+        ?? group.eiere?.some(e => e.epost.toLowerCase() === user.email.toLowerCase())
+        ?? false;
 
     const formatTime = (time: string) => time.split(':').slice(0, 2).join(':');
 

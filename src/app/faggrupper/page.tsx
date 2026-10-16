@@ -1,16 +1,10 @@
-import { checkToken, getDeltaBackendAccessToken } from "@/auth/token";
+import { getFaggrupper } from "@/service/faggruppeQueries";
+import { unstable_rethrow } from "next/navigation";
 import CardWithBackground from '@/components/cardWithBackground';
 import SearchArticles from '@/components/faggrupper/SearchArticles';
 import Link from "next/link";
 
 export default async function ArticlesPage() {
-    await checkToken("/faggrupper");
-
-    const token = await getDeltaBackendAccessToken();
-    const apiUrl = process.env.NODE_ENV === 'production'
-        ? 'http://delta-backend/api/faggrupper'
-        : 'http://localhost:8080/api/faggrupper';
-
     let articles: {
         title: string;
         when?: string;
@@ -21,30 +15,18 @@ export default async function ArticlesPage() {
     }[] = [];
 
     try {
-        const response = await fetch(apiUrl, {
-            headers: { Authorization: `Bearer ${token ?? 'placeholder-token'}` },
-            cache: 'no-store',
-        });
-        if (response.ok) {
-            const groups = await response.json();
-            articles = groups.map((group: {
-                id: string;
-                navn: string;
-                tidspunkt?: string;
-                malgruppe?: string;
-                starttid?: string;
-                sluttid?: string;
-            }) => ({
-                title: group.navn,
-                when: group.tidspunkt,
-                audience: group.malgruppe,
-                starttime: group.starttid,
-                endtime: group.sluttid,
-                href: `/faggrupper/${group.id}`,
-            }));
-        }
+        const groups = await getFaggrupper();
+        articles = groups.map((group) => ({
+            title: group.navn,
+            when: group.tidspunkt,
+            audience: group.malgruppe,
+            starttime: group.starttid,
+            endtime: group.sluttid,
+            href: `/faggrupper/${group.id}`,
+        }));
     } catch (error) {
-        console.error('Failed to fetch faggrupper:', error);
+        unstable_rethrow(error);
+        console.error('Failed to fetch faggrupper');
     }
 
     return (

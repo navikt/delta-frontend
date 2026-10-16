@@ -1,7 +1,8 @@
 import "server-only";
 import { cache } from "react";
 import { checkToken, getDeltaBackendAccessToken, isDeltaMaintainer } from "@/auth/token";
-import { backendUrl, getApi } from "@/api/instance";
+import { getApi } from "@/api/instance";
+import { backendUrl } from "@/api/backendConfig";
 import type { Category, FullDeltaEvent } from "@/types/event";
 import { AxiosError } from "axios";
 import { notFound } from "next/navigation";

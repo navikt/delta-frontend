@@ -3,7 +3,7 @@ import CardWithBackground from '@/components/cardWithBackground';
 import NewFaggruppeForm from "@/components/faggrupper/NewFaggruppeForm";
 
 export default async function NewFaggruppePage() {
-    await checkToken("/faggrupper/ny");
+    await checkToken();
 
     return (
         <div className="flex flex-col w-full">

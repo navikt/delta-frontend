@@ -1,6 +1,4 @@
-"use client";
-
-import { ProgressBar } from "@navikt/ds-react";
+import SimulatedProgressBar from "@/components/SimulatedProgressBar";
 
 export default function WrappedLoading() {
     return (
@@ -17,11 +15,7 @@ export default function WrappedLoading() {
                 </p>
 
                 <div className="bg-white rounded-xl p-6 shadow-lg">
-                    <ProgressBar
-                        size="large"
-                        simulated={{ seconds: 15, onTimeout: () => { } }}
-                        aria-label="Laster statistikk"
-                    />
+                    <SimulatedProgressBar seconds={15} label="Laster statistikk" />
                 </div>
             </div>
         </div>

@@ -5,8 +5,10 @@ import EditFaggruppeForm from "@/components/faggrupper/EditFaggruppeForm";
 import ManageEiereForm from "@/components/faggrupper/ManageEiereForm";
 import DeleteFaggruppeButton from "@/components/faggrupper/DeleteFaggruppeButton";
 import { redirect } from "next/navigation";
+import type { Metadata } from "next";
 
-// @ts-ignore
+export const metadata: Metadata = { title: "Rediger faggruppe Δ Delta" };
+
 export default async function RedigerFaggrupePage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
 
@@ -29,10 +31,6 @@ export default async function RedigerFaggrupePage({ params }: { params: Promise<
     }
 
     return (
-        <>
-            <head>
-                <title>Rediger faggruppe Δ Delta</title>
-            </head>
             <div className="flex flex-col w-full">
                 <div className="w-full">
                     <CardWithBackground
@@ -73,6 +71,5 @@ export default async function RedigerFaggrupePage({ params }: { params: Promise<
                     </div>
                 )}
             </div>
-        </>
     );
 }

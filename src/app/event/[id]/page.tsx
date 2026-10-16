@@ -6,8 +6,7 @@ import { getEvent } from "@/service/eventQueries";
 import { ApiError } from "@/service/eventListTransport";
 import { getFeatures } from "@/service/roomQueries";
 import { getInvitationCapacity } from "@/service/eventCapacity";
-import { Metadata, ResolvingMetadata } from "next";
-import Head from "next/head";
+import type { Metadata } from "next";
 
 type EventPageProps = {
   params: Promise<{ id: string }>;
@@ -44,7 +43,6 @@ async function getOptionalEventFromId(id: string) {
 
 export async function generateMetadata(
   { params }: EventPageProps,
-  parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const { id } = await params;
   const event = await getOptionalEventFromId(id);
@@ -86,29 +84,24 @@ export default async function Page({ params, searchParams }: EventPageProps) {
   );
 
   return (
-    <>
-      <Head>
-        <title>{event.title} Δ Delta</title>
-      </Head>
-      <CardWithBackground
-        title={event.title}
-        home
-        backText="Arrangementer"
-        backLink={backLink}
-      >
-        <EventDetails
-          event={event}
-          participants={participants}
-          hosts={hosts}
-          categories={categories}
-          invitationCapacity={invitationCapacity}
-          calendarSyncError={isHost ? calendarSyncError : null}
-          recurringSeries={recurringSeries}
-          user={user}
-          hostname={hostname}
-          features={features}
-        />
-      </CardWithBackground>
-    </>
+    <CardWithBackground
+      title={event.title}
+      home
+      backText="Arrangementer"
+      backLink={backLink}
+    >
+      <EventDetails
+        event={event}
+        participants={participants}
+        hosts={hosts}
+        categories={categories}
+        invitationCapacity={invitationCapacity}
+        calendarSyncError={isHost ? calendarSyncError : null}
+        recurringSeries={recurringSeries}
+        user={user}
+        hostname={hostname}
+        features={features}
+      />
+    </CardWithBackground>
   );
 }

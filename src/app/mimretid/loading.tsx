@@ -1,6 +1,4 @@
-"use client";
-
-import { ProgressBar } from "@navikt/ds-react";
+import SimulatedProgressBar from "@/components/SimulatedProgressBar";
 
 export default function MimretidLoading() {
   return (
@@ -13,7 +11,7 @@ export default function MimretidLoading() {
         <p className="text-xl text-white/90 mb-8">Samler arrangementene dine for valgt år.</p>
 
         <div className="bg-white rounded-xl p-6 shadow-lg">
-          <ProgressBar size="large" simulated={{ seconds: 12, onTimeout: () => {} }} aria-label="Laster mimretid" />
+          <SimulatedProgressBar seconds={12} label="Laster mimretid" />
         </div>
       </div>
     </div>

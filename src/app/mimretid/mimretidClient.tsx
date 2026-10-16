@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useState } from "react";
 import type { UserWrappedStats } from "@/service/wrappedActions";
 
+const EMPTY_ROW_KEYS = Array.from({ length: 10 }, (_, index) => `empty-${index}`);
+
 type MimretidClientProps = {
   stats: UserWrappedStats;
   year: number;
@@ -76,9 +78,9 @@ export default function MimretidClient({ stats, year, nowMs }: MimretidClientPro
                     <Table.DataCell className="whitespace-nowrap capitalize align-middle">{dateString}</Table.DataCell>
                     <Table.DataCell className="align-middle">
                       {event.isPublic ? (
-                        <a href={`/event/${event.id}`} className="font-semibold text-indigo-700 hover:underline line-clamp-2">
+                        <Link href={`/event/${event.id}`} className="font-semibold text-indigo-700 hover:underline line-clamp-2">
                           {event.title}
-                        </a>
+                        </Link>
                       ) : (
                         <span className="font-semibold line-clamp-2">{event.title}</span>
                       )}
@@ -86,8 +88,8 @@ export default function MimretidClient({ stats, year, nowMs }: MimretidClientPro
                   </Table.Row>
                 );
               })}
-              {Array.from({ length: Math.max(0, rowsPerPage - displayedEvents.length) }).map((_, index) => (
-                <Table.Row key={`empty-${index}`} className="h-16">
+              {EMPTY_ROW_KEYS.slice(0, Math.max(0, rowsPerPage - displayedEvents.length)).map((key) => (
+                <Table.Row key={key} className="h-16">
                   <Table.DataCell className="whitespace-nowrap capitalize" aria-hidden="true">
                     &nbsp;
                   </Table.DataCell>

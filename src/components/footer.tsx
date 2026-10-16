@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { BodyShort, Heading, Link } from "@navikt/ds-react";
 
 const Footer = () => {
@@ -86,8 +87,7 @@ function SideLenker() {
     );
 }
 
-// @ts-ignore
-function FooterLink({ children, href }) {
+function FooterLink({ children, href }: { children: ReactNode; href: string }) {
     return (
         <li>
             <a

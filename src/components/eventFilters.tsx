@@ -3,7 +3,6 @@
 import type { Category } from "@/types/event";
 import { BodyShort, Search, Tabs, UNSAFE_Combobox, CheckboxGroup, Checkbox, LinkPanel } from "@navikt/ds-react";
 import { FunnelIcon } from "@navikt/aksel-icons";
-import { useEffect, useState } from "react";
 import { useQueryStates } from "nuqs";
 import { canonicalCategoryNames, homeParsers, homeTabUpdate } from "@/service/overviewState";
 import { eventDatasetKey, getHomeEventQuery } from "@/service/eventListQuery";
@@ -15,13 +14,6 @@ const QUICK_FILTER_NAMES = ["kompetanse", "bedriftidrettslaget", "sosialt"];
 export default function EventFilters({ categories, userEmail }: { categories: Category[]; userEmail: string }) {
   const [state, setState] = useQueryStates(homeParsers, { history: "replace", scroll: false });
   const { pending, startTransition } = useOverviewTransition();
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const resize = () => setIsMobile(window.innerWidth < 768);
-    resize();
-    window.addEventListener("resize", resize);
-    return () => window.removeEventListener("resize", resize);
-  }, []);
 
   const selectedCategories = categories.filter(category => state.categories.includes(category.name));
   const visibleOptions = [...new Set(categories.map(category => category.name))]
@@ -62,7 +54,7 @@ export default function EventFilters({ categories, userEmail }: { categories: Ca
               <FunnelIcon title="trakt" /><span className="font-ax-bold">Kategorier</span>
             </span>
             <UNSAFE_Combobox className="w-full ax-md:w-fit" size="small" label="Filtrer på kategori"
-              hideLabel={!isMobile} options={visibleOptions}
+              hideLabel={false} options={visibleOptions}
               selectedOptions={selectedCategories.map(category => category.name).sort((a, b) => a.localeCompare(b))}
               onToggleSelected={(name, selected) => updateServerState({
                 categories: canonicalCategoryNames(selected ? [...state.categories, name] : state.categories.filter(value => value !== name)),

@@ -6,8 +6,10 @@ import { PersonGroupIcon, CalendarIcon, ClockIcon } from "@navikt/aksel-icons";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import Link from "next/link";
 import { PencilIcon } from "@navikt/aksel-icons";
+import type { Metadata } from "next";
 
-// @ts-ignore
+export const metadata: Metadata = { title: "Faggruppe Δ Delta" };
+
 export default async function ArticlePage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
 
@@ -29,15 +31,11 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
     const formatTime = (time: string) => time.split(':').slice(0, 2).join(':');
 
     return (
-        <>
-            <head>
-                <title>Faggruppe Δ Delta</title>
-            </head>
-            <CardWithBackground
-                title=""
-                backLink="/faggrupper"
-                backText={"Faggrupper"}
-            >
+        <CardWithBackground
+            title=""
+            backLink="/faggrupper"
+            backText={"Faggrupper"}
+        >
                 <div className="prose mx-4 mt-4 mb-2">
                     <h1 className="pb-1">{group.navn}</h1>
                     {group.undertittel && (
@@ -83,7 +81,6 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
                         </Link>
                     </div>
                 )}
-            </CardWithBackground>
-        </>
+        </CardWithBackground>
     );
 }

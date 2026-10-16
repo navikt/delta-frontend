@@ -14,7 +14,7 @@ export async function checkToken(redirectTo?: string) {
   if (process.env.NODE_ENV === "development") return;
 
   if (!(await hasValidToken())) {
-    console.log(`Tokenvalidering gikk galt`);
+    console.error("Token validation failed", { context: "auth" });
     redirectTo
       ? redirect(`/oauth2/login?redirect=${redirectTo}`)
       : redirect("/oauth2/login");
@@ -65,7 +65,7 @@ export const getAccessToken = cache(
     const result = await requestOboToken(token, scope);
 
     if (!result.ok) {
-      console.log(`Grant azure obo token failed`);
+      console.error("OBO token request failed", { context: "auth" });
       throw new Error("Kunne ikke koble til Delta. Prøv igjen.");
     }
 

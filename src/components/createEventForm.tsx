@@ -256,7 +256,6 @@ function InternalCreateEventForm({
     const fakeTags = tags.filter(
       (c) => !realTags.map((c) => c.name).includes(c),
     );
-    console.log(fakeTags, realTags);
     setNewTags(fakeTags);
     setSelectedCategories(realTags);
   };

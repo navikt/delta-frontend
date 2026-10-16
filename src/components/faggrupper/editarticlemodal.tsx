@@ -4,8 +4,7 @@ import { BodyLong, Button, Modal } from "@navikt/ds-react";
 import {PencilIcon} from "@navikt/aksel-icons";
 import Link from "next/link";
 
-// @ts-ignore
-function EditArticleModal({ articlepath }) {
+function EditArticleModal({ articlepath }: { articlepath: string }) {
     const ref = useRef<HTMLDialogElement>(null);
 
     return (

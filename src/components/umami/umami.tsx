@@ -4,15 +4,19 @@ import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Script from 'next/script';
 
+declare global {
+    interface Window {
+        umami?: {
+            track: (eventName: string) => void;
+        };
+    }
+}
+
 export function UmamiTracker() {
     const pathname = usePathname();
 
     useEffect(() => {
-        // @ts-ignore
-        if (window.umami) {
-            // @ts-ignore
-            window.umami.track(pathname);
-        }
+        window.umami?.track(pathname);
     }, [pathname]);
 
     return (

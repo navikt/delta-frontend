@@ -1,5 +1,3 @@
-"use client";
-
 type ParticipantIconProps = {
   name: string;
   type?: string;

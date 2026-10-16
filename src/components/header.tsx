@@ -7,21 +7,8 @@ import {
 } from "@navikt/aksel-icons";
 import { Button, Dropdown } from "@navikt/ds-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 export default function Header({ isMaintainer }: { isMaintainer: boolean }) {
-  const [isMobile, setIsMobile] = useState(true);
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
   const linkButton =
     "flex text-white no-underline items-center text-ax-text-neutral-subtle bg-transparent hover:underline hover:bg-transparent aksel-button aksel-button--medium";
   return (
@@ -31,7 +18,7 @@ export default function Header({ isMaintainer }: { isMaintainer: boolean }) {
           <span className="text-2xl whitespace-nowrap text-white">Δ Delta</span>
         </Link>
       </div>
-      {isMobile ? (
+      <div className="ax-md:hidden">
         <Dropdown>
           <Button as={Dropdown.Toggle} className={linkButton}>
             <MenuHamburgerIcon title="meny" fontSize="1.5rem" />
@@ -60,8 +47,8 @@ export default function Header({ isMaintainer }: { isMaintainer: boolean }) {
             </Dropdown.Menu.List>
           </Dropdown.Menu>
         </Dropdown>
-      ) : (
-        <div className="flex items-center justify-between w-full">
+      </div>
+      <div className="hidden ax-md:flex items-center justify-between w-full">
           <div className="flex items-center w-full"></div>
           <div className="flex flex-grow">
             {isMaintainer && (
@@ -84,8 +71,7 @@ export default function Header({ isMaintainer }: { isMaintainer: boolean }) {
               </span>
             </Link>
           </div>
-        </div>
-      )}
+      </div>
     </header>
   );
 }

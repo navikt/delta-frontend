@@ -9,7 +9,7 @@ import {
   Modal,
   Table,
 } from "@navikt/ds-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 type ParticipantTableProps = {
   event: DeltaEvent;
@@ -26,60 +26,52 @@ export default function ParticipantTable({
   user,
   searchInput,
 }: ParticipantTableProps) {
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  // @ts-ignore
   return (
-    <>
       <div className="flex flex-col gap-5 rounded pb-2">
+        <div className="hidden ax-md:block">
         <Table size="small" zebraStripes>
           <Table.Header>
             <Table.Row>
-              {isMobile && <Table.HeaderCell scope="col" />}
               <Table.HeaderCell scope="col">Navn</Table.HeaderCell>
               <Table.HeaderCell scope="col">E-post</Table.HeaderCell>
-              {!isMobile && (
-                <Table.HeaderCell scope="col" aria-label="Deltaker-handlinger" />
-              )}
+              <Table.HeaderCell scope="col" aria-label="Deltaker-handlinger" />
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {isMobile ? (
-              /* @ts-ignore */
-              (<ExpandedTable
-                hosts={hosts}
-                participants={participants}
-                user={user}
-                event={event}
-                searchInput={searchInput}
-              />)
-            ) : (
-              /* @ts-ignore */
-              (<FullTable
-                hosts={hosts}
-                participants={participants}
-                user={user}
-                event={event}
-                searchInput={searchInput}
-              />)
-            )}
+            <FullTable
+              hosts={hosts}
+              participants={participants}
+              user={user}
+              event={event}
+              searchInput={searchInput}
+            />
           </Table.Body>
         </Table>
+        </div>
+        <div className="ax-md:hidden">
+          <Table size="small" zebraStripes>
+            <Table.Header>
+              <Table.Row>
+                <Table.HeaderCell scope="col" />
+                <Table.HeaderCell scope="col">Navn</Table.HeaderCell>
+                <Table.HeaderCell scope="col">E-post</Table.HeaderCell>
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
+              <ExpandedTable
+                hosts={hosts}
+                participants={participants}
+                user={user}
+                event={event}
+                searchInput={searchInput}
+              />
+            </Table.Body>
+          </Table>
+        </div>
         {!participants.length && (
           <p className="w-full italic  mt-4 mb-5">Ingen deltakere ennå — husk å markedsføre arrangementet!</p>
         )}
       </div>
-    </>
   );
 }
 

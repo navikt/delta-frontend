@@ -1,12 +1,13 @@
 "use client";
 
 import { BodyShort, Checkbox, CheckboxGroup, Radio, RadioGroup, Search, Skeleton, Tabs } from "@navikt/ds-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useQueryStates } from "nuqs";
 import { festivalParsers } from "@/service/overviewState";
 import { JOINED_TAB, festivalBrowserPlan, festivalTabNavigation, type ResolvedFestival } from "@/service/festivalPolicy";
 import { useOverviewTransition } from "../overviewTransition";
 import { useBrowserNow } from "../useBrowserNow";
+import { useMediaQuery } from "../useMediaQuery";
 
 export default function FestivalControls({ festival: serverFestival }: { festival: ResolvedFestival }) {
   const browserReady = useBrowserNow() !== null;
@@ -15,15 +16,9 @@ export default function FestivalControls({ festival: serverFestival }: { festiva
   const parsers = useMemo(() => festivalParsers(festival.defaultTab, festival.tabs), [festival]);
   const [state, setState] = useQueryStates(parsers, { history: "replace", scroll: false });
   const { pending, startTransition } = useOverviewTransition();
-  const [isMobile, setIsMobile] = useState(false);
+  const isMobile = useMediaQuery("(max-width: 767px)");
   const correctedDefault = useRef(false);
   const selectedTab = useRef(false);
-  useEffect(() => {
-    const resize = () => setIsMobile(window.innerWidth < 768);
-    resize();
-    window.addEventListener("resize", resize);
-    return () => window.removeEventListener("resize", resize);
-  }, []);
   useEffect(() => {
     if (!browserReady || correctedDefault.current || selectedTab.current) return;
     correctedDefault.current = true;

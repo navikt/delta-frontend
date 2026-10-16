@@ -2,7 +2,7 @@
 
 import { CreateEventSchema } from "@/components/createEventForm";
 import { DatePicker, DateValidationT, useDatepicker } from "@navikt/ds-react";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { Control, FieldErrors, useController } from "react-hook-form";
 import { format } from "date-fns";
 
@@ -15,6 +15,8 @@ type EventDatepickerProps = {
   errors: FieldErrors<CreateEventSchema>;
   hideLabel: boolean;
   onDateSelected?: (date: Date | undefined) => void;
+  defaultMonth?: Date;
+  fromDate?: Date;
 };
 
 export default function EventDatepicker(props: EventDatepickerProps) {
@@ -38,7 +40,8 @@ export default function EventDatepicker(props: EventDatepickerProps) {
 
   const { datepickerProps, inputProps } = useDatepicker({
     defaultSelected: field.value,
-    fromDate: new Date(),
+    fromDate: props.fromDate ?? new Date(),
+    defaultMonth: props.defaultMonth,
     onDateChange: (date: Date | undefined) => {
       field.onChange(date);
       props.onDateSelected?.(date);
@@ -47,6 +50,15 @@ export default function EventDatepicker(props: EventDatepickerProps) {
       setValidationError(validation);
     },
   });
+
+  const { onMonthChange } = datepickerProps;
+  const defaultMonthTime = props.defaultMonth?.getTime();
+  const fieldTime = field.value?.getTime();
+  useEffect(() => {
+    if (defaultMonthTime !== undefined) {
+      onMonthChange?.(new Date(fieldTime ?? defaultMonthTime));
+    }
+  }, [defaultMonthTime, fieldTime, onMonthChange]);
 
   const syncedInputProps = {
     ...inputProps,

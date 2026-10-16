@@ -484,8 +484,8 @@ function InternalCreateEventForm({
           errors={errors}
           hideLabel={false}
           onDateSelected={(date) => {
-            if (date) {
-              console.log("Setting end date to:", date);
+            const currentEnd = getValues("endDate");
+            if (date && (!currentEnd || currentEnd < date)) {
               setValue("endDate", date, { shouldValidate: true, shouldDirty: true });
             }
           }}
@@ -515,6 +515,12 @@ function InternalCreateEventForm({
           control={control}
           errors={errors}
           hideLabel={false}
+          defaultMonth={watchedStartDate}
+          fromDate={
+            watchedStartDate && watchedStartDate > new Date()
+              ? watchedStartDate
+              : undefined
+          }
         />
         <div
           className={`aksel-form-field aksel-form-field--medium ${errors.endTime && "aksel-text-field--error"

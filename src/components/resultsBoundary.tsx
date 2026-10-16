@@ -7,10 +7,10 @@ export function ReadFailure({ retry, error }: { retry: () => void; error: Error 
   return (
     <LocalAlert status="error" className="w-full p-4">
       <LocalAlert.Header>
-        <LocalAlert.Title>Kunne ikke laste inn dataene</LocalAlert.Title>
+        <LocalAlert.Title>Fikk ikke kontakt med Delta</LocalAlert.Title>
       </LocalAlert.Header>
       <LocalAlert.Content>
-        <BodyShort className="pb-4">Prøv igjen.</BodyShort>
+        <BodyShort className="pb-4">Det oppstod en kommunikasjonsfeil. Prøv igjen om litt.</BodyShort>
         {error.digest && <BodyShort className="pb-4">Feilreferanse: {error.digest}</BodyShort>}
         <Button variant="secondary" size="small" onClick={() => retry()}>Prøv igjen</Button>
       </LocalAlert.Content>

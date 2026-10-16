@@ -1,33 +1,19 @@
 import { getFaggrupper } from "@/service/faggruppeQueries";
-import { unstable_rethrow } from "next/navigation";
 import CardWithBackground from '@/components/cardWithBackground';
 import SearchArticles from '@/components/faggrupper/SearchArticles';
 import Link from "next/link";
 
 export default async function ArticlesPage() {
-    let articles: {
-        title: string;
-        when?: string;
-        audience?: string;
-        starttime?: string;
-        endtime?: string;
-        href: string;
-    }[] = [];
-
-    try {
-        const groups = await getFaggrupper();
-        articles = groups.map((group) => ({
-            title: group.navn,
-            when: group.tidspunkt,
-            audience: group.malgruppe,
-            starttime: group.starttid,
-            endtime: group.sluttid,
-            href: `/faggrupper/${group.id}`,
-        }));
-    } catch (error) {
-        unstable_rethrow(error);
-        console.error('Failed to fetch faggrupper');
-    }
+    // Failures propagate to the root error boundary instead of looking like "no groups".
+    const groups = await getFaggrupper();
+    const articles = groups.map((group) => ({
+        title: group.navn,
+        when: group.tidspunkt,
+        audience: group.malgruppe,
+        starttime: group.starttid,
+        endtime: group.sluttid,
+        href: `/faggrupper/${group.id}`,
+    }));
 
     return (
         <>

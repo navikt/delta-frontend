@@ -1,9 +1,12 @@
+import { type ProblemDetails, parseErrorBody } from "./problemDetails.ts";
+
 export const BACKEND_TIMEOUT_MS = 15000;
 
 export class BackendError extends Error {
   status?: number;
   responseMessage?: string;
-  constructor(status?: number, responseMessage?: string) {
+  problem?: ProblemDetails;
+  constructor(status?: number, responseMessage?: string, problem?: ProblemDetails) {
     super(
       status === undefined
         ? "Kunne ikke koble til Delta. Prøv igjen."
@@ -12,6 +15,7 @@ export class BackendError extends Error {
     this.name = "BackendError";
     this.status = status;
     this.responseMessage = responseMessage;
+    this.problem = problem;
   }
 }
 
@@ -23,16 +27,9 @@ type RequestOptions = {
   fetchImpl?: typeof fetch;
 };
 
-async function safeMessage(response: Response) {
+async function readErrorBody(response: Response) {
   const text = await response.text().catch(() => "");
-  if (!text) return undefined;
-  try {
-    const data = JSON.parse(text);
-    const message = data?.error ?? data?.message;
-    return typeof message === "string" ? message.slice(0, 500) : undefined;
-  } catch {
-    return text.slice(0, 500);
-  }
+  return parseErrorBody(text);
 }
 
 // Returns only successful responses; failures become BackendError without headers, URL or token.
@@ -59,7 +56,8 @@ export async function requestBackend({
     throw new BackendError();
   }
   if (!response.ok) {
-    throw new BackendError(response.status, await safeMessage(response));
+    const { message, problem } = await readErrorBody(response);
+    throw new BackendError(response.status, message, problem);
   }
   return response;
 }

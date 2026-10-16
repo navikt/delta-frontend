@@ -1,5 +1,5 @@
 import { checkToken, getDeltaBackendAccessToken } from "@/auth/token";
-import { parseRoomAvailabilityProblem } from "@/api/roomAvailabilityProblem";
+import { extractErrorMessage, parseProblemDetails } from "@/api/problemDetails";
 import { backendUrl } from "@/api/backendConfig";
 import axios from "axios";
 
@@ -29,15 +29,14 @@ export async function getApi() {
       if (status !== undefined) {
         error.status = status;
       }
-      const problem = parseRoomAvailabilityProblem(data);
+      const problem = parseProblemDetails(data);
       if (problem) {
         error.responseData = problem;
       }
       // Keep only safe response text and structured problem fields (no headers/tokens).
-      if (typeof data === "string" && data.length > 0) {
-        error.responseMessage = data.slice(0, 500);
-      } else if (data && typeof data.message === "string") {
-        error.responseMessage = data.message.slice(0, 500);
+      const message = extractErrorMessage(data);
+      if (message) {
+        error.responseMessage = message;
       }
       return Promise.reject(error);
     },

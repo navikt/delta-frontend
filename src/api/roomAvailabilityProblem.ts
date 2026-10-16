@@ -1,12 +1,6 @@
-export type RoomAvailabilityProblem = {
-  type?: string;
-  title?: string;
-  status?: number;
-  detail?: string;
-  code?: string | null;
-  upstreamStatus?: number | null;
-  requestId?: string | null;
-};
+import { type ProblemDetails, parseProblemDetails } from "./problemDetails.ts";
+
+export type RoomAvailabilityProblem = ProblemDetails;
 
 export type RoomAvailabilityFailure = {
   ok: false;
@@ -20,25 +14,7 @@ export type RoomAvailabilityFailure = {
   requestId?: string | null;
 };
 
-export function parseRoomAvailabilityProblem(data: unknown): RoomAvailabilityProblem | undefined {
-  if (!data || typeof data !== "object" || Array.isArray(data)) return undefined;
-
-  const body = data as Record<string, unknown>;
-  const problem: RoomAvailabilityProblem = {};
-  if (typeof body.type === "string") problem.type = body.type;
-  if (typeof body.title === "string") problem.title = body.title;
-  if (typeof body.status === "number") problem.status = body.status;
-  if (typeof body.detail === "string") problem.detail = body.detail;
-  if (typeof body.code === "string" || body.code === null) problem.code = body.code;
-  if (typeof body.upstreamStatus === "number" || body.upstreamStatus === null) {
-    problem.upstreamStatus = body.upstreamStatus;
-  }
-  if (typeof body.requestId === "string" || body.requestId === null) {
-    problem.requestId = body.requestId;
-  }
-
-  return Object.keys(problem).length > 0 ? problem : undefined;
-}
+export const parseRoomAvailabilityProblem = parseProblemDetails;
 
 export function toRoomAvailabilityFailure(
   status: number | undefined,

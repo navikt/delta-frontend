@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Button, TextField } from '@navikt/ds-react';
 import { TrashIcon } from '@navikt/aksel-icons';
 import { addFaggruppeEier, removeFaggruppeEier } from '@/service/faggruppeActions';
+import { FAGGRUPPE_REQUEST_FAILED_MESSAGE } from '@/types/faggruppe';
 
 interface Eier {
     epost: string;
@@ -28,27 +29,37 @@ export default function ManageEiereForm({ faggruppeId, eiere, isAdmin }: Props) 
         setAddLoading(true);
         setError(null);
 
-        const result = await addFaggruppeEier(faggruppeId, nyEpost.trim());
-        if (result.ok) {
-            setCurrentEiere(prev => [...prev, result.data]);
-            setNyEpost('');
-        } else {
-            setError(result.message);
+        try {
+            const result = await addFaggruppeEier(faggruppeId, nyEpost.trim());
+            if (result.ok) {
+                setCurrentEiere(prev => [...prev, result.data]);
+                setNyEpost('');
+            } else {
+                setError(result.message);
+            }
+        } catch {
+            setError(FAGGRUPPE_REQUEST_FAILED_MESSAGE);
+        } finally {
+            setAddLoading(false);
         }
-        setAddLoading(false);
     };
 
     const handleRemove = async (epost: string) => {
         setRemoveLoading(epost);
         setError(null);
 
-        const result = await removeFaggruppeEier(faggruppeId, epost);
-        if (result.ok) {
-            setCurrentEiere(prev => prev.filter((e) => e.epost !== epost));
-        } else {
-            setError(result.message);
+        try {
+            const result = await removeFaggruppeEier(faggruppeId, epost);
+            if (result.ok) {
+                setCurrentEiere(prev => prev.filter((e) => e.epost !== epost));
+            } else {
+                setError(result.message);
+            }
+        } catch {
+            setError(FAGGRUPPE_REQUEST_FAILED_MESSAGE);
+        } finally {
+            setRemoveLoading(null);
         }
-        setRemoveLoading(null);
     };
 
     return (

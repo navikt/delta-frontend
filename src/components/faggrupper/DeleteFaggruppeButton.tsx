@@ -4,6 +4,7 @@ import { Button, ConfirmationPanel } from '@navikt/ds-react';
 import { TrashIcon } from '@navikt/aksel-icons';
 import { useRouter } from 'next/navigation';
 import { deleteFaggruppe } from '@/service/faggruppeActions';
+import { FAGGRUPPE_REQUEST_FAILED_MESSAGE } from '@/types/faggruppe';
 
 export default function DeleteFaggruppeButton({ faggruppeId }: { faggruppeId: string }) {
     const router = useRouter();
@@ -15,13 +16,17 @@ export default function DeleteFaggruppeButton({ faggruppeId }: { faggruppeId: st
         setLoading(true);
         setError(null);
 
-        const result = await deleteFaggruppe(faggruppeId);
-        if (!result.ok) {
+        try {
+            const result = await deleteFaggruppe(faggruppeId);
+            if (result.ok) {
+                router.push('/faggrupper');
+                return;
+            }
             setError(result.message);
-            setLoading(false);
-            return;
+        } catch {
+            setError(FAGGRUPPE_REQUEST_FAILED_MESSAGE);
         }
-        router.push('/faggrupper');
+        setLoading(false);
     };
 
     if (!confirming) {

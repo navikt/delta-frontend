@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Button } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import { updateFaggruppe } from '@/service/faggruppeActions';
+import { FAGGRUPPE_REQUEST_FAILED_MESSAGE } from '@/types/faggruppe';
 import FaggruppeFormFields, { FaggruppeFormData, FaggruppeType, toSubmitData } from './FaggruppeFormFields';
 
 interface Group {
@@ -37,13 +38,18 @@ export default function EditFaggruppeForm({ group }: { group: Group }) {
         setLoading(true);
         setError(null);
 
-        const result = await updateFaggruppe(group.id, toSubmitData(formData));
-        if (result.ok) {
-            router.push(`/faggrupper/${group.id}`);
-        } else {
-            setError(result.message);
+        try {
+            const result = await updateFaggruppe(group.id, toSubmitData(formData));
+            if (result.ok) {
+                router.push(`/faggrupper/${group.id}`);
+            } else {
+                setError(result.message);
+            }
+        } catch {
+            setError(FAGGRUPPE_REQUEST_FAILED_MESSAGE);
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     return (

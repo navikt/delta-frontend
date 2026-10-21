@@ -1,7 +1,7 @@
 "use client";
 
 import type { Category } from "@/types/event";
-import { BodyShort, Search, Tabs, UNSAFE_Combobox, CheckboxGroup, Checkbox, LinkPanel } from "@navikt/ds-react";
+import { BodyShort, Search, Tabs, UNSAFE_Combobox, CheckboxGroup, Checkbox } from "@navikt/ds-react";
 import { FunnelIcon } from "@navikt/aksel-icons";
 import { useQueryStates } from "nuqs";
 import { canonicalCategoryNames, homeParsers, homeTabUpdate } from "@/service/overviewState";
@@ -35,14 +35,6 @@ export default function EventFilters({ categories, userEmail }: { categories: Ca
           <Tabs.Tab value="mine" label="Arrangør" />
         </Tabs.List>
       </Tabs>
-      {state.tab === "alle" && (
-        <div className="px-4 flex flex-col ax-md:flex-row gap-2 w-full">
-          <LinkPanel data-umami-event="STATSDAY CTA" href="/kategori/statistikkens+dag" border className="w-full ax-md:w-auto">
-            <LinkPanel.Title>Statistikkens dag</LinkPanel.Title>
-            <LinkPanel.Description>Se programmet og meld deg på arrangementer</LinkPanel.Description>
-          </LinkPanel>
-        </div>
-      )}
       <div className="flex flex-col-reverse gap-2 items-start ax-md:flex-row justify-between w-full ax-md:items-center px-4">
         <Search label="Søk alle kommende arrangementer" variant="simple" value={state.search} size="small"
           className="w-full ax-md:w-auto order-2 ax-md:order-1"

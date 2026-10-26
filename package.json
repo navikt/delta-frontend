@@ -15,9 +15,9 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
-    "@navikt/aksel-icons": "^8.18.0",
-    "@navikt/ds-css": "^8.18.0",
-    "@navikt/ds-react": "^8.18.0",
+    "@navikt/aksel-icons": "^8.19.2",
+    "@navikt/ds-css": "^8.19.2",
+    "@navikt/ds-react": "^8.19.2",
     "@navikt/oasis": "^4.2.2",
     "axios": "^1.20.0",
     "date-fns": "^4.4.0",
@@ -38,8 +38,8 @@
   "devDependencies": {
     "@biomejs/biome": "^2.5.15",
     "@mdx-js/loader": "^3.1.1",
-    "@navikt/aksel": "^8.18.0",
-    "@navikt/ds-tailwind": "^8.18.0",
+    "@navikt/aksel": "^8.19.2",
+    "@navikt/ds-tailwind": "^8.19.2",
     "@next/mdx": "^16.3.8",
     "@tailwindcss/postcss": "^4.3.3",
     "@tailwindcss/typography": "^0.5.20",

@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
         with:
           node-version: 26.x
           registry-url: https://npm.pkg.github.com
@@ -31,7 +31,7 @@ jobs:
         run: npm run build
 
       - name: Push docker image to GAR
-        uses: nais/docker-build-push@0e73849f69ff260ee27597553c0a7848ca4e9795
+        uses: nais/docker-build-push@dd7421d5068057a020ca46ead966c26190c516b1
         id: docker-build-push
         with:
           team: delta
@@ -47,12 +47,12 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
-      - uses: nais/deploy/actions/deploy@2d18f050f07b6a007864c6a57070ed915d571beb
+      - uses: nais/deploy/actions/deploy@f93637de5533a1bb573f940ceb7527a5b3b0dea0
         env:
           CLUSTER: dev-gcp
           RESOURCE: nais-dev.yaml
           IMAGE: ${{ needs.build.outputs.image }}
-      - uses: nais/deploy/actions/deploy@2d18f050f07b6a007864c6a57070ed915d571beb
+      - uses: nais/deploy/actions/deploy@f93637de5533a1bb573f940ceb7527a5b3b0dea0
         if: github.ref == 'refs/heads/main'
         env:
           CLUSTER: prod-gcp
@@ -82,6 +82,6 @@ jobs:
           format: 'sarif'
           scanners: 'secret'
           output: 'trivy.sarif'
-      - uses: github/codeql-action/upload-sarif@b96794f015dfd88f77b49b1c93e0fa7110f94c63
+      - uses: github/codeql-action/upload-sarif@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee
         with:
           sarif_file: 'trivy.sarif'

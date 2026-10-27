@@ -1,3 +1,5 @@
+import { safeReturnTo } from "../../service/returnTo.ts";
+
 type FestivalContact =
   | { kind: "committee"; label: string; email: string }
   | { kind: "label"; label: string }
@@ -58,9 +60,5 @@ export function getFestivalEventUrl(festival: FestivalConfig, id: string, hostna
 }
 
 export function getFestivalReturnTo(festival: FestivalConfig, returnTo?: string | string[]) {
-  const value = Array.isArray(returnTo) ? returnTo[0] : returnTo;
-  if (!value || !value.startsWith("/") || value.startsWith("//")) {
-    return `/${festival.slug}`;
-  }
-  return value;
+  return safeReturnTo(returnTo, `/${festival.slug}`);
 }

@@ -1,5 +1,3 @@
-import { safeReturnTo } from "../../service/returnTo.ts";
-
 type FestivalContact =
   | { kind: "committee"; label: string; email: string }
   | { kind: "label"; label: string }
@@ -57,8 +55,4 @@ export function getFestivalEventPath(festival: FestivalConfig, id: string) {
 
 export function getFestivalEventUrl(festival: FestivalConfig, id: string, hostname?: string) {
   return `${(hostname || "https://delta.nav.no").replace(/\/+$/, "")}${getFestivalEventPath(festival, id)}`;
-}
-
-export function getFestivalReturnTo(festival: FestivalConfig, returnTo?: string | string[]) {
-  return safeReturnTo(returnTo, `/${festival.slug}`);
 }

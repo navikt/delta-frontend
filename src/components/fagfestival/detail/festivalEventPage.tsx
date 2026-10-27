@@ -5,12 +5,11 @@ import CardWithBackground from "@/components/cardWithBackground";
 import { getInvitationCapacity } from "@/service/eventCapacity";
 import { ApiError } from "@/service/eventListTransport";
 import { getEvent } from "@/service/eventQueries";
-import { type FestivalConfig, getFestivalEventPath, getFestivalReturnTo } from "../festivals";
+import { type FestivalConfig, getFestivalEventPath } from "../festivals";
 import EventDetails from "./eventDetails";
 
 export type FestivalEventPageProps = {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ returnTo?: string | string[] }>;
 };
 
 export async function generateFestivalMetadata(
@@ -30,10 +29,8 @@ export async function generateFestivalMetadata(
 export default async function FestivalEventPage({
   festival,
   params,
-  searchParams,
 }: FestivalEventPageProps & { festival: FestivalConfig }) {
   const { id } = await params;
-  const { returnTo } = await searchParams;
   const eventPath = getFestivalEventPath(festival, id);
   await checkToken(eventPath);
   const user = await getUser();
@@ -56,7 +53,8 @@ export default async function FestivalEventPage({
         className="bg-fagfestival"
         home
         backText={festival.backText}
-        backLink={getFestivalReturnTo(festival, returnTo)}
+        backLink={`/${festival.slug}`}
+        backToOverview
       >
         <EventDetails
           festival={festival}

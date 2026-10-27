@@ -6,7 +6,6 @@ import {
   festivals,
   getFestivalEventPath,
   getFestivalEventUrl,
-  getFestivalReturnTo,
 } from "./festivals.ts";
 
 test("festival detail configuration preserves each route's theme and organizer", () => {
@@ -42,24 +41,6 @@ test("copy links and QR codes share the correct festival path and configured hos
   const details = readFileSync(new URL("./detail/eventDetails.tsx", import.meta.url), "utf8");
   assert.equal(details.match(/copyText=\{eventUrl\}/g)?.length, 2);
   assert.match(details, /text=\{eventUrl\}/);
-});
-
-test("festival return links retain local URLs and fall back to the correct overview", () => {
-  const returnTo = "/mim?tab=joined&search=design&custom=1";
-  const externalPayloads = [
-    "https://outside.example",
-    "//outside.example",
-    "/\\outside.example",
-    "/\\\\outside.example",
-    "/\t/outside.example",
-  ];
-  for (const festival of Object.values(festivals)) {
-    for (const invalid of [undefined, "", ...externalPayloads, []]) {
-      assert.equal(getFestivalReturnTo(festival, invalid), `/${festival.slug}`);
-    }
-    assert.equal(getFestivalReturnTo(festival, returnTo), returnTo);
-    assert.equal(getFestivalReturnTo(festival, [returnTo, "/ignored"]), returnTo);
-  }
 });
 
 test("literal detail routes and metadata select the same shared festival configuration", () => {

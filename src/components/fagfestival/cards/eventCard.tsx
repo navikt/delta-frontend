@@ -18,6 +18,7 @@ import {
   formatEventTimes,
 } from "@/service/format";
 import { countCapacityAttendees } from "@/service/eventCapacity";
+import { rememberOverviewReturn } from "@/components/overviewReturn";
 
 type EventCardProps = {
   event: FullDeltaEvent;
@@ -40,10 +41,11 @@ export function EventCard({ event, returnTo, isJoined = false, slug = "fagfest" 
   const startDay = format(new Date(event.event.startTime), "MMMd");
   const endDay = format(new Date(event.event.endTime), "MMMd");
 
-  const href = `/${slug}/${event.event.id}?returnTo=${encodeURIComponent(returnTo)}`;
+  const href = `/${slug}/${event.event.id}`;
 
   const handleNavigation = () => {
     sessionStorage.setItem(`event-overview-scroll:${returnTo}`, `${window.scrollY}`);
+    rememberOverviewReturn(href, returnTo);
   };
 
   return (

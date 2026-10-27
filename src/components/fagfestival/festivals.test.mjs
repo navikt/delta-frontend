@@ -46,8 +46,15 @@ test("copy links and QR codes share the correct festival path and configured hos
 
 test("festival return links retain local URLs and fall back to the correct overview", () => {
   const returnTo = "/mim?tab=joined&search=design&custom=1";
+  const externalPayloads = [
+    "https://outside.example",
+    "//outside.example",
+    "/\\outside.example",
+    "/\\\\outside.example",
+    "/\t/outside.example",
+  ];
   for (const festival of Object.values(festivals)) {
-    for (const invalid of [undefined, "", "https://outside.example", "//outside.example", []]) {
+    for (const invalid of [undefined, "", ...externalPayloads, []]) {
       assert.equal(getFestivalReturnTo(festival, invalid), `/${festival.slug}`);
     }
     assert.equal(getFestivalReturnTo(festival, returnTo), returnTo);

@@ -6,30 +6,13 @@ import { getEvent } from "@/service/eventQueries";
 import { ApiError } from "@/service/eventListTransport";
 import { getFeatures } from "@/service/roomQueries";
 import { getInvitationCapacity } from "@/service/eventCapacity";
+import { safeReturnTo } from "@/service/returnTo";
 import type { Metadata } from "next";
 
 type EventPageProps = {
   params: Promise<{ id: string }>;
   searchParams: Promise<{ returnTo?: string | string[] }>;
 };
-
-function normalizeSearchParamValue(value?: string | string[]) {
-  return Array.isArray(value) ? value[0] : value;
-}
-
-function getSafeReturnTo(returnTo?: string | string[]) {
-  const normalizedReturnTo = normalizeSearchParamValue(returnTo);
-
-  if (
-    !normalizedReturnTo ||
-    !normalizedReturnTo.startsWith("/") ||
-    normalizedReturnTo.startsWith("//")
-  ) {
-    return "/";
-  }
-
-  return normalizedReturnTo;
-}
 
 async function getOptionalEventFromId(id: string) {
   try {
@@ -62,7 +45,7 @@ export default async function Page({ params, searchParams }: EventPageProps) {
   const { returnTo } = await searchParams;
   await checkToken(`/event/${id}`);
   const hostname = process.env.NEXT_PUBLIC_HOSTNAME;
-  const backLink = getSafeReturnTo(returnTo);
+  const backLink = safeReturnTo(returnTo, "/");
 
   const [user, fullEvent, features] = await Promise.all([getUser(), getEvent(id), getFeatures()]);
   const {

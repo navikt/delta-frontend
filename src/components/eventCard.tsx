@@ -21,6 +21,7 @@ import {
 import { countCapacityAttendees } from "@/service/eventCapacity";
 import { RecurringBadge } from "@/components/RecurringBadge";
 import { useOverviewPath } from "@/components/useOverviewPath";
+import { rememberOverviewReturn } from "@/components/overviewReturn";
 import { shouldHideEventCard } from "@/components/eventCardVisibility";
 import { useBrowserNow } from "@/components/useBrowserNow";
 
@@ -67,10 +68,11 @@ export function EventCard({
     if (now === null && event.event.signupDeadline && tabname === "alle" && !showOnlyRegistered) {
         return <Skeleton variant="rounded" className="h-72 w-full" />;
     }
-    const href = `/event/${event.event.id}?returnTo=${encodeURIComponent(returnTo)}`;
+    const href = `/event/${event.event.id}`;
 
     const handleNavigation = () => {
         sessionStorage.setItem(`event-overview-scroll:${returnTo}`, `${window.scrollY}`);
+        rememberOverviewReturn(href, returnTo);
     };
 
     return (

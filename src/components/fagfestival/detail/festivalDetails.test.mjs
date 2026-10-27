@@ -136,8 +136,7 @@ test("shared server page authenticates before scoped reads and preserves capacit
       "@/components/cardWithBackground": { default: noopComponent },
       "./eventDetails": { default: details },
     });
-    const props = { festival, params: Promise.resolve({ id: fixture.event.id }),
-      searchParams: Promise.resolve({ returnTo: "/mim?tab=joined&custom=1" }) };
+    const props = { festival, params: Promise.resolve({ id: fixture.event.id }) };
     const element = await page.default(props);
     assert.deepEqual(calls, [
       ["auth", `/${festival.slug}/fixture-event`],
@@ -145,7 +144,8 @@ test("shared server page authenticates before scoped reads and preserves capacit
     ]);
     assert.equal(element.props.className, `w-full ${festival.bgClass} pb-10`);
     const card = element.props.children;
-    assert.equal(card.props.backLink, "/mim?tab=joined&custom=1");
+    assert.equal(card.props.backLink, `/${festival.slug}`);
+    assert.equal(card.props.backToOverview, true);
     assert.equal(card.props.titleColor, festival.titleColor);
     assert.equal(card.props.backText, festival.backText);
     assert.deepEqual(card.props.children.props.invitationCapacity, { reservedInvitations: 1, hasOwnReservation: false });

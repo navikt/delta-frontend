@@ -2,7 +2,9 @@
 import { ArrowLeftIcon } from "@navikt/aksel-icons";
 import { Heading } from "@navikt/ds-react";
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { type MouseEvent, useEffect, useRef } from "react";
+import { claimCurrentOverviewReturn, readOverviewReturn } from "./overviewReturn";
 
 type CardWithBackgroundProps = {
   title?: string;
@@ -14,6 +16,8 @@ type CardWithBackgroundProps = {
   color?: "bg-ax-success-300" | "bg-ax-accent-300" | "bg-ax-danger-400" | "bg-violet-200";
   backLink?: string;
   backText?: string;
+  /** Return to the overview (filters and scroll) the user opened this page from, if known. */
+  backToOverview?: boolean;
   titleColor?: string;
   className?: string;
   scrollToTopOnMount?: boolean;
@@ -34,6 +38,21 @@ export default function CardWithBackground(props: CardWithBackgroundProps) {
       containerRef.current.scrollIntoView({ behavior: "instant" });
     }
   }, [props.scrollToTopOnMount]);
+
+  const router = useRouter();
+  const { backToOverview } = props;
+  useEffect(() => {
+    if (backToOverview) claimCurrentOverviewReturn();
+  }, [backToOverview]);
+
+  const handleBack = (event: MouseEvent<HTMLAnchorElement>) => {
+    if (!backToOverview || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    const target = readOverviewReturn();
+    if (!target) return;
+    event.preventDefault();
+    if (target.kind === "back") router.back();
+    else router.push(target.path);
+  };
 
   return (
     <div ref={containerRef} className={`w-full flex flex-col align-center items-center -mt-20`}>
@@ -77,6 +96,7 @@ export default function CardWithBackground(props: CardWithBackgroundProps) {
             <span className="relative mb-2 top-[-4rem] w-0 h-0">
               <Link
                 href={props.backLink}
+                onClick={handleBack}
                 className="flex items-center no-underline font-ax-bold border w-fit p-1 bg-ax-bg-neutral-soft rounded drop-shadow-sm text-sm hover:bg-ax-bg-neutral-moderate-hover hover:text-ax-text-neutral tracking-wide"
               >
                 <ArrowLeftIcon aria-hidden /> {props.backText}

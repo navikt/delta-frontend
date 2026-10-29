@@ -6,9 +6,9 @@
 
 Du kan sende spørsmål til [eilif.johansen@nav.no](mailto:eilif.johansen@nav.no).
 
-## For NAV-ansatte
+## Har du tanker om Delta, eller ønsker du å bidra?
 
-Du kan sende spørsmål i [#delta](https://nav-it.slack.com/archives/C05E0NJ6Z0C) på Slack, eller til [eilif.johansen@nav.no](mailto:eilif.johansen@nav.no)
+Ta kontakt på [#delta](https://nav-it.slack.com/archives/C05E0NJ6Z0C), så finner vi sammen ut av det! Du kan også kontakte [eilif.johansen@nav.no](mailto:eilif.johansen@nav.no) direkte.
 
 ## Delta backend
 

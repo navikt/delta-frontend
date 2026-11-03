@@ -109,7 +109,7 @@ export default function EventDetails({
 
     return (
         <div>
-            {event.inviteMode === "SHARED" && (
+            {isHost && event.inviteMode === "SHARED" && (
                 <div className="mb-4">
                     <CalendarSyncStatus eventId={event.id} status={event.calendarSyncStatus} error={calendarSyncError} isHost={isHost} />
                 </div>

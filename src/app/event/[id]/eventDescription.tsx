@@ -13,7 +13,7 @@ import {
     VideoIcon,
 } from "@navikt/aksel-icons";
 import {useMemo, useRef, useState} from "react";
-import {Alert, Link, Modal, Search, Button} from "@navikt/ds-react";
+import {Alert, Detail, Link, Modal, Search, Button} from "@navikt/ds-react";
 import Participant from "./participant";
 import {formatEventDates, formatEventTimes, formatDeadline, formatEventDuration, formatRecurrenceUntilDate} from "@/service/format";
 import { RecurringBadge } from "@/components/RecurringBadge";
@@ -160,8 +160,13 @@ export default function EventDescription({
                             <Buildings3Icon aria-label="møterom" className="shrink-0"/>
                             <span className="min-w-0">{event.roomName}</span>
                         </span>
-                        <RoomStatusTag status={event.roomStatus}/>
                     </span>
+                    {isHost && event.roomStatus && (
+                        <div className="flex flex-col items-start gap-1">
+                            <Detail>Bare synlig for arrangører</Detail>
+                            <RoomStatusTag status={event.roomStatus}/>
+                        </div>
+                    )}
                     {event.roomStatus === "DECLINED" && isHost && (
                         <Alert variant="warning" size="small">
                             Rommet avslo bookingen, og rommet er ikke reservert.{" "}

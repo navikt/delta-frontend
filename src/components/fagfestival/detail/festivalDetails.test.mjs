@@ -37,6 +37,18 @@ const commonMocks = {
   "@/service/format": formatting,
 };
 const participant = loadComponent("./participant.tsx", {}).default;
+const calendarSyncStatus = loadComponent("../../calendarSyncStatus.tsx", {
+  "next/navigation": { useRouter: () => ({ refresh() {} }) },
+  "@/service/eventActions": {},
+}).default;
+const roomStatus = loadComponent("../../roomStatusTag.tsx", {});
+const eventDescription = loadComponent("../../../app/event/[id]/eventDescription.tsx", {
+  ...commonMocks,
+  "./participant": { default: participant },
+  "@/components/RecurringBadge": { RecurringBadge: noopComponent },
+  "@/components/roomStatusTag": roomStatus,
+  "@/types/room": { NO_FEATURES: {} },
+}).default;
 const description = loadComponent("./eventDescription.tsx", {
   ...commonMocks, "./participant": { default: participant },
 }).default;
@@ -44,7 +56,7 @@ const details = loadComponent("./eventDetails.tsx", {
   ...commonMocks,
   "./eventDescription": { default: description },
   "@/components/calendar": { default: noopComponent },
-  "@/components/calendarSyncStatus": { default: noopComponent },
+  "@/components/calendarSyncStatus": { default: calendarSyncStatus },
   "@/components/SecondaryCopyButton": {
     default: ({ copyText }) => createElement("button", { "data-copy-url": copyText }, "Kopier lenke"),
   },
@@ -74,6 +86,46 @@ function renderDetails(festival, overrides = {}) {
     ...overrides,
   }));
 }
+
+test("calendar status and its visibility hint are only rendered for hosts", () => {
+  for (const status of ["SYNCED", "PENDING", "FAILED"]) {
+    for (const isHost of [false, true]) {
+      const html = renderToStaticMarkup(createElement(calendarSyncStatus, {
+        eventId: fixture.event.id, status, isHost,
+      }));
+      if (isHost) {
+        assert.match(html, /Bare synlig for arrangører/);
+        assert.match(html, /Kalenderen er oppdatert|Outlook-kalenderen/);
+      } else {
+        assert.equal(html, "");
+      }
+    }
+  }
+  const event = { ...fixture.event, inviteMode: "SHARED", calendarSyncStatus: "SYNCED" };
+  assert.doesNotMatch(renderDetails(festivals.fagfest, { event }), /Kalenderen er oppdatert|Bare synlig/);
+  assert.match(renderDetails(festivals.fagfest, {
+    event, user: { ...user, email: "host@fixture" },
+  }), /Kalenderen er oppdatert/);
+});
+
+test("room booking status is host-only while the room name remains visible", () => {
+  for (const status of ["PENDING", "ACCEPTED", "DECLINED"]) {
+    for (const isHost of [false, true]) {
+      const html = renderToStaticMarkup(createElement(eventDescription, {
+        ...fixture,
+        event: { ...fixture.event, roomName: "Speakers Corner", roomStatus: status },
+        user: { ...user, email: isHost ? "host@fixture" : user.email },
+        displayTime: true,
+        invitationCapacity: { reservedInvitations: 0, hasOwnReservation: false },
+        features: { roomBooking: true },
+      }));
+      assert.match(html, /Speakers Corner/);
+      const privateText = /Bare synlig for arrangører|Venter på svar fra rommet|Rom booket|Rommet avslo bookingen|Velg et annet rom/;
+      if (isHost) assert.match(html, privateText);
+      else assert.doesNotMatch(html, privateText);
+    }
+  }
+});
 
 test("rendered festival details preserve committee, label and individual host contacts", () => {
   for (const festival of Object.values(festivals)) {

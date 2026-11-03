@@ -2,7 +2,6 @@
 
 import type { Category } from "@/types/event";
 import { BodyShort, Search, Tabs, UNSAFE_Combobox, CheckboxGroup, Checkbox } from "@navikt/ds-react";
-import { FunnelIcon } from "@navikt/aksel-icons";
 import { useQueryStates } from "nuqs";
 import { canonicalCategoryNames, homeParsers, homeTabUpdate } from "@/service/overviewState";
 import { eventDatasetKey, getHomeEventQuery } from "@/service/eventListQuery";
@@ -42,9 +41,6 @@ export default function EventFilters({ categories, userEmail }: { categories: Ca
           onClear={() => void setState({ search: "" }, { shallow: true })} />
         {state.tab === "alle" && (
           <div className="mt-5 ax-md:mt-0 w-full ax-md:w-fit flex items-center flex-wrap flex-row-reverse ax-md:flex-row gap-2 order-1 ax-md:order-2">
-            <span className="gap-2 items-center hidden ax-md:flex">
-              <FunnelIcon title="trakt" /><span className="font-ax-bold">Kategorier</span>
-            </span>
             <UNSAFE_Combobox className="w-full ax-md:w-fit" size="small" label="Filtrer på kategori"
               hideLabel={false} options={visibleOptions}
               selectedOptions={selectedCategories.map(category => category.name).sort((a, b) => a.localeCompare(b))}

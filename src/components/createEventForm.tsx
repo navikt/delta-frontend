@@ -68,6 +68,7 @@ const createEventSchema = z
     public: z.boolean(),
     hasParticipantLimit: z.boolean(),
     participantLimit: z.string().optional(),
+    waitlistEnabled: z.boolean().optional(),
     hasSignupDeadline: z.boolean(),
     sendNotificationEmail: z.boolean().optional(),
     signupDeadlineDate: z.optional(z.date()),
@@ -276,13 +277,14 @@ function InternalCreateEventForm({
   } = useForm<CreateEventSchema>({
     defaultValues:
       richEvent.type === EditTypeEnum.NEW
-        ? { public: true }
+        ? { public: true, waitlistEnabled: false }
         : richEvent.type === EditTypeEnum.TEMPLATE
           ? {
             title: richEvent.event.title,
             description: richEvent.event.description,
             location: richEvent.event.location,
             public: richEvent.event.public,
+            waitlistEnabled: richEvent.event.waitlistEnabled ?? false,
             endDate: undefined as unknown as Date, // pls be quiet
             endTime: "",
             startDate: undefined as unknown as Date,
@@ -301,6 +303,7 @@ function InternalCreateEventForm({
             description: richEvent.event.description,
             location: richEvent.event.location,
             public: richEvent.event.public,
+            waitlistEnabled: richEvent.event.waitlistEnabled ?? false,
             endDate: midnightDate(richEvent.event.endTime!!),
             endTime: format(new Date(richEvent.event.endTime!!), "HH:mm"),
             startDate: midnightDate(richEvent.event.startTime!!),
@@ -815,6 +818,10 @@ function InternalCreateEventForm({
           label="Maksimalt antall deltagere"
           error={errors.participantLimit?.message}
         />
+        {hasParticipantLimit && <Checkbox {...register("waitlistEnabled")}
+          description="Når en plass blir ledig, melder Delta automatisk på den første i køen før påmeldingsfristen, eller før start hvis ingen frist er satt.">
+          Tilby venteliste
+        </Checkbox>}
       </div>
       <div>
         <Checkbox

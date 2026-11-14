@@ -5,6 +5,8 @@ import Link from "next/link";
 import { getEvent } from "@/service/eventQueries";
 import { getFeatures } from "@/service/roomQueries";
 import { Metadata } from "next";
+import { getWaitlistEntries } from "@/service/waitlistQueries";
+import WaitlistManager from "@/components/waitlistManager";
 
 export const metadata: Metadata = {
   title: "Administrer arrangement Δ Delta",
@@ -34,6 +36,8 @@ export default async function ParticipantsPage({
           showRoomStatus={features.roomBooking}
           peopleSearchEnabled={features.peopleSearch}
         />
+        {fullEvent.event.waitlistEnabled && <WaitlistManager eventId={id}
+          initialEntries={await getWaitlistEntries(id)} />}
       </CardWithBackground>
     );
   } else {

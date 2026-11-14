@@ -15,6 +15,7 @@ test("new, edit and template forms receive distinct source mappings without load
   assert.deepEqual(initializeEventForm({ mode: "new" }), {
     richEvent: { type: 0 }, selectedCategories: [], existingAttendeeEmails: [],
   });
+
   const edit = initializeEventForm({ mode: "edit", source });
   assert.deepEqual(edit.richEvent, { type: 1, event: source.event, recurringSeries: source.recurringSeries });
   assert.deepEqual(edit.selectedCategories, [{ id: 2, name: "digitalt" }]);
@@ -26,4 +27,12 @@ test("new, edit and template forms receive distinct source mappings without load
   assert.equal(eventFormIdentity({ mode: "edit", source }), "edit:original");
   assert.throws(() => initializeEventForm({ mode: "edit" }), /source/i);
   assert.throws(() => initializeEventForm({ mode: "template", source: null }), /source/i);
+});
+
+test("duplicating an event preserves wait-list configuration without copying queue membership", () => {
+  const initial = initializeEventForm({ mode: "template", source: {
+    ...source, event: { ...source.event, waitlistEnabled: true },
+  } });
+  assert.equal(initial.richEvent.event.waitlistEnabled, true);
+  assert.equal("waitlist" in initial.richEvent, false);
 });

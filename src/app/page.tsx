@@ -12,6 +12,7 @@ import { loadHomeState, type OverviewSearchParams, type HomeState } from "@/serv
 import { eventDatasetKey, getHomeEventQuery } from "@/service/eventListQuery";
 import type { Category } from "@/types/event";
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = { title: "Delta Δ Nav" };
 
@@ -25,6 +26,7 @@ async function Overview({ searchParams }: { searchParams: Promise<OverviewSearch
   const [categories, user, state] = await Promise.all([getAllCategories("/"), getUser(), loadHomeState(searchParams)]);
   const datasetKey = eventDatasetKey("home", getHomeEventQuery(state, categories));
   return <OverviewTransition>
+    <Link href="/waitlist" className="px-4">Mine ventelister</Link>
     <EventFilters categories={categories} userEmail={user.email} />
     <ResultsBoundary key={datasetKey}>
       <Suspense key={datasetKey} fallback={<EventResultsSkeleton />}>

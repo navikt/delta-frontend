@@ -32,6 +32,8 @@ const noopComponent = () => null;
 const capacity = loadComponent("../../../service/eventCapacity.ts", {});
 const formatting = loadComponent("../../../service/format.ts", {});
 const commonMocks = {
+  "@/service/waitlistQueries": {},
+  "@/service/waitlistActions": {},
   "../festivals": { festivals, ...await import("../festivals.ts") },
   "@/service/eventCapacity": capacity,
   "@/service/format": formatting,
@@ -63,6 +65,8 @@ const details = loadComponent("./eventDetails.tsx", {
   "next-qrcode": { useQRCode: () => ({ Canvas: noopComponent }) },
   "@/service/eventActions": {},
   "@/service/eventInteractiveReads": {},
+  "@/components/waitlistControls": { default: ({ state }) => createElement("div", {},
+    state.position !== null ? `Venteliste: ${state.position}` : "Sett meg på venteliste") },
 }).default;
 
 const fixture = {
@@ -168,6 +172,17 @@ test("shared details retain host, registration, deadline, capacity and reservati
     user: { ...user, email: "joined@fixture" },
     event: { ...fixture.event, endTime: "2000-01-01T12:00:00" },
   }), />Slett deltakelse<\/span><\/button>/);
+});
+
+test("full festival events expose the wait list and closed queue members can still leave", () => {
+  const waitlist = { enabled: true, count: 2, position: null, registered: false, open: true };
+  assert.match(renderDetails(festivals.fagfest, {
+    event: { ...fixture.event, participantLimit: 3, waitlistEnabled: true }, waitlist,
+  }), /Sett meg på venteliste/);
+  assert.match(renderDetails(festivals.mim, {
+    event: { ...fixture.event, signupDeadline: "2000-01-01T12:00:00", waitlistEnabled: true },
+    waitlist: { ...waitlist, position: 2, open: false },
+  }), /Venteliste: 2/);
 });
 
 test("shared server page authenticates before scoped reads and preserves capacity and host-only errors", async () => {

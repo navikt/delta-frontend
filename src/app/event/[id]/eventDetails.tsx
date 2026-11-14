@@ -1,6 +1,6 @@
 "use client";
 
-import {useState} from "react";
+import {useState, useTransition} from "react";
 import {User} from "@/types/user";
 import EventDescription from "./eventDescription";
 import {
@@ -10,12 +10,14 @@ import {
     Modal,
     BodyLong,
     Tag,
+    LocalAlert,
 } from "@navikt/ds-react";
 import Link from "next/link";
 import {useQRCode} from 'next-qrcode';
 import {FullDeltaEvent, EditScope} from "@/types/event";
-import {deleteEvent, joinEvent, leaveEvent} from "@/service/eventActions";
-import { getEventRegistrationState } from "@/service/eventInteractiveReads";
+import {deleteEvent} from "@/service/eventActions";
+import type { getEventRegistrationState } from "@/service/eventInteractiveReads";
+import { changeEventRegistration } from "@/service/waitlistActions";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import {format} from "date-fns";
 import Calendar from "@/components/calendar";
@@ -30,6 +32,8 @@ import {
     isInvitationReservationActive,
 } from "@/service/eventCapacity";
 import CalendarSyncStatus from "@/components/calendarSyncStatus";
+import WaitlistControls from "@/components/waitlistControls";
+import type { WaitlistState } from "@/types/event";
 
 export default function EventDetails({
      event,
@@ -42,16 +46,26 @@ export default function EventDetails({
      user,
      hostname,
      features,
+     waitlist,
  }: FullDeltaEvent & {
     invitationCapacity: InvitationCapacity;
     user: User;
     hostname?: string;
     features?: Features;
+    waitlist?: WaitlistState;
 }) {
     const [reactiveParticipants, setParticipants] = useState(participants);
+    const [reactiveWaitlist, setWaitlist] = useState(waitlist);
+    const [registrationPending, startRegistration] = useTransition();
+    const [registrationError, setRegistrationError] = useState("");
+    const updateRegistration = (updated: Awaited<ReturnType<typeof getEventRegistrationState>>) => {
+        setParticipants(updated.participants);
+        setInvitationCapacity(updated.invitationCapacity);
+        setWaitlist(updated.waitlist);
+    };
     const [reactiveInvitationCapacity, setInvitationCapacity] = useState(invitationCapacity);
     const isHost = hosts.some((host) => host.email === user.email);
-    const isParticipant = reactiveParticipants
+    const isParticipant = reactiveWaitlist?.registered || reactiveParticipants
         .map((p) => p.email)
         .includes(user.email);
     const hasInvitationReservation = isInvitationReservationActive(
@@ -193,6 +207,9 @@ export default function EventDetails({
                                 </>
                             );
                         }
+                        if (!isParticipant && reactiveWaitlist?.position != null) {
+                            return <WaitlistControls eventId={event.id} state={reactiveWaitlist} onUpdated={updateRegistration} />;
+                        }
                         if (new Date(event.endTime) < new Date())
                             return (
                                 <>
@@ -255,13 +272,16 @@ export default function EventDetails({
                                     >
                                         Arrangementet er fullt
                                     </Alert>
+                                    {reactiveWaitlist?.enabled && reactiveWaitlist.open
+                                      ? <WaitlistControls eventId={event.id} state={reactiveWaitlist} onUpdated={updateRegistration} />
+                                      :
                                     <Button data-umami-event="melder interesse"
                                         variant="primary"
                                         className="w-full h-fit"
                                         onClick={() => setOpenInterested((x) => !x)}
                                     >
                                         Meld interesse
-                                    </Button>
+                                    </Button>}
                                 </>
                             );
                         }
@@ -357,10 +377,14 @@ export default function EventDetails({
                     )}
                     <Modal
                         open={openConfirmation}
-                        onClose={() => setOpenConfirmation(false)}
+                        onClose={() => { if (!registrationPending) setOpenConfirmation(false); }}
                         aria-label="Meld av modal"
                     >
                         <Modal.Body>
+                            {registrationError && <LocalAlert status="error" role="alert">
+                                <LocalAlert.Content>{registrationError}</LocalAlert.Content>
+                            </LocalAlert>}
+                            {registrationError && <Button variant="secondary" onClick={() => window.location.reload()}>Oppdater siden</Button>}
                             <Heading spacing level="1" size="large" id="modal-heading">
                                 {isParticipant ? <>{new Date(event.endTime) < new Date() ? "Slett min deltakelse" : "Meld av"}</> : "Bli med"}
                             </Heading>
@@ -381,13 +405,18 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                             <Button data-umami-event={isParticipant ? "avmelding" : "påmelding"}
                                 variant={isParticipant ? "danger" : "primary"}
                                 className="w-fit h-fit font-ax-bold"
-                                onClick={async () => {
-                                    const updatedEvent = await toggleEventStatus(event.id, isParticipant);
+                                loading={registrationPending}
+                                onClick={() => startRegistration(async () => {
+                                    const result = await changeEventRegistration(event.id, isParticipant);
+                                    if (!result.ok) {
+                                        setRegistrationError(result.message);
+                                        return;
+                                    }
+                                    setRegistrationError("");
                                     showAlert();
-                                    setParticipants(updatedEvent.participants);
-                                    setInvitationCapacity(updatedEvent.invitationCapacity);
+                                    updateRegistration(result.data);
                                     setOpenConfirmation((x) => !x);
-                                }}
+                                })}
                             >
                                 {isParticipant ? <>{new Date(event.endTime) < new Date() ? "Ja, slett meg" : "Ja, meld meg av"}</> : "Godta og bli med"}
                             </Button>
@@ -487,13 +516,4 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
 async function deleteAndRedirect(eventId: string, editScope?: EditScope) {
     await deleteEvent(eventId, editScope);
     window.location.href = "/";
-}
-
-
-async function toggleEventStatus(
-    eventId: string,
-    isParticipant: boolean,
-) {
-    await (isParticipant ? leaveEvent(eventId) : joinEvent(eventId));
-    return getEventRegistrationState(eventId);
 }

@@ -25,6 +25,7 @@ export function initializeEventForm(initial: InitialEventForm): {
     : { type: 2, event: {
       title: source.event.title, description: source.event.description,
       location: source.event.location, public: source.event.public, participantLimit: source.event.participantLimit,
+      ...(source.event.waitlistEnabled === undefined ? {} : { waitlistEnabled: source.event.waitlistEnabled }),
     } };
   return {
     richEvent,

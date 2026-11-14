@@ -23,6 +23,7 @@ export type CreateDeltaEvent = {
   location: string;
   public: boolean;
   participantLimit: number;
+  waitlistEnabled?: boolean;
   signupDeadline?: string;
   sendNotificationEmail?: boolean;
   invitees?: InviteeRequest[];
@@ -76,6 +77,7 @@ export type DeltaEvent = {
   location: string;
   public: boolean;
   participantLimit: number;
+  waitlistEnabled?: boolean;
   signupDeadline?: string;
   roomEmail?: string | null;
   roomName?: string | null;
@@ -94,7 +96,19 @@ export type TemplateDeltaEvent = {
   location: string;
   public: boolean;
   participantLimit: number;
+  waitlistEnabled?: boolean;
 };
+
+export type WaitlistState = {
+  enabled: boolean;
+  count: number;
+  position: number | null;
+  registered: boolean;
+  open: boolean;
+};
+
+export type WaitlistEntry = { email: string; name: string; position: number };
+export type MyWaitlistEvent = { event: DeltaEvent; position: number; open: boolean };
 
 export enum EditTypeEnum {
   NEW,

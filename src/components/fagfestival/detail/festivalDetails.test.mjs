@@ -37,7 +37,7 @@ const eventDescription = loadComponent("../../../app/event/[id]/eventDescription
 const description = loadComponent("./eventDescription.tsx", {
   ...commonMocks, "./participant": { default: participant },
 }).default;
-const details = loadComponent("./eventDetails.tsx", {
+const detailsMocks = {
   ...commonMocks,
   "./eventDescription": { default: description },
   "@/components/calendar": { default: noopComponent },
@@ -50,6 +50,14 @@ const details = loadComponent("./eventDetails.tsx", {
   "@/service/eventInteractiveReads": {},
   "@/components/waitlistControls": { default: ({ state }) => createElement("div", {},
     state.position !== null ? `Venteliste: ${state.position}` : "Sett meg på venteliste") },
+};
+const details = loadComponent("./eventDetails.tsx", detailsMocks).default;
+const ordinaryDetails = loadComponent("../../../app/event/[id]/eventDetails.tsx", {
+  ...detailsMocks,
+  "./eventDescription": { default: eventDescription },
+  "@/components/MarkdownRenderer": { default: noopComponent },
+  "@/components/RecurringBadge": { RecurringBadge: noopComponent },
+  "@/components/editScopeModal": { default: noopComponent },
 }).default;
 
 const fixture = {
@@ -166,6 +174,25 @@ test("full festival events expose the wait list and closed queue members can sti
     event: { ...fixture.event, signupDeadline: "2000-01-01T12:00:00", waitlistEnabled: true },
     waitlist: { ...waitlist, position: 2, open: false },
   }), /Venteliste: 2/);
+});
+
+test("ordinary and festival details expose existing queues despite spare nominal seats without blocking reservations", () => {
+  const props = {
+    ...fixture, festival: festivals.fagfest, user,
+    event: { ...fixture.event, participantLimit: 3, waitlistEnabled: true },
+    waitlist: { enabled: true, count: 1, position: null, registered: false, open: true },
+    invitationCapacity: { reservedInvitations: 0, hasOwnReservation: false },
+  };
+  for (const Detail of [details, ordinaryDetails]) {
+    const render = (overrides = {}) => renderToStaticMarkup(createElement(Detail, { ...props, ...overrides }));
+    const blocked = render();
+    assert.match(blocked, /Sett meg på venteliste/);
+    assert.doesNotMatch(blocked, />Bli med<\/span><\/button>/);
+    assert.match(render({
+      invitationCapacity: { reservedInvitations: 1, hasOwnReservation: true },
+    }), />Bli med<\/span><\/button>/);
+    assert.match(render({ waitlist: { ...props.waitlist, count: 0 } }), />Bli med<\/span><\/button>/);
+  }
 });
 
 test("shared server page authenticates before scoped reads and preserves capacity and host-only errors", async () => {

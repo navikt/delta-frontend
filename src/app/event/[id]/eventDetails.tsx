@@ -265,6 +265,12 @@ export default function EventDetails({
                             );
                         }
                         if (
+                            !isParticipant && !hasInvitationReservation && event.participantLimit > attendeeCount &&
+                            reactiveWaitlist?.enabled && reactiveWaitlist.open && reactiveWaitlist.count > 0
+                        ) {
+                            return <WaitlistControls eventId={event.id} state={reactiveWaitlist} onUpdated={updateRegistration} />;
+                        }
+                        if (
                             event.participantLimit &&
                             event.participantLimit <= attendeeCount &&
                             !isParticipant &&

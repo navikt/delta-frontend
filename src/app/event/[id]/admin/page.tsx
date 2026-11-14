@@ -23,6 +23,7 @@ export default async function ParticipantsPage({
   const [fullEvent, user, features] = await Promise.all([getEvent(id), getUser(), getFeatures()]);
 
   if (fullEvent.hosts.some((host) => host.email === user.email)) {
+    const waitlistEntries = fullEvent.event.waitlistEnabled ? await getWaitlistEntries(id) : [];
     return (
       <CardWithBackground
         title={`Deltakerliste: ${fullEvent.event.title}`}
@@ -36,8 +37,8 @@ export default async function ParticipantsPage({
           showRoomStatus={features.roomBooking}
           peopleSearchEnabled={features.peopleSearch}
         />
-        {fullEvent.event.waitlistEnabled && <WaitlistManager eventId={id}
-          initialEntries={await getWaitlistEntries(id)} />}
+        {fullEvent.event.waitlistEnabled && <WaitlistManager key={JSON.stringify(waitlistEntries)} eventId={id}
+          initialEntries={waitlistEntries} />}
       </CardWithBackground>
     );
   } else {

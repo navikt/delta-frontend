@@ -1,31 +1,13 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { createRequire } from "node:module";
-import { fileURLToPath } from "node:url";
 import { test } from "node:test";
-import { runInThisContext } from "node:vm";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { loadBindings, transformSync } from "next/dist/build/swc/index.js";
+import { loadComponent as load } from "../../../test-support/loadComponent.mjs";
 import { festivals } from "../festivals.ts";
 import { ApiError } from "../../../service/eventListTransport.ts";
 
-await loadBindings();
-
 function loadComponent(name, mocks) {
-  const url = new URL(name, import.meta.url);
-  const filename = fileURLToPath(url);
-  const { code } = transformSync(readFileSync(url, "utf8"), {
-    filename,
-    jsc: { parser: { syntax: "typescript", tsx: true }, transform: { react: { runtime: "automatic" } } },
-    module: { type: "commonjs" },
-  });
-  const module = { exports: {} };
-  const require = createRequire(url);
-  runInThisContext(`(function(module, exports, require) { ${code}\n})`, { filename })(
-    module, module.exports, (id) => Object.hasOwn(mocks, id) ? { __esModule: true, ...mocks[id] } : require(id),
-  );
-  return module.exports;
+  return load(new URL(name, import.meta.url), mocks);
 }
 
 const noopComponent = () => null;

@@ -33,6 +33,7 @@ import {
 } from "@/service/eventCapacity";
 import CalendarSyncStatus from "@/components/calendarSyncStatus";
 import WaitlistControls from "@/components/waitlistControls";
+import RegistrationRefreshNotice from "@/components/registrationRefreshNotice";
 import type { WaitlistState } from "@/types/event";
 
 export default function EventDetails({
@@ -58,7 +59,10 @@ export default function EventDetails({
     const [reactiveWaitlist, setWaitlist] = useState(waitlist);
     const [registrationPending, startRegistration] = useTransition();
     const [registrationError, setRegistrationError] = useState("");
-    const updateRegistration = (updated: Awaited<ReturnType<typeof getEventRegistrationState>>) => {
+    const [registrationNeedsRefresh, setRegistrationNeedsRefresh] = useState(false);
+    const updateRegistration = (updated: Awaited<ReturnType<typeof getEventRegistrationState>> | null) => {
+        setRegistrationNeedsRefresh(updated === null);
+        if (updated === null) return;
         setParticipants(updated.participants);
         setInvitationCapacity(updated.invitationCapacity);
         setWaitlist(updated.waitlist);
@@ -167,6 +171,9 @@ export default function EventDetails({
                         </Alert>
                     )}
                     {(function () {
+                        if (registrationNeedsRefresh) {
+                            return <RegistrationRefreshNotice eventId={event.id} onUpdated={updateRegistration} />;
+                        }
                         if (hosts.map((h) => h.email).includes(user.email)) {
                             return (
                                 <>
@@ -406,6 +413,7 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                                 variant={isParticipant ? "danger" : "primary"}
                                 className="w-fit h-fit font-ax-bold"
                                 loading={registrationPending}
+                                disabled={registrationNeedsRefresh}
                                 onClick={() => startRegistration(async () => {
                                     const result = await changeEventRegistration(event.id, isParticipant);
                                     if (!result.ok) {
@@ -414,8 +422,8 @@ eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved �
                                     }
                                     setRegistrationError("");
                                     showAlert();
-                                    updateRegistration(result.data);
-                                    setOpenConfirmation((x) => !x);
+                                    updateRegistration(result.refreshRequired ? null : result.data);
+                                    setOpenConfirmation(false);
                                 })}
                             >
                                 {isParticipant ? <>{new Date(event.endTime) < new Date() ? "Ja, slett meg" : "Ja, meld meg av"}</> : "Godta og bli med"}

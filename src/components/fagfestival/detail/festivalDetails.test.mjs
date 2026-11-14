@@ -16,6 +16,7 @@ const formatting = loadComponent("../../../service/format.ts", {});
 const commonMocks = {
   "@/service/waitlistQueries": {},
   "@/service/waitlistActions": {},
+  "@/components/registrationRefreshNotice": { default: noopComponent },
   "../festivals": { festivals, ...await import("../festivals.ts") },
   "@/service/eventCapacity": capacity,
   "@/service/format": formatting,

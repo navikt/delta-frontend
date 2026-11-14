@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { Button, Checkbox, LocalAlert, Modal } from "@navikt/ds-react";
 import { changeWaitlist } from "@/service/waitlistActions";
-import { getEventRegistrationState } from "@/service/eventInteractiveReads";
+import type { getEventRegistrationState } from "@/service/eventInteractiveReads";
 import type { WaitlistState } from "@/types/event";
 
 type RegistrationState = Awaited<ReturnType<typeof getEventRegistrationState>>;
@@ -11,7 +11,7 @@ type RegistrationState = Awaited<ReturnType<typeof getEventRegistrationState>>;
 export default function WaitlistControls({ eventId, state, onUpdated }: {
   eventId: string;
   state: WaitlistState;
-  onUpdated: (state: RegistrationState) => void;
+  onUpdated: (state: RegistrationState | null) => void;
 }) {
   const [open, setOpen] = useState(false);
   const [consent, setConsent] = useState(false);
@@ -27,7 +27,7 @@ export default function WaitlistControls({ eventId, state, onUpdated }: {
       setMessage(result.message);
       return;
     }
-    onUpdated(result.data);
+    onUpdated(result.refreshRequired ? null : result.data);
     setOpen(false);
     setConsent(false);
     setFailed(false);

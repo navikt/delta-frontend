@@ -12,6 +12,7 @@ import FestivalResults from "./festivalResults";
 import ResultsBoundary from "@/components/resultsBoundary";
 import EventResultsSkeleton from "@/components/eventResultsSkeleton";
 import { OverviewTransition } from "@/components/overviewTransition";
+import Link from "next/link";
 
 export type FagfestivalEventsProps = FestivalConfig & { searchParams: Promise<OverviewSearchParams> };
 
@@ -34,6 +35,7 @@ async function FestivalOverview({ searchParams, ...config }: FagfestivalEventsPr
   const joined = state.tab === JOINED_TAB;
   const datasetKey = eventDatasetKey(`festival:${festival.category}`, getFestivalEventQuery(category, joined));
   return <OverviewTransition>
+    <Link href="/waitlist">Mine ventelister</Link>
     <FestivalControls festival={festival} />
     <ResultsBoundary key={datasetKey}>
       <Suspense key={datasetKey} fallback={<EventResultsSkeleton />}>

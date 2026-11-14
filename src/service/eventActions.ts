@@ -338,6 +338,7 @@ function createDeltaEventFromFormData(
       formData.hasParticipantLimit && formData.participantLimit
         ? parseInt(formData.participantLimit)
         : 0,
+    waitlistEnabled: formData.hasParticipantLimit && formData.waitlistEnabled === true,
     startTime: start,
     endTime: end,
     signupDeadline: formData.hasSignupDeadline && !formData.isRecurring ? deadline : undefined,

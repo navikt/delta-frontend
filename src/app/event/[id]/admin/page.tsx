@@ -5,6 +5,8 @@ import Link from "next/link";
 import { getEvent } from "@/service/eventQueries";
 import { getFeatures } from "@/service/roomQueries";
 import { Metadata } from "next";
+import { getWaitlistEntries } from "@/service/waitlistQueries";
+import WaitlistManager from "@/components/waitlistManager";
 
 export const metadata: Metadata = {
   title: "Administrer arrangement Δ Delta",
@@ -21,6 +23,7 @@ export default async function ParticipantsPage({
   const [fullEvent, user, features] = await Promise.all([getEvent(id), getUser(), getFeatures()]);
 
   if (fullEvent.hosts.some((host) => host.email === user.email)) {
+    const waitlistEntries = fullEvent.event.waitlistEnabled ? await getWaitlistEntries(id) : [];
     return (
       <CardWithBackground
         title={`Deltakerliste: ${fullEvent.event.title}`}
@@ -34,6 +37,8 @@ export default async function ParticipantsPage({
           showRoomStatus={features.roomBooking}
           peopleSearchEnabled={features.peopleSearch}
         />
+        {fullEvent.event.waitlistEnabled && <WaitlistManager key={JSON.stringify(waitlistEntries)} eventId={id}
+          initialEntries={waitlistEntries} />}
       </CardWithBackground>
     );
   } else {

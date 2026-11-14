@@ -7,6 +7,7 @@ import { ApiError } from "@/service/eventListTransport";
 import { getFeatures } from "@/service/roomQueries";
 import { getInvitationCapacity } from "@/service/eventCapacity";
 import type { Metadata } from "next";
+import { getWaitlistState } from "@/service/waitlistQueries";
 
 type EventPageProps = {
   params: Promise<{ id: string }>;
@@ -54,6 +55,7 @@ export default async function Page({ params }: EventPageProps) {
     calendarSyncError,
   }: FullDeltaEvent = fullEvent;
   const isHost = hosts.some((host) => host.email.toLowerCase() === user.email.toLowerCase());
+  const waitlist = event.waitlistEnabled ? await getWaitlistState(id) : undefined;
   const invitationCapacity = getInvitationCapacity(
     participants,
     hosts,
@@ -71,6 +73,7 @@ export default async function Page({ params }: EventPageProps) {
       backToOverview
     >
       <EventDetails
+        waitlist={waitlist}
         event={event}
         participants={participants}
         hosts={hosts}

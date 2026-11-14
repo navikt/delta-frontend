@@ -7,6 +7,7 @@ import { ApiError } from "@/service/eventListTransport";
 import { getEvent } from "@/service/eventQueries";
 import { type FestivalConfig, getFestivalEventPath } from "../festivals";
 import EventDetails from "./eventDetails";
+import { getWaitlistState } from "@/service/waitlistQueries";
 
 export type FestivalEventPageProps = {
   params: Promise<{ id: string }>;
@@ -37,6 +38,7 @@ export default async function FestivalEventPage({
   const { event, participants, hosts, categories, invited = [], calendarSyncError } =
     await getEvent(id, eventPath);
   const isHost = hosts.some((host) => host.email.toLowerCase() === user.email.toLowerCase());
+  const waitlist = event.waitlistEnabled ? await getWaitlistState(id) : undefined;
   const invitationCapacity = getInvitationCapacity(
     participants,
     hosts,
@@ -57,6 +59,7 @@ export default async function FestivalEventPage({
         backToOverview
       >
         <EventDetails
+          waitlist={waitlist}
           festival={festival}
           event={event}
           participants={participants}

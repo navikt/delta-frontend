@@ -177,6 +177,9 @@ export function EventCard({
                             {isRegistered && (
                                 <Tag variant="success" size="small">Påmeldt</Tag>
                             )}
+                            {event.event.waitlistEnabled && event.event.participantLimit > 0 && (
+                                <Tag variant="outline" data-color="info" size="small">Venteliste</Tag>
+                            )}
                             {categories.map((category) => (
                                 <Tag variant="neutral" size="small" key={category.id}>
                                     {category.name}

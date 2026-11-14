@@ -153,6 +153,9 @@ export function EventCard({ event, returnTo, isJoined = false, slug = "fagfest" 
               Påmeldt
             </Tag>
           )}
+          {event.event.waitlistEnabled && event.event.participantLimit > 0 && (
+            <Tag variant="outline" data-color="info" size="small">Venteliste</Tag>
+          )}
           {event.categories.map((category) => {
             const normalizedCategoryName = category.name.toLowerCase().trim();
             const shouldHideMimAttendanceTag =

@@ -1,37 +1,22 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { createRequire } from "node:module";
-import { fileURLToPath } from "node:url";
 import { test } from "node:test";
-import { runInThisContext } from "node:vm";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { loadBindings, transformSync } from "next/dist/build/swc/index.js";
+import { loadComponent as load } from "../../../test-support/loadComponent.mjs";
 import { festivals } from "../festivals.ts";
 import { ApiError } from "../../../service/eventListTransport.ts";
 
-await loadBindings();
-
 function loadComponent(name, mocks) {
-  const url = new URL(name, import.meta.url);
-  const filename = fileURLToPath(url);
-  const { code } = transformSync(readFileSync(url, "utf8"), {
-    filename,
-    jsc: { parser: { syntax: "typescript", tsx: true }, transform: { react: { runtime: "automatic" } } },
-    module: { type: "commonjs" },
-  });
-  const module = { exports: {} };
-  const require = createRequire(url);
-  runInThisContext(`(function(module, exports, require) { ${code}\n})`, { filename })(
-    module, module.exports, (id) => Object.hasOwn(mocks, id) ? { __esModule: true, ...mocks[id] } : require(id),
-  );
-  return module.exports;
+  return load(new URL(name, import.meta.url), mocks);
 }
 
 const noopComponent = () => null;
 const capacity = loadComponent("../../../service/eventCapacity.ts", {});
 const formatting = loadComponent("../../../service/format.ts", {});
 const commonMocks = {
+  "@/service/waitlistQueries": {},
+  "@/service/waitlistActions": {},
+  "@/components/registrationRefreshNotice": { default: noopComponent },
   "../festivals": { festivals, ...await import("../festivals.ts") },
   "@/service/eventCapacity": capacity,
   "@/service/format": formatting,
@@ -63,6 +48,8 @@ const details = loadComponent("./eventDetails.tsx", {
   "next-qrcode": { useQRCode: () => ({ Canvas: noopComponent }) },
   "@/service/eventActions": {},
   "@/service/eventInteractiveReads": {},
+  "@/components/waitlistControls": { default: ({ state }) => createElement("div", {},
+    state.position !== null ? `Venteliste: ${state.position}` : "Sett meg på venteliste") },
 }).default;
 
 const fixture = {
@@ -168,6 +155,17 @@ test("shared details retain host, registration, deadline, capacity and reservati
     user: { ...user, email: "joined@fixture" },
     event: { ...fixture.event, endTime: "2000-01-01T12:00:00" },
   }), />Slett deltakelse<\/span><\/button>/);
+});
+
+test("full festival events expose the wait list and closed queue members can still leave", () => {
+  const waitlist = { enabled: true, count: 2, position: null, registered: false, open: true };
+  assert.match(renderDetails(festivals.fagfest, {
+    event: { ...fixture.event, participantLimit: 3, waitlistEnabled: true }, waitlist,
+  }), /Sett meg på venteliste/);
+  assert.match(renderDetails(festivals.mim, {
+    event: { ...fixture.event, signupDeadline: "2000-01-01T12:00:00", waitlistEnabled: true },
+    waitlist: { ...waitlist, position: 2, open: false },
+  }), /Venteliste: 2/);
 });
 
 test("shared server page authenticates before scoped reads and preserves capacity and host-only errors", async () => {

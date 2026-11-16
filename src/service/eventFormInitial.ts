@@ -26,6 +26,9 @@ export function initializeEventForm(initial: InitialEventForm): {
       title: source.event.title, description: source.event.description,
       location: source.event.location, public: source.event.public, participantLimit: source.event.participantLimit,
       ...(source.event.waitlistEnabled === undefined ? {} : { waitlistEnabled: source.event.waitlistEnabled }),
+      ...(source.event.signupOptions?.length ? {
+        signupOptions: source.event.signupOptions.map(option => ({ ...option, allocatedSeats: 0, waitlistCount: 0 })),
+      } : {}),
     } };
   return {
     richEvent,

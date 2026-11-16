@@ -122,6 +122,8 @@ export type TemplateDeltaEvent = {
   public: boolean;
   participantLimit: number;
   waitlistEnabled?: boolean;
+  /** Option definitions to copy; their ids belong to the source event and are replaced on save. */
+  signupOptions?: SignupOption[];
 };
 
 export type WaitlistState = {

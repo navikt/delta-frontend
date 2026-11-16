@@ -17,7 +17,7 @@ import {
   Box,
   Select,
 } from "@navikt/ds-react";
-import { Dispatch, useState } from "react";
+import { Dispatch, useRef, useState } from "react";
 import {
   createCategory,
   createEvent,
@@ -408,8 +408,13 @@ function InternalCreateEventForm({
   const optionsLocked = savedOptions.length > 0;
   const canUseSignupOptions = optionsLocked || (features.signupOptions &&
     (editEvent ? editEvent.inviteMode === "SHARED" : features.sharedCalendar));
-  const [useSignupOptions, setUseSignupOptions] = useState(optionsLocked);
-  const [optionDrafts, setOptionDrafts] = useState<SignupOptionDraft[]>(() => draftsFromOptions(savedOptions));
+  // A duplicated option event starts with the same options, still editable and removable.
+  const templateOptions = richEvent.type === EditTypeEnum.TEMPLATE && canUseSignupOptions
+    ? richEvent.event.signupOptions ?? [] : [];
+  const [useSignupOptions, setUseSignupOptions] = useState(optionsLocked || templateOptions.length > 0);
+  const [optionDrafts, setOptionDrafts] = useState<SignupOptionDraft[]>(
+    () => draftsFromOptions(optionsLocked ? savedOptions : templateOptions));
+  const capacityBeforeOptions = useRef<{ limited: boolean; limit?: string; waitlist?: boolean } | null>(null);
   const [optionErrors, setOptionErrors] = useState<SignupOptionDraftErrors | null>(null);
   const [inviteeOptionId, setInviteeOptionId] = useState("");
   const [inviteeOptionError, setInviteeOptionError] = useState<string | null>(null);
@@ -418,7 +423,19 @@ function InternalCreateEventForm({
   const toggleSignupOptions = (on: boolean) => {
     setUseSignupOptions(on);
     setOptionErrors(null);
-    if (!on) return;
+    if (!on) {
+      // Opting back out restores the event-level capacity the organizer had before.
+      const previous = capacityBeforeOptions.current;
+      capacityBeforeOptions.current = null;
+      if (!previous) return;
+      setHasParticipantLimit(previous.limited);
+      setValue("hasParticipantLimit", previous.limited);
+      setValue("participantLimit", previous.limit);
+      setValue("waitlistEnabled", previous.waitlist);
+      return;
+    }
+    const { participantLimit, waitlistEnabled } = getValues();
+    capacityBeforeOptions.current = { limited: hasParticipantLimit, limit: participantLimit, waitlist: waitlistEnabled };
     // Capacity moves to the options, so the event-level limit and wait list are cleared.
     setHasParticipantLimit(false);
     setValue("hasParticipantLimit", false);
@@ -493,12 +510,18 @@ function InternalCreateEventForm({
   const save = async (values: CreateEventSchema, editScope?: EditScope) => {
     setSaving(true);
     setSaveError(null);
-    const signupOptions = useSignupOptions ? toSignupOptionRequests(optionDrafts) : undefined;
+    // Duplicated drafts carry the source event's option ids, so new events get fresh ones.
+    const freshIds = richEvent.type === EditTypeEnum.EDIT ? null
+      : new Map(optionDrafts.map((draft) => [draft.id, crypto.randomUUID()]));
+    const optionId = (id: string) => freshIds?.get(id) ?? id;
+    const signupOptions = useSignupOptions
+      ? toSignupOptionRequests(optionDrafts).map((option) => ({ ...option, id: option.id && optionId(option.id) }))
+      : undefined;
     const invitees =
       allowInvitations && !isRecurring && !isEditingRecurring
         ? selectedInvitees.map(({ email }): InviteeRequest => ({
           email,
-          ...(useSignupOptions && inviteeOption ? { signupOptionId: inviteeOption.id } : {}),
+          ...(useSignupOptions && inviteeOption ? { signupOptionId: optionId(inviteeOption.id) } : {}),
         }))
         : undefined;
     const error =

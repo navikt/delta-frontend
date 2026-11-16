@@ -15,7 +15,7 @@
     "test:a11y": "playwright test"
   },
   "dependencies": {
-    "@hookform/resolvers": "^6.0.2",
+    "@hookform/resolvers": "^7.0.5",
     "@navikt/aksel-icons": "^8.22.1",
     "@navikt/ds-css": "^8.22.1",
     "@navikt/ds-react": "^8.22.1",

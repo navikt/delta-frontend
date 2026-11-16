@@ -1,9 +1,10 @@
 "use client";
-import { CogIcon, HatSchoolIcon, MenuHamburgerIcon, PersonGroupIcon, PlusIcon } from "@navikt/aksel-icons";
+import { CogIcon, HatSchoolIcon, MenuHamburgerIcon, MoonIcon, PersonGroupIcon, PlusIcon, SunIcon } from "@navikt/aksel-icons";
 import { ActionMenu, InternalHeader, Page, Spacer } from "@navikt/ds-react";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
+import { useColorTheme } from "@/components/ThemeProvider";
 
 const KOMPASSET_URL = "https://nav.grade.no/LuvitPortal/activitycentre/activitycentre.aspx";
 
@@ -57,6 +58,7 @@ function navItems(isMaintainer: boolean): NavItem[] {
 export default function Header({ isMaintainer }: { isMaintainer: boolean }) {
   const pathname = usePathname() ?? "";
   const items = navItems(isMaintainer);
+  const { theme, toggleTheme } = useColorTheme();
 
   return (
     <InternalHeader>
@@ -112,6 +114,15 @@ export default function Header({ isMaintainer }: { isMaintainer: boolean }) {
             </ActionMenu.Content>
           </ActionMenu>
         </nav>
+        <InternalHeader.Button
+          aria-label="Mørk modus"
+          aria-pressed={theme === "dark"}
+          title={theme === "dark" ? "Bytt til lys modus" : "Bytt til mørk modus"}
+          disabled={!theme}
+          onClick={toggleTheme}
+        >
+          {theme === "dark" ? <SunIcon aria-hidden fontSize="1.5rem" /> : <MoonIcon aria-hidden fontSize="1.5rem" />}
+        </InternalHeader.Button>
       </Page.Block>
     </InternalHeader>
   );

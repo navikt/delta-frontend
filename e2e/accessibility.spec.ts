@@ -31,6 +31,7 @@ async function expectNoViolations(page: Page) {
     impact,
     help,
     targets: nodes.map((node) => node.target.join(" ")),
+    details: nodes.map((node) => node.failureSummary),
   }));
   expect(summary).toEqual([]);
 }
@@ -146,3 +147,67 @@ test("hopp til hovedinnhold er første tabstopp og flytter fokus til main", asyn
   await page.keyboard.press("Enter");
   await expect(page.locator("main#maincontent")).toBeFocused();
 });
+
+test("mørk modus følger enheten og husker valget", async ({ page }) => {
+  const hydrationErrors: string[] = [];
+  page.on("console", message => {
+    if (message.type() === "error" && /hydrat/i.test(message.text())) {
+      hydrationErrors.push(message.text());
+    }
+  });
+  await page.emulateMedia({ colorScheme: "dark" });
+  await gotoSettled(page, "/");
+  const root = page.locator("html");
+  const mainBackground = () => page.locator("main").evaluate(element => getComputedStyle(element).backgroundColor);
+  await expect(root).toHaveClass(/\bdark\b/);
+  const darkBackground = await mainBackground();
+
+  await page.emulateMedia({ colorScheme: "light" });
+  await expect(root).toHaveClass(/\blight\b/);
+  await expect.poll(mainBackground).not.toBe(darkBackground);
+  const toggle = page.getByRole("button", { name: "Mørk modus", exact: true });
+  await expect(toggle).toHaveAttribute("aria-pressed", "false");
+  await expect(toggle).toBeInViewport();
+  await toggle.focus();
+  await toggle.press("Space");
+  await expect(toggle).toHaveAttribute("aria-pressed", "true");
+  await expect(root).toHaveClass(/\bdark\b/);
+  await expect.poll(mainBackground).toBe(darkBackground);
+  await expectNoViolations(page);
+
+  await page.emulateMedia({ colorScheme: "dark" });
+  await page.emulateMedia({ colorScheme: "light" });
+  await expect(root).toHaveClass(/\bdark\b/);
+  await page.reload();
+  await expect(root).toHaveClass(/\bdark\b/);
+  await expect(toggle).toHaveAttribute("aria-pressed", "true");
+  await toggle.click();
+  await expect(root).toHaveClass(/\blight\b/);
+  await page.emulateMedia({ colorScheme: "dark" });
+  await page.reload();
+  await expect(root).toHaveClass(/\blight\b/);
+  expect(hydrationErrors).toEqual([]);
+});
+
+for (const path of ["/", "/event/e-hosted", "/event/new"]) {
+  test(`mørk modus (${path}) har ingen axe-brudd`, async ({ page }) => {
+    await page.emulateMedia({ colorScheme: "dark" });
+    await gotoSettled(page, path);
+    await expect(page.locator("html")).toHaveClass(/\bdark\b/);
+    await expectNoViolations(page);
+    const menuButton = page.getByRole("button", { name: "Meny", exact: true });
+    if (await menuButton.isVisible()) {
+      await menuButton.click();
+      await expect(page.getByRole("menu")).toHaveCSS("color-scheme", "dark");
+      await expectNoViolations(page);
+      await page.keyboard.press("Escape");
+    }
+    if (path === "/event/e-hosted") {
+      await page.getByRole("button", { name: "Vis QR-kode" }).click();
+      const dialog = page.getByRole("dialog");
+      await expect(dialog).toHaveCSS("color-scheme", "dark");
+      await expect.poll(() => dialog.evaluate(element => element.getAnimations().length)).toBe(0);
+      await expectNoViolations(page);
+    }
+  });
+}

@@ -1,9 +1,10 @@
 "use client";
 
 import type { Category } from "@/types/event";
-import { Badge, BodyShort, Box, Chips, HStack, Link as AkselLink, Search, Switch, UNSAFE_Combobox, VStack } from "@navikt/ds-react";
+import { useRef } from "react";
+import { Badge, BodyShort, Box, Chips, Fieldset, HGrid, HStack, Link as AkselLink, Search, Switch, VStack } from "@navikt/ds-react";
 import { useQueryStates } from "nuqs";
-import { canonicalCategoryNames, homeParsers, homeTabUpdate, homeView, isHomeView } from "@/service/overviewState";
+import { canonicalCategoryNames, homeParsers, homeTabUpdate, homeView, isHomeView, toggleHomeQuickFilter } from "@/service/overviewState";
 import { homeDatasetKey } from "@/service/eventListQuery";
 import { useOverviewTransition } from "./overviewTransition";
 import NextLink from "next/link";
@@ -12,6 +13,7 @@ import { OVERVIEW_RESULTS_ID } from "./eventResultsSkeleton";
 
 const QUICK_FILTERS = [
   { name: "kompetanse", label: "Kompetanse" },
+  { name: "fagtorsdag", label: "Fagtorsdag" },
   { name: "bedriftidrettslaget", label: "Bedriftsidrettslaget" },
   { name: "sosialt", label: "Sosialt" },
 ];
@@ -21,9 +23,14 @@ export default function EventFilters({ categories }: { categories: Category[] })
   const [state, setState] = useQueryStates(homeParsers, { history: "replace", scroll: false });
   const { pending, startTransition, allCount, availableCategoryNames } = useOverviewTransition();
   const view = homeView(state);
+  const searchRef = useRef<HTMLDivElement>(null);
 
-  const selectedCategories = categories.filter(category => state.categories.includes(category.name));
+  const selectedCategories = categories.filter(category =>
+    state.categories.includes(category.name) && !QUICK_FILTER_NAMES.includes(category.name));
   const visibleOptions = availableCategoryNames ?? [];
+  const categorySuggestions = state.search.trim() ? visibleOptions.filter(name =>
+    !QUICK_FILTER_NAMES.includes(name) && !state.categories.includes(name) &&
+    name.toLocaleLowerCase("nb-NO").includes(state.search.trim().toLocaleLowerCase("nb-NO"))) : [];
   const visibleQuickFilters = QUICK_FILTERS.filter(filter =>
     visibleOptions.includes(filter.name) || state.categories.includes(filter.name));
   const updateServerState = (updates: Partial<typeof state>) => {
@@ -31,14 +38,16 @@ export default function EventFilters({ categories }: { categories: Category[] })
     const changesDataset = homeDatasetKey(state, categories) !== homeDatasetKey(next, categories);
     void setState(updates, { shallow: !changesDataset, ...(changesDataset ? { startTransition } : {}) });
   };
-  const quickFilters = state.categories.filter(name => QUICK_FILTER_NAMES.includes(name));
-  // The backend ANDs categories, so the quick filters are mutually exclusive.
   const toggleQuickFilter = (name: string) => updateServerState({
-    categories: canonicalCategoryNames([
-      ...state.categories.filter(value => !QUICK_FILTER_NAMES.includes(value)),
-      ...(quickFilters.includes(name) ? [] : [name]),
-    ]),
+    categories: toggleHomeQuickFilter(state.categories, name),
   });
+  const toggleCategory = (name: string, selected: boolean) => {
+    updateServerState({
+      categories: canonicalCategoryNames(selected ? [...state.categories, name] : state.categories.filter(value => value !== name)),
+      ...(selected ? { search: "" } : {}),
+    });
+    searchRef.current?.querySelector("input")?.focus();
+  };
 
   return (
     <VStack gap="space-16" width="100%">
@@ -59,35 +68,54 @@ export default function EventFilters({ categories }: { categories: Category[] })
         ]} />
       <Box background="raised" borderColor="neutral-subtle" borderWidth="1" borderRadius="12" padding="space-16">
         <VStack gap="space-16">
-          <Box className="w-full max-w-2xl">
-            <Search label="Søk i arrangementer" hideLabel variant="simple" size="small" value={state.search}
-              placeholder="Søk etter tittel, sted eller arrangør"
-              onChange={search => void setState({ search }, { shallow: true })}
-              onClear={() => void setState({ search: "" }, { shallow: true })} />
-          </Box>
-          {view === "alle" && <>
-            <HStack gap="space-16" align="end" wrap>
-              {visibleQuickFilters.length > 0 && <VStack gap="space-8">
-                <BodyShort size="small" weight="semibold">Type arrangement</BodyShort>
-                <Chips size="small" aria-label="Type arrangement">
-                  {visibleQuickFilters.map(filter => (
-                    <Chips.Toggle key={filter.name} selected={quickFilters.includes(filter.name)}
-                      onClick={() => toggleQuickFilter(filter.name)}>
-                      {filter.label}
-                    </Chips.Toggle>
+          <HGrid gap="space-24" align="start" columns={{
+            xs: "minmax(0, 1fr)",
+            lg: view === "alle" ? "minmax(16rem, 24rem) minmax(0, 1fr)" : "minmax(0, 24rem)",
+          }}>
+            <VStack gap="space-8">
+              <Search ref={searchRef}
+                label={view === "alle" ? "Søk etter tittel, sted, arrangør eller kategorier" : "Søk etter tittel, sted eller arrangør"}
+                hideLabel={false} variant="simple" size="small" value={state.search}
+                onChange={search => void setState({ search }, { shallow: true })}
+                onClear={() => void setState({ search: "" }, { shallow: true })} />
+              {view === "alle" && selectedCategories.length > 0 && (
+                <Chips size="small" aria-label="Valgte kategorier">
+                  {selectedCategories.map(category => (
+                    <Chips.Removable key={category.id} onDelete={() => toggleCategory(category.name, false)}>
+                      {category.name}
+                    </Chips.Removable>
                   ))}
                 </Chips>
-              </VStack>}
-              <Box className="w-full ax-md:w-80">
-                <UNSAFE_Combobox size="small" label="Kategori" placeholder="Alle kategorier" options={visibleOptions}
-                  selectedOptions={selectedCategories.map(category => category.name).sort((a, b) => a.localeCompare(b))}
-                  onToggleSelected={(name, selected) => updateServerState({
-                    categories: canonicalCategoryNames(selected ? [...state.categories, name] : state.categories.filter(value => value !== name)),
-                  })}
-                  isMultiSelect shouldAutocomplete />
-              </Box>
-            </HStack>
-          </>}
+              )}
+              {view === "alle" && categorySuggestions.length > 0 && (
+                <VStack gap="space-8" role="group" aria-label="Kategoriforslag">
+                  <BodyShort size="small" textColor="subtle">Kategoriforslag</BodyShort>
+                  <Chips size="small">
+                    {categorySuggestions.map(name => (
+                      <Chips.Toggle key={name} selected={false} checkmark={false}
+                        onClick={() => toggleCategory(name, true)}>
+                        {name}
+                      </Chips.Toggle>
+                    ))}
+                  </Chips>
+                </VStack>
+              )}
+            </VStack>
+            {view === "alle" && (
+              <Fieldset legend="Type arrangement" size="small">
+                <HStack gap="space-8" align="center" wrap>
+                  {visibleQuickFilters.length > 0 && <Chips size="small">
+                    {visibleQuickFilters.map(filter => (
+                      <Chips.Toggle key={filter.name} selected={state.categories.includes(filter.name)}
+                        onClick={() => toggleQuickFilter(filter.name)}>
+                        {filter.label}
+                      </Chips.Toggle>
+                    ))}
+                  </Chips>}
+                </HStack>
+              </Fieldset>
+            )}
+          </HGrid>
           {view === "mine" && (
             <Switch size="small" checked={state.showPast}
               onChange={event => updateServerState({ showPast: event.target.checked })}>

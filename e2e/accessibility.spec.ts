@@ -56,6 +56,65 @@ test("påmeldingsmodal har ingen axe-brudd", async ({ page }) => {
   await expectNoViolations(page);
 });
 
+test("forsidefiltre kombinerer tekstsøk og kategoriforslag med synlig etikett", async ({ page }) => {
+  await gotoSettled(page, "/");
+  const search = page.getByRole("searchbox", { name: "Søk etter tittel, sted, arrangør eller kategorier" });
+  const types = page.getByRole("group", { name: "Type arrangement" });
+  await expect(page.getByText("Søk etter tittel, sted, arrangør eller kategorier", { exact: true })).toBeVisible();
+  await expect(search).not.toHaveAttribute("placeholder");
+
+  const searchBounds = await search.boundingBox();
+  const typeBounds = await types.boundingBox();
+  expect(searchBounds).not.toBeNull();
+  expect(typeBounds).not.toBeNull();
+  if (searchBounds && typeBounds) {
+    if ((page.viewportSize()?.width ?? 0) >= 1024) {
+      expect(typeBounds.x).toBeGreaterThan(searchBounds.x + searchBounds.width);
+    } else {
+      expect(typeBounds.y).toBeGreaterThan(searchBounds.y + searchBounds.height);
+    }
+  }
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+
+  await search.fill("universell");
+  const suggestion = page.getByRole("group", { name: "Kategoriforslag" })
+    .getByRole("button", { name: "universell utforming", exact: true });
+  await expect(suggestion).toBeVisible();
+  await expectNoViolations(page);
+  await suggestion.focus();
+  await suggestion.press("Enter");
+  await expect(search).toHaveValue("");
+  await expect(page.getByRole("link", { name: "Arrangement jeg arrangerer", exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Arrangement jeg er påmeldt", exact: true })).toHaveCount(0);
+  const removeCategory = page.getByRole("button", { name: /universell utforming/ });
+  await expect(removeCategory).toBeVisible();
+  await expectNoViolations(page);
+  await removeCategory.click();
+  await search.fill("påmeldt");
+  await expect(page.getByRole("link", { name: "Arrangement jeg er påmeldt", exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Arrangement jeg arrangerer", exact: true })).toHaveCount(0);
+  await page.getByRole("button", { name: "Tøm feltet", exact: true }).click();
+  await expect(search).toHaveValue("");
+  await expect(search).toBeFocused();
+  await expect(page.getByRole("link", { name: "Arrangement jeg arrangerer", exact: true })).toBeVisible();
+});
+
+test("Fagtorsdag kan kombineres med type og egendefinerte kategorier er synlige fra URL", async ({ page }) => {
+  await gotoSettled(page, "/");
+  const competence = page.getByRole("button", { name: "Kompetanse", exact: true });
+  const fagtorsdag = page.getByRole("button", { name: "Fagtorsdag", exact: true });
+  await competence.click();
+  await fagtorsdag.click();
+  await expect(competence).toHaveAttribute("aria-pressed", "true");
+  await expect(fagtorsdag).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("link", { name: "Arrangement jeg arrangerer", exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Arrangement jeg er påmeldt", exact: true })).toHaveCount(0);
+
+  await gotoSettled(page, "/?categories=universell%20utforming");
+  await expect(page.getByRole("button", { name: /universell utforming/ })).toBeVisible();
+  await expect(page.getByRole("searchbox", { name: "Søk etter tittel, sted, arrangør eller kategorier" })).toBeVisible();
+});
+
 test("hopp til hovedinnhold er første tabstopp og flytter fokus til main", async ({ page, browserName }) => {
   test.skip(browserName !== "chromium", "Tab order differs per browser");
   await gotoSettled(page, "/");

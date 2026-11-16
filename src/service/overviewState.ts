@@ -9,6 +9,14 @@ export function canonicalCategoryNames(names: string[]) {
   return [...new Set(names.map(name => name.trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b));
 }
 
+export function toggleHomeQuickFilter(names: string[], name: string) {
+  const eventTypes = ["kompetanse", "bedriftidrettslaget", "sosialt"];
+  return canonicalCategoryNames([
+    ...names.filter(value => value !== name && (!eventTypes.includes(name) || !eventTypes.includes(value))),
+    ...(names.includes(name) ? [] : [name]),
+  ]);
+}
+
 const parseAsCategoryNames = createParser({
   parse: value => canonicalCategoryNames(value.split(",")),
   serialize: value => canonicalCategoryNames(value).join(","),

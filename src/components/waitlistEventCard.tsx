@@ -5,8 +5,10 @@ import { LocationPinIcon } from "@navikt/aksel-icons";
 import NextLink from "next/link";
 import { formatCardTimeRange } from "@/service/eventGrouping";
 import { CardHeaderRow, CardRow, useOverviewNavigation } from "./eventCard";
+import { optionById } from "@/service/signupOptions";
 
-export function WaitlistEventCard({ entry: { event, position, open } }: { entry: MyWaitlistEvent }) {
+export function WaitlistEventCard({ entry: { event, position, open, signupOptionId } }: { entry: MyWaitlistEvent }) {
+  const option = optionById(event.signupOptions ?? [], signupOptionId);
   const href = `/event/${event.id}`;
   const handleNavigation = useOverviewNavigation(href);
   return (
@@ -25,7 +27,7 @@ export function WaitlistEventCard({ entry: { event, position, open } }: { entry:
         </LinkCard.Description>
       )}
       <LinkCard.Footer>
-        <Tag size="small" variant="moderate" data-color="info">Nr. {position} på ventelisten</Tag>
+        <Tag size="small" variant="moderate" data-color="info">Nr. {position} på ventelisten{option ? ` (${option.label})` : ""}</Tag>
         {!open && <Tag size="small" variant="moderate" data-color="warning">Påmeldingsfristen er utløpt</Tag>}
       </LinkCard.Footer>
     </LinkCard>

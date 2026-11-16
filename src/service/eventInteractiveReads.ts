@@ -4,7 +4,8 @@ import { checkToken, getUser } from "@/auth/token";
 import { getApi } from "@/api/instance";
 import { getEvent } from "./eventQueries";
 import { getInvitationCapacity, type InvitationCapacity } from "./eventCapacity";
-import type { DeltaParticipant, DirectoryPerson } from "@/types/event";
+import { usesWaitlist } from "./signupOptions";
+import type { DeltaParticipant, DirectoryPerson, SignupOption } from "@/types/event";
 import type { ActionResult } from "@/types/room";
 import { AxiosError } from "axios";
 import { getWaitlistState } from "./waitlistQueries";
@@ -14,12 +15,14 @@ export async function getEventRegistrationState(eventId: string): Promise<{
   participants: DeltaParticipant[];
   invitationCapacity: InvitationCapacity;
   waitlist?: WaitlistState;
+  signupOptions: SignupOption[];
 }> {
   await checkToken();
   const [event, user] = await Promise.all([getEvent(eventId), getUser()]);
   return {
     participants: event.participants,
-    waitlist: event.event.waitlistEnabled ? await getWaitlistState(eventId) : undefined,
+    waitlist: usesWaitlist(event.event) ? await getWaitlistState(eventId) : undefined,
+    signupOptions: event.event.signupOptions ?? [],
     invitationCapacity: getInvitationCapacity(event.participants, event.hosts, event.invited,
       user.email, event.event.signupDeadline),
   };

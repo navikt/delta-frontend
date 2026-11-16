@@ -6,8 +6,9 @@ import { useQRCode } from "next-qrcode";
 import { type ReactNode, useState } from "react";
 import SecondaryCopyButton from "@/components/SecondaryCopyButton";
 import { RecurringBadge } from "@/components/RecurringBadge";
-import type { Category, DeltaEvent, RecurringSeriesSummary } from "@/types/event";
+import type { Category, DeltaEvent, RecurringSeriesSummary, SignupOption } from "@/types/event";
 import { formatEventSummary, getSeatStatus, seatStatusLabel } from "@/service/eventDetailsFormat";
+import { optionCapacityText } from "@/service/signupOptions";
 
 /** White content card used for the info and description columns. */
 export function DetailsCard({ children, label }: { children: ReactNode; label?: string }) {
@@ -78,6 +79,45 @@ export function EventHeroMeta({
           ))}
         </HStack>
       )}
+    </VStack>
+  );
+}
+
+/** "Påmeldte" block for events with signup options: one capacity row per option. Hosts are not counted. */
+export function SignupOptionsSummary({ options, action }: { options: SignupOption[]; action: ReactNode }) {
+  return (
+    <VStack gap="space-12">
+      <BodyShort weight="semibold">Påmeldte</BodyShort>
+      <VStack as="ul" gap="space-12" aria-label="Påmeldte per alternativ">
+        {options.map((option) => {
+          const status = seatStatusLabel(getSeatStatus(option.allocatedSeats, option.participantLimit));
+          return (
+            <VStack as="li" key={option.id} gap="space-4">
+              <HStack gap="space-8" justify="space-between" align="baseline" wrap>
+                <BodyShort>{option.label}</BodyShort>
+                <BodyShort>{optionCapacityText(option)}</BodyShort>
+              </HStack>
+              {option.participantLimit > 0 && (
+                <ProgressBar
+                  size="small"
+                  value={Math.min(option.allocatedSeats, option.participantLimit)}
+                  valueMax={option.participantLimit}
+                  aria-label={`${option.label}: ${option.allocatedSeats} av ${option.participantLimit} plasser fylt`}
+                />
+              )}
+              {(status || option.waitlistCount > 0) && (
+                <HStack gap="space-4" wrap>
+                  {status && <Tag variant="moderate" data-color="warning" size="small">{status}</Tag>}
+                  {option.waitlistCount > 0 && (
+                    <Tag variant="outline" data-color="info" size="small">{option.waitlistCount} på venteliste</Tag>
+                  )}
+                </HStack>
+              )}
+            </VStack>
+          );
+        })}
+      </VStack>
+      <HStack justify="end">{action}</HStack>
     </VStack>
   );
 }

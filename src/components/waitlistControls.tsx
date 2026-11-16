@@ -8,9 +8,11 @@ import type { WaitlistState } from "@/types/event";
 
 type RegistrationState = Awaited<ReturnType<typeof getEventRegistrationState>>;
 
-export default function WaitlistControls({ eventId, state, onUpdated }: {
+export default function WaitlistControls({ eventId, state, onUpdated, optionLabel }: {
   eventId: string;
   state: WaitlistState;
+  /** The signup option the caller is queued for, on events with signup options. */
+  optionLabel?: string;
   onUpdated: (state: RegistrationState | null) => void;
 }) {
   const [open, setOpen] = useState(false);
@@ -37,7 +39,7 @@ export default function WaitlistControls({ eventId, state, onUpdated }: {
   return <div className="flex flex-col gap-2">
     <div role="status">
       {queued
-        ? `Du er nummer ${state.position} på ventelisten. ${state.open ? "Du blir automatisk påmeldt hvis du får plass." : "Fristen er utløpt. Du blir ikke automatisk påmeldt."}`
+        ? `Du er nummer ${state.position} på ventelisten${optionLabel ? ` for «${optionLabel}»` : ""}. ${state.open ? "Du blir automatisk påmeldt hvis du får plass." : "Fristen er utløpt. Du blir ikke automatisk påmeldt."}`
         : `${state.count} på ventelisten`}
     </div>
     {(queued || state.open) && <Button variant="secondary" onClick={() => setOpen(true)}>

@@ -17,7 +17,7 @@ import Participant from "./participant";
 import {formatDeadline, formatRecurrenceUntilDate} from "@/service/format";
 import {formatEventDateParts} from "@/service/eventDetailsFormat";
 import {frequencyLabel} from "@/components/RecurringBadge";
-import {DetailsCard, Divider, InfoRow, InfoRows, ParticipantsSummary} from "@/components/eventDetailsParts";
+import {DetailsCard, Divider, InfoRow, InfoRows, ParticipantsSummary, SignupOptionsSummary} from "@/components/eventDetailsParts";
 import { Features, NO_FEATURES } from "@/types/room";
 import { countCapacityAttendees, InvitationCapacity } from "@/service/eventCapacity";
 
@@ -82,6 +82,19 @@ export default function EventDescription({
 
     const ref = useRef<HTMLDialogElement>(null);
     const isHost = hosts.some((h) => h.email === user.email);
+    const participantListAction = isHost ? (
+        <Button as={NextLink} href={`/event/${event.id}/admin`} variant="secondary" size="small">
+            Vis deltakere
+        </Button>
+    ) : (
+        <Button data-umami-event="deltakerliste åpnet"
+            variant="secondary"
+            size="small"
+            onClick={() => setOpenParticipantList(true)}
+        >
+            Vis deltakere
+        </Button>
+    );
     const teamsJoinUrl = safeHttpsUrl(event.teamsJoinUrl);
     const roomName = features.roomBooking ? event.roomName?.trim() : undefined;
     const hasDuplicateRoomAndLocation = !!roomName && roomName === event.location.trim();
@@ -189,23 +202,15 @@ export default function EventDescription({
                     </InfoRow>
                 </InfoRows>
                 <Divider/>
-                <ParticipantsSummary
-                    attendeeCount={displayedAttendeeCount}
-                    participantLimit={event.participantLimit}
-                    action={isHost ? (
-                        <Button as={NextLink} href={`/event/${event.id}/admin`} variant="secondary" size="small">
-                            Vis deltakere
-                        </Button>
-                    ) : (
-                        <Button data-umami-event="deltakerliste åpnet"
-                            variant="secondary"
-                            size="small"
-                            onClick={() => setOpenParticipantList(true)}
-                        >
-                            Vis deltakere
-                        </Button>
-                    )}
-                />
+                {event.signupOptions?.length ? (
+                    <SignupOptionsSummary options={event.signupOptions} action={participantListAction} />
+                ) : (
+                    <ParticipantsSummary
+                        attendeeCount={displayedAttendeeCount}
+                        participantLimit={event.participantLimit}
+                        action={participantListAction}
+                    />
+                )}
             </VStack>
             <Modal
                 open={openParticipantList}

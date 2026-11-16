@@ -1,11 +1,12 @@
 "use client";
 
-import { BodyShort, Button, Heading, LocalAlert, Tag } from "@navikt/ds-react";
+import { BodyShort, Button, Heading, LocalAlert, Select, Tag } from "@navikt/ds-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import PersonPicker from "@/components/personPicker";
 import { invitePeople, revokeInvitation } from "@/service/eventActions";
 import { DirectoryPerson, FullDeltaEvent, InvitationStatus } from "@/types/event";
+import { optionAvailabilityText, optionById } from "@/service/signupOptions";
 
 type InvitationManagerProps = {
   event: FullDeltaEvent;
@@ -35,10 +36,14 @@ export default function InvitationManager({
   const [selectedPeople, setSelectedPeople] = useState<DirectoryPerson[]>([]);
   const [actionError, setActionError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [optionId, setOptionId] = useState("");
+  const [optionError, setOptionError] = useState<string | null>(null);
 
   if (event.event.inviteMode !== "SHARED" || event.recurringSeries) return null;
 
   const invitations = event.invited ?? [];
+  const options = event.event.signupOptions ?? [];
+  const selectedOption = optionById(options, optionId);
   const excludedEmails = [
     ...event.participants.map((person) => person.email),
     ...event.hosts.map((person) => person.email),
@@ -65,6 +70,11 @@ export default function InvitationManager({
                 <span className="text-ax-text-neutral-subtle">({invitation.email})</span>
               </span>
               <div className="flex items-center gap-2">
+                {optionById(options, invitation.signupOptionId) && (
+                  <Tag variant="outline" data-color="neutral" size="small">
+                    {optionById(options, invitation.signupOptionId)?.label}
+                  </Tag>
+                )}
                 <Tag
                   variant="moderate"
                   data-color={statusColors[invitation.status]}
@@ -106,17 +116,40 @@ export default function InvitationManager({
             onChange={setSelectedPeople}
             excludedEmails={excludedEmails}
           />
+          {options.length > 0 && (
+            <Select
+              label="De inviterte deltar som"
+              value={selectedOption ? optionId : ""}
+              onChange={(e) => { setOptionId(e.target.value); setOptionError(null); }}
+              error={optionError}
+              className="max-w-[21rem]"
+            >
+              <option value="">Velg alternativ</option>
+              {options.map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option.label} ({optionAvailabilityText(option)})
+                </option>
+              ))}
+            </Select>
+          )}
           <Button
             type="button"
             className="w-fit"
             disabled={!selectedPeople.length || saving}
             loading={saving}
             onClick={async () => {
+              if (options.length && !selectedOption) {
+                setOptionError("Velg hvordan de inviterte skal delta");
+                return;
+              }
               setSaving(true);
               setActionError(null);
               const result = await invitePeople(
                 event.event.id,
-                selectedPeople.map(({ email }) => ({ email })),
+                selectedPeople.map(({ email }) => ({
+                  email,
+                  ...(selectedOption ? { signupOptionId: selectedOption.id } : {}),
+                })),
               );
               if (result.ok) {
                 setEvent(result.data);

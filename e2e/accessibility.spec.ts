@@ -12,6 +12,9 @@ const pages = [
   { name: "arrangement som deltaker", path: "/event/e-joined" },
   { name: "arrangement med venteliste", path: "/event/e-full" },
   { name: "deltakeradministrasjon", path: "/event/e-hosted/admin" },
+  { name: "arrangement med påmeldingsalternativer", path: "/event/e-options" },
+  { name: "deltakeradministrasjon med alternativer", path: "/event/e-options-hosted/admin" },
+  { name: "rediger arrangement med alternativer", path: "/event/e-options-hosted/edit" },
   { name: "nytt arrangement", path: "/event/new" },
   { name: "rediger arrangement", path: "/event/e-hosted/edit" },
   { name: "faggrupper", path: "/faggrupper" },
@@ -53,6 +56,22 @@ test("påmeldingsmodal har ingen axe-brudd", async ({ page }) => {
   await gotoSettled(page, "/event/e-full");
   await page.getByRole("button", { name: /venteliste|bli med|meld/i }).first().click();
   await expect(page.getByRole("dialog")).toBeVisible();
+  await expectNoViolations(page);
+});
+
+test("valg av påmeldingsalternativ har ingen axe-brudd", async ({ page }) => {
+  await gotoSettled(page, "/event/e-options");
+  await page.getByRole("button", { name: "Bli med" }).click();
+  const dialog = page.getByRole("dialog");
+  await expect(dialog.getByRole("radiogroup", { name: "Hvordan vil du delta?" })).toBeVisible();
+  await expectNoViolations(page);
+});
+
+test("påmeldingsalternativer i skjemaet har ingen axe-brudd", async ({ page }) => {
+  await gotoSettled(page, "/event/new");
+  await page.getByRole("checkbox", { name: "La deltakerne velge hvordan de deltar" }).check();
+  await expect(page.getByRole("group", { name: "Påmeldingsalternativer" })).toBeVisible();
+  await expect(page.getByRole("textbox", { name: "Navn på alternativ 1" })).toHaveValue("Fysisk");
   await expectNoViolations(page);
 });
 

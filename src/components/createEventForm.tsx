@@ -15,6 +15,7 @@ import {
   Label,
   BodyShort,
   Box,
+  Select,
 } from "@navikt/ds-react";
 import { Dispatch, useState } from "react";
 import {
@@ -33,6 +34,8 @@ import {
   EditTypeEnum,
   RecurrenceFrequency,
   EditScope,
+  InviteeRequest,
+  SignupOptionRequest,
 } from "@/types/event";
 import { midnightDate } from "@/service/format";
 import { format } from "date-fns";
@@ -45,6 +48,15 @@ import { RoomStatusTag } from "@/components/roomStatusTag";
 import { Features, NO_FEATURES } from "@/types/room";
 import { formatInTimeZone } from "date-fns-tz";
 import { initializeEventForm, eventFormIdentity, type InitialEventForm, type RichEvent } from "@/service/eventFormInitial";
+import SignupOptionsFields from "@/components/signupOptionsFields";
+import {
+  draftsFromOptions,
+  newDraft,
+  toSignupOptionRequests,
+  validateSignupOptionDrafts,
+  type SignupOptionDraft,
+  type SignupOptionDraftErrors,
+} from "@/service/signupOptions";
 
 function isValidParticipantLimit(limit?: string) {
   if (!limit) return false;
@@ -391,6 +403,43 @@ function InternalCreateEventForm({
   const [saving, setSaving] = useState(false);
   const [selectedInvitees, setSelectedInvitees] = useState<DirectoryPerson[]>([]);
 
+  // Signup options are SHARED-only and can't be turned off once saved (the backend refuses removal).
+  const savedOptions = editEvent?.signupOptions ?? [];
+  const optionsLocked = savedOptions.length > 0;
+  const canUseSignupOptions = optionsLocked || (features.signupOptions &&
+    (editEvent ? editEvent.inviteMode === "SHARED" : features.sharedCalendar));
+  const [useSignupOptions, setUseSignupOptions] = useState(optionsLocked);
+  const [optionDrafts, setOptionDrafts] = useState<SignupOptionDraft[]>(() => draftsFromOptions(savedOptions));
+  const [optionErrors, setOptionErrors] = useState<SignupOptionDraftErrors | null>(null);
+  const [inviteeOptionId, setInviteeOptionId] = useState("");
+  const [inviteeOptionError, setInviteeOptionError] = useState<string | null>(null);
+  const inviteeOption = optionDrafts.find((draft) => draft.id === inviteeOptionId);
+
+  const toggleSignupOptions = (on: boolean) => {
+    setUseSignupOptions(on);
+    setOptionErrors(null);
+    if (!on) return;
+    // Capacity moves to the options, so the event-level limit and wait list are cleared.
+    setHasParticipantLimit(false);
+    setValue("hasParticipantLimit", false);
+    setValue("participantLimit", undefined);
+    setValue("waitlistEnabled", false);
+    if (optionDrafts.length === 0) {
+      setOptionDrafts([newDraft(crypto.randomUUID(), "Fysisk"), newDraft(crypto.randomUUID(), "Digitalt")]);
+    }
+  };
+
+  /** Validates the option rows and the invitees' option; returns whether the form may be saved. */
+  const validateSignupOptions = (): boolean => {
+    if (!useSignupOptions) return true;
+    const errors = validateSignupOptionDrafts(optionDrafts, optionsLocked ? 1 : 2);
+    setOptionErrors(errors);
+    const needsInviteeOption = allowInvitations && !isRecurring && !isEditingRecurring &&
+      selectedInvitees.length > 0 && !inviteeOption;
+    setInviteeOptionError(needsInviteeOption ? "Velg hvordan de inviterte skal delta" : null);
+    return !errors && !needsInviteeOption;
+  };
+
   const roomTeamsAllowed = !isRecurring && !isEditingRecurring;
   const canPickRoom =
     features.roomBooking &&
@@ -444,14 +493,18 @@ function InternalCreateEventForm({
   const save = async (values: CreateEventSchema, editScope?: EditScope) => {
     setSaving(true);
     setSaveError(null);
+    const signupOptions = useSignupOptions ? toSignupOptionRequests(optionDrafts) : undefined;
     const invitees =
       allowInvitations && !isRecurring && !isEditingRecurring
-        ? selectedInvitees.map(({ email }) => ({ email }))
+        ? selectedInvitees.map(({ email }): InviteeRequest => ({
+          email,
+          ...(useSignupOptions && inviteeOption ? { signupOptionId: inviteeOption.id } : {}),
+        }))
         : undefined;
     const error =
       richEvent.type === EditTypeEnum.EDIT
-        ? await updateAndRedirect(values, richEvent.event.id, newTags, selectedCategories, editScope, invitees)
-        : await createAndRedirect(values, newTags, selectedCategories, invitees);
+        ? await updateAndRedirect(values, richEvent.event.id, newTags, selectedCategories, editScope, invitees, signupOptions)
+        : await createAndRedirect(values, newTags, selectedCategories, invitees, signupOptions);
     if (error) {
       setSaveError(error);
       setSaving(false);
@@ -461,15 +514,20 @@ function InternalCreateEventForm({
 
   return (
     <form
-      onSubmit={handleSubmit(async (formValues) => {
-        const values = withRoomTeams(formValues);
-        if (richEvent.type === EditTypeEnum.EDIT && isEditingRecurring) {
-          setPendingFormValues(values);
-          setOpenEditScopeModal(true);
-        } else {
-          await save(values);
-        }
-      })}
+      onSubmit={(e) => {
+        // Validate options together with the schema so all errors show at once.
+        const optionsValid = validateSignupOptions();
+        return handleSubmit(async (formValues) => {
+          if (!optionsValid) return;
+          const values = withRoomTeams(formValues);
+          if (richEvent.type === EditTypeEnum.EDIT && isEditingRecurring) {
+            setPendingFormValues(values);
+            setOpenEditScopeModal(true);
+          } else {
+            await save(values);
+          }
+        })(e);
+      }}
       className="flex flex-col gap-5"
     >
       <TextField
@@ -781,7 +839,24 @@ function InternalCreateEventForm({
       <Checkbox {...register("public")}>
         Publiser arrangementet på forsiden til Delta
       </Checkbox>
-      <div className="flex flex-col max-w-[21rem]">
+      {canUseSignupOptions && (
+        <div className="flex flex-col gap-4 max-w-2xl">
+          <Checkbox
+            checked={useSignupOptions}
+            readOnly={optionsLocked}
+            onChange={(e) => { if (!optionsLocked) toggleSignupOptions(e.target.checked); }}
+            description={optionsLocked
+              ? "Påmeldingsalternativene kan ikke slås av etter at arrangementet er lagret."
+              : "For eksempel fysisk og digitalt oppmøte, hver med eget antall plasser."}
+          >
+            La deltakerne velge hvordan de deltar
+          </Checkbox>
+          {useSignupOptions && (
+            <SignupOptionsFields drafts={optionDrafts} onChange={setOptionDrafts} errors={optionErrors} />
+          )}
+        </div>
+      )}
+      <div className={`flex flex-col max-w-[21rem] ${useSignupOptions ? "hidden" : ""}`}>
         <Checkbox
           {...register("hasParticipantLimit")}
           onChange={() => {
@@ -947,6 +1022,20 @@ function InternalCreateEventForm({
           excludedEmails={excludedEmails}
         />
       )}
+      {allowInvitations && !isRecurring && !isEditingRecurring && useSignupOptions && selectedInvitees.length > 0 && (
+        <Select
+          label="De inviterte deltar som"
+          value={inviteeOption ? inviteeOptionId : ""}
+          onChange={(e) => { setInviteeOptionId(e.target.value); setInviteeOptionError(null); }}
+          error={inviteeOptionError}
+          className="max-w-[21rem]"
+        >
+          <option value="">Velg alternativ</option>
+          {optionDrafts.map((draft, index) => (
+            <option key={draft.id} value={draft.id}>{draft.label.trim() || `Alternativ ${index + 1}`}</option>
+          ))}
+        </Select>
+      )}
       {(features.sharedCalendar || editEvent?.inviteMode === "SHARED") &&
         (isRecurring || isEditingRecurring) && (
         <BodyShort size="small" className="max-w-prose">
@@ -1014,9 +1103,10 @@ async function createAndRedirect(
   formData: CreateEventSchema,
   newTags: string[],
   categories: Category[],
-  invitees?: { email: string }[],
+  invitees?: InviteeRequest[],
+  signupOptions?: SignupOptionRequest[],
 ): Promise<string | null> {
-  const result = await createEvent(formData, invitees);
+  const result = await createEvent(formData, invitees, signupOptions);
   if (!result.ok) return result.message;
   const { event } = result.data;
 
@@ -1043,11 +1133,12 @@ async function updateAndRedirect(
   newTags: string[],
   categories: Category[],
   editScope?: EditScope,
-  invitees?: { email: string }[],
+  invitees?: InviteeRequest[],
+  signupOptions?: SignupOptionRequest[],
 ): Promise<string | null> {
   // Update the event first: a 400/502 (room/Teams) means nothing was saved, so
   // categories must not be changed either.
-  const result = await updateEvent(formData, eventId, editScope, invitees);
+  const result = await updateEvent(formData, eventId, editScope, invitees, signupOptions);
   if (!result.ok) return result.message;
 
   try {

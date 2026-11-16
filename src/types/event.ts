@@ -34,6 +34,28 @@ export type CreateDeltaEvent = {
   roomName?: string;
   /** Feature toggled. Only ever send true; omit to keep current value. */
   isOnlineMeeting?: boolean;
+  /** Feature toggled, SHARED events only. Omit to keep the current options. */
+  signupOptions?: SignupOptionRequest[];
+};
+
+/** An organizer-defined way to attend (for example physically or digitally) with its own capacity. */
+export type SignupOption = {
+  id: string;
+  label: string;
+  /** 0 means no limit other than the calendar attendee ceiling. */
+  participantLimit: number;
+  waitlistEnabled: boolean;
+  /** Registrations and open invitations in this option. Hosts never count. */
+  allocatedSeats: number;
+  waitlistCount: number;
+};
+
+export type SignupOptionRequest = {
+  /** Existing option to update, or a client-generated id for a new option. */
+  id?: string;
+  label: string;
+  participantLimit: number;
+  waitlistEnabled: boolean;
 };
 
 export type RoomStatus = "PENDING" | "ACCEPTED" | "DECLINED";
@@ -48,9 +70,10 @@ export type Invitation = {
   email: string;
   name: string;
   status: InvitationStatus;
+  signupOptionId?: string | null;
 };
 
-export type InviteeRequest = { email: string };
+export type InviteeRequest = { email: string; signupOptionId?: string };
 
 export type DirectoryPerson = {
   id: string;
@@ -88,6 +111,8 @@ export type DeltaEvent = {
   teamsDialIn?: string | null;
   inviteMode?: InviteMode;
   calendarSyncStatus?: CalendarSyncStatus | null;
+  /** Empty or missing for events without signup options. */
+  signupOptions?: SignupOption[];
 };
 
 export type TemplateDeltaEvent = {
@@ -105,11 +130,20 @@ export type WaitlistState = {
   position: number | null;
   registered: boolean;
   open: boolean;
+  /** The caller's option when registered or queued on an event with signup options. */
+  signupOptionId?: string | null;
 };
 
-export type WaitlistEntry = { email: string; name: string; position: number };
+export type WaitlistEntry = { email: string; name: string; position: number; signupOptionId?: string | null };
 // hosts is optional until the backend that returns it is deployed.
-export type MyWaitlistEvent = { event: DeltaEvent; position: number; open: boolean; hosts?: DeltaParticipant[] };
+export type MyWaitlistEvent = {
+  event: DeltaEvent;
+  position: number;
+  open: boolean;
+  hosts?: DeltaParticipant[];
+  /** The option the caller queues for; the position is counted within that option. */
+  signupOptionId?: string | null;
+};
 
 export enum EditTypeEnum {
   NEW,
@@ -120,11 +154,14 @@ export enum EditTypeEnum {
 export type DeltaParticipant = {
   email: string;
   name: string;
+  /** Null for hosts and for events without signup options. */
+  signupOptionId?: string | null;
 };
 
 export type ChangeDeltaParticipant = {
   email: string;
   type: "PARTICIPANT" | "HOST";
+  signupOptionId?: string;
 };
 
 export type Category = {

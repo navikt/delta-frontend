@@ -3,6 +3,7 @@ import { test } from "node:test";
 import { Children, isValidElement } from "react";
 import * as React from "react";
 import { loadComponent } from "../test-support/loadComponent.mjs";
+import * as signupOptions from "../service/signupOptions.ts";
 
 function interactiveComponent(url, mocks) {
   const states = [];
@@ -71,6 +72,8 @@ test("ordinary and festival registration controls block mutations until committe
       "@/components/waitlistControls": { default: Stub },
       "@/components/registrationRefreshNotice": { default: Notice },
       "../festivals": { getFestivalEventUrl: () => "/fixture" },
+      "@/components/signupOptionRegistration": { signupOptionRegistration: () => ({}) },
+      "@/service/signupOptions": signupOptions,
     });
     const props = {
       event: {
@@ -278,6 +281,7 @@ test("refreshed host queues reset stale local state only when the queue snapshot
     },
     "@/service/roomQueries": { getFeatures: async () => ({}) },
     "@/service/waitlistQueries": { getWaitlistEntries: async () => entries },
+    "@/service/signupOptions": signupOptions,
   }).default;
   const renderQueue = async () => {
     const page = await Page({ params: Promise.resolve({ id: "fixture-event" }) });

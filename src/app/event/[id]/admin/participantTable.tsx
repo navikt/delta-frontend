@@ -9,6 +9,25 @@ import {
   Table,
 } from "@navikt/ds-react";
 import { useState } from "react";
+import type { SignupOption } from "@/types/event";
+import { DemoteHostButton, ParticipantOptionSelect } from "./participantOptionControls";
+
+function displayName(name: string) {
+  return name.split(", ").reverse().join(" ");
+}
+
+function OptionCell({ eventId, name, email, isHost, options, currentOptionId }: {
+  eventId: string;
+  name: string;
+  email: string;
+  isHost: boolean;
+  options: SignupOption[];
+  currentOptionId?: string | null;
+}) {
+  if (isHost) return <span className="text-ax-text-neutral-subtle">Arrangør</span>;
+  return <ParticipantOptionSelect eventId={eventId} name={name} email={email}
+    options={options} currentOptionId={currentOptionId} />;
+}
 
 type ParticipantTableProps = {
   event: DeltaEvent;
@@ -33,6 +52,7 @@ export default function ParticipantTable({
             <Table.Row>
               <Table.HeaderCell scope="col">Navn</Table.HeaderCell>
               <Table.HeaderCell scope="col">E-post</Table.HeaderCell>
+              {!!event.signupOptions?.length && <Table.HeaderCell scope="col">Deltar som</Table.HeaderCell>}
               <Table.HeaderCell scope="col" aria-label="Deltaker-handlinger" />
             </Table.Row>
           </Table.Header>
@@ -91,6 +111,11 @@ function ExpandedTable({
   };
 
   const data = hosts.concat(participants);
+  const options = event.signupOptions ?? [];
+  const afterDemote = (email: string) => {
+    if (email === user.email) window.location.href = `/event/${event.id}`;
+    else window.location.reload();
+  };
 
   // Filter the data based on the searchInput
   const filteredData = data.filter(({ name, email }) => {
@@ -101,15 +126,28 @@ function ExpandedTable({
     );
   });
 
-  return filteredData.map(({ name, email }) => {
+  return filteredData.map(({ name, email, signupOptionId }) => {
     return (
       <Table.ExpandableRow
         key={email}
         content={
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2 items-start">
+            {options.length > 0 && (
+              <OptionCell eventId={event.id} name={displayName(name)} email={email}
+                isHost={hosts.some((host) => host.email === email)} options={options} currentOptionId={signupOptionId} />
+            )}
             {email === user.email && hosts.length === 1 ? (
               <></>
             ) : hosts.some((host) => host.email === email) ? (
+              options.length ? (
+                <DemoteHostButton
+                  eventId={event.id}
+                  name={displayName(name)}
+                  email={email}
+                  options={options}
+                  onDone={() => afterDemote(email)}
+                />
+              ) : (
               <Button
                 data-color="danger"
                 size="small"
@@ -118,13 +156,12 @@ function ExpandedTable({
                     email,
                     type: "PARTICIPANT",
                   });
-                  email == user.email
-                    ? (window.location.href = `/event/${event.id}`)
-                    : window.location.reload();
+                  afterDemote(email);
                 }}
               >
                 Fjern arrangør
               </Button>
+              )
             ) : (
               <>
                 <Button
@@ -210,6 +247,11 @@ function FullTable({
   };
 
   const data = hosts.concat(participants);
+  const options = event.signupOptions ?? [];
+  const afterDemote = (email: string) => {
+    if (email === user.email) window.location.href = `/event/${event.id}`;
+    else window.location.reload();
+  };
 
   // Filter the data based on the searchInput
   const filteredData = data.filter(({ name, email }) => {
@@ -220,7 +262,7 @@ function FullTable({
     );
   });
 
-  return filteredData.map(({ name, email }) => {
+  return filteredData.map(({ name, email, signupOptionId }) => {
     return (
       <Table.Row key={email}>
         <Table.HeaderCell className="font-normal" scope="row">
@@ -229,11 +271,26 @@ function FullTable({
         <Table.DataCell>
           <Link href={`mailto:${email}`}>{email}</Link>
         </Table.DataCell>
+        {options.length > 0 && (
+          <Table.DataCell>
+            <OptionCell eventId={event.id} name={displayName(name)} email={email}
+              isHost={hosts.some((host) => host.email === email)} options={options} currentOptionId={signupOptionId} />
+          </Table.DataCell>
+        )}
         <Table.DataCell>
           <div className="flex justify-end gap-2">
             {email === user.email && hosts.length === 1 ? (
               <></>
             ) : hosts.some((host) => host.email === email) ? (
+              options.length ? (
+                <DemoteHostButton
+                  eventId={event.id}
+                  name={displayName(name)}
+                  email={email}
+                  options={options}
+                  onDone={() => afterDemote(email)}
+                />
+              ) : (
               <Button
                 data-color="danger"
                 size="small"
@@ -242,13 +299,12 @@ function FullTable({
                     email,
                     type: "PARTICIPANT",
                   });
-                  email == user.email
-                    ? (window.location.href = `/event/${event.id}`)
-                    : window.location.reload();
+                  afterDemote(email);
                 }}
               >
                 Fjern arrangør
               </Button>
+              )
             ) : (
               <>
                 <Button

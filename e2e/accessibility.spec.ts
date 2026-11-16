@@ -115,6 +115,27 @@ test("Fagtorsdag kan kombineres med type og egendefinerte kategorier er synlige 
   await expect(page.getByRole("searchbox", { name: "Søk etter tittel, sted, arrangør eller kategorier" })).toBeVisible();
 });
 
+test("logoen flukter med sideinnholdet på smale og brede skjermer", async ({ page }) => {
+  await gotoSettled(page, "/");
+  const logo = page.getByRole("banner").getByRole("link", { name: "Δ Delta", exact: true });
+  const heading = page.getByRole("heading", { name: "Arrangementer", level: 1 });
+  for (const width of [375, 768, 1280, 1920]) {
+    await page.setViewportSize({ width, height: 900 });
+    await expect.poll(async () => {
+      const textLeft = await logo.evaluate(element => {
+        const range = document.createRange();
+        range.selectNodeContents(element);
+        return range.getBoundingClientRect().left;
+      });
+      const headingBounds = await heading.boundingBox();
+      if (!headingBounds) throw new Error("Sideoverskriften er ikke synlig");
+      return Math.abs(textLeft - headingBounds.x);
+    }).toBeLessThanOrEqual(1);
+    await logo.focus();
+    await expect(logo).toBeInViewport();
+  }
+});
+
 test("hopp til hovedinnhold er første tabstopp og flytter fokus til main", async ({ page, browserName }) => {
   test.skip(browserName !== "chromium", "Tab order differs per browser");
   await gotoSettled(page, "/");

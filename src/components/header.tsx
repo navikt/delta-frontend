@@ -60,7 +60,7 @@ export default function Header({ isMaintainer }: { isMaintainer: boolean }) {
   return (
     <InternalHeader>
       <Page.Block width="xl" gutters className="flex w-full items-stretch">
-        <InternalHeader.Title as={NextLink} href="/" data-umami-event="Delta-logo besøkt">
+        <InternalHeader.Title as={NextLink} href="/" className="-ms-4 ps-4" data-umami-event="Delta-logo besøkt">
           Δ Delta
         </InternalHeader.Title>
         <Spacer />

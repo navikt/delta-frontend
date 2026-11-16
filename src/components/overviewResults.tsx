@@ -64,6 +64,7 @@ export default function OverviewResults({
     <ResultsStatus message={resultsStatusMessage(ready, visible.length)} />
     {ready && now !== null ? (
       <EventList fullEvents={visible} now={now} descending={showPast}
+        showFagtorsdag={!fixedCategory}
         userEmail={fixedCategory ? undefined : userEmail}
         emptyMessage={emptyMessage(view, state.search, showPast)} />
     ) : <EventResultsSkeleton announce={false} />}
@@ -89,7 +90,7 @@ export function WaitlistResults({ entries, datasetKey, categories }: {
       Du blir automatisk påmeldt hvis du får plass før fristen. Du kan forlate ventelisten på arrangementssiden.
     </BodyShort>
     {visible.length ? (
-      <EventDayGroups items={visible} now={now} renderItem={entry => <WaitlistEventCard entry={entry} />} />
+      <EventDayGroups items={visible} now={now} showFagtorsdag renderItem={entry => <WaitlistEventCard entry={entry} />} />
     ) : (
       <EmptyEventList>{state.search.trim() ? `Fant ingen arrangementer som passer «${state.search.trim()}».`
         : "Du står ikke på noen ventelister for kommende arrangementer."}</EmptyEventList>

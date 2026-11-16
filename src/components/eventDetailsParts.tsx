@@ -152,7 +152,7 @@ export function DescriptionCard({
           <div className="max-w-2xl break-words">{children}</div>
         </VStack>
         <Divider />
-        <HStack gap="space-12" justify="space-between" align="center">
+        <VStack gap="space-12">
           <Heading level="2" size="xsmall">
             Del arrangementet
           </Heading>
@@ -174,7 +174,7 @@ export function DescriptionCard({
               Vis QR-kode
             </Button>
           </HStack>
-        </HStack>
+        </VStack>
       </VStack>
       <Modal open={openQR} onClose={() => setOpenQR(false)} header={{ heading: "QR-kode til arrangementet" }}>
         <Modal.Body>

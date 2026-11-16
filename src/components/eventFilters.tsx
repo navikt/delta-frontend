@@ -19,12 +19,13 @@ const QUICK_FILTER_NAMES = QUICK_FILTERS.map(filter => filter.name);
 
 export default function EventFilters({ categories }: { categories: Category[] }) {
   const [state, setState] = useQueryStates(homeParsers, { history: "replace", scroll: false });
-  const { pending, startTransition, allCount } = useOverviewTransition();
+  const { pending, startTransition, allCount, availableCategoryNames } = useOverviewTransition();
   const view = homeView(state);
 
   const selectedCategories = categories.filter(category => state.categories.includes(category.name));
-  const visibleOptions = [...new Set(categories.map(category => category.name))]
-    .filter(name => name !== "fagdag_utvikling_og_data").sort((a, b) => a.localeCompare(b));
+  const visibleOptions = availableCategoryNames ?? [];
+  const visibleQuickFilters = QUICK_FILTERS.filter(filter =>
+    visibleOptions.includes(filter.name) || state.categories.includes(filter.name));
   const updateServerState = (updates: Partial<typeof state>) => {
     const next = { ...state, ...updates };
     const changesDataset = homeDatasetKey(state, categories) !== homeDatasetKey(next, categories);
@@ -66,17 +67,17 @@ export default function EventFilters({ categories }: { categories: Category[] })
           </Box>
           {view === "alle" && <>
             <HStack gap="space-16" align="end" wrap>
-              <VStack gap="space-8">
+              {visibleQuickFilters.length > 0 && <VStack gap="space-8">
                 <BodyShort size="small" weight="semibold">Type arrangement</BodyShort>
                 <Chips size="small" aria-label="Type arrangement">
-                  {QUICK_FILTERS.map(filter => (
+                  {visibleQuickFilters.map(filter => (
                     <Chips.Toggle key={filter.name} selected={quickFilters.includes(filter.name)}
                       onClick={() => toggleQuickFilter(filter.name)}>
                       {filter.label}
                     </Chips.Toggle>
                   ))}
                 </Chips>
-              </VStack>
+              </VStack>}
               <Box className="w-full ax-md:w-80">
                 <UNSAFE_Combobox size="small" label="Kategori" placeholder="Alle kategorier" options={visibleOptions}
                   selectedOptions={selectedCategories.map(category => category.name).sort((a, b) => a.localeCompare(b))}

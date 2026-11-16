@@ -9,7 +9,7 @@ import { filterActiveJoinedEvents, filterHomeCategories, homeDatasetKey } from "
 import { matchesEventSearch } from "@/service/eventSearch";
 import EventList, { EmptyEventList, EventDayGroups } from "./eventList";
 import EventResultsSkeleton from "./eventResultsSkeleton";
-import { shouldHideEventCard } from "./eventCardVisibility";
+import { getHomeCategoryNames, shouldHideEventCard } from "./eventCardVisibility";
 import { WaitlistEventCard } from "./waitlistEventCard";
 import { useOverviewScroll } from "./useOverviewScroll";
 import { useOverviewPath } from "./useOverviewPath";
@@ -58,6 +58,13 @@ export default function OverviewResults({
   useEffect(() => {
     if (allCount !== null) setAllCount?.(allCount);
   }, [allCount, setAllCount]);
+  const setAvailableCategoryNames = overview?.setAvailableCategoryNames;
+  useEffect(() => {
+    if (!ready || view !== "alle" || now === null) return;
+    const names = getHomeCategoryNames(events, now);
+    setAvailableCategoryNames?.(previous =>
+      previous?.length === names.length && previous.every((name, index) => name === names[index]) ? previous : names);
+  }, [ready, view, now, events, setAvailableCategoryNames]);
   useOverviewScroll(path, ready);
 
   return <div className="w-full">

@@ -1,5 +1,5 @@
 "use client";
-import { HatSchoolIcon, MenuHamburgerIcon, PersonGroupIcon, PlusIcon } from "@navikt/aksel-icons";
+import { CogIcon, HatSchoolIcon, MenuHamburgerIcon, PersonGroupIcon, PlusIcon } from "@navikt/aksel-icons";
 import { ActionMenu, InternalHeader, Page, Spacer } from "@navikt/ds-react";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
@@ -20,8 +20,9 @@ function navItems(isMaintainer: boolean): NavItem[] {
   return [
     ...(isMaintainer
       ? [{
-          label: "Administrasjon",
+          label: "Admin",
           href: "/admin",
+          icon: <CogIcon aria-hidden />,
           prefetch: false as const,
           isActive: (pathname: string) => pathname.startsWith("/admin"),
           dataAttributes: {},

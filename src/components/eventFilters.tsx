@@ -57,30 +57,35 @@ export default function EventFilters({ categories }: { categories: Category[] })
           { value: "mine", text: "Jeg arrangerer" },
         ]} />
       <Box background="raised" borderColor="neutral-subtle" borderWidth="1" borderRadius="12" padding="space-16">
-        <HStack gap="space-16" align="end" wrap>
-          <Box flexGrow="1" flexBasis="18rem">
+        <VStack gap="space-16">
+          <Box className="w-full max-w-2xl">
             <Search label="Søk i arrangementer" hideLabel variant="simple" size="small" value={state.search}
               placeholder="Søk etter tittel, sted eller arrangør"
               onChange={search => void setState({ search }, { shallow: true })}
               onClear={() => void setState({ search: "" }, { shallow: true })} />
           </Box>
           {view === "alle" && <>
-            <Chips size="small" aria-label="Type arrangement">
-              {QUICK_FILTERS.map(filter => (
-                <Chips.Toggle key={filter.name} selected={quickFilters.includes(filter.name)}
-                  onClick={() => toggleQuickFilter(filter.name)}>
-                  {filter.label}
-                </Chips.Toggle>
-              ))}
-            </Chips>
-            <Box flexBasis="16rem" flexGrow="1">
-              <UNSAFE_Combobox size="small" label="Kategori" placeholder="Alle kategorier" options={visibleOptions}
-                selectedOptions={selectedCategories.map(category => category.name).sort((a, b) => a.localeCompare(b))}
-                onToggleSelected={(name, selected) => updateServerState({
-                  categories: canonicalCategoryNames(selected ? [...state.categories, name] : state.categories.filter(value => value !== name)),
-                })}
-                isMultiSelect shouldAutocomplete />
-            </Box>
+            <HStack gap="space-16" align="end" wrap>
+              <VStack gap="space-8">
+                <BodyShort size="small" weight="semibold">Type arrangement</BodyShort>
+                <Chips size="small" aria-label="Type arrangement">
+                  {QUICK_FILTERS.map(filter => (
+                    <Chips.Toggle key={filter.name} selected={quickFilters.includes(filter.name)}
+                      onClick={() => toggleQuickFilter(filter.name)}>
+                      {filter.label}
+                    </Chips.Toggle>
+                  ))}
+                </Chips>
+              </VStack>
+              <Box className="w-full ax-md:w-80">
+                <UNSAFE_Combobox size="small" label="Kategori" placeholder="Alle kategorier" options={visibleOptions}
+                  selectedOptions={selectedCategories.map(category => category.name).sort((a, b) => a.localeCompare(b))}
+                  onToggleSelected={(name, selected) => updateServerState({
+                    categories: canonicalCategoryNames(selected ? [...state.categories, name] : state.categories.filter(value => value !== name)),
+                  })}
+                  isMultiSelect shouldAutocomplete />
+              </Box>
+            </HStack>
           </>}
           {view === "mine" && (
             <Switch size="small" checked={state.showPast}
@@ -88,7 +93,7 @@ export default function EventFilters({ categories }: { categories: Category[] })
               Vis tidligere
             </Switch>
           )}
-        </HStack>
+        </VStack>
       </Box>
       {pending && <BodyShort textColor="subtle">Laster arrangementer …</BodyShort>}
     </VStack>

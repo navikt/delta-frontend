@@ -27,7 +27,7 @@ export function EventDayGroups<T extends { event: { id: string; startTime: strin
           </HStack>
           {/* role="list" keeps list semantics in Safari/VoiceOver when list-style is removed. */}
           <HGrid as="ul" role="list" gap="space-16" columns={EVENT_GRID_COLUMNS}>
-            {group.events.map(item => <li key={item.event.id} className="flex">{renderItem(item)}</li>)}
+            {group.events.map(item => <li key={item.event.id} className="flex min-w-0 flex-col">{renderItem(item)}</li>)}
           </HGrid>
         </VStack>
       ))}

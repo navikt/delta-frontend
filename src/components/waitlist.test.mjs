@@ -29,7 +29,7 @@ function interactiveComponent(url, mocks) {
 
 function elements(node) {
   if (Array.isArray(node)) return node.flatMap(elements);
-  return isValidElement(node) ? [node, ...elements(node.props.children), ...elements(node.props.actions)] : [];
+  return isValidElement(node) ? [node, ...elements(node.props.children), ...elements(node.props.actions), ...elements(node.props.organizerBar)] : [];
 }
 
 function text(node) {
@@ -54,7 +54,7 @@ test("ordinary and festival registration controls block mutations until committe
       "./eventDescription": { default: Stub },
       "@/components/cardWithBackground": { default: Stub },
       "@/components/eventDetailsParts": { DescriptionCard: Stub, EventHeroMeta: Stub },
-      "@/components/organizerStatusBox": { default: Stub },
+      "@/components/organizerBar": { default: Stub },
       "@/components/roomStatusTag": { RoomStatusRow: Stub },
       "@/service/eventActions": {},
       "@/service/waitlistActions": {
@@ -264,6 +264,9 @@ test("refreshed host queues reset stale local state only when the queue snapshot
     "@/auth/token": { checkToken: async () => {}, getUser: async () => ({ email: "host@fixture" }) },
     "@/components/cardWithBackground": { default: () => null },
     "./participantPage": { default: () => null },
+    "@/components/organizerBar": { default: () => null },
+    "@/components/calendarSyncStatus": { default: () => null },
+    "@/components/roomStatusTag": { RoomStatusRow: () => null },
     "@/components/waitlistManager": { default: Queue },
     "@/service/eventQueries": {
       getEvent: async () => ({

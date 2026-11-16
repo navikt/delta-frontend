@@ -31,7 +31,7 @@ import {
     isInvitationReservationActive,
 } from "@/service/eventCapacity";
 import CalendarSyncStatus from "@/components/calendarSyncStatus";
-import OrganizerStatusBox from "@/components/organizerStatusBox";
+import OrganizerBar from "@/components/organizerBar";
 import { RoomStatusRow } from "@/components/roomStatusTag";
 import { DescriptionCard, EventHeroMeta } from "@/components/eventDetailsParts";
 import WaitlistControls from "@/components/waitlistControls";
@@ -112,58 +112,57 @@ export default function EventDetails({
         </Button>
     );
 
+    /** Organizer actions, shown in the organizer bar above the hero. */
+    const organizerActions = isHost && (
+        <>
+            <Button data-umami-event="administrer besøkt"
+                as={NextLink}
+                href={`/event/${event.id}/edit`}
+                variant="primary"
+                icon={<PencilIcon aria-hidden/>}
+            >
+                Rediger
+            </Button>
+            <Button data-umami-event="bruk som mal"
+                as={NextLink}
+                href={`/event/new?template=${event.id}`}
+                variant="secondary"
+                icon={<FilesIcon aria-hidden/>}
+            >
+                Dupliser
+            </Button>
+            <Button data-umami-event="webtatistikk besøkt"
+                as="a"
+                href={`https://metabase.ansatt.nav.no/dashboard/716-nav-webstatistikk?dato=past30days~&nettside=delta.nav.no&url-sti_er_lik=%2Fevent%2F${event.id}`}
+                variant="secondary"
+                icon={<BarChartIcon aria-hidden/>}
+            >
+                Statistikk
+            </Button>
+            <Button
+                type="button"
+                variant="tertiary"
+                data-color="danger"
+                icon={<TrashIcon aria-hidden/>}
+                onClick={() => {
+                    if (recurringSeries) {
+                        setOpenScopeDelete(true);
+                    } else {
+                        setOpenConfirmationDelete((x) => !x);
+                    }
+                }}
+            >
+                Slett
+            </Button>
+        </>
+    );
+
     /** Hero actions and the status message that explains them, derived from the registration state. */
     const registration: { actions?: ReactNode; notice?: ReactNode } = (function () {
         if (registrationNeedsRefresh) {
             return { notice: <RegistrationRefreshNotice eventId={event.id} onUpdated={updateRegistration} /> };
         }
-        if (isHost) {
-            return {
-                actions: (
-                    <>
-                        <Button data-umami-event="administrer besøkt"
-                            as={NextLink}
-                            href={`/event/${event.id}/edit`}
-                            variant="primary"
-                            icon={<PencilIcon aria-hidden/>}
-                        >
-                            Rediger
-                        </Button>
-                        <Button data-umami-event="bruk som mal"
-                            as={NextLink}
-                            href={`/event/new?template=${event.id}`}
-                            variant="secondary"
-                            icon={<FilesIcon aria-hidden/>}
-                        >
-                            Dupliser
-                        </Button>
-                        <Button data-umami-event="webtatistikk besøkt"
-                            as="a"
-                            href={`https://metabase.ansatt.nav.no/dashboard/716-nav-webstatistikk?dato=past30days~&nettside=delta.nav.no&url-sti_er_lik=%2Fevent%2F${event.id}`}
-                            variant="secondary"
-                            icon={<BarChartIcon aria-hidden/>}
-                        >
-                            Statistikk
-                        </Button>
-                        <Button
-                            type="button"
-                            variant="tertiary"
-                            data-color="danger"
-                            icon={<TrashIcon aria-hidden/>}
-                            onClick={() => {
-                                if (recurringSeries) {
-                                    setOpenScopeDelete(true);
-                                } else {
-                                    setOpenConfirmationDelete((x) => !x);
-                                }
-                            }}
-                        >
-                            Slett
-                        </Button>
-                    </>
-                ),
-            };
-        }
+        if (isHost) return {};
         if (!isParticipant && reactiveWaitlist?.position != null) {
             return { actions: <WaitlistControls eventId={event.id} state={reactiveWaitlist} onUpdated={updateRegistration} /> };
         }
@@ -233,6 +232,22 @@ export default function EventDetails({
             leading={<Calendar dateString={event.startTime}/>}
             meta={<EventHeroMeta event={event} categories={categories} recurringSeries={recurringSeries}/>}
             actions={registration.actions || undefined}
+            organizerBar={isHost && (
+                <OrganizerBar
+                    status={<>
+                        {showCalendarStatus && (
+                            <CalendarSyncStatus
+                                eventId={event.id}
+                                status={event.calendarSyncStatus}
+                                error={calendarSyncError}
+                                isHost={isHost}
+                            />
+                        )}
+                        {showRoomStatus && <RoomStatusRow eventId={event.id} status={event.roomStatus}/>}
+                    </>}
+                    actions={organizerActions}
+                />
+            )}
             bare
         >
             <VStack gap="space-24">
@@ -263,19 +278,6 @@ export default function EventDetails({
                             recurringSeries={recurringSeries}
                             features={features}
                         />
-                        {isHost && (
-                            <OrganizerStatusBox>
-                                {showCalendarStatus && (
-                                    <CalendarSyncStatus
-                                        eventId={event.id}
-                                        status={event.calendarSyncStatus}
-                                        error={calendarSyncError}
-                                        isHost={isHost}
-                                    />
-                                )}
-                                {showRoomStatus && <RoomStatusRow eventId={event.id} status={event.roomStatus}/>}
-                            </OrganizerStatusBox>
-                        )}
                     </VStack>
                     <DescriptionCard
                         shareUrl={`${hostname}/event/${event.id}`}

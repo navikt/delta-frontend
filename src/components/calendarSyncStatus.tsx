@@ -1,12 +1,12 @@
 "use client";
 
-import { CheckmarkCircleIcon, ClockIcon, ExclamationmarkTriangleIcon } from "@navikt/aksel-icons";
-import { BodyShort, Button } from "@navikt/ds-react";
+import { CheckmarkIcon, ClockIcon, ExclamationmarkTriangleIcon } from "@navikt/aksel-icons";
+import { BodyShort, Button, HStack } from "@navikt/ds-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { retryCalendarSync } from "@/service/eventActions";
 import { CalendarSyncStatus as CalendarSyncState } from "@/types/event";
-import { OrganizerStatus, OrganizerStatusRow } from "@/components/organizerStatusBox";
+import { OrganizerStatus } from "@/components/organizerBar";
 
 type CalendarSyncStatusProps = {
   eventId: string;
@@ -15,7 +15,7 @@ type CalendarSyncStatusProps = {
   isHost: boolean;
 };
 
-/** Calendar sync row for the organizer status box. */
+/** Calendar sync status for the organizer bar. */
 export default function CalendarSyncStatus({
   eventId,
   status: initialStatus,
@@ -42,34 +42,21 @@ export default function CalendarSyncStatus({
   if (!isHost || !status) return null;
 
   if (status === "SYNCED") {
-    return (
-      <OrganizerStatusRow
-        label="Kalender"
-        status={<OrganizerStatus tone="success" icon={<CheckmarkCircleIcon aria-hidden />}>Oppdatert</OrganizerStatus>}
-      />
-    );
+    return <OrganizerStatus tone="success" icon={<CheckmarkIcon aria-hidden />}>Kalender oppdatert</OrganizerStatus>;
   }
 
   if (status === "PENDING") {
-    return (
-      <OrganizerStatusRow
-        label="Kalender"
-        status={<OrganizerStatus tone="neutral" icon={<ClockIcon aria-hidden />}>Oppdateres …</OrganizerStatus>}
-      />
-    );
+    return <OrganizerStatus tone="neutral" icon={<ClockIcon aria-hidden />}>Kalender oppdateres …</OrganizerStatus>;
   }
 
   return (
-    <OrganizerStatusRow
-      label="Kalender"
-      status={<OrganizerStatus tone="danger" icon={<ExclamationmarkTriangleIcon aria-hidden />}>Ikke oppdatert</OrganizerStatus>}
-    >
+    <HStack gap="space-8" align="center">
+      <OrganizerStatus tone="danger" icon={<ExclamationmarkTriangleIcon aria-hidden />}>Kalender ikke oppdatert</OrganizerStatus>
       <BodyShort size="small">{error || "Outlook-kalenderen kunne ikke oppdateres."}</BodyShort>
       <Button
         type="button"
-        size="small"
-        variant="secondary"
-        className="w-fit"
+        size="xsmall"
+        variant="tertiary"
         loading={retrying}
         onClick={async () => {
           setRetrying(true);
@@ -91,6 +78,6 @@ export default function CalendarSyncStatus({
           {actionError}
         </BodyShort>
       )}
-    </OrganizerStatusRow>
+    </HStack>
   );
 }

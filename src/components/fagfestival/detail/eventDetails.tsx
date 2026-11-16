@@ -26,7 +26,7 @@ import {
     isInvitationReservationActive,
 } from "@/service/eventCapacity";
 import CalendarSyncStatus from "@/components/calendarSyncStatus";
-import OrganizerStatusBox from "@/components/organizerStatusBox";
+import OrganizerBar from "@/components/organizerBar";
 import { DescriptionCard, EventHeroMeta } from "@/components/eventDetailsParts";
 import { type FestivalConfig, getFestivalEventUrl } from "../festivals";
 import WaitlistControls from "@/components/waitlistControls";
@@ -132,20 +132,19 @@ export default function EventDetails({
         </Button>
     );
 
+    /** Organizer actions, shown in the organizer bar above the hero. */
+    const organizerActions = isHost && (
+        <Button as={NextLink} href={`/event/${event.id}/admin`} variant="primary">
+            Administrer
+        </Button>
+    );
+
     /** Hero actions and the status message that explains them, derived from the registration state. */
     const registration: { actions?: ReactNode; notice?: ReactNode } = (function () {
         if (registrationNeedsRefresh) {
             return { notice: <RegistrationRefreshNotice eventId={event.id} onUpdated={updateRegistration} /> };
         }
-        if (isHost) {
-            return {
-                actions: (
-                    <Button as={NextLink} href={`/event/${event.id}/admin`} variant="primary">
-                        Administrer
-                    </Button>
-                ),
-            };
-        }
+        if (isHost) return {};
         if (!isParticipant && reactiveWaitlist?.position != null) {
             return { actions: <WaitlistControls eventId={event.id} state={reactiveWaitlist} onUpdated={updateRegistration} /> };
         }
@@ -215,6 +214,19 @@ export default function EventDetails({
             leading={<Calendar dateString={event.startTime}/>}
             meta={<EventHeroMeta event={event} categories={categories}/>}
             actions={registration.actions || undefined}
+            organizerBar={isHost && (
+                <OrganizerBar
+                    status={showCalendarStatus && (
+                        <CalendarSyncStatus
+                            eventId={event.id}
+                            status={event.calendarSyncStatus}
+                            error={calendarSyncError}
+                            isHost={isHost}
+                        />
+                    )}
+                    actions={organizerActions}
+                />
+            )}
             bare
         >
             <VStack gap="space-24">
@@ -244,18 +256,6 @@ export default function EventDetails({
                             invitationCapacity={reactiveInvitationCapacity}
                             categories={categories}
                         />
-                        {isHost && (
-                            <OrganizerStatusBox>
-                                {showCalendarStatus && (
-                                    <CalendarSyncStatus
-                                        eventId={event.id}
-                                        status={event.calendarSyncStatus}
-                                        error={calendarSyncError}
-                                        isHost={isHost}
-                                    />
-                                )}
-                            </OrganizerStatusBox>
-                        )}
                     </VStack>
                     <DescriptionCard shareUrl={eventUrl} qrText={eventUrl}>
                         <BodyLong className="whitespace-pre-line">

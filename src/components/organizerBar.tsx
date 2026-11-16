@@ -1,73 +1,60 @@
 import { EyeSlashIcon } from "@navikt/aksel-icons";
-import { BodyShort, Box, Detail, HStack, VStack } from "@navikt/ds-react";
+import { Box, Detail, HStack, Page, Tag } from "@navikt/ds-react";
 import { Children, type ReactNode } from "react";
 
+type OrganizerBarProps = {
+  /** Status tags such as calendar sync and room booking. */
+  status?: ReactNode;
+  /** Organizer actions such as edit, duplicate and delete. */
+  actions?: ReactNode;
+};
+
 /**
- * Groups organizer-only status rows (calendar, room) in one visually distinct box.
- * Renders nothing when no rows are present. Callers must only render it for hosts.
+ * Full-width bar above the page hero with organizer-only status and actions, so the rest of the
+ * page looks the same for organizers and participants. Callers must only render it for hosts.
  */
-export default function OrganizerStatusBox({ children }: { children?: ReactNode }) {
-  if (Children.toArray(children).length === 0) return null;
+export default function OrganizerBar({ status, actions }: OrganizerBarProps) {
+  const hasStatus = Children.toArray(status).length > 0;
+  const hasActions = Children.toArray(actions).length > 0;
+  if (!hasStatus && !hasActions) return null;
   return (
     <Box
       as="section"
       aria-label="Kun synlig for arrangører"
       background="meta-purple-soft"
-      borderColor="meta-purple"
-      borderWidth="1"
-      borderRadius="12"
-      padding="space-16"
-      className="border-dashed"
+      borderColor="meta-purple-subtle"
+      borderWidth="0 0 1 0"
+      paddingBlock="space-12"
     >
-      <VStack gap="space-12">
-        <HStack gap="space-8" align="center" wrap={false} className="text-ax-text-meta-purple">
-          <EyeSlashIcon aria-hidden />
-          <Detail as="h2" weight="semibold" uppercase>
-            Kun synlig for arrangører
-          </Detail>
+      <Page.Block width="xl" gutters>
+        <HStack gap="space-16" justify="space-between" align="center" wrap>
+          <HStack gap="space-12" align="center" wrap>
+            <HStack gap="space-8" align="center" wrap={false} className="text-ax-text-meta-purple">
+              <EyeSlashIcon aria-hidden />
+              <Detail as="h2" weight="semibold" uppercase>
+                Kun synlig for arrangører
+              </Detail>
+            </HStack>
+            {status}
+          </HStack>
+          {hasActions && <HStack gap="space-8" wrap>{actions}</HStack>}
         </HStack>
-        <VStack as="ul" gap="space-12">
-          {children}
-        </VStack>
-      </VStack>
+      </Page.Block>
     </Box>
-  );
-}
-
-type OrganizerStatusRowProps = {
-  label: string;
-  /** Status shown to the right of the label. */
-  status: ReactNode;
-  /** Optional details below the row, e.g. an error message or a follow-up action. */
-  children?: ReactNode;
-};
-
-export function OrganizerStatusRow({ label, status, children }: OrganizerStatusRowProps) {
-  return (
-    <VStack as="li" gap="space-8">
-      <HStack gap="space-8" justify="space-between" align="center">
-        <BodyShort size="small">{label}</BodyShort>
-        {status}
-      </HStack>
-      {children}
-    </VStack>
   );
 }
 
 type OrganizerStatusProps = {
   tone: "success" | "warning" | "danger" | "neutral";
-  icon?: ReactNode;
+  icon: ReactNode;
   children: ReactNode;
 };
 
-/** Status text with an optional icon. Status is never conveyed by color or icon alone. */
+/** Status tag with icon and text. Status is never conveyed by color or icon alone. */
 export function OrganizerStatus({ tone, icon, children }: OrganizerStatusProps) {
   return (
-    <BodyShort as="span" size="small" weight="semibold" textColor="default" data-color={tone}>
-      <HStack as="span" gap="space-4" align="center" wrap={false}>
-        {icon}
-        {children}
-      </HStack>
-    </BodyShort>
+    <Tag size="small" variant="moderate" data-color={tone} icon={icon}>
+      {children}
+    </Tag>
   );
 }

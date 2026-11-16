@@ -1,8 +1,8 @@
-import { CheckmarkCircleIcon, ClockIcon, ExclamationmarkTriangleIcon } from "@navikt/aksel-icons";
-import { Link, Tag } from "@navikt/ds-react";
+import { CheckmarkIcon, ClockIcon, ExclamationmarkTriangleIcon } from "@navikt/aksel-icons";
+import { HStack, Link, Tag } from "@navikt/ds-react";
 import NextLink from "next/link";
 import type { RoomStatus } from "@/types/event";
-import { OrganizerStatus, OrganizerStatusRow } from "@/components/organizerStatusBox";
+import { OrganizerStatus } from "@/components/organizerBar";
 
 const TAG: Record<RoomStatus, { color: "neutral" | "success" | "danger"; text: string }> = {
   PENDING: { color: "neutral", text: "Venter på svar fra rommet" },
@@ -20,33 +20,21 @@ export function RoomStatusTag({ status }: { status?: RoomStatus | null }) {
   );
 }
 
-/** Room booking row for the organizer status box. */
+/** Room booking status for the organizer bar. */
 export function RoomStatusRow({ eventId, status }: { eventId: string; status?: RoomStatus | null }) {
   if (!status || !TAG[status]) return null;
   if (status === "ACCEPTED") {
-    return (
-      <OrganizerStatusRow
-        label="Rom"
-        status={<OrganizerStatus tone="success" icon={<CheckmarkCircleIcon aria-hidden />}>Booket</OrganizerStatus>}
-      />
-    );
+    return <OrganizerStatus tone="success" icon={<CheckmarkIcon aria-hidden />}>Rom booket</OrganizerStatus>;
   }
   if (status === "PENDING") {
-    return (
-      <OrganizerStatusRow
-        label="Rom"
-        status={<OrganizerStatus tone="neutral" icon={<ClockIcon aria-hidden />}>Venter på svar</OrganizerStatus>}
-      />
-    );
+    return <OrganizerStatus tone="neutral" icon={<ClockIcon aria-hidden />}>Rom venter på svar</OrganizerStatus>;
   }
   return (
-    <OrganizerStatusRow
-      label="Rom"
-      status={<OrganizerStatus tone="danger" icon={<ExclamationmarkTriangleIcon aria-hidden />}>Avslått</OrganizerStatus>}
-    >
-      <Link as={NextLink} href={`/event/${eventId}/edit`} className="w-fit text-ax-small">
+    <HStack gap="space-8" align="center">
+      <OrganizerStatus tone="danger" icon={<ExclamationmarkTriangleIcon aria-hidden />}>Rom avslått</OrganizerStatus>
+      <Link as={NextLink} href={`/event/${eventId}/edit`} className="text-ax-small">
         Velg et annet rom
       </Link>
-    </OrganizerStatusRow>
+    </HStack>
   );
 }

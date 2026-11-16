@@ -1,5 +1,4 @@
 "use client";
-import { RoomStatusRow } from "@/components/roomStatusTag";
 import {FullDeltaEvent} from "@/types/event";
 import {BodyLong, Button, Heading, Modal, Search} from "@navikt/ds-react";
 import ParticipantTable from "./participantTable";
@@ -11,28 +10,22 @@ import {CalendarIcon, ClockIcon, LocationPinIcon, TrashIcon} from "@navikt/aksel
 import {User} from "@/types/user";
 import {formatEventDates, formatEventDuration} from "@/service/format";
 import InvitationManager from "./invitationManager";
-import CalendarSyncStatus from "@/components/calendarSyncStatus";
-import OrganizerStatusBox from "@/components/organizerStatusBox";
 
 type ParticipantPageProps = {
     fullEvent: FullDeltaEvent;
     user: User;
-    showRoomStatus?: boolean;
     peopleSearchEnabled?: boolean;
 };
 
 export default function ParticipantPage({
                                       fullEvent: eventWithParticipants,
                                       user,
-                                      showRoomStatus = false,
                                       peopleSearchEnabled = false,
                                   }: ParticipantPageProps) {
     const [openConfirmation, setOpenConfirmation] = useState(false);
 
     const [searchInput, setSearchInput] = useState("");
     const {event, participants, hosts}: FullDeltaEvent = eventWithParticipants;
-    const showCalendarStatus = event.inviteMode === "SHARED" && !!event.calendarSyncStatus;
-    const showRoomBookingStatus = showRoomStatus && !!event.roomName && !!event.roomStatus;
 
     return (
         <div className="flex flex-col gap-10">
@@ -115,23 +108,6 @@ export default function ParticipantPage({
                 user={user}
                 searchInput={searchInput}
             />
-            {(showCalendarStatus || showRoomBookingStatus) && (
-            <div className="ax-md:max-w-sm">
-              <OrganizerStatusBox>
-                {showCalendarStatus && (
-                  <CalendarSyncStatus
-                    eventId={event.id}
-                    status={event.calendarSyncStatus}
-                    error={eventWithParticipants.calendarSyncError}
-                    isHost
-                  />
-                )}
-                {showRoomBookingStatus && (
-                  <RoomStatusRow eventId={event.id} status={event.roomStatus}/>
-                )}
-              </OrganizerStatusBox>
-            </div>
-            )}
             {event.inviteMode === "SHARED" && (
               <div className="flex flex-col gap-4">
                 <InvitationManager

@@ -22,14 +22,14 @@ const commonMocks = {
   "@/service/format": formatting,
 };
 const participant = loadComponent("./participant.tsx", {}).default;
-const organizerStatusBox = loadComponent("../../organizerStatusBox.tsx", {});
+const organizerBar = loadComponent("../../organizerBar.tsx", {});
 const calendarSyncStatus = loadComponent("../../calendarSyncStatus.tsx", {
   "next/navigation": { useRouter: () => ({ refresh() {} }) },
   "@/service/eventActions": {},
-  "@/components/organizerStatusBox": organizerStatusBox,
+  "@/components/organizerBar": organizerBar,
 }).default;
 const roomStatus = loadComponent("../../roomStatusTag.tsx", {
-  "@/components/organizerStatusBox": organizerStatusBox,
+  "@/components/organizerBar": organizerBar,
 });
 const detailsFormat = loadComponent("../../../service/eventDetailsFormat.ts", {});
 const copyButton = {
@@ -52,9 +52,9 @@ const eventDescription = loadComponent("../../../app/event/[id]/eventDescription
 const description = loadComponent("./eventDescription.tsx", {
   ...commonMocks, ...partsMocks, "./participant": { default: participant },
 }).default;
-const cardWithBackground = ({ backLink, backText, backToOverview, leading, meta, actions, children }) =>
+const cardWithBackground = ({ backLink, backText, backToOverview, leading, meta, actions, organizerBar, children }) =>
   createElement("div", { "data-back-to-overview": String(!!backToOverview) },
-    createElement("a", { href: backLink }, backText), leading, meta, actions, children);
+    organizerBar, createElement("a", { href: backLink }, backText), leading, meta, actions, children);
 const detailsMocks = {
   ...commonMocks,
   ...partsMocks,
@@ -62,7 +62,7 @@ const detailsMocks = {
   "@/components/calendar": { default: noopComponent },
   "@/components/cardWithBackground": { default: cardWithBackground },
   "@/components/calendarSyncStatus": { default: calendarSyncStatus },
-  "@/components/organizerStatusBox": organizerStatusBox,
+  "@/components/organizerBar": organizerBar,
   "@/components/roomStatusTag": roomStatus,
   "@/service/eventActions": {},
   "@/service/eventInteractiveReads": {},
@@ -99,15 +99,14 @@ function renderDetails(festival, overrides = {}) {
   }));
 }
 
-test("calendar status and the organizer box are only rendered for hosts", () => {
+test("calendar status and the organizer bar are only rendered for hosts", () => {
   for (const status of ["SYNCED", "PENDING", "FAILED"]) {
     for (const isHost of [false, true]) {
       const html = renderToStaticMarkup(createElement(calendarSyncStatus, {
         eventId: fixture.event.id, status, isHost,
       }));
       if (isHost) {
-        assert.match(html, /Kalender/);
-        assert.match(html, /Oppdatert|Oppdateres|Ikke oppdatert/);
+        assert.match(html, /Kalender (oppdatert|oppdateres|ikke oppdatert)/);
       } else {
         assert.equal(html, "");
       }
@@ -119,10 +118,10 @@ test("calendar status and the organizer box are only rendered for hosts", () => 
       ...fixture, festival: festivals.fagfest, user, event,
       invitationCapacity: { reservedInvitations: 1, hasOwnReservation: false }, ...overrides,
     }));
-    assert.doesNotMatch(render({}), /Kun synlig for arrangører|Oppdatert/);
+    assert.doesNotMatch(render({}), /Kun synlig for arrangører|Kalender oppdatert/);
     const hostHtml = render({ user: { ...user, email: "host@fixture" } });
     assert.match(hostHtml, /Kun synlig for arrangører/);
-    assert.match(hostHtml, /Oppdatert/);
+    assert.match(hostHtml, /Kalender oppdatert/);
   }
 });
 
@@ -137,7 +136,7 @@ test("room booking status is host-only while the room name remains visible", () 
         features: { roomBooking: true },
       }));
       assert.match(html, /Speakers Corner/);
-      const privateText = /Kun synlig for arrangører|Venter på svar|Booket|Avslått|Velg et annet rom/;
+      const privateText = /Kun synlig for arrangører|Rom venter på svar|Rom booket|Rom avslått|Velg et annet rom/;
       if (isHost) assert.match(html, privateText);
       else assert.doesNotMatch(html, privateText);
     }

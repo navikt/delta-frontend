@@ -17,6 +17,8 @@ type CardWithBackgroundProps = {
   meta?: ReactNode;
   /** Right-aligned hero actions. Wrap below the title on narrow screens. */
   actions?: ReactNode;
+  /** Organizer-only bar rendered above the hero, e.g. an OrganizerBar. */
+  organizerBar?: ReactNode;
   children: ReactNode;
   backLink?: string;
   backText?: string;
@@ -59,12 +61,14 @@ export default function CardWithBackground(props: CardWithBackgroundProps) {
 
   return (
     <div ref={containerRef} className="w-full flex flex-col">
+      {props.organizerBar}
       <Box as="section" background="accent-soft" borderColor="neutral-subtle" borderWidth="0 0 1 0" paddingBlock={{ xs: "space-24", md: "space-40" }}>
         <Page.Block width="xl" gutters>
           <VStack gap="space-16">
             {props.backLink && props.backText && (
-              <AkselLink as={NextLink} href={props.backLink} onClick={handleBack} className="w-fit">
-                <ArrowLeftIcon aria-hidden />
+              <AkselLink as={NextLink} href={props.backLink} onClick={handleBack} className="w-fit font-ax-bold">
+                {/* Thickens the outline icon to match the bold link text. */}
+                <ArrowLeftIcon aria-hidden stroke="currentColor" strokeWidth={0.75} />
                 {props.backText}
               </AkselLink>
             )}

@@ -64,7 +64,7 @@ export default function Header({ isMaintainer }: { isMaintainer: boolean }) {
           Δ Delta
         </InternalHeader.Title>
         <Spacer />
-        <div className="hidden ax-md:flex items-stretch">
+        <nav aria-label="Hovedmeny" className="hidden ax-md:flex items-stretch">
           {items.map((item) => {
             const active = item.isActive(pathname);
             return (
@@ -83,8 +83,8 @@ export default function Header({ isMaintainer }: { isMaintainer: boolean }) {
               </InternalHeader.Button>
             );
           })}
-        </div>
-        <div className="flex items-stretch ax-md:hidden">
+        </nav>
+        <nav aria-label="Hovedmeny" className="flex items-stretch ax-md:hidden">
           <ActionMenu>
             <ActionMenu.Trigger>
               <InternalHeader.Button>
@@ -110,7 +110,7 @@ export default function Header({ isMaintainer }: { isMaintainer: boolean }) {
               })}
             </ActionMenu.Content>
           </ActionMenu>
-        </div>
+        </nav>
       </Page.Block>
     </InternalHeader>
   );

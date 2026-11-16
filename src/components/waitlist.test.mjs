@@ -84,7 +84,9 @@ test("ordinary and festival registration controls block mutations until committe
     const button = (tree, label) => elements(tree).find((element) => element.type === Button && text(element) === label);
     button(render(props), "Bli med").props.onClick();
     const mutation = button(render(props), "Godta og bli med").props.onClick();
-    const confirmation = elements(render(props)).find((element) => element.type === Modal && element.props["aria-label"] === "Meld av modal");
+    const registrationModal = (tree) => elements(tree).find((element) => element.type === Modal
+      && ["Bli med", "Meld av", "Slett min deltakelse"].includes(element.props.header?.heading));
+    const confirmation = registrationModal(render(props));
     await button(confirmation, "Avbryt").props.onClick();
     await mutation;
 
@@ -93,7 +95,7 @@ test("ordinary and festival registration controls block mutations until committe
     assert.ok(notice, `${path}: show read-only recovery after a committed mutation`);
     assert.equal(button(stale, "Bli med"), undefined);
     assert.equal(button(stale, "Meld av"), undefined);
-    assert.equal(elements(stale).find((element) => element.type === Modal && element.props["aria-label"] === "Meld av modal").props.open, false);
+    assert.equal(registrationModal(stale).props.open, false);
     notice.props.onUpdated({
       participants: [{ email: "viewer@fixture", name: "Viewer" }],
       invitationCapacity: props.invitationCapacity,

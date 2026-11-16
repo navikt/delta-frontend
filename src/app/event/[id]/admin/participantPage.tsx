@@ -62,13 +62,10 @@ export default function ParticipantPage({
             <Modal
                 open={openConfirmation}
                 onClose={() => setOpenConfirmation(false)}
-                aria-label="Slett arrangement modal"
-                className="w-4/5 max-w-[30rem] max-h-[50rem]"
+                header={{ heading: `Slett «${event.title}»?` }}
+                width="small"
             >
                 <Modal.Body>
-                    <Heading spacing level="1" size="large">
-                        {`Slett: "${event?.title}?"`}
-                    </Heading>
                     <BodyLong spacing>
                         {`Er du sikker på at du vil slette "${event?.title}"? Dette kan ikke angres.`}
                     </BodyLong>
@@ -118,11 +115,11 @@ export default function ParticipantPage({
             )}
             <Heading level="2" size="medium">Detaljer</Heading>
             <span className="flex flex-col ax-md:flex-row justify-start gap-2 -mt-6 mb-5 items-center">
-              <CalendarIcon aria-label="dato"/>
+              <CalendarIcon aria-hidden />
               {formatEventDates(event)}
-              <ClockIcon aria-label="tid"/>
+              <ClockIcon aria-hidden />
               {`${event.startTime.substring(11, 16)} – ${event.endTime.substring(11, 16)}`}
-              <LocationPinIcon aria-label="sted"/>
+              <LocationPinIcon aria-hidden />
               {event.location}
             </span>
         </div>

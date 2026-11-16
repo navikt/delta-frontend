@@ -2,8 +2,8 @@ import { checkToken } from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
 import { getEventStatistics } from "@/service/statsActions";
 import { Metadata } from 'next';
-import NextLink from "next/link";
-import { BodyShort, Box, Heading, HStack, Link, VStack } from "@navikt/ds-react";
+import { AkselNextLink } from "@/components/nextLinks";
+import { BodyShort, Box, Heading, HStack, VStack } from "@navikt/ds-react";
 import { TrendUpIcon } from "@navikt/aksel-icons";
 import YearSelector from "./yearSelector";
 import CategorySection from "./categorySection";
@@ -175,9 +175,9 @@ export default async function StatsPage({
                         </Heading>
                         <div className="flex-1">
                           {event.id ? (
-                            <Link as={NextLink} href={`/event/${event.id}`} className="font-ax-bold">
+                            <AkselNextLink href={`/event/${event.id}`} className="font-ax-bold">
                               {event.title}
-                            </Link>
+                            </AkselNextLink>
                           ) : (
                             <BodyShort as="span" weight="semibold">
                               {event.title}

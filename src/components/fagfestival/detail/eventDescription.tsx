@@ -86,6 +86,7 @@ export default function EventDescription({
                         rel="noopener noreferrer"
                     >
                         {url}
+                        <span className="sr-only"> (åpnes i ny fane)</span>
                     </Link>
                 );
             }

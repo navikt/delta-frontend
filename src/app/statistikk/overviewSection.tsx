@@ -50,28 +50,28 @@ export default function OverviewSection({
                 <Heading level="2" size="medium" spacing>Oversikt for {selectedYear}</Heading>
                 <div className="grid grid-cols-1 ax-md:grid-cols-2 ax-lg:grid-cols-4 gap-4">
                     <StatCard
-                        icon={<CalendarIcon className="w-6 h-6" />}
+                        icon={<CalendarIcon aria-hidden className="w-6 h-6" />}
                         title="Arrangementer i år"
                         value={totalEventsThisYear}
                         suffix="arrangementer"
                         subtitle={`${totalEvents.toLocaleString('nb-NO')} totalt alle år`}
                     />
                     <StatCard
-                        icon={<PersonGroupIcon className="w-6 h-6" />}
+                        icon={<PersonGroupIcon aria-hidden className="w-6 h-6" />}
                         title="Totalt deltakelser"
                         value={totalParticipants}
                         suffix="deltakelser"
                         subtitle={`${uniqueParticipants.toLocaleString('nb-NO')} unike deltakere`}
                     />
                     <StatCard
-                        icon={<PersonGroupIcon className="w-6 h-6" />}
+                        icon={<PersonGroupIcon aria-hidden className="w-6 h-6" />}
                         title="Gjennomsnitt per arrangement"
                         value={averageParticipants}
                         suffix="deltakere"
                         subtitle={`Median: ${medianParticipants.toLocaleString('nb-NO')} deltakere`}
                     />
                     <StatCard
-                        icon={<PersonGroupIcon className="w-6 h-6" />}
+                        icon={<PersonGroupIcon aria-hidden className="w-6 h-6" />}
                         title="Gjennomsnitt per person"
                         value={averageEventsPerPerson}
                         suffix="arrangementer"
@@ -101,7 +101,7 @@ export default function OverviewSection({
                                 value={type.count}
                                 suffix="arrangementer"
                                 subtitle={`${type.uniqueParticipants.toLocaleString('nb-NO')} unike deltakere, ${type.totalParticipants.toLocaleString('nb-NO')} deltakelser totalt`}
-                                icon={<LocationPinIcon className="w-6 h-6" />}
+                                icon={<LocationPinIcon aria-hidden className="w-6 h-6" />}
                                 onClick={() => setShowAttendanceModal(type)}
                             />
                         );

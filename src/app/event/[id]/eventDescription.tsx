@@ -108,6 +108,7 @@ export default function EventDescription({
                         rel="noopener noreferrer"
                     >
                         {url}
+                        <span className="sr-only"> (åpnes i ny fane)</span>
                     </Link>
                 );
             }
@@ -141,6 +142,7 @@ export default function EventDescription({
                                 <BodyShort>
                                     <Link href={teamsJoinUrl} target="_blank" rel="noopener noreferrer">
                                         Bli med i Teams-møtet
+                                        <span className="sr-only"> (åpnes i ny fane)</span>
                                     </Link>
                                 </BodyShort>
                             ) : (

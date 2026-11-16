@@ -27,6 +27,30 @@
   }
 }
 
+/* Keeps focused elements clear of the sticky "Til toppen" button (WCAG 2.4.11). */
+html {
+    scroll-padding-bottom: calc(var(--ax-space-64) + var(--ax-space-24));
+}
+
+.delta-skip-link {
+    position: absolute;
+    top: var(--ax-space-8);
+    left: var(--ax-space-8);
+    z-index: 100;
+    padding: var(--ax-space-8) var(--ax-space-16);
+    border-radius: var(--ax-radius-8);
+    background-color: var(--ax-bg-default);
+    color: var(--ax-text-accent);
+    font-weight: var(--ax-font-weight-bold);
+    box-shadow: var(--ax-shadow-dialog);
+    transform: translateY(calc(-100% - var(--ax-space-16)));
+}
+
+.delta-skip-link:focus {
+    transform: none;
+    outline: 3px solid var(--ax-border-focus);
+    outline-offset: 2px;
+}
 
 .mb-6 {
     margin-bottom: 0 !important;

@@ -37,7 +37,7 @@ function LongWords({ value }: Props) {
                 Ifølge lesbarhetsindeksen Liks anses ord med over seks bokstaver som lange -{' '}
                 <Link target="_blank" href="https://no.wikipedia.org/wiki/Lesbarhetsindeks">
                     Wikipedia
-                    <ExternalLinkIcon />
+                    <ExternalLinkIcon aria-hidden />
                 </Link>
                 <Heading spacing level="3" size="xsmall">
                     Ord med over seks bokstaver

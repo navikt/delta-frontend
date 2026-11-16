@@ -5,7 +5,6 @@ import {User} from "@/types/user";
 import EventDescription from "./eventDescription";
 import {
     Button,
-    Heading,
     HGrid,
     InlineMessage,
     Link,
@@ -291,12 +290,9 @@ export default function EventDetails({
             <Modal
                 open={openInterested}
                 onClose={() => setOpenInterested(false)}
-                aria-label="Meld interesse"
+                header={{ heading: "Meld interesse" }}
             >
                 <Modal.Body>
-                    <Heading spacing level="1" size="large" id="modal-heading">
-                        Meld interesse
-                    </Heading>
                     <BodyLong spacing>Arrangementet er dessverre fullt, men det er mulig at
                         arrangøren har en venteliste eller planer om lignende arrangementer.</BodyLong>
                     <BodyLong spacing>Meld interesse til arrangøren:</BodyLong>
@@ -325,13 +321,10 @@ export default function EventDetails({
             <Modal
                 open={openConfirmationDelete}
                 onClose={() => setOpenConfirmationDelete(false)}
-                aria-label="Slett arrangement modal"
+                header={{ heading: `Slett «${event.title}»?` }}
                 width="small"
             >
                 <Modal.Body>
-                    <Heading spacing level="1" size="large">
-                        {`Slett: "${event?.title}"?`}
-                    </Heading>
                     <BodyLong spacing>
                         {`Er du sikker på at du vil slette "${event?.title}"? Alle deltakere og påmeldte vil også bli slettet. Dette kan ikke angres.`}
                     </BodyLong>
@@ -370,16 +363,13 @@ export default function EventDetails({
             <Modal
                 open={openConfirmation}
                 onClose={() => { if (!registrationPending) setOpenConfirmation(false); }}
-                aria-label="Meld av modal"
+                header={{ heading: isParticipant ? (hasEnded ? "Slett min deltakelse" : "Meld av") : "Bli med" }}
             >
                 <Modal.Body>
                     {registrationError && <LocalAlert status="error" role="alert">
                         <LocalAlert.Content>{registrationError}</LocalAlert.Content>
                     </LocalAlert>}
                     {registrationError && <Button variant="secondary" onClick={() => window.location.reload()}>Oppdater siden</Button>}
-                    <Heading spacing level="1" size="large" id="modal-heading">
-                        {isParticipant ? <>{hasEnded ? "Slett min deltakelse" : "Meld av"}</> : "Bli med"}
-                    </Heading>
                     <BodyLong spacing>
                         {isParticipant
                             ? hasEnded

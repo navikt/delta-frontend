@@ -1,12 +1,11 @@
 "use client";
 
 import { BodyShort, Link, Modal, Table, Pagination, Tabs, Search } from "@navikt/ds-react";
-import { ArrowUpIcon, ArrowDownIcon } from "@navikt/aksel-icons";
 import NextLink from "next/link";
 import type { CategoryEvent, CategoryStat } from "@/service/statsActions";
 import { format } from "date-fns";
 import { nb } from "date-fns/locale";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -23,6 +22,11 @@ export default function CategoryModal({
   events: CategoryEvent[];
   categoryStats?: CategoryStat[];
 }) {
+  // Callers unmount the modal on close, which skips the dialog's own focus return; restore it here.
+  const [trigger] = useState(() => (typeof document === "undefined" ? null : document.activeElement));
+  useEffect(() => () => {
+    if (trigger instanceof HTMLElement && trigger.isConnected) trigger.focus();
+  }, [trigger]);
   const [currentPage, setCurrentPage] = useState(1);
   const [activeTab, setActiveTab] = useState("detaljer");
   const [searchQuery, setSearchQuery] = useState("");
@@ -97,15 +101,6 @@ export default function CategoryModal({
       .sort((a, b) => b.totalParticipants - a.totalParticipants)
     : [];
 
-  const SortIcon = ({ column }: { column: string }) => {
-    if (sortState.orderBy !== column) return null;
-    return sortState.direction === "ascending" ? (
-      <ArrowUpIcon className="ml-1" aria-hidden />
-    ) : (
-      <ArrowDownIcon className="ml-1" aria-hidden />
-    );
-  };
-
   return (
     <Modal
       open={isOpen}
@@ -138,29 +133,16 @@ export default function CategoryModal({
               <BodyShort textColor="subtle">Ingen arrangementer funnet i denne kategorien.</BodyShort>
             ) : (
               <>
-                <Table size="small">
+                <Table size="small" sort={sortState} onSortChange={handleSort}>
                   <Table.Header>
                     <Table.Row>
-                      <Table.HeaderCell>Arrangement</Table.HeaderCell>
-                      <Table.HeaderCell
-                        onClick={() => handleSort("startTime")}
-                        className="cursor-pointer select-none"
-                      >
-                        <div className="flex items-center">
-                          Dato
-                          <SortIcon column="startTime" />
-                        </div>
-                      </Table.HeaderCell>
-                      <Table.HeaderCell
-                        align="right"
-                        onClick={() => handleSort("participants")}
-                        className="cursor-pointer select-none"
-                      >
-                        <div className="flex items-center justify-end">
-                          Deltakere
-                          <SortIcon column="participants" />
-                        </div>
-                      </Table.HeaderCell>
+                      <Table.HeaderCell scope="col">Arrangement</Table.HeaderCell>
+                      <Table.ColumnHeader sortKey="startTime" sortable>
+                        Dato
+                      </Table.ColumnHeader>
+                      <Table.ColumnHeader sortKey="participants" sortable align="right">
+                        Deltakere
+                      </Table.ColumnHeader>
                     </Table.Row>
                   </Table.Header>
                   <Table.Body>

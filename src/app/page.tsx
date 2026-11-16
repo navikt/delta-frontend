@@ -5,7 +5,7 @@ import CardWithBackground from "@/components/cardWithBackground";
 import EventFilters, { OverviewCreateLink } from "@/components/eventFilters";
 import OverviewResults, { WaitlistResults } from "@/components/overviewResults";
 import ResultsBoundary from "@/components/resultsBoundary";
-import EventResultsSkeleton from "@/components/eventResultsSkeleton";
+import EventResultsSkeleton, { OVERVIEW_RESULTS_ID } from "@/components/eventResultsSkeleton";
 import { OverviewTransition } from "@/components/overviewTransition";
 import { getAllCategories } from "@/service/eventQueries";
 import { loadOverview } from "@/service/overviewQueries";
@@ -33,11 +33,13 @@ async function Overview({ searchParams }: { searchParams: Promise<OverviewSearch
   return <OverviewTransition>
     <VStack gap="space-24">
       <EventFilters categories={categories} />
-      <ResultsBoundary key={datasetKey}>
-        <Suspense key={datasetKey} fallback={<EventResultsSkeleton />}>
-          <Results state={state} categories={categories} userEmail={user.email} datasetKey={datasetKey} />
-        </Suspense>
-      </ResultsBoundary>
+      <div id={OVERVIEW_RESULTS_ID}>
+        <ResultsBoundary key={datasetKey}>
+          <Suspense key={datasetKey} fallback={<EventResultsSkeleton />}>
+            <Results state={state} categories={categories} userEmail={user.email} datasetKey={datasetKey} />
+          </Suspense>
+        </ResultsBoundary>
+      </div>
       <OverviewCreateLink />
     </VStack>
   </OverviewTransition>;

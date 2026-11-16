@@ -1,12 +1,14 @@
 "use client";
 
 import type { Category } from "@/types/event";
-import { Badge, BodyShort, Box, Chips, HStack, Link as AkselLink, Search, Switch, Tabs, UNSAFE_Combobox, VStack } from "@navikt/ds-react";
+import { Badge, BodyShort, Box, Chips, HStack, Link as AkselLink, Search, Switch, UNSAFE_Combobox, VStack } from "@navikt/ds-react";
 import { useQueryStates } from "nuqs";
 import { canonicalCategoryNames, homeParsers, homeTabUpdate, homeView, isHomeView } from "@/service/overviewState";
 import { homeDatasetKey } from "@/service/eventListQuery";
 import { useOverviewTransition } from "./overviewTransition";
 import NextLink from "next/link";
+import ViewToggle from "./viewToggle";
+import { OVERVIEW_RESULTS_ID } from "./eventResultsSkeleton";
 
 const QUICK_FILTERS = [
   { name: "kompetanse", label: "Kompetanse" },
@@ -39,18 +41,21 @@ export default function EventFilters({ categories }: { categories: Category[] })
 
   return (
     <VStack gap="space-16" width="100%">
-      <Tabs size="medium" value={view}
-        onChange={value => { if (isHomeView(value)) updateServerState(homeTabUpdate(value, state.showPast)); }}>
-        <Tabs.List>
-          <Tabs.Tab value="alle" label={<>
-            Alle
-            {allCount !== null && <Badge count={allCount} maxCount={999} data-color="neutral" className="ml-2" />}
-          </>} />
-          <Tabs.Tab value="pameldt" label="Påmeldt" />
-          <Tabs.Tab value="ventelister" label="Ventelister" />
-          <Tabs.Tab value="mine" label="Jeg arrangerer" />
-        </Tabs.List>
-      </Tabs>
+      <ViewToggle label="Vis arrangementer" value={view} controls={OVERVIEW_RESULTS_ID}
+        onChange={value => { if (isHomeView(value)) updateServerState(homeTabUpdate(value, state.showPast)); }}
+        options={[
+          {
+            value: "alle",
+            text: allCount !== null ? `Alle (${allCount})` : "Alle",
+            label: <>
+              Alle
+              {allCount !== null && <><Badge count={allCount} maxCount={999} data-color="neutral" className="ml-2" /><span className="sr-only"> arrangementer</span></>}
+            </>,
+          },
+          { value: "pameldt", text: "Påmeldt" },
+          { value: "ventelister", text: "Ventelister" },
+          { value: "mine", text: "Jeg arrangerer" },
+        ]} />
       <Box background="raised" borderColor="neutral-subtle" borderWidth="1" borderRadius="12" padding="space-16">
         <HStack gap="space-16" align="end" wrap>
           <Box flexGrow="1" flexBasis="18rem">
@@ -85,7 +90,7 @@ export default function EventFilters({ categories }: { categories: Category[] })
           )}
         </HStack>
       </Box>
-      {pending && <BodyShort role="status" textColor="subtle">Laster arrangementer …</BodyShort>}
+      {pending && <BodyShort textColor="subtle">Laster arrangementer …</BodyShort>}
     </VStack>
   );
 }

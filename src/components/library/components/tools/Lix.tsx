@@ -40,7 +40,7 @@ function Lix({ value }: Props) {
                     Liks: {lix}. Teksten er <span style={{ textTransform: 'lowercase' }}>{lixMelding}</span> ifølge{' '}
                     <Link target="_blank" href="https://no.wikipedia.org/wiki/Lesbarhetsindeks">
                         lesbarhetsindeksen
-                        <ExternalLinkIcon />
+                        <ExternalLinkIcon aria-hidden />
                     </Link>
                     .
                 </BodyShort>

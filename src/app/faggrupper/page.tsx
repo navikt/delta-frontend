@@ -1,8 +1,10 @@
 import { getFaggrupper } from "@/service/faggruppeQueries";
 import CardWithBackground from '@/components/cardWithBackground';
 import SearchArticles from '@/components/faggrupper/SearchArticles';
-import NextLink from "next/link";
-import { Link } from "@navikt/ds-react";
+import { AkselNextLink } from "@/components/nextLinks";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Faggrupper Δ Delta" };
 
 export default async function ArticlesPage() {
     // Failures propagate to the root error boundary instead of looking like "no groups".
@@ -30,9 +32,9 @@ export default async function ArticlesPage() {
                     >
                         <SearchArticles articles={articles}/>
                         <div className="px-4 mb-5 pt-5">
-                            <Link as={NextLink} href="/faggrupper/ny">
+                            <AkselNextLink href="/faggrupper/ny">
                                 Opprett ny faggruppe eller møteplass
-                            </Link>
+                            </AkselNextLink>
                         </div>
                     </CardWithBackground>
                 </div>

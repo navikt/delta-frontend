@@ -54,6 +54,7 @@ export default function MimretidClient({ stats, year, nowMs }: MimretidClientPro
       ) : (
         <Box background="raised" borderColor="neutral-subtle" borderWidth="1" borderRadius="12" padding="space-24" className="min-h-[600px] flex flex-col">
           <Table size="large" sort={sort} onSortChange={handleSort}>
+            <caption className="sr-only">Arrangementer i {year}</caption>
             <Table.Header>
               <Table.Row>
                 <Table.ColumnHeader sortKey="date" sortable>
@@ -86,11 +87,10 @@ export default function MimretidClient({ stats, year, nowMs }: MimretidClientPro
                 );
               })}
               {EMPTY_ROW_KEYS.slice(0, Math.max(0, rowsPerPage - displayedEvents.length)).map((key) => (
-                <Table.Row key={key} className="h-16">
-                  <Table.DataCell className="whitespace-nowrap capitalize" aria-hidden="true">
-                    &nbsp;
-                  </Table.DataCell>
-                  <Table.DataCell aria-hidden="true">&nbsp;</Table.DataCell>
+                // Filler rows keep the page height stable and are hidden from assistive tech.
+                <Table.Row key={key} className="h-16" aria-hidden="true">
+                  <Table.DataCell className="whitespace-nowrap capitalize">&nbsp;</Table.DataCell>
+                  <Table.DataCell>&nbsp;</Table.DataCell>
                 </Table.Row>
               ))}
             </Table.Body>
@@ -120,9 +120,7 @@ function YearToggle({ selectedYear }: { selectedYear: number }) {
       onChange={(year) => router.push(`/mimretid?year=${year}`)}
     >
       {years.map((year) => (
-        <ToggleGroup.Item key={year} value={String(year)}>
-          {year}
-        </ToggleGroup.Item>
+        <ToggleGroup.Item key={year} value={String(year)} label={year} />
       ))}
     </ToggleGroup>
   );

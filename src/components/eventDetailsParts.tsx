@@ -176,24 +176,26 @@ export function DescriptionCard({
           </HStack>
         </HStack>
       </VStack>
-      <Modal open={openQR} onClose={() => setOpenQR(false)} aria-label="QR-kode til arrangementet">
+      <Modal open={openQR} onClose={() => setOpenQR(false)} header={{ heading: "QR-kode til arrangementet" }}>
         <Modal.Body>
-          <Heading spacing level="1" size="large">
+          <Heading spacing level="2" size="large">
             Δ Delta
           </Heading>
-          <Canvas
-            text={qrText}
-            options={{
-              errorCorrectionLevel: "M",
-              margin: 3,
-              scale: 4,
-              width: 200,
-              color: {
-                dark: "#000",
-                light: "d9cfe4",
-              },
-            }}
-          />
+          <div role="img" aria-label="QR-kode som lenker til arrangementet">
+            <Canvas
+              text={qrText}
+              options={{
+                errorCorrectionLevel: "M",
+                margin: 3,
+                scale: 4,
+                width: 200,
+                color: {
+                  dark: "#000",
+                  light: "d9cfe4",
+                },
+              }}
+            />
+          </div>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setOpenQR(false)}>

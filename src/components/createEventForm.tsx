@@ -494,21 +494,14 @@ function InternalCreateEventForm({
             }
           }}
         />
-        <div
-          className={`aksel-form-field aksel-form-field--medium ${errors.startTime && "aksel-text-field--error"
-            }`}
-        >
-          <input
-            type="time"
-            className="aksel-text-field__input w-28"
-            {...register("startTime")}
-          />
-          {errors.startTime && (
-            <p className="aksel-error-message aksel-label">
-              {errors.startTime.message}
-            </p>
-          )}
-        </div>
+        <TextField
+          type="time"
+          label="Starttidspunkt"
+          hideLabel
+          className="w-28"
+          error={errors.startTime?.message}
+          {...register("startTime")}
+        />
       </div>
       <div className="flex flex-row flex-wrap justify-left gap-4 pb-0 items-end">
         <EventDatepicker
@@ -526,21 +519,14 @@ function InternalCreateEventForm({
               : undefined
           }
         />
-        <div
-          className={`aksel-form-field aksel-form-field--medium ${errors.endTime && "aksel-text-field--error"
-            }`}
-        >
-          <input
-            type="time"
-            className="aksel-text-field__input w-28"
-            {...register("endTime")}
-          />
-          {errors.endTime && (
-            <p className="aksel-error-message aksel-label">
-              {errors.endTime.message}
-            </p>
-          )}
-        </div>
+        <TextField
+          type="time"
+          label="Sluttidspunkt"
+          hideLabel
+          className="w-28"
+          error={errors.endTime?.message}
+          {...register("endTime")}
+        />
       </div>
 
       {richEvent.type !== EditTypeEnum.EDIT ? (
@@ -862,21 +848,14 @@ function InternalCreateEventForm({
               errors={errors}
               hideLabel={true}
             />
-            <div
-              className={`aksel-form-field aksel-form-field--medium ${errors.signupDeadlineDate && "aksel-text-field--error"
-                }`}
-            >
-              <input
-                type="time"
-                className="aksel-text-field__input w-28"
-                {...register("signupDeadlineTime")}
-              />
-              {errors.signupDeadlineTime && (
-                <p className="aksel-error-message aksel-label">
-                  {errors.signupDeadlineTime.message}
-                </p>
-              )}
-            </div>
+            <TextField
+              type="time"
+              label="Klokkeslett for påmeldingsfrist"
+              hideLabel
+              className="w-28"
+              error={errors.signupDeadlineTime?.message}
+              {...register("signupDeadlineTime")}
+            />
           </div>
         )}
       </div>

@@ -1,3 +1,5 @@
+"use client";
+
 import { CheckmarkIcon, ClockIcon, ExclamationmarkTriangleIcon } from "@navikt/aksel-icons";
 import { HStack, Link, Tag } from "@navikt/ds-react";
 import NextLink from "next/link";

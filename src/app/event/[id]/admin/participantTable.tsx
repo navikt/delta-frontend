@@ -4,7 +4,6 @@ import { User } from "@/types/user";
 import {
   BodyLong,
   Button,
-  Heading,
   Link,
   Modal,
   Table,
@@ -164,12 +163,9 @@ function ExpandedTable({
         <Modal
           open={openConfirmationFor === email}
           onClose={() => toggleConfirmation(email)}
-          aria-label={`Fjern deltaker ${name} fra arrangementet`}
+          header={{ heading: `Meld av ${name} fra ${event?.title}?` }}
         >
           <Modal.Body>
-            <Heading spacing level="1" size="large" id="modal-heading">
-              {`Meld av ${name} fra ${event?.title}?`}
-            </Heading>
             <BodyLong spacing>
               Er du sikker på at du vil melde {name} av arrangementet? Husk å si
               ifra til vedkommende, for de varsles ikke når du melder de av her.
@@ -282,12 +278,9 @@ function FullTable({
         <Modal
           open={openConfirmationFor === email}
           onClose={() => toggleConfirmation(email)}
-          aria-label={`Fjern deltaker ${name} fra arrangementet`}
+          header={{ heading: `Meld av ${name} fra ${event?.title}?` }}
         >
           <Modal.Body>
-            <Heading spacing level="1" size="large" id="modal-heading">
-              {`Meld av ${name} fra ${event?.title}?`}
-            </Heading>
             <BodyLong spacing>
               Er du sikker på at du vil melde {name} av arrangementet? Husk å si
               ifra til vedkommende, for de varsles ikke når du melder de av her.

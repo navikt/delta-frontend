@@ -1,10 +1,10 @@
 import { getUser, isFaggruppeAdmin } from "@/auth/token";
 import { getFaggruppe, getIsFaggruppeOwner } from "@/service/faggruppeQueries";
 import CardWithBackground from "@/components/cardWithBackground";
-import { Button, Detail } from "@navikt/ds-react";
+import { Detail } from "@navikt/ds-react";
 import { PersonGroupIcon, CalendarIcon, ClockIcon } from "@navikt/aksel-icons";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
-import Link from "next/link";
+import { ButtonNextLink } from "@/components/nextLinks";
 import { PencilIcon } from "@navikt/aksel-icons";
 import type { Metadata } from "next";
 
@@ -46,14 +46,14 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
                     {group.tidspunkt && (
                         <Detail className="leading-normal">
                             <span className="flex items-center gap-1">
-                                <CalendarIcon title="person" /> {group.tidspunkt}
+                                <CalendarIcon aria-hidden /> {group.tidspunkt}
                             </span>
                         </Detail>
                     )}
                     {group.starttid && group.sluttid && (
                         <Detail className="leading-normal">
                             <span className="flex items-center gap-1">
-                                <ClockIcon aria-label="tid" />
+                                <ClockIcon aria-hidden />
                                 {`${formatTime(group.starttid)} - ${formatTime(group.sluttid)}`}
                             </span>
                         </Detail>
@@ -61,7 +61,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
                     {group.malgruppe && (
                         <Detail className="leading-normal">
                             <span className="flex items-center gap-1">
-                                <PersonGroupIcon title="person" /> Målgruppe: {group.malgruppe}
+                                <PersonGroupIcon aria-hidden /> Målgruppe: {group.malgruppe}
                             </span>
                         </Detail>
                     )}
@@ -73,15 +73,14 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
                 </div>
                 {(isOwner || isAdmin) && (
                     <div className="px-4 pb-10">
-                        <Button
-                            as={Link}
+                        <ButtonNextLink
                             href={`/faggrupper/${id}/rediger`}
                             variant="secondary"
                             size="small"
                             icon={<PencilIcon aria-hidden />}
                         >
                             Rediger
-                        </Button>
+                        </ButtonNextLink>
                     </div>
                 )}
         </CardWithBackground>

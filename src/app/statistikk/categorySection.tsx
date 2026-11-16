@@ -55,7 +55,7 @@ export default function CategorySection({
             <ClickableStatCard
               key={cat.category}
               onClick={() => handleCardClick(cat)}
-              icon={<BarChartIcon className="w-6 h-6" />}
+              icon={<BarChartIcon aria-hidden className="w-6 h-6" />}
               title={cat.category}
               value={cat.count}
               suffix="arrangementer"
@@ -67,7 +67,7 @@ export default function CategorySection({
           {fagtorsdagStat && (
             <ClickableStatCard
               onClick={() => handleCardClick(fagtorsdagStat)}
-              icon={<BarChartIcon className="w-6 h-6" />}
+              icon={<BarChartIcon aria-hidden className="w-6 h-6" />}
               title={fagtorsdagStat.category}
               value={fagtorsdagStat.count}
               suffix="arrangementer"
@@ -78,7 +78,7 @@ export default function CategorySection({
           {/* Custom Category Selector */}
           <Box background="raised" borderColor="neutral-subtle" borderWidth="1" borderRadius="12" padding="space-24" className="flex flex-col">
             <span aria-hidden className="mb-3 flex text-ax-text-accent">
-              <MagnifyingGlassIcon className="w-6 h-6" />
+              <MagnifyingGlassIcon aria-hidden className="w-6 h-6" />
             </span>
             <BodyShort as="h3" size="small" weight="semibold" textColor="subtle" className="mb-3">
               Velg kategori

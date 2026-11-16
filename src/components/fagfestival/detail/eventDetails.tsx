@@ -5,7 +5,6 @@ import {User} from "@/types/user";
 import EventDescription from "./eventDescription";
 import {
     Button,
-    Heading,
     HGrid,
     InlineMessage,
     Link,
@@ -116,6 +115,7 @@ export default function EventDetails({
                         rel="noopener noreferrer"
                     >
                         {url}
+                        <span className="sr-only"> (åpnes i ny fane)</span>
                     </Link>
                 );
             }
@@ -267,12 +267,9 @@ export default function EventDetails({
             <Modal
                 open={openInterested}
                 onClose={() => setOpenInterested(false)}
-                aria-label="Meld interesse"
+                header={{ heading: "Meld interesse" }}
             >
                 <Modal.Body>
-                    <Heading spacing level="1" size="large" id="modal-heading">
-                        Meld interesse
-                    </Heading>
                     <BodyLong spacing>Arrangementet er dessverre fullt, men det er mulig at
                         arrangøren har en venteliste eller planer om lignende arrangementer.</BodyLong>
                     <BodyLong spacing>Meld interesse til arrangøren:</BodyLong>
@@ -301,16 +298,13 @@ export default function EventDetails({
             <Modal
                 open={openConfirmation}
                 onClose={() => { if (!registrationPending) setOpenConfirmation(false); }}
-                aria-label="Meld av modal"
+                header={{ heading: isParticipant ? (hasEnded ? "Slett min deltakelse" : "Meld av") : "Bli med" }}
             >
                 <Modal.Body>
                     {registrationError && <LocalAlert status="error" role="alert">
                         <LocalAlert.Content>{registrationError}</LocalAlert.Content>
                     </LocalAlert>}
                     {registrationError && <Button variant="secondary" onClick={() => window.location.reload()}>Oppdater siden</Button>}
-                    <Heading spacing level="1" size="large" id="modal-heading">
-                        {isParticipant ? <>{hasEnded ? "Slett min deltakelse" : "Meld av"}</> : "Bli med"}
-                    </Heading>
                     <BodyLong spacing>
                         {isParticipant
                             ? hasEnded

@@ -41,38 +41,44 @@ export default function CalendarSyncStatus({
 
   if (!isHost || !status) return null;
 
-  if (status === "SYNCED") {
-    return <OrganizerStatus tone="success" icon={<CheckmarkIcon aria-hidden />}>Kalender oppdatert</OrganizerStatus>;
-  }
+  const tag =
+    status === "SYNCED" ? (
+      <OrganizerStatus tone="success" icon={<CheckmarkIcon aria-hidden />}>Kalender oppdatert</OrganizerStatus>
+    ) : status === "PENDING" ? (
+      <OrganizerStatus tone="neutral" icon={<ClockIcon aria-hidden />}>Kalender oppdateres …</OrganizerStatus>
+    ) : (
+      <OrganizerStatus tone="danger" icon={<ExclamationmarkTriangleIcon aria-hidden />}>Kalender ikke oppdatert</OrganizerStatus>
+    );
 
-  if (status === "PENDING") {
-    return <OrganizerStatus tone="neutral" icon={<ClockIcon aria-hidden />}>Kalender oppdateres …</OrganizerStatus>;
-  }
-
+  // The status region stays mounted across polling so screen readers announce sync changes.
   return (
     <HStack gap="space-8" align="center">
-      <OrganizerStatus tone="danger" icon={<ExclamationmarkTriangleIcon aria-hidden />}>Kalender ikke oppdatert</OrganizerStatus>
-      <BodyShort size="small">{error || "Outlook-kalenderen kunne ikke oppdateres."}</BodyShort>
-      <Button
-        type="button"
-        size="xsmall"
-        variant="tertiary"
-        loading={retrying}
-        onClick={async () => {
-          setRetrying(true);
-          setActionError(null);
-          const result = await retryCalendarSync(eventId);
-          if (result.ok) {
-            setStatus(result.data.event.calendarSyncStatus);
-            setError(result.data.calendarSyncError ?? null);
-          } else {
-            setActionError(result.message);
-          }
-          setRetrying(false);
-        }}
-      >
-        Prøv synkronisering på nytt
-      </Button>
+      <div role="status">{tag}</div>
+      {status !== "SYNCED" && status !== "PENDING" && (
+        <>
+          <BodyShort size="small">{error || "Outlook-kalenderen kunne ikke oppdateres."}</BodyShort>
+          <Button
+            type="button"
+            size="small"
+            variant="tertiary"
+            loading={retrying}
+            onClick={async () => {
+              setRetrying(true);
+              setActionError(null);
+              const result = await retryCalendarSync(eventId);
+              if (result.ok) {
+                setStatus(result.data.event.calendarSyncStatus);
+                setError(result.data.calendarSyncError ?? null);
+              } else {
+                setActionError(result.message);
+              }
+              setRetrying(false);
+            }}
+          >
+            Prøv synkronisering på nytt
+          </Button>
+        </>
+      )}
       {actionError && (
         <BodyShort size="small" textColor="default" data-color="danger" role="alert">
           {actionError}

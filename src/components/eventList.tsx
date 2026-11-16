@@ -1,5 +1,5 @@
 "use client";
-import { Fragment, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import type { FullDeltaEvent } from "@/types/event";
 import { BodyShort, Box, HGrid, Heading, HStack, VStack } from "@navikt/ds-react";
 import { EventCard } from "@/components/eventCard";
@@ -20,13 +20,14 @@ export function EventDayGroups<T extends { event: { id: string; startTime: strin
   return (
     <VStack gap="space-32">
       {groupEventsByDay(items, now, { descending }).map(group => (
-        <VStack as="section" key={group.key} gap="space-12" aria-labelledby={`day-${group.key}`}>
+        <VStack key={group.key} gap="space-12">
           <HStack gap="space-8" align="baseline" wrap>
-            <Heading level="2" size="small" id={`day-${group.key}`}>{group.label}</Heading>
+            <Heading level="2" size="small">{group.label}</Heading>
             <BodyShort textColor="subtle">{group.dateLabel}</BodyShort>
           </HStack>
-          <HGrid gap="space-16" columns={EVENT_GRID_COLUMNS}>
-            {group.events.map(item => <Fragment key={item.event.id}>{renderItem(item)}</Fragment>)}
+          {/* role="list" keeps list semantics in Safari/VoiceOver when list-style is removed. */}
+          <HGrid as="ul" role="list" gap="space-16" columns={EVENT_GRID_COLUMNS}>
+            {group.events.map(item => <li key={item.event.id} className="flex">{renderItem(item)}</li>)}
           </HGrid>
         </VStack>
       ))}

@@ -9,6 +9,7 @@ import type { Category, FullDeltaEvent } from "@/types/event";
 import EventList from "./views/eventList";
 import EventProgramOverview from "./views/eventProgramOverview";
 import EventResultsSkeleton from "../eventResultsSkeleton";
+import { ResultsStatus, resultsStatusMessage } from "../overviewTransition";
 import { useOverviewScroll } from "../useOverviewScroll";
 import { useOverviewPath } from "../useOverviewPath";
 import { BodyShort, Link } from "@navikt/ds-react";
@@ -28,9 +29,11 @@ export default function FestivalResults({ events, festival: serverFestival, user
   const filteredEvents = ready ? filterFestivalEvents(events, festival, state) : [];
   const joinedEventIds = joinedFestivalEventIds(events, userEmail);
   useOverviewScroll(returnTo, ready);
-  if (!ready) return <EventResultsSkeleton />;
+  const status = <ResultsStatus message={resultsStatusMessage(ready, filteredEvents.length)} />;
+  if (!ready) return <div className="w-full">{status}<EventResultsSkeleton announce={false} /></div>;
   const ResultView = state.view === "program" ? EventProgramOverview : EventList;
-  return <div className="w-full p-4" aria-busy="false">
+  return <div className="w-full p-4">
+    {status}
     {state.tab === "25" && <div className="pb-10 prose"><BodyShort>
       Husk å melde deg på{" "}
       <Link href="https://delta.nav.no/fagfest">felles avslutning</Link>

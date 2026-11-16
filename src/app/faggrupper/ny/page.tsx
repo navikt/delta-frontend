@@ -1,6 +1,9 @@
 import { checkToken } from "@/auth/token";
 import CardWithBackground from '@/components/cardWithBackground';
 import NewFaggruppeForm from "@/components/faggrupper/NewFaggruppeForm";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Opprett ny faggruppe Δ Delta" };
 
 export default async function NewFaggruppePage() {
     await checkToken();

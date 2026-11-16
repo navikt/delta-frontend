@@ -36,7 +36,7 @@ function KansellistenDictionary({ value }: Props) {
                     href="https://www.sprakradet.no/klarsprak/om-skriving/kansellisten/"
                 >
                     Språkrådets kanselliste
-                    <ExternalLinkIcon />
+                    <ExternalLinkIcon aria-hidden />
                 </Link></BodyShort>
             </Accordion.Content>
         </Accordion.Item>

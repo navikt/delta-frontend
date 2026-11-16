@@ -1,3 +1,5 @@
+"use client";
+
 import { EyeSlashIcon } from "@navikt/aksel-icons";
 import { Box, Detail, HStack, Page, Tag } from "@navikt/ds-react";
 import { Children, type ReactNode } from "react";
@@ -31,7 +33,7 @@ export default function OrganizerBar({ status, actions }: OrganizerBarProps) {
           <HStack gap="space-12" align="center" wrap>
             <HStack gap="space-8" align="center" wrap={false} className="text-ax-text-meta-purple">
               <EyeSlashIcon aria-hidden />
-              <Detail as="h2" weight="semibold" uppercase>
+              <Detail as="p" weight="semibold" uppercase>
                 Kun synlig for arrangører
               </Detail>
             </HStack>

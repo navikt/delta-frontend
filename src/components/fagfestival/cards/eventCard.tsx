@@ -59,12 +59,12 @@ export function EventCard({ event, returnTo, isJoined = false, slug = "fagfest" 
           {startDay === endDay ? (
             <>
               <Detail className="flex gap-1 items-center pb-1 pt-1 leading-normal">
-                <CalendarIcon title="dato" />
+                <CalendarIcon aria-hidden />
                 {formatEventDates(event.event)}
               </Detail>
               {formatEventDuration(event.event) !== "" && (
                 <Detail className="flex gap-1 items-center pb-1 leading-normal">
-                  <ClockIcon title="tid" />
+                  <ClockIcon aria-hidden />
                   {formatEventTimeRangeOrComingSoon(event.event)}
                 </Detail>
               )}
@@ -72,7 +72,7 @@ export function EventCard({ event, returnTo, isJoined = false, slug = "fagfest" 
           ) : (
             <>
               <Detail className="flex gap-1 items-center pb-1 pt-1 leading-normal">
-                <CalendarIcon title="dato" />
+                <CalendarIcon aria-hidden />
                 {formatEventTimes(event.event)}
               </Detail>
               {formatEventDuration(event.event) !== "" && (
@@ -87,7 +87,7 @@ export function EventCard({ event, returnTo, isJoined = false, slug = "fagfest" 
           {event.event.location.length <= 50 && (
             <Detail className="leading-normal">
               <span className="flex items-center gap-1 pb-1">
-                <LocationPinIcon title="lokasjon" />
+                <LocationPinIcon aria-hidden />
                 {event.event.location}
               </span>
             </Detail>
@@ -96,7 +96,7 @@ export function EventCard({ event, returnTo, isJoined = false, slug = "fagfest" 
           {event.event.signupDeadline && (
             <Detail className="leading-normal">
               <span className="flex items-center gap-1 pb-1">
-                <HourglassBottomFilledIcon title="timeglass" />
+                <HourglassBottomFilledIcon aria-hidden />
                 Påmeldingsfrist:{" "}
                 {hasEventExpired ? (
                   <Tag size="small" variant="strong" data-color="danger">Utløpt</Tag>
@@ -111,7 +111,7 @@ export function EventCard({ event, returnTo, isJoined = false, slug = "fagfest" 
             <>
               <Detail className="leading-normal">
                 <span className="flex items-center gap-1 pb-1 leading-normal">
-                  <PersonCheckmarkIcon title="person" />
+                  <PersonCheckmarkIcon aria-hidden />
                   {attendeeCount >= event.event.participantLimit ? (
                     <Tag size="small" variant="strong" data-color="danger">
                       Arrangementet er fullt
@@ -136,7 +136,7 @@ export function EventCard({ event, returnTo, isJoined = false, slug = "fagfest" 
           {event.event.participantLimit === 0 && (
             <Detail className="leading-normal">
               <span className="flex items-center gap-1 pb-1 leading-normal">
-                <PersonCheckmarkIcon title="deltakere" />
+                <PersonCheckmarkIcon aria-hidden />
                 {event.participants.length} {event.participants.length === 1 ? "deltaker" : "deltakere"}
               </span>
             </Detail>

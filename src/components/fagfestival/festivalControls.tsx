@@ -1,6 +1,6 @@
 "use client";
 
-import { BodyShort, Checkbox, CheckboxGroup, Radio, RadioGroup, Search, Skeleton, Tabs } from "@navikt/ds-react";
+import { BodyShort, Checkbox, CheckboxGroup, Radio, RadioGroup, Search, Skeleton } from "@navikt/ds-react";
 import { useEffect, useMemo, useRef } from "react";
 import { useQueryStates } from "nuqs";
 import { festivalParsers } from "@/service/overviewState";
@@ -8,6 +8,8 @@ import { JOINED_TAB, festivalBrowserPlan, festivalTabNavigation, type ResolvedFe
 import { useOverviewTransition } from "../overviewTransition";
 import { useBrowserNow } from "../useBrowserNow";
 import { useMediaQuery } from "../useMediaQuery";
+import ViewToggle from "../viewToggle";
+import { FESTIVAL_RESULTS_ID } from "../eventResultsSkeleton";
 
 export default function FestivalControls({ festival: serverFestival }: { festival: ResolvedFestival }) {
   const browserReady = useBrowserNow() !== null;
@@ -41,20 +43,21 @@ export default function FestivalControls({ festival: serverFestival }: { festiva
   </div>;
   const showProgram = festival.showProgramOverviewCheckbox && (state.tab !== JOINED_TAB || !isMobile);
   return <div className="flex flex-col w-full gap-6 items-start">
-    <Tabs className="self-start w-full" value={state.tab} onChange={tab => {
-      selectedTab.current = true;
-      const shallow = festivalTabNavigation(state.tab, tab) === "shallow";
-      void setState({ tab, ...(tab === JOINED_TAB && isMobile ? { view: "cards" } : {}) },
-        { shallow, ...(!shallow ? { startTransition } : {}) });
-    }}>
-      <Tabs.List>
-        {festival.timeWindowTabs.length > 0 ? festival.timeWindowTabs.map(tab =>
-          <Tabs.Tab key={tab.id} value={tab.id} label={tab.label} />)
-          : festival.combineDays ? <Tabs.Tab value="alle" label="Alle" />
-          : festival.remainingDays.map(day => <Tabs.Tab key={day} value={day} label={`${day}. ${festival.month}`} />)}
-        <Tabs.Tab value={JOINED_TAB} label="Mine påmeldinger" />
-      </Tabs.List>
-    </Tabs>
+    <div className="px-4">
+      <ViewToggle label="Filtrer programmet" value={state.tab} controls={FESTIVAL_RESULTS_ID} above="lg"
+        onChange={tab => {
+          selectedTab.current = true;
+          const shallow = festivalTabNavigation(state.tab, tab) === "shallow";
+          void setState({ tab, ...(tab === JOINED_TAB && isMobile ? { view: "cards" } : {}) },
+            { shallow, ...(!shallow ? { startTransition } : {}) });
+        }}
+        options={[
+          ...(festival.timeWindowTabs.length > 0 ? festival.timeWindowTabs.map(tab => ({ value: tab.id, text: tab.label }))
+            : festival.combineDays ? [{ value: "alle", text: "Alle" }]
+            : festival.remainingDays.map(day => ({ value: day, text: `${day}. ${festival.month}` }))),
+          { value: JOINED_TAB, text: "Mine påmeldinger" },
+        ]} />
+    </div>
     <div className="flex flex-col-reverse gap-2 items-start ax-md:flex-row justify-between w-full ax-md:items-center px-4">
       <Search label="Søk alle kommende arrangementer" variant="simple" value={state.search} size="small"
         className="w-full ax-md:w-auto" onChange={search => void setState({ search }, { shallow: true })}
@@ -73,6 +76,6 @@ export default function FestivalControls({ festival: serverFestival }: { festiva
       <Radio value="fysisk">Fysiske arrangementer</Radio>
       <Radio value="digitalt">Digitale arrangementer</Radio>
     </RadioGroup>}
-    {pending && <BodyShort role="status" className="px-4">Laster arrangementer …</BodyShort>}
+    {pending && <BodyShort className="px-4">Laster arrangementer …</BodyShort>}
   </div>;
 }

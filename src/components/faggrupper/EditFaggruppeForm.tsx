@@ -56,7 +56,7 @@ export default function EditFaggruppeForm({ group }: { group: Group }) {
         <form onSubmit={handleSubmit} className="space-y-4">
             <FaggruppeFormFields formData={formData} onChange={setFormData} />
 
-            {error && <ErrorMessage>{error}</ErrorMessage>}
+            <div role="alert">{error && <ErrorMessage>{error}</ErrorMessage>}</div>
 
             <div className="flex gap-3">
                 <Button variant="primary" type="submit" loading={loading}>

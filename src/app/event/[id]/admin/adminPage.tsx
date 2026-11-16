@@ -87,18 +87,18 @@ export default function AdminPage({
             </Modal>
             <Heading level="2" size="medium" className="-mt-4">Detaljer</Heading>
             <span className="flex flex-row justify-start gap-2 items-center -mt-5">
-                <CalendarIcon aria-label="dato" />
+                <CalendarIcon aria-hidden />
                 {formatEventDates(event)}
             </span>
             <span className="flex flex-row justify-start gap-2 items-center -mt-8">
-                <ClockIcon aria-label="tid" />
+                <ClockIcon aria-hidden />
                 {`${event.startTime.substring(11, 16)} – ${event.endTime.substring(
                     11,
                     16,
                 )}`}
             </span>
             <span className="flex flex-row justify-start gap-2 items-center -mt-8">
-                <LocationPinIcon aria-label="sted" />
+                <LocationPinIcon aria-hidden />
                 {event.location}
             </span>
             <Heading level="2" size="medium" className="mt-1">Deltakerliste</Heading>

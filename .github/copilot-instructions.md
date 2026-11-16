@@ -9,6 +9,7 @@ npm run dev       # Start dev server (requires backend running)
 npm run build     # Production build + type-check
 npm run lint      # Biome (React/Next.js lint rules; no formatting)
 npm test          # Contract tests with node --test
+npm run test:a11y # Playwright + axe (WCAG 2.2 AA) against `next dev` and the mock backend in e2e/
 ```
 
 Use the existing `.test.mjs` contracts for query policy, URL state, festival filtering, form initialization and transport failures. Verify streaming, navigation, retry and scroll with a production build; development renders are not reliable request-count evidence.

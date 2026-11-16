@@ -14,7 +14,7 @@ import { WaitlistEventCard } from "./waitlistEventCard";
 import { useOverviewScroll } from "./useOverviewScroll";
 import { useOverviewPath } from "./useOverviewPath";
 import { useBrowserNow } from "./useBrowserNow";
-import { useOptionalOverviewTransition } from "./overviewTransition";
+import { ResultsStatus, resultsStatusMessage, useOptionalOverviewTransition } from "./overviewTransition";
 
 function emptyMessage(view: string, search: string, showPast: boolean) {
   if (search.trim()) return `Fant ingen arrangementer som passer «${search.trim()}».`;
@@ -60,11 +60,13 @@ export default function OverviewResults({
   }, [allCount, setAllCount]);
   useOverviewScroll(path, ready);
 
-  if (!ready) return <EventResultsSkeleton />;
-  return <div className="w-full" aria-busy="false">
-    <EventList fullEvents={visible} now={now} descending={showPast}
-      userEmail={fixedCategory ? undefined : userEmail}
-      emptyMessage={emptyMessage(view, state.search, showPast)} />
+  return <div className="w-full">
+    <ResultsStatus message={resultsStatusMessage(ready, visible.length)} />
+    {ready && now !== null ? (
+      <EventList fullEvents={visible} now={now} descending={showPast}
+        userEmail={fixedCategory ? undefined : userEmail}
+        emptyMessage={emptyMessage(view, state.search, showPast)} />
+    ) : <EventResultsSkeleton announce={false} />}
   </div>;
 }
 
@@ -77,9 +79,12 @@ export function WaitlistResults({ entries, datasetKey, categories }: {
   const ready = datasetKey === homeDatasetKey(state, categories) && now !== null;
   useOverviewScroll(path, ready);
 
-  if (!ready) return <EventResultsSkeleton />;
-  const visible = entries.filter(entry => matchesEventSearch(entry, state.search));
-  return <VStack gap="space-24" width="100%" aria-busy="false">
+  const visible = ready ? entries.filter(entry => matchesEventSearch(entry, state.search)) : [];
+  const status = <ResultsStatus message={resultsStatusMessage(ready, visible.length)} />;
+  // Same wrapper in both states so the status region stays mounted.
+  if (!ready || now === null) return <VStack gap="space-24" width="100%">{status}<EventResultsSkeleton announce={false} /></VStack>;
+  return <VStack gap="space-24" width="100%">
+    {status}
     <BodyShort textColor="subtle">
       Du blir automatisk påmeldt hvis du får plass før fristen. Du kan forlate ventelisten på arrangementssiden.
     </BodyShort>

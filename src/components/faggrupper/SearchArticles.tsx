@@ -58,7 +58,7 @@ export default function SearchArticles({articles}: { articles: Article[] }) {
                                     )}
                                     {article.starttime && (
                                         <HStack as="span" gap="space-4" align="center">
-                                            <ClockIcon aria-label="tid" /> {article.starttime && `${article.starttime}`} {article.endtime && `-  ${article.endtime}`}
+                                            <ClockIcon aria-hidden /> {article.starttime && `${article.starttime}`} {article.endtime && `-  ${article.endtime}`}
                                         </HStack>
                                     )}
                                     {article.audience && (

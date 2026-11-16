@@ -35,7 +35,7 @@ export default function NewFaggruppeForm() {
         <form onSubmit={handleSubmit} className="space-y-4">
             <FaggruppeFormFields formData={formData} onChange={setFormData} />
 
-            {error && <ErrorMessage>{error}</ErrorMessage>}
+            <div role="alert">{error && <ErrorMessage>{error}</ErrorMessage>}</div>
 
             <Button variant="primary" type="submit" loading={loading}>
                 Opprett faggruppe

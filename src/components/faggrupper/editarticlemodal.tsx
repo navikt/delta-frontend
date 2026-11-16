@@ -8,14 +8,15 @@ function EditArticleModal({ articlepath }: { articlepath: string }) {
 
     return (
         <div>
-            <Button className="mx-4 mt-8 mb-10" variant="secondary"  size="small" onClick={() => ref.current?.showModal()}><PencilIcon className="inline " title="rediger" fontSize="1.2rem" /> Rediger</Button>
+            <Button className="mx-4 mt-8 mb-10" variant="secondary"  size="small" onClick={() => ref.current?.showModal()}><PencilIcon className="inline " aria-hidden fontSize="1.2rem" /> Rediger</Button>
 
             <Modal ref={ref} header={{ heading: "Rediger faggruppe" }}>
                 <Modal.Body>
                         <div className="my-1">
                             <Heading level="2" size="medium" spacing>A) Vi gjør det sammen 😃</Heading>
-                            <Link target="_blank" href="https://forms.office.com/e/LyKPTdaRw5">
+                            <Link target="_blank" rel="noopener noreferrer" href="https://forms.office.com/e/LyKPTdaRw5">
                                 Skjema for å redigere faggruppe.
+                                <span className="sr-only"> (åpnes i ny fane)</span>
                             </Link>
 
                             <p className="mt-5">

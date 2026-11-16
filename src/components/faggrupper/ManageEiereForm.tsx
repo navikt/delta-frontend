@@ -101,7 +101,7 @@ export default function ManageEiereForm({ faggruppeId, eiere, isAdmin }: Props) 
                 </Button>
             </form>
 
-            {error && <ErrorMessage size="small">{error}</ErrorMessage>}
+            <div role="alert">{error && <ErrorMessage size="small">{error}</ErrorMessage>}</div>
 
             {isAdmin && (
                 <BodyShort size="small" textColor="subtle" className="italic">

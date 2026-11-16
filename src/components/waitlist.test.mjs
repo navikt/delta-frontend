@@ -29,7 +29,7 @@ function interactiveComponent(url, mocks) {
 
 function elements(node) {
   if (Array.isArray(node)) return node.flatMap(elements);
-  return isValidElement(node) ? [node, ...elements(node.props.children)] : [];
+  return isValidElement(node) ? [node, ...elements(node.props.children), ...elements(node.props.actions)] : [];
 }
 
 function text(node) {
@@ -46,13 +46,16 @@ test("ordinary and festival registration controls block mutations until committe
     let mutations = 0;
     const render = interactiveComponent(new URL(path, import.meta.url), {
       "@navikt/ds-react": {
-        Button, Modal, Alert: Stub, Heading: Stub, BodyLong: Stub, Tag: Stub,
+        Button, Modal, Heading: Stub, BodyLong: Stub, HGrid: Stub, InlineMessage: Stub, Link: Stub, VStack: Stub,
         LocalAlert: Object.assign(() => null, { Content: Stub }),
       },
-      "@navikt/aksel-icons": { TrashIcon: Stub, PencilIcon: Stub, BarChartIcon: Stub, FilePlusIcon: Stub },
+      "@navikt/aksel-icons": { TrashIcon: Stub, PencilIcon: Stub, BarChartIcon: Stub, FilesIcon: Stub },
       "next/link": { default: Stub },
-      "next-qrcode": { useQRCode: () => ({ Canvas: Stub }) },
       "./eventDescription": { default: Stub },
+      "@/components/cardWithBackground": { default: Stub },
+      "@/components/eventDetailsParts": { DescriptionCard: Stub, EventHeroMeta: Stub },
+      "@/components/organizerStatusBox": { default: Stub },
+      "@/components/roomStatusTag": { RoomStatusRow: Stub },
       "@/service/eventActions": {},
       "@/service/waitlistActions": {
         changeEventRegistration: async () => { mutations++; return { ok: true, refreshRequired: true }; },
@@ -63,9 +66,7 @@ test("ordinary and festival registration controls block mutations until committe
       },
       "@/components/MarkdownRenderer": { default: Stub },
       "@/components/calendar": { default: Stub },
-      "@/components/SecondaryCopyButton": { default: Stub },
       "@/components/editScopeModal": { default: Stub },
-      "@/components/RecurringBadge": { RecurringBadge: Stub },
       "@/components/calendarSyncStatus": { default: Stub },
       "@/components/waitlistControls": { default: Stub },
       "@/components/registrationRefreshNotice": { default: Notice },

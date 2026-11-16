@@ -1,8 +1,7 @@
 "use client";
-import "./eventCard.css";
 import { FullDeltaEvent } from "@/types/event";
 import { format } from "date-fns";
-import { Detail, Heading, Tag } from "@navikt/ds-react";
+import { Detail, LinkCard, Tag } from "@navikt/ds-react";
 import {
   CalendarIcon,
   ClockIcon,
@@ -49,17 +48,14 @@ export function EventCard({ event, returnTo, isJoined = false, slug = "fagfest" 
   };
 
   return (
-    <a
-      href={href}
-      onClick={handleNavigation}
-      className="flex flex-col h-full p-4 border rounded-xl text-ax-text-neutral border-ax-neutral-400 transition-all hover:-translate-y-1 hover:scale-105 hover:text-ax-text-action hover:border-ax-border-accent no-underline event-card"
-    >
-      <Heading level="2" size="small">
-        {event.event.title}
-      </Heading>
+    <LinkCard arrow={false} size="small" className="h-full">
+      <LinkCard.Title as="h2">
+        <LinkCard.Anchor href={href} onClick={handleNavigation}>
+          {event.event.title}
+        </LinkCard.Anchor>
+      </LinkCard.Title>
 
-      <div className="flex flex-col gap-2 h-full justify-between">
-        <div>
+      <LinkCard.Description>
           {startDay === endDay ? (
             <>
               <Detail className="flex gap-1 items-center pb-1 pt-1 leading-normal">
@@ -103,7 +99,7 @@ export function EventCard({ event, returnTo, isJoined = false, slug = "fagfest" 
                 <HourglassBottomFilledIcon title="timeglass" />
                 Påmeldingsfrist:{" "}
                 {hasEventExpired ? (
-                  <span className="text-white bg-ax-danger-700 rounded px-2">Utløpt</span>
+                  <Tag size="small" variant="strong" data-color="danger">Utløpt</Tag>
                 ) : (
                   formatDeadline(event.event)
                 )}
@@ -117,9 +113,9 @@ export function EventCard({ event, returnTo, isJoined = false, slug = "fagfest" 
                 <span className="flex items-center gap-1 pb-1 leading-normal">
                   <PersonCheckmarkIcon title="person" />
                   {attendeeCount >= event.event.participantLimit ? (
-                    <span className="bg-ax-danger-700 text-white rounded px-2">
+                    <Tag size="small" variant="strong" data-color="danger">
                       Arrangementet er fullt
-                    </span>
+                    </Tag>
                   ) : (
                     <>
                       {event.event.participantLimit - attendeeCount > 9 ? (
@@ -145,11 +141,11 @@ export function EventCard({ event, returnTo, isJoined = false, slug = "fagfest" 
               </span>
             </Detail>
           )}
-        </div>
+      </LinkCard.Description>
 
-        <div className="flex gap-2 flex-wrap items-end w-full">
+      <LinkCard.Footer>
           {isJoined && (
-            <Tag variant="success" size="small">
+            <Tag variant="moderate" data-color="success" size="small">
               Påmeldt
             </Tag>
           )}
@@ -168,7 +164,7 @@ export function EventCard({ event, returnTo, isJoined = false, slug = "fagfest" 
               !shouldHideMimAttendanceTag
             ) {
               return (
-                <Tag variant="neutral" size="small" key={category.id}>
+                <Tag variant="outline" data-color="neutral" size="small" key={category.id}>
                   {category.name}
                 </Tag>
               );
@@ -176,8 +172,7 @@ export function EventCard({ event, returnTo, isJoined = false, slug = "fagfest" 
 
             return null;
           })}
-        </div>
-      </div>
-    </a>
+      </LinkCard.Footer>
+    </LinkCard>
   );
 }

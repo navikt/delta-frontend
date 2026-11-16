@@ -15,26 +15,17 @@ export default async function Fagfestival({ searchParams }: { searchParams: Prom
   await checkToken("/markedsuka");
 
   return (
-    <>
-      <div className="flex flex-col w-full colorful pb-10 -mb-4">
-        <div className="w-full relative z-20">
-          <CardWithBackground
-            title="Markedsuka"
-            titleColor="#021841"
-            className="bg-fagfestival"
-            newEvent
-          >
-            <FagfestivalEvents
-              searchParams={searchParams}
-              category="markedsuka"
-              month="jan"
-              slug="markedsuka"
-              showProgramOverviewCheckbox={false}
-              combineDays
-            />
-          </CardWithBackground>
-        </div>
-      </div>
-    </>
+    <CardWithBackground
+      title="Markedsuka"
+    >
+      <FagfestivalEvents
+        searchParams={searchParams}
+        category="markedsuka"
+        month="jan"
+        slug="markedsuka"
+        showProgramOverviewCheckbox={false}
+        combineDays
+      />
+    </CardWithBackground>
   );
 }

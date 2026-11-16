@@ -1,6 +1,6 @@
 "use client"
 import { useState } from 'react';
-import { Button, TextField } from '@navikt/ds-react';
+import { BodyShort, Button, ErrorMessage, TextField } from '@navikt/ds-react';
 import { TrashIcon } from '@navikt/aksel-icons';
 import { addFaggruppeEier, removeFaggruppeEier } from '@/service/faggruppeActions';
 import { FAGGRUPPE_REQUEST_FAILED_MESSAGE } from '@/types/faggruppe';
@@ -66,16 +66,17 @@ export default function ManageEiereForm({ faggruppeId, eiere, isAdmin }: Props) 
         <div className="space-y-4">
             <div className="space-y-2">
                 {currentEiere.length === 0 && (
-                    <p className="text-ax-neutral-600 text-sm">Ingen eiere registrert.</p>
+                    <BodyShort size="small" textColor="subtle">Ingen eiere registrert.</BodyShort>
                 )}
                 {currentEiere.map((eier) => (
-                    <div key={eier.epost} className="flex items-center justify-between gap-2 p-2 border rounded">
+                    <div key={eier.epost} className="flex items-center justify-between gap-2 p-2 border border-ax-border-neutral-subtle rounded-ax-8">
                         <div>
                             {eier.navn && <span className="font-medium">{eier.navn}</span>}
-                            <span className="text-sm text-ax-neutral-700 ml-1">{eier.epost}</span>
+                            <BodyShort as="span" size="small" textColor="subtle" className="ml-1">{eier.epost}</BodyShort>
                         </div>
                         <Button
-                            variant="tertiary-neutral"
+                            variant="tertiary"
+                            data-color="neutral"
                             size="small"
                             icon={<TrashIcon aria-hidden />}
                             loading={removeLoading === eier.epost}
@@ -100,12 +101,12 @@ export default function ManageEiereForm({ faggruppeId, eiere, isAdmin }: Props) 
                 </Button>
             </form>
 
-            {error && <p className="text-ax-danger-700 text-sm">{error}</p>}
+            {error && <ErrorMessage size="small">{error}</ErrorMessage>}
 
             {isAdmin && (
-                <p className="text-sm text-ax-neutral-600 italic">
+                <BodyShort size="small" textColor="subtle" className="italic">
                     Du ser dette som administrator og kan administrere eiere for alle faggrupper.
-                </p>
+                </BodyShort>
             )}
         </div>
     );

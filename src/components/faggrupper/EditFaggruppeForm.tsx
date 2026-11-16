@@ -1,6 +1,6 @@
 "use client"
 import { useState } from 'react';
-import { Button } from '@navikt/ds-react';
+import { Button, ErrorMessage } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import { updateFaggruppe } from '@/service/faggruppeActions';
 import { FAGGRUPPE_REQUEST_FAILED_MESSAGE } from '@/types/faggruppe';
@@ -56,7 +56,7 @@ export default function EditFaggruppeForm({ group }: { group: Group }) {
         <form onSubmit={handleSubmit} className="space-y-4">
             <FaggruppeFormFields formData={formData} onChange={setFormData} />
 
-            {error && <p className="text-ax-danger-700">{error}</p>}
+            {error && <ErrorMessage>{error}</ErrorMessage>}
 
             <div className="flex gap-3">
                 <Button variant="primary" type="submit" loading={loading}>

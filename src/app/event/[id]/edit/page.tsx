@@ -20,7 +20,7 @@ async function Form({ id }: { id: string }) {
 
 export default async function EditEvent({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  return <CardWithBackground title="Rediger arrangement" home backLink={`/event/${id}/admin`}>
+  return <CardWithBackground title="Rediger arrangement" backText="Deltakerliste" backLink={`/event/${id}/admin`}>
     <Suspense fallback={<EventResultsSkeleton />}><Form id={id} /></Suspense>
   </CardWithBackground>;
 }

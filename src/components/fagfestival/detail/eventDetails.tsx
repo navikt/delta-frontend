@@ -1,31 +1,33 @@
 "use client";
 
-import {useState, useTransition} from "react";
+import {useState, useTransition, type ReactNode} from "react";
 import {User} from "@/types/user";
 import EventDescription from "./eventDescription";
 import {
-    Alert,
     Button,
     Heading,
+    HGrid,
+    InlineMessage,
+    Link,
     Modal,
     BodyLong,
-    Tag,
     LocalAlert,
+    VStack,
 } from "@navikt/ds-react";
-import Link from "next/link";
-import {useQRCode} from 'next-qrcode';
+import NextLink from "next/link";
 import {FullDeltaEvent} from "@/types/event";
 import type { getEventRegistrationState } from "@/service/eventInteractiveReads";
 import { changeEventRegistration } from "@/service/waitlistActions";
-import {format} from "date-fns";
 import Calendar from "@/components/calendar";
-import SecondaryCopyButton from "@/components/SecondaryCopyButton";
+import CardWithBackground from "@/components/cardWithBackground";
 import {
     countCapacityAttendees,
     InvitationCapacity,
     isInvitationReservationActive,
 } from "@/service/eventCapacity";
 import CalendarSyncStatus from "@/components/calendarSyncStatus";
+import OrganizerStatusBox from "@/components/organizerStatusBox";
+import { DescriptionCard, EventHeroMeta } from "@/components/eventDetailsParts";
 import { type FestivalConfig, getFestivalEventUrl } from "../festivals";
 import WaitlistControls from "@/components/waitlistControls";
 import RegistrationRefreshNotice from "@/components/registrationRefreshNotice";
@@ -82,8 +84,6 @@ export default function EventDetails({
     const [showUnregistration, setUnregistration] = useState(false);
     const [openConfirmation, setOpenConfirmation] = useState(false);
     const [openInterested, setOpenInterested] = useState(false);
-    const [openQR, setOpenQR] = useState(false);
-    const {Canvas} = useQRCode();
 
     const showAlert = () => {
         setUnregistration(false)
@@ -92,9 +92,8 @@ export default function EventDetails({
         setter(true);
     };
 
-    const isSameDay =
-        format(new Date(event.startTime), "MMMd") ===
-        format(new Date(event.endTime), "MMMd");
+    const hasEnded = new Date(event.endTime) < new Date();
+    const showCalendarStatus = event.inviteMode === "SHARED" && !!event.calendarSyncStatus;
 
     function convertTextToLinks(text: string) {
         const urlRegex = /(https?:\/\/\S+)/g;
@@ -124,314 +123,230 @@ export default function EventDetails({
         });
     }
 
+    const meldInteresseButton = (
+        <Button
+            variant="primary"
+            onClick={() => setOpenInterested((x) => !x)}
+        >
+            Meld interesse
+        </Button>
+    );
+
+    /** Hero actions and the status message that explains them, derived from the registration state. */
+    const registration: { actions?: ReactNode; notice?: ReactNode } = (function () {
+        if (registrationNeedsRefresh) {
+            return { notice: <RegistrationRefreshNotice eventId={event.id} onUpdated={updateRegistration} /> };
+        }
+        if (isHost) {
+            return {
+                actions: (
+                    <Button as={NextLink} href={`/event/${event.id}/admin`} variant="primary">
+                        Administrer
+                    </Button>
+                ),
+            };
+        }
+        if (!isParticipant && reactiveWaitlist?.position != null) {
+            return { actions: <WaitlistControls eventId={event.id} state={reactiveWaitlist} onUpdated={updateRegistration} /> };
+        }
+        if (hasEnded)
+            return {
+                notice: <InlineMessage status="info">Arrangementet er avsluttet</InlineMessage>,
+                actions: isParticipant && (
+                    <Button
+                        variant="primary"
+                        data-color="danger"
+                        onClick={() => setOpenConfirmation((x) => !x)}
+                    >
+                        Slett deltakelse
+                    </Button>
+                ),
+            };
+        const isUtløpt =
+            !isParticipant &&
+            !!event.signupDeadline &&
+            new Date(event.signupDeadline) < new Date();
+        if (isUtløpt) {
+            return {
+                notice: <InlineMessage status="warning">Påmeldingsfristen er utløpt</InlineMessage>,
+                actions: meldInteresseButton,
+            };
+        }
+        if (
+            !isParticipant && !hasInvitationReservation && event.participantLimit > attendeeCount &&
+            reactiveWaitlist?.enabled && reactiveWaitlist.open && reactiveWaitlist.count > 0
+        ) {
+            return { actions: <WaitlistControls eventId={event.id} state={reactiveWaitlist} onUpdated={updateRegistration} /> };
+        }
+        if (
+            event.participantLimit &&
+            event.participantLimit <= attendeeCount &&
+            !isParticipant &&
+            !hasInvitationReservation
+        ) {
+            return {
+                notice: <InlineMessage status="warning">Arrangementet er fullt</InlineMessage>,
+                actions: reactiveWaitlist?.enabled && reactiveWaitlist.open
+                    ? <WaitlistControls eventId={event.id} state={reactiveWaitlist} onUpdated={updateRegistration} />
+                    : meldInteresseButton,
+            };
+        }
+        return {
+            actions: (
+                <Button
+                    variant="primary"
+                    data-color={isParticipant ? "danger" : undefined}
+                    onClick={() => setOpenConfirmation((x) => !x)}
+                >
+                    {isParticipant ? "Meld av" : "Bli med"}
+                </Button>
+            ),
+        };
+    })();
+
+    const hasNotices = showRegistration || showUnregistration || !!registration.notice;
+
     return (
-        <div>
-            {isHost && event.inviteMode === "SHARED" && (
-                <div className="mb-4">
-                    <CalendarSyncStatus eventId={event.id} status={event.calendarSyncStatus} error={calendarSyncError} isHost={isHost} />
-                </div>
-            )}
-            <div className="flex w-full justify-between items-start gap-4">
-                {isSameDay ? (
-                    <Calendar dateString={event.startTime} displayTime={!isSameDay}/>
-                ) : (
-                    <div className="flex gap-2 items-center">
-                        <Calendar dateString={event.startTime} displayTime={!isSameDay}/>
-                        ⁠–
-                        <Calendar dateString={event.endTime} displayTime={!isSameDay}/>
-                    </div>
+        <CardWithBackground
+            title={event.title}
+            backLink={`/${festival.slug}`}
+            backText={festival.backText}
+            backToOverview
+            leading={<Calendar dateString={event.startTime}/>}
+            meta={<EventHeroMeta event={event} categories={categories}/>}
+            actions={registration.actions || undefined}
+            bare
+        >
+            <VStack gap="space-24">
+                {hasNotices && (
+                    <VStack gap="space-8">
+                        {showRegistration && (
+                            <InlineMessage status="success" role="status">
+                                Påmelding registrert
+                            </InlineMessage>
+                        )}
+                        {showUnregistration && (
+                            <InlineMessage status="success" role="status">
+                                {hasEnded ? "Deltakelse slettet" : "Avmelding registrert"}
+                            </InlineMessage>
+                        )}
+                        {registration.notice}
+                    </VStack>
                 )}
-                <div className="flex flex-col ax-md:flex-row gap-4 items-start ax-md:items-center">
-                    {showRegistration && (
-                        <Alert variant="success" size="small">
-                            Påmelding registrert
-                        </Alert>
-                    )}
-                    {showUnregistration && (
-                        <Alert variant="success" size="small">
-                            {new Date(event.endTime) < new Date() ? "Deltakelse slettet" : "Avmelding registrert"}
-                        </Alert>
-                    )}
-                    {(function () {
-                        if (registrationNeedsRefresh) {
-                            return <RegistrationRefreshNotice eventId={event.id} onUpdated={updateRegistration} />;
-                        }
-                        if (hosts.map((h) => h.email).includes(user.email)) {
-                            return (
-                                <>
-                                    <Link
-                                        className="w-full h-fit aksel-button" data-variant="primary"
-                                        href={`/event/${event.id}/admin`}
-                                    >
-                                        Administrer
-                                    </Link>
-                                </>
-                            );
-                        }
-                        if (!isParticipant && reactiveWaitlist?.position != null) {
-                            return <WaitlistControls eventId={event.id} state={reactiveWaitlist} onUpdated={updateRegistration} />;
-                        }
-                        if (new Date(event.endTime) < new Date())
-                            return (
-                                <>
-                                    <Alert
-                                        variant="info"
-                                        size="small"
-                                        className="md:whitespace-nowrap"
-                                    >
-                                        Arrangementet er avsluttet
-                                    </Alert>
-                                    {isParticipant && (
-                                    <Button
-                                        variant={isParticipant ? "danger" : "primary"}
-                                        className="w-full h-fit"
-                                        onClick={() => setOpenConfirmation((x) => !x)}
-                                    >
-                                        Slett deltakelse
-                                    </Button>
-                                    )}
-                                </>
-                            );
-                        const isUtløpt =
-                            !isParticipant &&
-                            !!event.signupDeadline &&
-                            new Date(event.signupDeadline) < new Date()
-                                ? true
-                                : false;
-                        if (isUtløpt) {
-                            return (
-                                <>
-                                    <Alert
-                                        variant="warning"
-                                        size="small"
-                                        className="md:whitespace-nowrap"
-                                    >
-                                        Påmeldingsfristen er utløpt
-                                    </Alert>
-                                    <Button
-                                        variant="primary"
-                                        className="w-full h-fit"
-                                        onClick={() => setOpenInterested((x) => !x)}
-                                    >
-                                        Meld interesse
-                                    </Button>
-                                </>
-                            );
-                        }
-                        if (
-                            !isParticipant && !hasInvitationReservation && event.participantLimit > attendeeCount &&
-                            reactiveWaitlist?.enabled && reactiveWaitlist.open && reactiveWaitlist.count > 0
-                        ) {
-                            return <WaitlistControls eventId={event.id} state={reactiveWaitlist} onUpdated={updateRegistration} />;
-                        }
-                        if (
-                            event.participantLimit &&
-                            event.participantLimit <= attendeeCount &&
-                            !isParticipant &&
-                            !hasInvitationReservation
-                        ) {
-                            return (
-                                <>
-                                    <Alert
-                                        variant="warning"
-                                        size="small"
-                                        className="md:whitespace-nowrap"
-                                    >
-                                        Arrangementet er fullt
-                                    </Alert>
-                                    {reactiveWaitlist?.enabled && reactiveWaitlist.open
-                                      ? <WaitlistControls eventId={event.id} state={reactiveWaitlist} onUpdated={updateRegistration} />
-                                      :
-                                    <Button
-                                        variant="primary"
-                                        className="w-full h-fit"
-                                        onClick={() => setOpenInterested((x) => !x)}
-                                    >
-                                        Meld interesse
-                                    </Button>}
-                                </>
-                            );
-                        }
-                        return (
-                            <Button
-                                variant={isParticipant ? "danger" : "primary"}
-                                className="w-full h-fit"
-                                onClick={() => setOpenConfirmation((x) => !x)}
-                            >
-                                {isParticipant ? "Meld av" : "Bli med"}
-                            </Button>
-                        );
-                    })()}
-                    <Modal
-                        open={openInterested}
-                        onClose={() => setOpenInterested(false)}
-                        aria-label="Meld interesse"
-                    >
-                        <Modal.Body>
-                            <Heading spacing level="1" size="large" id="modal-heading">
-                                Meld interesse
-                            </Heading>
-                            <p className="leading-normal mb-4">Arrangementet er dessverre fullt, men det er mulig at
-                                arrangøren har en venteliste eller planer om lignende arrangementer.</p>
-                            <p className="leading-normal mb-4">Meld interesse til arrangøren:</p>
-                            <ul className="list-disc list-inside">
-                                {hosts.map((host) => (
-                                    <li key={host.email}>
-                                        <Link
-                                            className="leading-relaxed"
-                                            title={`Send e-post til ${host.name.split(", ").reverse().join(" ")}`}
-                                            href={`mailto:${host.email}`}
-                                        >
-                                            {host.name.split(", ").reverse().join(" ")}
-                                        </Link>
-                                    </li>
-                                ))}
-                            </ul>
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <Button
-                                variant="secondary"
-                                onClick={async () => setOpenInterested((x) => !x)}
-                            >
-                                Lukk
-                            </Button>
-                        </Modal.Footer>
-                    </Modal>
-                    <Modal
-                        open={openConfirmation}
-                        onClose={() => { if (!registrationPending) setOpenConfirmation(false); }}
-                        aria-label="Meld av modal"
-                    >
-                        <Modal.Body>
-                            {registrationError && <LocalAlert status="error" role="alert">
-                                <LocalAlert.Content>{registrationError}</LocalAlert.Content>
-                            </LocalAlert>}
-                            {registrationError && <Button variant="secondary" onClick={() => window.location.reload()}>Oppdater siden</Button>}
-                            <Heading spacing level="1" size="large" id="modal-heading">
-                                {isParticipant ? <>{new Date(event.endTime) < new Date() ? "Slett min deltakelse" : "Meld av"}</> : "Bli med"}
-                            </Heading>
-                            <BodyLong spacing>
-                                {isParticipant ? <>{new Date(event.endTime) < new Date() ? "Ønsker du å slette deltakelsen din? Hvis ja sletter Delta data lagret om deg knyttet til dette arrangementet." : "Er du sikker på at du vil melde deg av? Dersom påmeldingsfristen er utløpt \
-eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."}</> : "Ved å melde deg på arrangementet, godtar du at Delta lagrer ditt navn og din e-postadresse."}
-
-
-                            </BodyLong>
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <Button
-                                variant="secondary"
-                                onClick={async () => setOpenConfirmation((x) => !x)}
-                            >
-                                Avbryt
-                            </Button>
-                            <Button
-                                variant={isParticipant ? "danger" : "primary"}
-                                className="w-fit h-fit font-ax-bold"
-                                loading={registrationPending}
-                                disabled={registrationNeedsRefresh}
-                                onClick={() => startRegistration(async () => {
-                                    const result = await changeEventRegistration(event.id, isParticipant);
-                                    if (!result.ok) {
-                                        setRegistrationError(result.message);
-                                        return;
-                                    }
-                                    setRegistrationError("");
-                                    showAlert();
-                                    updateRegistration(result.refreshRequired ? null : result.data);
-                                    setOpenConfirmation(false);
-                                })}
-                            >
-                                {isParticipant ? <>{new Date(event.endTime) < new Date() ? "Ja, slett meg" : "Ja, meld meg av"}</> : "Godta og bli med"}
-                            </Button>
-                        </Modal.Footer>
-                    </Modal>
-                    <SecondaryCopyButton
-                        className="ax-md:whitespace-nowrap w-full"
-                        copyText={eventUrl}
-                        text="Kopier lenke"
-                    />
-                </div>
-            </div>
-            <div className="flex-col ax-md:flex-row flex justify-between gap-4 ax-md:gap-28 pt-4">
-                <EventDescription
-                    contact={festival.contact}
-                    user={user}
-                    event={event}
-                    participants={reactiveParticipants}
-                    hosts={hosts}
-                    invitationCapacity={reactiveInvitationCapacity}
-                    categories={categories}
-                    displayTime={isSameDay}
-                    className="flex flex-col gap-2 max-w-xs"
-                />
-                <div className="flex-grow flex flex-col gap-2 ax-md:w-2/4">
-                    <Heading size="medium" as="h2">
-                        Detaljer
-                    </Heading>
-                    <BodyLong className="whitespace-pre-line break-words max-w-prose">
-                        {convertTextToLinks(event.description)}
-                    </BodyLong>
-                    <div className="flex gap-2 flex-wrap mt-5 mb-12">
-                        {categories.length > 0 &&
-                            categories.map((category) => (
-                                <Tag variant="neutral" size="small" key={category.id}>
-                                    {category.name}
-                                </Tag>
-                            ))}
-                    </div>
-                    <Heading size="medium" as="h2">
-                        Del arrangementet
-                    </Heading>
-                    <div className="flex gap-3 mt-2 mb-6">
-                        <SecondaryCopyButton
-                            className="ax-md:whitespace-nowrap w-fit h-fit"
-                            copyText={eventUrl}
-                            text="Kopier lenke"
-                            size="small"
+                <HGrid gap="space-24" columns={{ xs: 1, md: "minmax(0, 24rem) minmax(0, 1fr)" }} align="start">
+                    <VStack gap="space-16">
+                        <EventDescription
+                            contact={festival.contact}
+                            user={user}
+                            event={event}
+                            participants={reactiveParticipants}
+                            hosts={hosts}
+                            invitationCapacity={reactiveInvitationCapacity}
+                            categories={categories}
                         />
-                        <Button
-                            variant="secondary"
-                            onClick={async () => setOpenQR((x) => !x)}
-                            className="mb-4 w-fit"
-                            size="small"
-                        >
-                            Vis QR-kode
-                        </Button>
-                    </div>
-                    <Modal
-                        open={openQR}
-                        onClose={() => setOpenQR(false)}
-                        aria-label="Meld interesse"
+                        {isHost && (
+                            <OrganizerStatusBox>
+                                {showCalendarStatus && (
+                                    <CalendarSyncStatus
+                                        eventId={event.id}
+                                        status={event.calendarSyncStatus}
+                                        error={calendarSyncError}
+                                        isHost={isHost}
+                                    />
+                                )}
+                            </OrganizerStatusBox>
+                        )}
+                    </VStack>
+                    <DescriptionCard shareUrl={eventUrl} qrText={eventUrl}>
+                        <BodyLong className="whitespace-pre-line">
+                            {convertTextToLinks(event.description)}
+                        </BodyLong>
+                    </DescriptionCard>
+                </HGrid>
+            </VStack>
+            <Modal
+                open={openInterested}
+                onClose={() => setOpenInterested(false)}
+                aria-label="Meld interesse"
+            >
+                <Modal.Body>
+                    <Heading spacing level="1" size="large" id="modal-heading">
+                        Meld interesse
+                    </Heading>
+                    <BodyLong spacing>Arrangementet er dessverre fullt, men det er mulig at
+                        arrangøren har en venteliste eller planer om lignende arrangementer.</BodyLong>
+                    <BodyLong spacing>Meld interesse til arrangøren:</BodyLong>
+                    <ul className="list-disc list-inside">
+                        {hosts.map((host) => (
+                            <li key={host.email}>
+                                <Link
+                                    title={`Send e-post til ${host.name.split(", ").reverse().join(" ")}`}
+                                    href={`mailto:${host.email}`}
+                                >
+                                    {host.name.split(", ").reverse().join(" ")}
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button
+                        variant="secondary"
+                        onClick={async () => setOpenInterested((x) => !x)}
                     >
-                        <Modal.Body>
-                            <Heading spacing level="1" size="large" id="modal-heading">
-                                Δ Delta
-                            </Heading>
-                            <Canvas
-                                text={eventUrl}
-                                options={{
-                                    errorCorrectionLevel: 'M',
-                                    margin: 3,
-                                    scale: 4,
-                                    width: 200,
-                                    color: {
-                                        dark: '#000',
-                                        light: 'd9cfe4',
-                                    },
-                                }}
-                            />
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <Button
-                                variant="secondary"
-                                onClick={async () => setOpenQR((x) => !x)}
-                            >
-                                Lukk
-                            </Button>
-                        </Modal.Footer>
-                    </Modal>
-                </div>
-            </div>
-        </div>
+                        Lukk
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            <Modal
+                open={openConfirmation}
+                onClose={() => { if (!registrationPending) setOpenConfirmation(false); }}
+                aria-label="Meld av modal"
+            >
+                <Modal.Body>
+                    {registrationError && <LocalAlert status="error" role="alert">
+                        <LocalAlert.Content>{registrationError}</LocalAlert.Content>
+                    </LocalAlert>}
+                    {registrationError && <Button variant="secondary" onClick={() => window.location.reload()}>Oppdater siden</Button>}
+                    <Heading spacing level="1" size="large" id="modal-heading">
+                        {isParticipant ? <>{hasEnded ? "Slett min deltakelse" : "Meld av"}</> : "Bli med"}
+                    </Heading>
+                    <BodyLong spacing>
+                        {isParticipant
+                            ? hasEnded
+                                ? "Ønsker du å slette deltakelsen din? Hvis ja sletter Delta data lagret om deg knyttet til dette arrangementet."
+                                : "Er du sikker på at du vil melde deg av? Dersom påmeldingsfristen er utløpt eller antallsbegrensing er nådd, kan du ikke melde deg på igjen."
+                            : "Ved å melde deg på arrangementet, godtar du at Delta lagrer ditt navn og din e-postadresse."}
+                    </BodyLong>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button
+                        variant="secondary"
+                        onClick={async () => setOpenConfirmation((x) => !x)}
+                    >
+                        Avbryt
+                    </Button>
+                    <Button
+                        variant="primary"
+                        data-color={isParticipant ? "danger" : undefined}
+                        loading={registrationPending}
+                        disabled={registrationNeedsRefresh}
+                        onClick={() => startRegistration(async () => {
+                            const result = await changeEventRegistration(event.id, isParticipant);
+                            if (!result.ok) {
+                                setRegistrationError(result.message);
+                                return;
+                            }
+                            setRegistrationError("");
+                            showAlert();
+                            updateRegistration(result.refreshRequired ? null : result.data);
+                            setOpenConfirmation(false);
+                        })}
+                    >
+                        {isParticipant ? <>{hasEnded ? "Ja, slett meg" : "Ja, meld meg av"}</> : "Godta og bli med"}
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </CardWithBackground>
     );
 }

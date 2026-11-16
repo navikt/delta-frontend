@@ -1,8 +1,8 @@
 "use client";
 
-import { Modal, Table, Pagination, Tabs, Search } from "@navikt/ds-react";
+import { BodyShort, Link, Modal, Table, Pagination, Tabs, Search } from "@navikt/ds-react";
 import { ArrowUpIcon, ArrowDownIcon } from "@navikt/aksel-icons";
-import Link from "next/link";
+import NextLink from "next/link";
 import type { CategoryEvent, CategoryStat } from "@/service/statsActions";
 import { format } from "date-fns";
 import { nb } from "date-fns/locale";
@@ -135,7 +135,7 @@ export default function CategoryModal({
             </div>
 
             {events.length === 0 ? (
-              <p className="text-ax-neutral-700">Ingen arrangementer funnet i denne kategorien.</p>
+              <BodyShort textColor="subtle">Ingen arrangementer funnet i denne kategorien.</BodyShort>
             ) : (
               <>
                 <Table size="small">
@@ -168,14 +168,11 @@ export default function CategoryModal({
                       <Table.Row key={event.id}>
                         <Table.DataCell>
                           {event.isPublic ? (
-                            <Link
-                              href={`/event/${event.id}`}
-                              className="text-ax-accent-800 hover:text-ax-accent-900 hover:underline"
-                            >
+                            <Link as={NextLink} href={`/event/${event.id}`}>
                               {event.title}
                             </Link>
                           ) : (
-                            <span className="text-ax-neutral-800">{event.title}</span>
+                            <span>{event.title}</span>
                           )}
                         </Table.DataCell>
                         <Table.DataCell style={{ whiteSpace: "nowrap" }}>
@@ -225,7 +222,7 @@ export default function CategoryModal({
                 ))}
                 {sortedMonthlyStats.length === 0 && (
                   <Table.Row>
-                    <Table.DataCell colSpan={2} className="text-center text-ax-neutral-600">
+                    <Table.DataCell colSpan={2} className="text-center text-ax-text-neutral-subtle">
                       Ingen data tilgjengelig
                     </Table.DataCell>
                   </Table.Row>

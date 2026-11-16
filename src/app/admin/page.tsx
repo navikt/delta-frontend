@@ -36,7 +36,7 @@ export default async function AdminPage() {
     );
 
   return (
-    <CardWithBackground title="Administrasjon" compactHeader>
+    <CardWithBackground title="Administrasjon">
       <VStack gap="space-24">
         <section aria-labelledby="calendar-statistics">
           <Heading id="calendar-statistics" level="2" size="medium" spacing>

@@ -1,7 +1,7 @@
 import { getUser, isFaggruppeAdmin } from "@/auth/token";
 import { getFaggruppe, getIsFaggruppeOwner } from "@/service/faggruppeQueries";
 import CardWithBackground from "@/components/cardWithBackground";
-import { Detail } from "@navikt/ds-react";
+import { Button, Detail } from "@navikt/ds-react";
 import { PersonGroupIcon, CalendarIcon, ClockIcon } from "@navikt/aksel-icons";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import Link from "next/link";
@@ -73,12 +73,15 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
                 </div>
                 {(isOwner || isAdmin) && (
                     <div className="px-4 pb-10">
-                        <Link
+                        <Button
+                            as={Link}
                             href={`/faggrupper/${id}/rediger`}
-                            className="aksel-button aksel-button--small inline-flex items-center gap-1" data-variant="secondary"
+                            variant="secondary"
+                            size="small"
+                            icon={<PencilIcon aria-hidden />}
                         >
-                            <PencilIcon className="inline" title="rediger" fontSize="1.2rem" /> Rediger
-                        </Link>
+                            Rediger
+                        </Button>
                     </div>
                 )}
         </CardWithBackground>

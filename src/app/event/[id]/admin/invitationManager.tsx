@@ -1,6 +1,6 @@
 "use client";
 
-import { Alert, BodyShort, Button, Heading, Tag } from "@navikt/ds-react";
+import { BodyShort, Button, Heading, LocalAlert, Tag } from "@navikt/ds-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import PersonPicker from "@/components/personPicker";
@@ -134,7 +134,7 @@ export default function InvitationManager({
       ) : (
         <BodyShort>Personsøk er ikke tilgjengelig for deg nå.</BodyShort>
       )}
-      {actionError && <Alert variant="error" role="alert">{actionError}</Alert>}
+      {actionError && <LocalAlert status="error" role="alert"><LocalAlert.Content>{actionError}</LocalAlert.Content></LocalAlert>}
     </section>
   );
 }

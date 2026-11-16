@@ -12,8 +12,7 @@ export function frequencyLabel(frequency: RecurrenceFrequency): string {
 
 export function RecurringBadge({ frequency }: { frequency: RecurrenceFrequency }) {
     return (
-        <Tag variant="info" size="small" className="flex items-center gap-1 w-fit">
-            <ArrowsCirclepathIcon aria-hidden />
+        <Tag variant="moderate" data-color="neutral" size="small" icon={<ArrowsCirclepathIcon aria-hidden />}>
             {frequencyLabel(frequency)}
         </Tag>
     );

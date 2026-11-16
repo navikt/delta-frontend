@@ -1,4 +1,5 @@
 import type { DeltaParticipant } from "@/types/event";
+import { Tag } from "@navikt/ds-react";
 
 type ParticipantProps = DeltaParticipant & { owner: boolean };
 
@@ -9,9 +10,9 @@ export default function Participant(participant: ParticipantProps) {
         {participant.name.split(", ").reverse().join(" ")}
       </span>
       {participant.owner && (
-        <span className="bg-ax-neutral-600 text-ax-text-on-inverted cursor-default rounded-xl px-2">
+        <Tag size="small" variant="strong" data-color="neutral">
           arrangør
-        </span>
+        </Tag>
       )}
     </div>
   );

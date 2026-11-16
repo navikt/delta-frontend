@@ -1,7 +1,6 @@
 import "server-only";
 import type { Metadata } from "next";
 import { checkToken, getUser } from "@/auth/token";
-import CardWithBackground from "@/components/cardWithBackground";
 import { getInvitationCapacity } from "@/service/eventCapacity";
 import { ApiError } from "@/service/eventListTransport";
 import { getEvent } from "@/service/eventQueries";
@@ -48,29 +47,17 @@ export default async function FestivalEventPage({
   );
 
   return (
-    <div className={`w-full ${festival.bgClass} pb-10`}>
-      <CardWithBackground
-        title={event.title}
-        titleColor={festival.titleColor}
-        className="bg-fagfestival"
-        home
-        backText={festival.backText}
-        backLink={`/${festival.slug}`}
-        backToOverview
-      >
-        <EventDetails
-          waitlist={waitlist}
-          festival={festival}
-          event={event}
-          participants={participants}
-          hosts={hosts}
-          categories={categories}
-          invitationCapacity={invitationCapacity}
-          calendarSyncError={isHost ? calendarSyncError : null}
-          user={user}
-          hostname={process.env.NEXT_PUBLIC_HOSTNAME}
-        />
-      </CardWithBackground>
-    </div>
+    <EventDetails
+      waitlist={waitlist}
+      festival={festival}
+      event={event}
+      participants={participants}
+      hosts={hosts}
+      categories={categories}
+      invitationCapacity={invitationCapacity}
+      calendarSyncError={isHost ? calendarSyncError : null}
+      user={user}
+      hostname={process.env.NEXT_PUBLIC_HOSTNAME}
+    />
   );
 }

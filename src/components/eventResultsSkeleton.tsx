@@ -1,14 +1,19 @@
-import { BodyShort, Skeleton } from "@navikt/ds-react";
+import { BodyShort, HGrid, Skeleton, VStack } from "@navikt/ds-react";
+
+export const EVENT_GRID_COLUMNS = "repeat(auto-fill, minmax(18rem, 1fr))";
 
 export default function EventResultsSkeleton() {
   return (
-    <div className="w-full p-4" aria-busy="true">
-      <BodyShort role="status" className="pb-4">Laster arrangementer …</BodyShort>
-      <div aria-hidden="true" className="grid grid-cols-1 ax-md:grid-cols-3 gap-4">
-        {["first", "second", "third"].map(key =>
-          <Skeleton key={key} variant="rounded" className="h-72 w-full" />,
-        )}
-      </div>
-    </div>
+    <VStack gap="space-16" width="100%" aria-busy="true">
+      <BodyShort role="status" textColor="subtle">Laster arrangementer …</BodyShort>
+      <VStack gap="space-12" aria-hidden="true">
+        <Skeleton variant="text" width="8rem" height="2rem" />
+        <HGrid gap="space-16" columns={EVENT_GRID_COLUMNS}>
+          {["first", "second", "third"].map(key =>
+            <Skeleton key={key} variant="rounded" height="12rem" width="100%" />,
+          )}
+        </HGrid>
+      </VStack>
+    </VStack>
   );
 }

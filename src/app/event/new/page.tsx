@@ -24,7 +24,7 @@ async function Form({ searchParams }: { searchParams: Promise<OverviewSearchPara
 }
 
 export default function NewEvent({ searchParams }: { searchParams: Promise<OverviewSearchParams> }) {
-  return <CardWithBackground title="Opprett nytt arrangement" home backLink="/">
+  return <CardWithBackground title="Opprett nytt arrangement" backText="Arrangementer" backLink="/">
     <Suspense fallback={<EventResultsSkeleton />}><Form searchParams={searchParams} /></Suspense>
   </CardWithBackground>;
 }

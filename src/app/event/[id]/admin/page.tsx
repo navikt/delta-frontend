@@ -27,7 +27,6 @@ export default async function ParticipantsPage({
     return (
       <CardWithBackground
         title={`Deltakerliste: ${fullEvent.event.title}`}
-        home
         backText="Arrangementet"
         backLink={`/event/${id}`}
       >
@@ -45,7 +44,7 @@ export default async function ParticipantsPage({
     return (
       <CardWithBackground
         title="Ingen tilgang"
-        color="bg-ax-danger-400"
+        backText="Arrangementet"
         backLink={`/event/${id}`}
       >
         Du har ikke tilgang til denne siden.

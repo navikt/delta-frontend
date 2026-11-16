@@ -112,7 +112,7 @@ function ExpandedTable({
               <></>
             ) : hosts.some((host) => host.email === email) ? (
               <Button
-                variant="danger"
+                data-color="danger"
                 size="small"
                 onClick={async () => {
                   await changeParticipant(event.id, {
@@ -142,7 +142,7 @@ function ExpandedTable({
                   Gjør til med-arrangør
                 </Button>
                 <Button
-                  variant="danger"
+                  data-color="danger"
                   size="small"
                   onClick={() => toggleConfirmation(email)}
                 >
@@ -180,7 +180,7 @@ function ExpandedTable({
                 Avbryt
               </Button>
               <Button
-                variant="danger"
+                data-color="danger"
                 className="w-fit h-fit font-ax-bold"
                 onClick={async () => {
                   await removeUser(event.id, email);
@@ -239,7 +239,7 @@ function FullTable({
               <></>
             ) : hosts.some((host) => host.email === email) ? (
               <Button
-                variant="danger"
+                data-color="danger"
                 size="small"
                 onClick={async () => {
                   await changeParticipant(event.id, {
@@ -269,7 +269,7 @@ function FullTable({
                   Gjør til arrangør
                 </Button>
                 <Button
-                  variant="danger"
+                  data-color="danger"
                   size="small"
                   onClick={() => toggleConfirmation(email)}
                 >
@@ -298,7 +298,7 @@ function FullTable({
                 Avbryt
               </Button>
               <Button
-                variant="danger"
+                data-color="danger"
                 className="w-fit h-fit font-ax-bold"
                 onClick={async () => {
                   await removeUser(event.id, email);

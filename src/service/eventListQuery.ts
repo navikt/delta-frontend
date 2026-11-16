@@ -70,6 +70,15 @@ export function eventDatasetKey(
   ]);
 }
 
+// The waitlist tab reads a different endpoint, so it gets its own dataset policy and always navigates.
+export function homeDatasetKey(
+  state: { tab: string; categories: string[]; showPast: boolean; onlyRegistered: boolean },
+  catalog: Category[],
+) {
+  if (!state.onlyRegistered && state.tab === "ventelister") return eventDatasetKey("waitlists", {});
+  return eventDatasetKey("home", getHomeEventQuery(state, catalog));
+}
+
 export function getEventListQuery({
   categories,
   onlyFuture,

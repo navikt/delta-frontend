@@ -36,6 +36,7 @@ export default async function RedigerFaggrupePage({ params }: { params: Promise<
                     <CardWithBackground
                         title="Rediger faggruppe"
                         backLink={`/faggrupper/${id}`}
+                      backText="Faggruppen"
                     >
                         <div className="mx-4 my-4">
                             <EditFaggruppeForm group={group} />
@@ -47,6 +48,7 @@ export default async function RedigerFaggrupePage({ params }: { params: Promise<
                         <CardWithBackground
                             title="Administrer eiere"
                             backLink={`/faggrupper/${id}`}
+                          backText="Faggruppen"
                         >
                             <div className="mx-4 my-4">
                                 <ManageEiereForm
@@ -63,6 +65,7 @@ export default async function RedigerFaggrupePage({ params }: { params: Promise<
                         <CardWithBackground
                             title="Faresone"
                             backLink={`/faggrupper/${id}`}
+                          backText="Faggruppen"
                         >
                             <div className="mx-4 my-4">
                                 <DeleteFaggruppeButton faggruppeId={id} />

@@ -22,30 +22,48 @@ const commonMocks = {
   "@/service/format": formatting,
 };
 const participant = loadComponent("./participant.tsx", {}).default;
+const organizerStatusBox = loadComponent("../../organizerStatusBox.tsx", {});
 const calendarSyncStatus = loadComponent("../../calendarSyncStatus.tsx", {
   "next/navigation": { useRouter: () => ({ refresh() {} }) },
   "@/service/eventActions": {},
+  "@/components/organizerStatusBox": organizerStatusBox,
 }).default;
-const roomStatus = loadComponent("../../roomStatusTag.tsx", {});
+const roomStatus = loadComponent("../../roomStatusTag.tsx", {
+  "@/components/organizerStatusBox": organizerStatusBox,
+});
+const detailsFormat = loadComponent("../../../service/eventDetailsFormat.ts", {});
+const copyButton = {
+  default: ({ copyText }) => createElement("button", { "data-copy-url": copyText }, "Kopier lenke"),
+};
+const detailsParts = loadComponent("../../eventDetailsParts.tsx", {
+  "@/components/SecondaryCopyButton": copyButton,
+  "@/components/RecurringBadge": { RecurringBadge: noopComponent },
+  "@/service/eventDetailsFormat": detailsFormat,
+  "next-qrcode": { useQRCode: () => ({ Canvas: noopComponent }) },
+});
+const partsMocks = { "@/service/eventDetailsFormat": detailsFormat, "@/components/eventDetailsParts": detailsParts };
 const eventDescription = loadComponent("../../../app/event/[id]/eventDescription.tsx", {
   ...commonMocks,
+  ...partsMocks,
   "./participant": { default: participant },
-  "@/components/RecurringBadge": { RecurringBadge: noopComponent },
-  "@/components/roomStatusTag": roomStatus,
+  "@/components/RecurringBadge": { frequencyLabel: () => "Ukentlig" },
   "@/types/room": { NO_FEATURES: {} },
 }).default;
 const description = loadComponent("./eventDescription.tsx", {
-  ...commonMocks, "./participant": { default: participant },
+  ...commonMocks, ...partsMocks, "./participant": { default: participant },
 }).default;
+const cardWithBackground = ({ backLink, backText, backToOverview, leading, meta, actions, children }) =>
+  createElement("div", { "data-back-to-overview": String(!!backToOverview) },
+    createElement("a", { href: backLink }, backText), leading, meta, actions, children);
 const detailsMocks = {
   ...commonMocks,
+  ...partsMocks,
   "./eventDescription": { default: description },
   "@/components/calendar": { default: noopComponent },
+  "@/components/cardWithBackground": { default: cardWithBackground },
   "@/components/calendarSyncStatus": { default: calendarSyncStatus },
-  "@/components/SecondaryCopyButton": {
-    default: ({ copyText }) => createElement("button", { "data-copy-url": copyText }, "Kopier lenke"),
-  },
-  "next-qrcode": { useQRCode: () => ({ Canvas: noopComponent }) },
+  "@/components/organizerStatusBox": organizerStatusBox,
+  "@/components/roomStatusTag": roomStatus,
   "@/service/eventActions": {},
   "@/service/eventInteractiveReads": {},
   "@/components/waitlistControls": { default: ({ state }) => createElement("div", {},
@@ -56,7 +74,6 @@ const ordinaryDetails = loadComponent("../../../app/event/[id]/eventDetails.tsx"
   ...detailsMocks,
   "./eventDescription": { default: eventDescription },
   "@/components/MarkdownRenderer": { default: noopComponent },
-  "@/components/RecurringBadge": { RecurringBadge: noopComponent },
   "@/components/editScopeModal": { default: noopComponent },
 }).default;
 
@@ -82,40 +99,45 @@ function renderDetails(festival, overrides = {}) {
   }));
 }
 
-test("calendar status and its visibility hint are only rendered for hosts", () => {
+test("calendar status and the organizer box are only rendered for hosts", () => {
   for (const status of ["SYNCED", "PENDING", "FAILED"]) {
     for (const isHost of [false, true]) {
       const html = renderToStaticMarkup(createElement(calendarSyncStatus, {
         eventId: fixture.event.id, status, isHost,
       }));
       if (isHost) {
-        assert.match(html, /Bare synlig for arrangører/);
-        assert.match(html, /Kalenderen er oppdatert|Outlook-kalenderen/);
+        assert.match(html, /Kalender/);
+        assert.match(html, /Oppdatert|Oppdateres|Ikke oppdatert/);
       } else {
         assert.equal(html, "");
       }
     }
   }
   const event = { ...fixture.event, inviteMode: "SHARED", calendarSyncStatus: "SYNCED" };
-  assert.doesNotMatch(renderDetails(festivals.fagfest, { event }), /Kalenderen er oppdatert|Bare synlig/);
-  assert.match(renderDetails(festivals.fagfest, {
-    event, user: { ...user, email: "host@fixture" },
-  }), /Kalenderen er oppdatert/);
+  for (const Detail of [details, ordinaryDetails]) {
+    const render = (overrides) => renderToStaticMarkup(createElement(Detail, {
+      ...fixture, festival: festivals.fagfest, user, event,
+      invitationCapacity: { reservedInvitations: 1, hasOwnReservation: false }, ...overrides,
+    }));
+    assert.doesNotMatch(render({}), /Kun synlig for arrangører|Oppdatert/);
+    const hostHtml = render({ user: { ...user, email: "host@fixture" } });
+    assert.match(hostHtml, /Kun synlig for arrangører/);
+    assert.match(hostHtml, /Oppdatert/);
+  }
 });
 
 test("room booking status is host-only while the room name remains visible", () => {
   for (const status of ["PENDING", "ACCEPTED", "DECLINED"]) {
     for (const isHost of [false, true]) {
-      const html = renderToStaticMarkup(createElement(eventDescription, {
+      const html = renderToStaticMarkup(createElement(ordinaryDetails, {
         ...fixture,
         event: { ...fixture.event, roomName: "Speakers Corner", roomStatus: status },
         user: { ...user, email: isHost ? "host@fixture" : user.email },
-        displayTime: true,
         invitationCapacity: { reservedInvitations: 0, hasOwnReservation: false },
         features: { roomBooking: true },
       }));
       assert.match(html, /Speakers Corner/);
-      const privateText = /Bare synlig for arrangører|Venter på svar fra rommet|Rom booket|Rommet avslo bookingen|Velg et annet rom/;
+      const privateText = /Kun synlig for arrangører|Venter på svar|Booket|Avslått|Velg et annet rom/;
       if (isHost) assert.match(html, privateText);
       else assert.doesNotMatch(html, privateText);
     }
@@ -129,7 +151,9 @@ test("rendered festival details preserve committee, label and individual host co
       ...fixture, contact: festival.contact, user, displayTime: true,
       invitationCapacity: { reservedInvitations: 1, hasOwnReservation: false },
     }));
-    assert.equal(html.match(new RegExp(`data-copy-url="https://fixture.example/${festival.slug}/fixture-event"`, "g"))?.length, 2);
+    assert.equal(html.match(new RegExp(`data-copy-url="https://fixture.example/${festival.slug}/fixture-event"`, "g"))?.length, 1);
+    assert.ok(html.includes(`<a href="/${festival.slug}">${festival.backText}</a>`));
+    assert.match(html, /data-back-to-overview="true"/);
     if (festival.contact.kind === "committee") {
       assert.ok(organizerHtml.includes(`href="mailto:${festival.contact.email}"`));
       assert.ok(organizerHtml.includes(festival.contact.label));
@@ -210,7 +234,6 @@ test("shared server page authenticates before scoped reads and preserves capacit
         getEvent: async (id, path) => { calls.push(["read", id, path]); return fixture; },
       },
       "@/service/eventListTransport": { ApiError },
-      "@/components/cardWithBackground": { default: noopComponent },
       "./eventDetails": { default: details },
     });
     const props = { festival, params: Promise.resolve({ id: fixture.event.id }) };
@@ -219,17 +242,12 @@ test("shared server page authenticates before scoped reads and preserves capacit
       ["auth", `/${festival.slug}/fixture-event`],
       ["read", fixture.event.id, `/${festival.slug}/fixture-event`],
     ]);
-    assert.equal(element.props.className, `w-full ${festival.bgClass} pb-10`);
-    const card = element.props.children;
-    assert.equal(card.props.backLink, `/${festival.slug}`);
-    assert.equal(card.props.backToOverview, true);
-    assert.equal(card.props.titleColor, festival.titleColor);
-    assert.equal(card.props.backText, festival.backText);
-    assert.deepEqual(card.props.children.props.invitationCapacity, { reservedInvitations: 1, hasOwnReservation: false });
-    assert.equal(card.props.children.props.calendarSyncError, null);
+    assert.equal(element.props.festival, festival);
+    assert.deepEqual(element.props.invitationCapacity, { reservedInvitations: 1, hasOwnReservation: false });
+    assert.equal(element.props.calendarSyncError, null);
     currentUser = { ...user, email: "HOST@fixture" };
     const hostElement = await page.default(props);
-    assert.equal(hostElement.props.children.props.children.props.calendarSyncError, fixture.calendarSyncError);
+    assert.equal(hostElement.props.calendarSyncError, fixture.calendarSyncError);
     assert.deepEqual(await page.generateFestivalMetadata(festival, props), { title: "Fixture Δ Delta" });
   }
 });
@@ -240,7 +258,6 @@ test("metadata handles sanitized API errors but preserves auth and not-found con
     ...commonMocks, "server-only": {}, "@/auth/token": {},
     "@/service/eventQueries": { getEvent: async () => { throw failure; } },
     "@/service/eventListTransport": { ApiError },
-    "@/components/cardWithBackground": { default: noopComponent },
     "./eventDetails": { default: details },
   });
   const props = { params: Promise.resolve({ id: fixture.event.id }) };

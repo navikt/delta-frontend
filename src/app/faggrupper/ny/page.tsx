@@ -11,6 +11,7 @@ export default async function NewFaggruppePage() {
                 <CardWithBackground
                     title="Opprett ny faggruppe"
                     backLink="/faggrupper"
+                  backText="Faggrupper"
                 >
                     <div className="mx-4 my-4">
                         <NewFaggruppeForm />

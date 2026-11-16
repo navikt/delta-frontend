@@ -3,6 +3,7 @@ import CardWithBackground from "@/components/cardWithBackground";
 import { getUserWrappedStats } from "@/service/wrappedActions";
 import { Metadata } from "next";
 import MimretidClient from "./mimretidClient";
+import { BodyShort } from "@navikt/ds-react";
 
 export const metadata: Metadata = {
   title: "Mimretid - Delta Δ Nav",
@@ -27,7 +28,7 @@ export default async function MimretidPage({
   if (!stats) {
     return (
       <CardWithBackground title="Mimretid" subtitle="Vi klarte ikke å hente dataene dine akkurat nå.">
-        <p className="text-ax-neutral-900">Prøv igjen senere.</p>
+        <BodyShort>Prøv igjen senere.</BodyShort>
       </CardWithBackground>
     );
   }

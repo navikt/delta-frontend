@@ -1,7 +1,6 @@
 "use client"
 import {useState} from 'react';
-import Link from 'next/link';
-import {Detail, Heading, Search} from "@navikt/ds-react";
+import {HStack, LinkCard, Search, VStack} from "@navikt/ds-react";
 import {CalendarIcon, PersonGroupIcon, ClockIcon} from "@navikt/aksel-icons";
 
 interface Article {
@@ -45,37 +44,32 @@ export default function SearchArticles({articles}: { articles: Article[] }) {
 
             <div className="grid grid-cols-1 ax-md:grid-cols-3 gap-4 px-4 pb-4">
                 {sortedArticles.map((article) => (
-                    <a key={article.title} href={article.href}>
-                        <div
-                            className="flex flex-col h-full p-4 border rounded-xl text-ax-text-neutral border-ax-neutral-400 transition-all hover:-translate-y-1 hover:scale-105 hover:text-ax-text-action hover:border-ax-border-accent no-underline event-card">
-                            <Heading level="2" size="small">{article.title}</Heading>
-                            <div className="flex pt-2 flex-col gap-2 h-full">
-                                {article.when && (
-                                    <Detail className="leading-normal">
-                    <span className="flex items-center gap-1">
-                      <CalendarIcon
-                          title="person"/> {article.when}
-                    </span>
-                                    </Detail>
-                                )}
-                                {article.starttime && (
-                                    <Detail className="leading-normal">
-                    <span className="flex items-center gap-1">
-                      <ClockIcon
-                          aria-label="tid"/> {article.starttime && `${article.starttime}`} {article.endtime && `-  ${article.endtime}`}
-                    </span>
-                                    </Detail>
-                                )}
-                                {article.audience && (
-                                    <Detail className="leading-normal">
-                                        <span className="flex items-center gap-1">
-                                          <PersonGroupIcon title="person"/> Målgruppe: {article.audience}
-                                        </span>
-                                    </Detail>
-                                )}
-                            </div>
-                        </div>
-                    </a>
+                    <LinkCard key={article.title} arrow={false} size="small" className="h-full">
+                        <LinkCard.Title as="h2">
+                            <LinkCard.Anchor href={article.href}>{article.title}</LinkCard.Anchor>
+                        </LinkCard.Title>
+                        {(article.when || article.starttime || article.audience) && (
+                            <LinkCard.Description>
+                                <VStack as="span" gap="space-8">
+                                    {article.when && (
+                                        <HStack as="span" gap="space-4" align="center">
+                                            <CalendarIcon aria-hidden /> {article.when}
+                                        </HStack>
+                                    )}
+                                    {article.starttime && (
+                                        <HStack as="span" gap="space-4" align="center">
+                                            <ClockIcon aria-label="tid" /> {article.starttime && `${article.starttime}`} {article.endtime && `-  ${article.endtime}`}
+                                        </HStack>
+                                    )}
+                                    {article.audience && (
+                                        <HStack as="span" gap="space-4" align="center">
+                                            <PersonGroupIcon aria-hidden /> Målgruppe: {article.audience}
+                                        </HStack>
+                                    )}
+                                </VStack>
+                            </LinkCard.Description>
+                        )}
+                    </LinkCard>
                 ))}
             </div>
         </div>

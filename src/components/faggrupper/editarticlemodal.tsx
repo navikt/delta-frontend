@@ -1,8 +1,7 @@
 "use client"
 import { useRef } from "react";
-import { BodyLong, Button, Modal } from "@navikt/ds-react";
+import { BodyLong, Button, Heading, Link, Modal } from "@navikt/ds-react";
 import {PencilIcon} from "@navikt/aksel-icons";
-import Link from "next/link";
 
 function EditArticleModal({ articlepath }: { articlepath: string }) {
     const ref = useRef<HTMLDialogElement>(null);
@@ -14,9 +13,8 @@ function EditArticleModal({ articlepath }: { articlepath: string }) {
             <Modal ref={ref} header={{ heading: "Rediger faggruppe" }}>
                 <Modal.Body>
                         <div className="my-1">
-                            <h2 className="text-2xl  font-ax-bold text-ax-brand-blue-600 mb-4">A) Vi gjør det sammen 😃</h2>
-                            <Link target="_blank" href="https://forms.office.com/e/LyKPTdaRw5"
-                                  className="text-ax-brand-blue-600 underline hover:no-underline">
+                            <Heading level="2" size="medium" spacing>A) Vi gjør det sammen 😃</Heading>
+                            <Link target="_blank" href="https://forms.office.com/e/LyKPTdaRw5">
                                 Skjema for å redigere faggruppe.
                             </Link>
 
@@ -28,9 +26,8 @@ function EditArticleModal({ articlepath }: { articlepath: string }) {
                                 <li className="pt-1">Ønsket endring</li>
                             </ul>
 
-                            <h2 className="text-2xl  mt-8 mb-4 font-ax-bold text-ax-brand-blue-600">B) Gjør det selv 🛠️</h2>
-                            <Link href={`https://github.com/navikt/delta-frontend/tree/main/public/faggrupper/${articlepath}.md`}
-                                  className="text-ax-brand-blue-600 underline hover:no-underline">
+                            <Heading level="2" size="medium" spacing className="mt-8">B) Gjør det selv 🛠️</Heading>
+                            <Link href={`https://github.com/navikt/delta-frontend/tree/main/public/faggrupper/${articlepath}.md`}>
                                 Rediger på Github.
                             </Link>
                         </div>

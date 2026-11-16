@@ -2,11 +2,13 @@ import { checkToken } from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
 import { getEventStatistics } from "@/service/statsActions";
 import { Metadata } from 'next';
-import Link from "next/link";
+import NextLink from "next/link";
+import { BodyShort, Box, Heading, HStack, Link, VStack } from "@navikt/ds-react";
 import { TrendUpIcon } from "@navikt/aksel-icons";
 import YearSelector from "./yearSelector";
 import CategorySection from "./categorySection";
 import OverviewSection from "./overviewSection";
+import { StatCard } from "./statCard";
 
 export async function generateMetadata({
   searchParams,
@@ -75,7 +77,7 @@ export default async function StatsPage({
 
         {/* Organizer Statistics */}
         <section>
-          <h2 className="text-2xl font-semibold mb-4">Arrangører</h2>
+          <Heading level="2" size="medium" spacing>Arrangører</Heading>
           <div className="grid grid-cols-1 ax-md:grid-cols-2 gap-4">
             <StatCard
               title="Totalt antall arrangører"
@@ -91,54 +93,54 @@ export default async function StatsPage({
 
           <div className="grid grid-cols-1 ax-md:grid-cols-2 gap-4 mt-4">
             {/* Top Organizers by Event Count */}
-            <div className="bg-white p-6 rounded-lg border-2 border-ax-success-400">
-              <h3 className="font-semibold text-lg text-ax-neutral-1000 mb-4">Arrangert flest arrangementer</h3>
-              <div className="space-y-3">
+            <Box background="raised" borderColor="neutral-subtle" borderWidth="1" borderRadius="12" padding="space-24">
+              <Heading level="3" size="small" spacing>Arrangert flest arrangementer</Heading>
+              <VStack gap="space-12">
                 {stats.topOrganizersByEvents.map((org, index) => (
-                  <div key={org.name} className="flex items-center justify-between border-b border-ax-neutral-200 last:border-0 pb-2 last:pb-0">
-                    <div className="flex items-center gap-3">
-                      <span className="text-xl font-ax-bold text-ax-success-700 w-6">
+                  <HStack key={org.name} justify="space-between" align="center" gap="space-12" wrap={false} className="border-b border-ax-border-neutral-subtle last:border-0 pb-2 last:pb-0">
+                    <HStack as="span" align="center" gap="space-12" wrap={false}>
+                      <BodyShort as="span" size="large" weight="semibold" className="w-6 text-ax-text-success">
                         {index + 1}
-                      </span>
-                      <span className="text-ax-neutral-1000 font-medium">{org.name}</span>
-                    </div>
-                    <span className="text-ax-neutral-700 font-medium">{org.count} arr.</span>
-                  </div>
+                      </BodyShort>
+                      <BodyShort as="span" weight="semibold">{org.name}</BodyShort>
+                    </HStack>
+                    <BodyShort as="span" textColor="subtle" className="shrink-0">{org.count} arr.</BodyShort>
+                  </HStack>
                 ))}
-              </div>
-            </div>
+              </VStack>
+            </Box>
 
             {/* Top Organizers by Participant Count */}
-            <div className="bg-white p-6 rounded-lg border-2 border-ax-meta-purple-400">
-              <h3 className="font-semibold text-lg text-ax-neutral-1000 mb-4">Samlet flest deltakere</h3>
-              <div className="space-y-3">
+            <Box background="raised" borderColor="neutral-subtle" borderWidth="1" borderRadius="12" padding="space-24">
+              <Heading level="3" size="small" spacing>Samlet flest deltakere</Heading>
+              <VStack gap="space-12">
                 {stats.topOrganizersByParticipants.map((org, index) => (
-                  <div key={org.name} className="flex items-center justify-between border-b border-ax-neutral-200 last:border-0 pb-2 last:pb-0">
-                    <div className="flex items-center gap-3">
-                      <span className="text-xl font-ax-bold text-ax-meta-purple-700 w-6">
+                  <HStack key={org.name} justify="space-between" align="center" gap="space-12" wrap={false} className="border-b border-ax-border-neutral-subtle last:border-0 pb-2 last:pb-0">
+                    <HStack as="span" align="center" gap="space-12" wrap={false}>
+                      <BodyShort as="span" size="large" weight="semibold" className="w-6 text-ax-text-meta-purple">
                         {index + 1}
-                      </span>
-                      <span className="text-ax-neutral-1000 font-medium">{org.name}</span>
-                    </div>
-                    <span className="text-ax-neutral-700 font-medium">
+                      </BodyShort>
+                      <BodyShort as="span" weight="semibold">{org.name}</BodyShort>
+                    </HStack>
+                    <BodyShort as="span" textColor="subtle" className="shrink-0">
                       {org.count.toLocaleString('nb-NO')}
                       {org.uniqueCount !== undefined && (
                         <>
                           <span className="mx-1">/</span>
-                          <span className="text-sm">{org.uniqueCount.toLocaleString('nb-NO')} unike</span>
+                          <BodyShort as="span" size="small">{org.uniqueCount.toLocaleString('nb-NO')} unike</BodyShort>
                         </>
                       )}
-                    </span>
-                  </div>
+                    </BodyShort>
+                  </HStack>
                 ))}
-              </div>
-            </div>
+              </VStack>
+            </Box>
           </div>
         </section>
 
         {/* Event Details */}
         <section>
-          <h2 className="text-2xl font-semibold mb-4">Detaljer</h2>
+          <Heading level="2" size="medium" spacing>Detaljer</Heading>
           <div className="grid grid-cols-1 ax-md:grid-cols-2 gap-4">
             <div className="space-y-4">
               <StatCard
@@ -155,86 +157,45 @@ export default async function StatsPage({
               />
             </div>
             {stats.mostPopularEvents.length > 0 && (
-              <div className="bg-white p-6 rounded-lg border-2 border-ax-accent-400">
-                <div className="flex items-start gap-3 mb-4">
-                  <TrendUpIcon className="w-6 h-6 text-ax-accent-700 flex-shrink-0 mt-1" />
-                  <h3 className="font-semibold text-lg text-ax-neutral-1000">Mest populære arrangementer</h3>
-                </div>
-                <div className="space-y-4">
+              <Box background="raised" borderColor="neutral-subtle" borderWidth="1" borderRadius="12" padding="space-24">
+                <HStack gap="space-12" align="center" wrap={false} className="mb-4">
+                  <TrendUpIcon aria-hidden className="w-6 h-6 text-ax-text-accent flex-shrink-0" />
+                  <Heading level="3" size="small">Mest populære arrangementer</Heading>
+                </HStack>
+                <VStack gap="space-16">
                   {stats.mostPopularEvents.map((event, index) => {
                     const baseKey = event.id || `${event.title}-${event.participants}`;
                     const occurrence = popularEventKeyOccurrences.get(baseKey) ?? 0;
                     popularEventKeyOccurrences.set(baseKey, occurrence + 1);
 
                     return (
-                      <div key={`${baseKey}-${occurrence}`} className="flex items-start gap-3 pb-4 last:pb-0 border-b last:border-b-0 border-ax-neutral-300">
-                        <span className="text-2xl font-ax-bold text-ax-accent-700 min-w-[2rem]">
+                      <HStack key={`${baseKey}-${occurrence}`} gap="space-12" align="start" wrap={false} className="pb-4 last:pb-0 border-b last:border-b-0 border-ax-border-neutral-subtle">
+                        <Heading as="span" level="4" size="medium" className="min-w-[2rem] text-ax-text-accent">
                           {index + 1}
-                        </span>
+                        </Heading>
                         <div className="flex-1">
                           {event.id ? (
-                            <Link
-                              href={`/event/${event.id}`}
-                              className="text-ax-accent-800 hover:text-ax-accent-900 hover:underline font-medium"
-                            >
+                            <Link as={NextLink} href={`/event/${event.id}`} className="font-ax-bold">
                               {event.title}
                             </Link>
                           ) : (
-                            <span className="text-ax-neutral-800 font-medium">
+                            <BodyShort as="span" weight="semibold">
                               {event.title}
-                            </span>
+                            </BodyShort>
                           )}
-                          <p className="text-sm text-ax-neutral-800 mt-1">
+                          <BodyShort size="small" textColor="subtle" className="mt-1">
                             {event.participants.toLocaleString('nb-NO')} påmeldte deltakere
-                          </p>
+                          </BodyShort>
                         </div>
-                      </div>
+                      </HStack>
                     );
                   })}
-                </div>
-              </div>
+                </VStack>
+              </Box>
             )}
           </div>
         </section>
       </div>
     </CardWithBackground>
-  );
-}
-
-function StatCard({
-  icon,
-  title,
-  value,
-  suffix,
-  subtitle,
-}: {
-  icon?: React.ReactNode;
-  title: string;
-  value: number;
-  suffix?: string;
-  subtitle?: string;
-}) {
-  const formattedValue = value.toLocaleString('nb-NO');
-
-  return (
-    <div className="bg-white p-6 rounded-lg border-2 border-ax-neutral-300">
-      {icon && (
-        <div className="text-ax-accent-700 mb-3">
-          {icon}
-        </div>
-      )}
-      <h3 className="text-sm font-medium text-ax-neutral-800 mb-1">
-        {title}
-      </h3>
-      <p className="text-3xl font-ax-bold text-ax-neutral-1000">
-        {formattedValue}
-        {suffix && <span className="text-lg font-medium text-ax-neutral-700 ml-1">{suffix}</span>}
-      </p>
-      {subtitle && (
-        <p className="text-sm text-ax-neutral-700 mt-1">
-          {subtitle}
-        </p>
-      )}
-    </div>
   );
 }

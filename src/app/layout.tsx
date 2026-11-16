@@ -56,11 +56,11 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         )}
       </head>
       <body>
-        <div className="flex flex-col min-h-screen" style={{ background: "rgba(19,17,54)" }}>
+        <div className="flex flex-col min-h-screen">
           <div className="relative z-50">
             <Header isMaintainer={isMaintainer} />
           </div>
-          <main className="svelte-reugtu winter bg-ax-bg-neutral-soft flex-grow flex justify-center relative z-0">
+          <main className="bg-ax-bg-neutral-soft flex-1 flex justify-center relative z-0">
             <NuqsAdapter>{children}</NuqsAdapter>
           </main>
           <Footer />

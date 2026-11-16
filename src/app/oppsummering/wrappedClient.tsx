@@ -270,7 +270,7 @@ function MimretidSection({ stats }: { stats: UserWrappedStats }) {
                     Mimretid!
                 </h2>
 
-                <div className="bg-white rounded-xl p-6 shadow-xl text-ax-neutral-1000 border-4 border-indigo-200 min-h-[600px] flex flex-col">
+                <div className="bg-ax-bg-raised rounded-xl p-6 shadow-xl text-ax-text-neutral border-4 border-ax-border-neutral-subtle min-h-[600px] flex flex-col">
                     <Table
                         size="large"
                         sort={sort}
@@ -301,7 +301,7 @@ function MimretidSection({ stats }: { stats: UserWrappedStats }) {
                                         <Table.DataCell className="whitespace-nowrap capitalize align-middle">{dateString}</Table.DataCell>
                                         <Table.DataCell className="align-middle">
                                             {event.isPublic ? (
-                                                <Link href={`/event/${event.id}`} className="font-semibold text-indigo-700 hover:underline line-clamp-2">
+                                                <Link href={`/event/${event.id}`} className="font-semibold text-ax-text-accent hover:underline line-clamp-2">
                                                     {event.title}
                                                 </Link>
                                             ) : (

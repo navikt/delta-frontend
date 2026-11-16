@@ -14,7 +14,7 @@ export default function WrappedLoading() {
                     Dette tar ca. 10 sekunder.
                 </p>
 
-                <div className="bg-white rounded-xl p-6 shadow-lg">
+                <div className="bg-ax-bg-raised text-ax-text-neutral rounded-xl p-6 shadow-lg">
                     <SimulatedProgressBar seconds={15} label="Laster statistikk" />
                 </div>
             </div>

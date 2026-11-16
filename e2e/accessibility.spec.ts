@@ -21,11 +21,12 @@ const pages = [
   { name: "personvern", path: "/legal/privacy" },
 ];
 
-async function expectNoViolations(page: Page) {
-  const results = await new AxeBuilder({ page })
+async function expectNoViolations(page: Page, include?: string) {
+  const builder = new AxeBuilder({ page })
     .withTags(WCAG_TAGS)
-    .exclude("nextjs-portal")
-    .analyze();
+    .exclude("nextjs-portal");
+  if (include) builder.include(include);
+  const results = await builder.analyze();
   const summary = results.violations.map(({ id, impact, help, nodes }) => ({
     id,
     impact,
@@ -209,5 +210,30 @@ for (const path of ["/", "/event/e-hosted", "/event/new"]) {
       await expect.poll(() => dialog.evaluate(element => element.getAnimations().length)).toBe(0);
       await expectNoViolations(page);
     }
+  });
+}
+
+for (const theme of ["light", "dark"] as const) {
+  test(`faggruppeinnhold er lesbart i ${theme} modus`, async ({ page }) => {
+    await page.emulateMedia({ colorScheme: "light" });
+    await gotoSettled(page, "/faggrupper/f1");
+    if (theme === "dark") await page.getByRole("button", { name: "Mørk modus", exact: true }).click();
+    await expect(page.locator("html")).toHaveClass(new RegExp(`\\b${theme}\\b`));
+    await expect(page.getByRole("heading", { name: "Faggruppe for tilgjengelighet", level: 1 })).toBeVisible();
+    await expectNoViolations(page);
+  });
+
+  test(`oppsummeringstabellen er lesbar i ${theme} modus`, async ({ page }) => {
+    await page.emulateMedia({ colorScheme: "light" });
+    const eventDate = new Date();
+    eventDate.setDate(eventDate.getDate() + 2);
+    await gotoSettled(page, `/oppsummering/${eventDate.getFullYear()}`);
+    if (theme === "dark") await page.getByRole("button", { name: "Mørk modus", exact: true }).click();
+    await expect(page.locator("html")).toHaveClass(new RegExp(`\\b${theme}\\b`));
+    const table = page.getByRole("table");
+    await table.scrollIntoViewIfNeeded();
+    await expect(table.getByRole("columnheader", { name: /Dato/ })).toBeVisible();
+    await expect(table.getByRole("link", { name: "Arrangement jeg arrangerer", exact: true })).toBeVisible();
+    await expectNoViolations(page, "main table");
   });
 }

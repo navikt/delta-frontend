@@ -46,7 +46,7 @@ function AvloeserDictionary({ value }: Props) {
                             Kilde:{' '}
                             <Link target="_blank" href="https://www.sprakradet.no/sprakhjelp/Skriverad/Avloeysarord/">
                                 På godt norsk – avløserord
-                                <ExternalLinkIcon />
+                                <ExternalLinkIcon aria-hidden />
                             </Link>
                        </BodyShort>
                     )}
@@ -57,7 +57,7 @@ function AvloeserDictionary({ value }: Props) {
                                 target="_blank"
                                 href="https://www.sprakradet.no/sprakhjelp/Skriverad/Ordlister/Datatermar/"
                             >
-                                Språkrådets datatermer <ExternalLinkIcon />
+                                Språkrådets datatermer <ExternalLinkIcon aria-hidden />
                             </Link>
                         </BodyShort>
                     )}

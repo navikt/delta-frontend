@@ -11,6 +11,7 @@ import {
   getFixedCategoryQuery,
   getFestivalEventQuery,
   categoryNameCandidates,
+  homeDatasetKey,
 } from "./eventListQuery.ts";
 
 test("fetches all joined events without applying the public-list filters", () => {
@@ -144,4 +145,15 @@ test("category selection filters the loaded list with the backend's AND semantic
   assert.deepEqual(ids({ ...state, onlyRegistered: true }), ["a", "b", "c"]);
   const key = (categories) => eventDatasetKey("home", getHomeEventQuery({ ...state, showPast: false, categories }, catalog));
   assert.equal(key(["sosialt"]), key(["sosialt", "blå"]));
+});
+
+test("the waitlist tab has its own dataset identity, but Påmeldt wins over a legacy tab", () => {
+  const state = { tab: "alle", categories: [], showPast: false, onlyRegistered: false };
+  const waitlists = homeDatasetKey({ ...state, tab: "ventelister" }, []);
+  assert.equal(homeDatasetKey(state, []), eventDatasetKey("home", getHomeEventQuery(state, [])));
+  assert.notEqual(waitlists, homeDatasetKey(state, []));
+  assert.notEqual(waitlists, homeDatasetKey({ ...state, tab: "mine" }, []));
+  assert.notEqual(waitlists, homeDatasetKey({ ...state, onlyRegistered: true }, []));
+  assert.equal(homeDatasetKey({ ...state, tab: "ventelister", onlyRegistered: true }, []),
+    homeDatasetKey({ ...state, onlyRegistered: true }, []));
 });

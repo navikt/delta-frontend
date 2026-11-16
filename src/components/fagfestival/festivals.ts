@@ -6,8 +6,6 @@ type FestivalContact =
 export type FestivalConfig = {
   slug: string;
   backText: string;
-  titleColor: string;
-  bgClass: string;
   contact: FestivalContact;
 };
 
@@ -15,36 +13,26 @@ export const festivals = {
   fagfest: {
     slug: "fagfest",
     backText: "FAGFEST",
-    titleColor: "#ec38a7",
-    bgClass: "bg-fagfestival",
     contact: { kind: "committee", label: "Fagfest", email: "fagfestival@nav.no" },
   },
   ips: {
     slug: "ips",
     backText: "Arrangementer",
-    titleColor: "#021841",
-    bgClass: "colorful",
     contact: { kind: "label", label: "IPS" },
   },
   mim: {
     slug: "mim",
     backText: "Arrangementer",
-    titleColor: "#021841",
-    bgClass: "colorful",
     contact: { kind: "committee", label: "Mangfold i mai", email: "mangfold.i.mai@nav.no" },
   },
   pride: {
     slug: "pride",
     backText: "Arrangementer",
-    titleColor: "#021841",
-    bgClass: "colorful",
     contact: { kind: "hosts" },
   },
   markedsuka: {
     slug: "markedsuka",
     backText: "Arrangementer",
-    titleColor: "#021841",
-    bgClass: "colorful",
     contact: { kind: "hosts" },
   },
 } satisfies Record<string, FestivalConfig>;

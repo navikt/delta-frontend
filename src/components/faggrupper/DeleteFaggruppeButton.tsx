@@ -32,7 +32,7 @@ export default function DeleteFaggruppeButton({ faggruppeId }: { faggruppeId: st
     if (!confirming) {
         return (
             <Button
-                variant="danger"
+                data-color="danger"
                 icon={<TrashIcon aria-hidden />}
                 onClick={() => setConfirming(true)}
             >

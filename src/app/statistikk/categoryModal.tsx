@@ -1,12 +1,11 @@
 "use client";
 
-import { Modal, Table, Pagination, Tabs, Search } from "@navikt/ds-react";
-import { ArrowUpIcon, ArrowDownIcon } from "@navikt/aksel-icons";
-import Link from "next/link";
+import { BodyShort, Link, Modal, Table, Pagination, Tabs, Search } from "@navikt/ds-react";
+import NextLink from "next/link";
 import type { CategoryEvent, CategoryStat } from "@/service/statsActions";
 import { format } from "date-fns";
 import { nb } from "date-fns/locale";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -23,6 +22,11 @@ export default function CategoryModal({
   events: CategoryEvent[];
   categoryStats?: CategoryStat[];
 }) {
+  // Callers unmount the modal on close, which skips the dialog's own focus return; restore it here.
+  const [trigger] = useState(() => (typeof document === "undefined" ? null : document.activeElement));
+  useEffect(() => () => {
+    if (trigger instanceof HTMLElement && trigger.isConnected) trigger.focus();
+  }, [trigger]);
   const [currentPage, setCurrentPage] = useState(1);
   const [activeTab, setActiveTab] = useState("detaljer");
   const [searchQuery, setSearchQuery] = useState("");
@@ -97,15 +101,6 @@ export default function CategoryModal({
       .sort((a, b) => b.totalParticipants - a.totalParticipants)
     : [];
 
-  const SortIcon = ({ column }: { column: string }) => {
-    if (sortState.orderBy !== column) return null;
-    return sortState.direction === "ascending" ? (
-      <ArrowUpIcon className="ml-1" aria-hidden />
-    ) : (
-      <ArrowDownIcon className="ml-1" aria-hidden />
-    );
-  };
-
   return (
     <Modal
       open={isOpen}
@@ -135,32 +130,19 @@ export default function CategoryModal({
             </div>
 
             {events.length === 0 ? (
-              <p className="text-ax-neutral-700">Ingen arrangementer funnet i denne kategorien.</p>
+              <BodyShort textColor="subtle">Ingen arrangementer funnet i denne kategorien.</BodyShort>
             ) : (
               <>
-                <Table size="small">
+                <Table size="small" sort={sortState} onSortChange={handleSort}>
                   <Table.Header>
                     <Table.Row>
-                      <Table.HeaderCell>Arrangement</Table.HeaderCell>
-                      <Table.HeaderCell
-                        onClick={() => handleSort("startTime")}
-                        className="cursor-pointer select-none"
-                      >
-                        <div className="flex items-center">
-                          Dato
-                          <SortIcon column="startTime" />
-                        </div>
-                      </Table.HeaderCell>
-                      <Table.HeaderCell
-                        align="right"
-                        onClick={() => handleSort("participants")}
-                        className="cursor-pointer select-none"
-                      >
-                        <div className="flex items-center justify-end">
-                          Deltakere
-                          <SortIcon column="participants" />
-                        </div>
-                      </Table.HeaderCell>
+                      <Table.HeaderCell scope="col">Arrangement</Table.HeaderCell>
+                      <Table.ColumnHeader sortKey="startTime" sortable>
+                        Dato
+                      </Table.ColumnHeader>
+                      <Table.ColumnHeader sortKey="participants" sortable align="right">
+                        Deltakere
+                      </Table.ColumnHeader>
                     </Table.Row>
                   </Table.Header>
                   <Table.Body>
@@ -168,14 +150,11 @@ export default function CategoryModal({
                       <Table.Row key={event.id}>
                         <Table.DataCell>
                           {event.isPublic ? (
-                            <Link
-                              href={`/event/${event.id}`}
-                              className="text-ax-accent-800 hover:text-ax-accent-900 hover:underline"
-                            >
+                            <Link as={NextLink} href={`/event/${event.id}`}>
                               {event.title}
                             </Link>
                           ) : (
-                            <span className="text-ax-neutral-800">{event.title}</span>
+                            <span>{event.title}</span>
                           )}
                         </Table.DataCell>
                         <Table.DataCell style={{ whiteSpace: "nowrap" }}>
@@ -225,7 +204,7 @@ export default function CategoryModal({
                 ))}
                 {sortedMonthlyStats.length === 0 && (
                   <Table.Row>
-                    <Table.DataCell colSpan={2} className="text-center text-ax-neutral-600">
+                    <Table.DataCell colSpan={2} className="text-center text-ax-text-neutral-subtle">
                       Ingen data tilgjengelig
                     </Table.DataCell>
                   </Table.Row>

@@ -1,7 +1,6 @@
 import type { FullDeltaEvent } from "@/types/event";
 import { checkToken, getUser } from "@/auth/token";
 import EventDetails from "./eventDetails";
-import CardWithBackground from "@/components/cardWithBackground";
 import { getEvent } from "@/service/eventQueries";
 import { ApiError } from "@/service/eventListTransport";
 import { getFeatures } from "@/service/roomQueries";
@@ -65,26 +64,18 @@ export default async function Page({ params }: EventPageProps) {
   );
 
   return (
-    <CardWithBackground
-      title={event.title}
-      home
-      backText="Arrangementer"
-      backLink="/"
-      backToOverview
-    >
-      <EventDetails
-        waitlist={waitlist}
-        event={event}
-        participants={participants}
-        hosts={hosts}
-        categories={categories}
-        invitationCapacity={invitationCapacity}
-        calendarSyncError={isHost ? calendarSyncError : null}
-        recurringSeries={recurringSeries}
-        user={user}
-        hostname={hostname}
-        features={features}
-      />
-    </CardWithBackground>
+    <EventDetails
+      waitlist={waitlist}
+      event={event}
+      participants={participants}
+      hosts={hosts}
+      categories={categories}
+      invitationCapacity={invitationCapacity}
+      calendarSyncError={isHost ? calendarSyncError : null}
+      recurringSeries={recurringSeries}
+      user={user}
+      hostname={hostname}
+      features={features}
+    />
   );
 }

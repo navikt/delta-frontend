@@ -40,7 +40,7 @@ export default function ExportParticipants(
     <Dropdown>
       <Button as={Dropdown.Toggle} variant="secondary" className="w-full">
         <span className="flex flex-row gap-1 whitespace-nowrap items-center">
-          Eksporter <ChevronDownIcon className="h-6 w-6" />
+          Eksporter <ChevronDownIcon aria-hidden className="h-6 w-6" />
         </span>
       </Button>
       <Dropdown.Menu>
@@ -61,7 +61,7 @@ export default function ExportParticipants(
             href={`mailto:${sendEmails}`}
           >
             <span className="aksel-copybutton__content">
-              <EnvelopeClosedIcon className="aksel-copybutton__icon" />
+              <EnvelopeClosedIcon aria-hidden className="aksel-copybutton__icon" />
               <span className="aksel-label aksel-label--small ml-1">
                 Send e-post til deltakere
               </span>
@@ -74,7 +74,7 @@ export default function ExportParticipants(
             onClick={exportToExcel}
           >
             <span className="aksel-copybutton__content">
-              <FileExcelIcon />
+              <FileExcelIcon aria-hidden />
               <span className="aksel-label aksel-label--small">
                 Eksporter til Excel
               </span>

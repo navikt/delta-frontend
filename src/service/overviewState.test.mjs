@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { createSerializer } from "nuqs/server";
-import { homeParsers, loadHomeState, homeTabUpdate } from "./overviewState.ts";
+import { homeParsers, loadHomeState, homeTabUpdate, homeView } from "./overviewState.ts";
 
 test("actual nuqs parsers preserve legacy links and canonical category writes", () => {
   const state = loadHomeState("?tab=mine&showPast=1&onlyRegistered=1&categories=%20sosialt%20,bl%C3%A5,sosialt&time=past");
@@ -24,4 +24,19 @@ test("home tab resets are atomic and preserve unrelated parameters", () => {
   const serialize = createSerializer(homeParsers);
   assert.equal(serialize("?tab=mine&showPast=1&onlyRegistered=1&search=hello&extra=ok",
     homeTabUpdate("alle", true)), "?search=hello&extra=ok");
+});
+
+test("tab row maps Påmeldt to the legacy onlyRegistered flag and Ventelister to its own tab", () => {
+  const serialize = createSerializer(homeParsers);
+  assert.equal(loadHomeState("?tab=ventelister").tab, "ventelister");
+  assert.equal(homeView(loadHomeState("?onlyRegistered=1")), "pameldt");
+  assert.equal(homeView(loadHomeState("?tab=mine&onlyRegistered=1")), "pameldt");
+  assert.equal(homeView(loadHomeState("?tab=ventelister")), "ventelister");
+  assert.equal(homeView(loadHomeState("?tab=mine")), "mine");
+  assert.equal(homeView(loadHomeState("")), "alle");
+  assert.equal(serialize("?tab=mine&showPast=1&search=x", homeTabUpdate("pameldt", true)),
+    "?search=x&onlyRegistered=1");
+  assert.equal(serialize("?onlyRegistered=1&search=x", homeTabUpdate("ventelister", false)),
+    "?search=x&tab=ventelister");
+  assert.equal(serialize("?onlyRegistered=1", homeTabUpdate("mine", true)), "?tab=mine&showPast=1");
 });

@@ -1,6 +1,5 @@
 "use client";
-import {Accordion} from "@navikt/ds-react";
-import Link from "next/link";
+import {Accordion, Link} from "@navikt/ds-react";
 
 export default function Intro() {
     return (
@@ -49,7 +48,7 @@ export default function Intro() {
                     </Accordion.Header>
                     <Accordion.Content>
                         <div className="prose">
-                            <p>Les mer på Navet <Link href="https://navno.sharepoint.com/:u:/r/sites/enhet-arbeids-og-velferdsdirektoratet/SitePages/Fagfest-i-direktoratet.aspx?csf=1&web=1&e=swTtBc" className="text-ax-brand-blue-600 underline hover:no-underline">Fagfest i direktoratet</Link>, eller følg med Slack <Link href="https://nav-it.slack.com/archives/C0AC90UBT7X" className="text-ax-brand-blue-600 underline hover:no-underline">#fagfest-2026</Link>.</p>
+                            <p>Les mer på Navet <Link href="https://navno.sharepoint.com/:u:/r/sites/enhet-arbeids-og-velferdsdirektoratet/SitePages/Fagfest-i-direktoratet.aspx?csf=1&web=1&e=swTtBc">Fagfest i direktoratet</Link>, eller følg med Slack <Link href="https://nav-it.slack.com/archives/C0AC90UBT7X">#fagfest-2026</Link>.</p>
                         </div>
                     </Accordion.Content>
                 </Accordion.Item>

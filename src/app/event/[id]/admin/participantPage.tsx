@@ -1,5 +1,4 @@
 "use client";
-import { RoomStatusTag } from "@/components/roomStatusTag";
 import {FullDeltaEvent} from "@/types/event";
 import {BodyLong, Button, Heading, Modal, Search} from "@navikt/ds-react";
 import ParticipantTable from "./participantTable";
@@ -11,19 +10,16 @@ import {CalendarIcon, ClockIcon, LocationPinIcon, TrashIcon} from "@navikt/aksel
 import {User} from "@/types/user";
 import {formatEventDates, formatEventDuration} from "@/service/format";
 import InvitationManager from "./invitationManager";
-import CalendarSyncStatus from "@/components/calendarSyncStatus";
 
 type ParticipantPageProps = {
     fullEvent: FullDeltaEvent;
     user: User;
-    showRoomStatus?: boolean;
     peopleSearchEnabled?: boolean;
 };
 
 export default function ParticipantPage({
                                       fullEvent: eventWithParticipants,
                                       user,
-                                      showRoomStatus = false,
                                       peopleSearchEnabled = false,
                                   }: ParticipantPageProps) {
     const [openConfirmation, setOpenConfirmation] = useState(false);
@@ -35,41 +31,41 @@ export default function ParticipantPage({
         <div className="flex flex-col gap-10">
       <span className="w-full flex flex-row justify-end">
         <span className="flex w-full ax-md:w-fit flex-col ax-md:flex-row gap-4">
-  {/*        <Link
+  {/*        <Button
+              as={Link}
               href={`/event/${event.id}/edit`}
-              className="w-full h-fit aksel-button whitespace-nowrap" data-variant="primary"
+              className="w-full h-fit whitespace-nowrap"
           >
             Rediger arrangement
-          </Link>
-          <Link
+          </Button>
+          <Button
+              as={Link}
               href={`/event/new?template=${event.id}`}
-              className="w-full h-fit aksel-button whitespace-nowrap" data-variant="primary" data-color="neutral"
+              variant="secondary"
+              data-color="neutral"
+              className="w-full h-fit whitespace-nowrap"
           >
             Bruk som mal
-          </Link>*/}
+          </Button>*/}
             <ExportParticipants participants={participants}/>
             {/*          <Button
-              type="submit"
-              variant="danger"
-              className="w-full h-fit font-ax-bold"
+              type="button"
+              data-color="danger"
+              className="w-full h-fit"
+              icon={<TrashIcon aria-hidden/>}
               onClick={() => setOpenConfirmation((x) => !x)}
           >
-            <span className="flex items-center gap-1">
-              <TrashIcon/> Slett
-            </span>
+            Slett
           </Button>*/}
         </span>
       </span>
             <Modal
                 open={openConfirmation}
                 onClose={() => setOpenConfirmation(false)}
-                aria-label="Slett arrangement modal"
-                className="w-4/5 max-w-[30rem] max-h-[50rem]"
+                header={{ heading: `Slett «${event.title}»?` }}
+                width="small"
             >
                 <Modal.Body>
-                    <Heading spacing level="1" size="large">
-                        {`Slett: "${event?.title}?"`}
-                    </Heading>
                     <BodyLong spacing>
                         {`Er du sikker på at du vil slette "${event?.title}"? Dette kan ikke angres.`}
                     </BodyLong>
@@ -82,8 +78,8 @@ export default function ParticipantPage({
                         Avbryt
                     </Button>
                     <Button
-                        variant="danger"
-                        className="w-fit h-fit font-ax-bold"
+                        data-color="danger"
+                        className="w-fit h-fit"
                         onClick={() => deleteAndRedirect(event?.id!!)}
                     >
                         Ja, jeg vil slette arrangementet
@@ -111,27 +107,20 @@ export default function ParticipantPage({
             />
             {event.inviteMode === "SHARED" && (
               <div className="flex flex-col gap-4">
-                <CalendarSyncStatus
-                  eventId={event.id}
-                  status={event.calendarSyncStatus}
-                  error={eventWithParticipants.calendarSyncError}
-                  isHost
-                />
                 <InvitationManager
                   event={eventWithParticipants}
                   peopleSearchEnabled={peopleSearchEnabled}
                 />
               </div>
             )}
-            <h2 className="aksel-heading aksel-heading--medium">Detaljer</h2>
+            <Heading level="2" size="medium">Detaljer</Heading>
             <span className="flex flex-col ax-md:flex-row justify-start gap-2 -mt-6 mb-5 items-center">
-              <CalendarIcon aria-label="dato"/>
+              <CalendarIcon aria-hidden />
               {formatEventDates(event)}
-              <ClockIcon aria-label="tid"/>
+              <ClockIcon aria-hidden />
               {`${event.startTime.substring(11, 16)} – ${event.endTime.substring(11, 16)}`}
-              <LocationPinIcon aria-label="sted"/>
+              <LocationPinIcon aria-hidden />
               {event.location}
-              {showRoomStatus && event.roomName && <RoomStatusTag status={event.roomStatus}/>}
             </span>
         </div>
     );

@@ -1,77 +1,117 @@
 "use client";
-import {
-  MenuHamburgerIcon,
-  PersonGroupIcon,
-  PlusIcon,
-  HatSchoolIcon
-} from "@navikt/aksel-icons";
-import { Button, Dropdown } from "@navikt/ds-react";
-import Link from "next/link";
+import { HatSchoolIcon, MenuHamburgerIcon, PersonGroupIcon, PlusIcon } from "@navikt/aksel-icons";
+import { ActionMenu, InternalHeader, Page, Spacer } from "@navikt/ds-react";
+import NextLink from "next/link";
+import { usePathname } from "next/navigation";
+import type { ReactNode } from "react";
+
+const KOMPASSET_URL = "https://nav.grade.no/LuvitPortal/activitycentre/activitycentre.aspx";
+
+type NavItem = {
+  label: string;
+  href: string;
+  icon?: ReactNode;
+  prefetch?: false;
+  isActive: (pathname: string) => boolean;
+  dataAttributes: Record<`data-${string}`, string>;
+};
+
+function navItems(isMaintainer: boolean): NavItem[] {
+  return [
+    ...(isMaintainer
+      ? [{
+          label: "Administrasjon",
+          href: "/admin",
+          prefetch: false as const,
+          isActive: (pathname: string) => pathname.startsWith("/admin"),
+          dataAttributes: {},
+        }]
+      : []),
+    {
+      label: "Kompasset",
+      href: KOMPASSET_URL,
+      icon: <HatSchoolIcon aria-hidden />,
+      isActive: () => false,
+      dataAttributes: { "data-umami-event": "Hovedmeny-snarvei besøkt", "data-umami-event-lenke": "Kompasset" },
+    },
+    {
+      label: "Faggrupper",
+      href: "/faggrupper",
+      icon: <PersonGroupIcon aria-hidden />,
+      prefetch: false,
+      isActive: (pathname) => pathname.startsWith("/faggrupper"),
+      dataAttributes: { "data-umami-event": "Hovedmeny-snarvei besøkt", "data-umami-event-lenke": "Faggruppe" },
+    },
+    {
+      label: "Opprett arrangement",
+      href: "/event/new",
+      icon: <PlusIcon aria-hidden />,
+      prefetch: false,
+      isActive: (pathname) => pathname === "/event/new",
+      dataAttributes: { "data-umami-event": "Opprett event besøkt", "data-umami-event-placement": "Header" },
+    },
+  ];
+}
 
 export default function Header({ isMaintainer }: { isMaintainer: boolean }) {
-  const linkButton =
-    "flex text-white no-underline items-center text-ax-text-neutral-subtle bg-transparent hover:underline hover:bg-transparent aksel-button aksel-button--medium";
+  const pathname = usePathname() ?? "";
+  const items = navItems(isMaintainer);
+
   return (
-    <header className="flex py-1 z-10 items-center w-5/6 max-w-[80rem] m-auto justify-between">
-      <div className="flex items-stretch">
-        <Link data-umami-event="Delta-logo besøkt" className={linkButton} href="/">
-          <span className="text-2xl whitespace-nowrap text-white">Δ Delta</span>
-        </Link>
-      </div>
-      <div className="ax-md:hidden">
-        <Dropdown>
-          <Button as={Dropdown.Toggle} className={linkButton}>
-            <MenuHamburgerIcon title="meny" fontSize="1.5rem" />
-          </Button>
-          <Dropdown.Menu className="w-auto">
-            <Dropdown.Menu.List>
-              {isMaintainer && (
-                <Dropdown.Menu.List.Item as={Link} href="/admin" prefetch={false}>
-                  <span className="whitespace-nowrap">Administrasjon</span>
-                </Dropdown.Menu.List.Item>
-              )}
-              <Dropdown.Menu.List.Item data-umami-event="Hovedmeny-snarvei besøkt" data-umami-event-lenke="Kompasset" as={Link} href="https://nav.grade.no/LuvitPortal/activitycentre/activitycentre.aspx">
-                <HatSchoolIcon aria-hidden fontSize="1.5rem" />
-                <span className="whitespace-nowrap">Kompasset</span>
-              </Dropdown.Menu.List.Item>
-              <Dropdown.Menu.List.Item prefetch={false} data-umami-event="Hovedmeny-snarvei besøkt" data-umami-event-lenke="Faggruppe" as={Link} href="/faggrupper">
-                <PersonGroupIcon aria-hidden fontSize="1.5rem" />
-                <span className="whitespace-nowrap">Faggrupper</span>
-              </Dropdown.Menu.List.Item>
-              <Dropdown.Menu.List.Item prefetch={false} data-umami-event="Opprett event besøkt" data-umami-event-placement="Header" as={Link} href="/event/new">
-                <PlusIcon aria-hidden fontSize="1.5rem" />
-                <span className="whitespace-nowrap">
-                  Opprett arrangement
-                </span>
-              </Dropdown.Menu.List.Item>
-            </Dropdown.Menu.List>
-          </Dropdown.Menu>
-        </Dropdown>
-      </div>
-      <div className="hidden ax-md:flex items-center justify-between w-full">
-          <div className="flex items-center w-full"></div>
-          <div className="flex flex-grow">
-            {isMaintainer && (
-              <Link href="/admin" prefetch={false} className={linkButton}>
-                <span className="whitespace-nowrap">Administrasjon</span>
-              </Link>
-            )}
-            <Link data-umami-event="Hovedmeny-snarvei besøkt" data-umami-event-lenke="Kompasset" href="https://nav.grade.no/LuvitPortal/activitycentre/activitycentre.aspx" className={linkButton}>
-              <HatSchoolIcon aria-hidden fontSize="1.5rem" />
-              <span className="whitespace-nowrap">Kompasset</span>
-            </Link>
-           <Link data-umami-event="Hovedmeny-snarvei besøkt" prefetch={false} data-umami-event-lenke="Faggruppe" href="/faggrupper" className={linkButton}>
-              <PersonGroupIcon aria-hidden fontSize="1.5rem" />
-              <span className="whitespace-nowrap">Faggrupper</span>
-            </Link>
-            <Link className={linkButton} prefetch={false} data-umami-event="Opprett event besøkt" data-umami-event-placement="Header" href="/event/new">
-              <PlusIcon aria-hidden fontSize="1.5rem" />
-              <span className="whitespace-nowrap">
-                Opprett arrangement
-              </span>
-            </Link>
-          </div>
-      </div>
-    </header>
+    <InternalHeader>
+      <Page.Block width="xl" gutters className="flex w-full items-stretch">
+        <InternalHeader.Title as={NextLink} href="/" data-umami-event="Delta-logo besøkt">
+          Δ Delta
+        </InternalHeader.Title>
+        <Spacer />
+        <nav aria-label="Hovedmeny" className="hidden ax-md:flex items-stretch">
+          {items.map((item) => {
+            const active = item.isActive(pathname);
+            return (
+              <InternalHeader.Button
+                key={item.href}
+                as={NextLink}
+                href={item.href}
+                prefetch={item.prefetch}
+                isActive={active}
+                aria-current={active ? "page" : undefined}
+                className="gap-2 whitespace-nowrap"
+                {...item.dataAttributes}
+              >
+                {item.icon}
+                {item.label}
+              </InternalHeader.Button>
+            );
+          })}
+        </nav>
+        <nav aria-label="Hovedmeny" className="flex items-stretch ax-md:hidden">
+          <ActionMenu>
+            <ActionMenu.Trigger>
+              <InternalHeader.Button>
+                <MenuHamburgerIcon title="Meny" fontSize="1.5rem" />
+              </InternalHeader.Button>
+            </ActionMenu.Trigger>
+            <ActionMenu.Content align="end">
+              {items.map((item) => {
+                const active = item.isActive(pathname);
+                return (
+                  <ActionMenu.Item
+                    key={item.href}
+                    as={NextLink}
+                    href={item.href}
+                    prefetch={item.prefetch}
+                    icon={item.icon}
+                    aria-current={active ? "page" : undefined}
+                    {...item.dataAttributes}
+                  >
+                    {item.label}
+                  </ActionMenu.Item>
+                );
+              })}
+            </ActionMenu.Content>
+          </ActionMenu>
+        </nav>
+      </Page.Block>
+    </InternalHeader>
   );
 }

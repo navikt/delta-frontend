@@ -3,21 +3,21 @@
 import {FullDeltaEvent, DeltaParticipant} from "@/types/event";
 import {User} from "@/types/user";
 import {
-    ClockIcon,
+    ArrowsCirclepathIcon,
     CalendarIcon,
-    PersonCheckmarkIcon,
-    PersonCircleIcon,
-    HourglassBottomFilledIcon,
+    HourglassIcon,
     LocationPinIcon,
-    Buildings3Icon,
+    PersonIcon,
     VideoIcon,
 } from "@navikt/aksel-icons";
 import {useMemo, useRef, useState} from "react";
-import {Alert, Detail, Link, Modal, Search, Button} from "@navikt/ds-react";
+import {BodyShort, Button, Heading, Link, Modal, Search, VStack} from "@navikt/ds-react";
+import NextLink from "next/link";
 import Participant from "./participant";
-import {formatEventDates, formatEventTimes, formatDeadline, formatEventDuration, formatRecurrenceUntilDate} from "@/service/format";
-import { RecurringBadge } from "@/components/RecurringBadge";
-import { RoomStatusTag } from "@/components/roomStatusTag";
+import {formatDeadline, formatRecurrenceUntilDate} from "@/service/format";
+import {formatEventDateParts} from "@/service/eventDetailsFormat";
+import {frequencyLabel} from "@/components/RecurringBadge";
+import {DetailsCard, Divider, InfoRow, InfoRows, ParticipantsSummary} from "@/components/eventDetailsParts";
 import { Features, NO_FEATURES } from "@/types/room";
 import { countCapacityAttendees, InvitationCapacity } from "@/service/eventCapacity";
 
@@ -31,14 +31,16 @@ function safeHttpsUrl(url?: string | null): string | null {
     }
 }
 
+const displayName = (participant: DeltaParticipant) => participant.name.split(", ").reverse().join(" ");
+
 type EventDescriptionProps = FullDeltaEvent & {
-    className?: string;
-    displayTime: boolean;
     user: User;
     invitationCapacity: InvitationCapacity;
     /** Room/Teams info is only shown to users with the feature enabled (maintainers during testing). */
     features?: Features;
 };
+
+/** Info card: time, place, Teams, deadline, recurrence, organizers and participants. */
 export default function EventDescription({
      event,
      participants,
@@ -46,8 +48,6 @@ export default function EventDescription({
      invitationCapacity,
      recurringSeries,
      user,
-     className,
-     displayTime,
      features = NO_FEATURES,
  }: EventDescriptionProps) {
     const [openParticipantList, setOpenParticipantList] = useState(false);
@@ -83,8 +83,9 @@ export default function EventDescription({
     const ref = useRef<HTMLDialogElement>(null);
     const isHost = hosts.some((h) => h.email === user.email);
     const teamsJoinUrl = safeHttpsUrl(event.teamsJoinUrl);
-    const hasDuplicateRoomAndLocation =
-        features.roomBooking && event.roomName?.trim() === event.location.trim();
+    const roomName = features.roomBooking ? event.roomName?.trim() : undefined;
+    const hasDuplicateRoomAndLocation = !!roomName && roomName === event.location.trim();
+    const {date, time} = formatEventDateParts(event);
 
     function convertTextToLinks(text: string) {
         const urlRegex = /(https?:\/\/\S+)/g;
@@ -107,6 +108,7 @@ export default function EventDescription({
                         rel="noopener noreferrer"
                     >
                         {url}
+                        <span className="sr-only"> (åpnes i ny fane)</span>
                     </Link>
                 );
             }
@@ -115,162 +117,108 @@ export default function EventDescription({
     }
 
     return (
-        <div className={className || ""}>
-            <div>
-                {displayTime ? (
-                    <span className="flex flex-row justify-start gap-2 items-center pb-1 pt-1">
-            <CalendarIcon aria-label="dato"/>
-                        {formatEventDates(event)}
-            </span>
-                ) : (
-                    <span className="flex flex-row justify-start gap-2 items-center pb-1 pt-1">
-            <CalendarIcon aria-label="dato"/>
-                        {formatEventTimes(event)}
-            </span>
-                )}
-            </div>
-            <div>
-                {displayTime ? (
-                    <span className="flex flex-row justify-start gap-2 items-center pb-1">
-          <ClockIcon aria-label="tid"/>
-                        {`${event.startTime.substring(11, 16)} – ${event.endTime.substring(
-                            11,
-                            16,
-                        )}`}
-          </span>
-                ) : (
-                    <span className="flex flex-row justify-start gap-2 items-center pb-1">
-          <ClockIcon aria-hidden/>
-                Varighet: {formatEventDuration(event)}
-          </span>
-                )}
-            </div>
-            <div>
-                {event.location && !hasDuplicateRoomAndLocation && (
-                    <span className="flex flex-row justify-start gap-2 items-center pb-1">
-            <LocationPinIcon aria-label="sted"/>
-                        {convertTextToLinks(event.location)}
-          </span>
-                )}
-            </div>
-            {features.roomBooking && event.roomName && (
-                <div className="flex flex-col gap-1 pb-1">
-                    <span className="flex flex-row flex-wrap justify-start gap-2 items-center">
-                        <span className="flex min-w-0 items-center gap-2">
-                            <Buildings3Icon aria-label="møterom" className="shrink-0"/>
-                            <span className="min-w-0">{event.roomName}</span>
-                        </span>
-                    </span>
-                    {isHost && event.roomStatus && (
-                        <div className="flex flex-col items-start gap-1">
-                            <Detail>Bare synlig for arrangører</Detail>
-                            <RoomStatusTag status={event.roomStatus}/>
-                        </div>
+        <DetailsCard label="Praktisk informasjon">
+            <VStack gap="space-24">
+                <InfoRows>
+                    <InfoRow icon={<CalendarIcon aria-hidden/>}>
+                        <BodyShort weight="semibold">{date}</BodyShort>
+                        <BodyShort textColor="subtle">{time}</BodyShort>
+                    </InfoRow>
+                    {roomName ? (
+                        <InfoRow icon={<LocationPinIcon aria-hidden/>}>
+                            <BodyShort weight="semibold">{roomName}</BodyShort>
+                            {event.location && !hasDuplicateRoomAndLocation && (
+                                <BodyShort textColor="subtle">{convertTextToLinks(event.location)}</BodyShort>
+                            )}
+                        </InfoRow>
+                    ) : event.location && (
+                        <InfoRow icon={<LocationPinIcon aria-hidden/>}>
+                            <BodyShort weight="semibold">{convertTextToLinks(event.location)}</BodyShort>
+                        </InfoRow>
                     )}
-                    {event.roomStatus === "DECLINED" && isHost && (
-                        <Alert variant="warning" size="small">
-                            Rommet avslo bookingen, og rommet er ikke reservert.{" "}
-                            <Link href={`/event/${event.id}/edit`}>Velg et annet rom</Link>
-                        </Alert>
+                    {features.teamsMeeting && event.isOnlineMeeting && (
+                        <InfoRow icon={<VideoIcon aria-hidden/>}>
+                            {teamsJoinUrl ? (
+                                <BodyShort>
+                                    <Link href={teamsJoinUrl} target="_blank" rel="noopener noreferrer">
+                                        Bli med i Teams-møtet
+                                        <span className="sr-only"> (åpnes i ny fane)</span>
+                                    </Link>
+                                </BodyShort>
+                            ) : (
+                                <BodyShort>Teams-møte – meld deg på for å se lenken</BodyShort>
+                            )}
+                            {teamsJoinUrl && event.teamsDialIn && (
+                                <BodyShort size="small" textColor="subtle">Ring inn: {event.teamsDialIn}</BodyShort>
+                            )}
+                            {teamsJoinUrl && event.teamsConferenceId && (
+                                <BodyShort size="small" textColor="subtle">Konferanse-ID: {event.teamsConferenceId}</BodyShort>
+                            )}
+                        </InfoRow>
                     )}
-                </div>
-            )}
-            {features.teamsMeeting && event.isOnlineMeeting && (
-                <div className="flex flex-col gap-1 pb-1">
-                    <span className="flex flex-row justify-start gap-2 items-center">
-                        <VideoIcon aria-label="Teams-møte"/>
-                        {teamsJoinUrl ? (
-                            <Link href={teamsJoinUrl} target="_blank" rel="noopener noreferrer">
-                                Bli med i Teams-møtet
-                            </Link>
-                        ) : (
-                            <span>Teams-møte – meld deg på for å se lenken</span>
-                        )}
-                    </span>
-                    {teamsJoinUrl && (event.teamsConferenceId || event.teamsDialIn) && (
-                        <span className="pl-6 text-sm text-ax-text-neutral-subtle flex flex-col">
-                            {event.teamsDialIn && <span>Ring inn: {event.teamsDialIn}</span>}
-                            {event.teamsConferenceId && <span>Konferanse-ID: {event.teamsConferenceId}</span>}
-                        </span>
+                    {event.signupDeadline && (
+                        <InfoRow icon={<HourglassIcon aria-hidden/>}>
+                            <BodyShort weight="semibold">Påmeldingsfrist</BodyShort>
+                            <BodyShort textColor="subtle">{formatDeadline(event)}</BodyShort>
+                        </InfoRow>
                     )}
-                </div>
-            )}
-            {event.signupDeadline && (
-                <div>
-                    <label className="flex items-center gap-2">
-                        <HourglassBottomFilledIcon aria-hidden/>
-                        Påmeldingsfrist:
-                    </label>
-                    <span className="flex ml-[0.2rem] pl-6 gap-2 text-ax-danger-700">
-            {formatDeadline(event)}{" "}
-          </span>
-                </div>
-            )}
-            {recurringSeries && (
-                <div className="flex flex-col gap-1">
-                    <RecurringBadge frequency={recurringSeries.frequency} />
-                    <span className="text-ax-text-subtle text-sm pl-1">
-                        Til {formatRecurrenceUntilDate(recurringSeries.untilDate)}
-                    </span>
-                </div>
-            )}
-            <div className="pb-1">
-                <label className="flex items-center gap-2">
-                    <PersonCircleIcon aria-hidden/>
-                    Arrangeres av:
-                </label>
-                <ul className="list-none p-0 m-0">
-                    {hosts.map((host) => (
-                        <li className="flex ml-[0.2rem] pl-6 gap-2" key={host.email}>
-                            <Link data-umami-event="kontaker arrangør"
-                                title={`Send e-post til ${host.name.split(", ").reverse().join(" ")}`}
-                                href={`mailto:${host.email}`}
-                                className="leading-relaxed"
-                            >
-                                {host.name.split(", ").reverse().join(" ")}
-                            </Link>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-            <span className="flex flex-row justify-start gap-2 items-center cursor-pointer">
-          <PersonCheckmarkIcon aria-hidden/>
-                {event.participantLimit === 0
-                    ? `${displayedAttendeeCount} deltakere`
-                    : `${displayedAttendeeCount} av ${event.participantLimit} plasser`}
-        </span>
-            <div className="flex flex-row ml-[0.3rem] pl-6">
-                {hosts.map((h) => h.email).includes(user.email) ? (<>
-                    <Link
-                        className="mb-4 aksel-button aksel-button--xsmall no-underline" data-variant="secondary"
-                        href={`/event/${event.id}/admin`}
-                    >
-                        Vis deltakere
-                    </Link>
-                </>) : (<>
-                    <Button data-umami-event="deltakerliste åpnet"
-                        variant="secondary"
-                        onClick={() => setOpenParticipantList(true)}
-                        className="mb-4"
-                        size="small"
-                    >
-                        Vis deltakere
-                    </Button>
-                </>)}
-            </div>
+                    {recurringSeries && (
+                        <InfoRow icon={<ArrowsCirclepathIcon aria-hidden/>}>
+                            <BodyShort weight="semibold">{frequencyLabel(recurringSeries.frequency)}</BodyShort>
+                            <BodyShort textColor="subtle">
+                                Til {formatRecurrenceUntilDate(recurringSeries.untilDate)}
+                            </BodyShort>
+                        </InfoRow>
+                    )}
+                    <InfoRow icon={<PersonIcon aria-hidden/>}>
+                        <BodyShort textColor="subtle">Arrangeres av</BodyShort>
+                        <ul>
+                            {hosts.map((host) => (
+                                <li key={host.email}>
+                                    <BodyShort>
+                                        <Link data-umami-event="kontaker arrangør"
+                                            title={`Send e-post til ${displayName(host)}`}
+                                            href={`mailto:${host.email}`}
+                                        >
+                                            {displayName(host)}
+                                        </Link>
+                                    </BodyShort>
+                                </li>
+                            ))}
+                        </ul>
+                    </InfoRow>
+                </InfoRows>
+                <Divider/>
+                <ParticipantsSummary
+                    attendeeCount={displayedAttendeeCount}
+                    participantLimit={event.participantLimit}
+                    action={isHost ? (
+                        <Button as={NextLink} href={`/event/${event.id}/admin`} variant="secondary" size="small">
+                            Vis deltakere
+                        </Button>
+                    ) : (
+                        <Button data-umami-event="deltakerliste åpnet"
+                            variant="secondary"
+                            size="small"
+                            onClick={() => setOpenParticipantList(true)}
+                        >
+                            Vis deltakere
+                        </Button>
+                    )}
+                />
+            </VStack>
             <Modal
                 open={openParticipantList}
                 onClose={() => setOpenParticipantList(false)}
-                aria-labelledby="modal-heading"
+                aria-labelledby="participant-modal-heading"
                 ref={ref}
             >
                 <Modal.Header>
-                    <h1 className="aksel-heading aksel-heading--medium">
+                    <Heading level="1" size="medium" id="participant-modal-heading">
                         Deltakere
-                    </h1>
-                    <form>
+                    </Heading>
+                    <form role="search" onSubmit={(e) => e.preventDefault()} className="pt-4 pb-2">
                         <Search
-                            className="pt-4 pb-2"
                             label="Søk alle deltakere"
                             variant="simple"
                             size="small"
@@ -282,20 +230,18 @@ export default function EventDescription({
                     </form>
                 </Modal.Header>
                 <Modal.Body>
-                    <div className="flex flex-col gap-6">
-                        <ul className="flex flex-col gap-1 list-none p-0 m-0">
-                            {filterParticipants.map((p) => (
-                                <li className="pb-4" key={p.email}>
-                                    <Participant
-                                        {...p}
-                                        owner={hosts.some((h) => h.email === p.email)}
-                                    />
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+                    <VStack as="ul" gap="space-16">
+                        {filterParticipants.map((p) => (
+                            <li key={p.email}>
+                                <Participant
+                                    {...p}
+                                    owner={hosts.some((h) => h.email === p.email)}
+                                />
+                            </li>
+                        ))}
+                    </VStack>
                 </Modal.Body>
             </Modal>
-        </div>
+        </DetailsCard>
     );
 }

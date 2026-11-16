@@ -1,192 +1,112 @@
 "use client";
-import "./eventCard.css";
-import {Category, FullDeltaEvent} from "@/types/event";
-import {format} from "date-fns";
-import {Detail, Heading, Skeleton, Tag} from "@navikt/ds-react";
-import {
-    CalendarIcon,
-    ClockIcon,
-    HourglassBottomFilledIcon,
-    PersonCheckmarkIcon,
-    LocationPinIcon,
-    ArrowCirclepathIcon,
-} from "@navikt/aksel-icons";
-import Link from "next/link";
-import {
-    formatDeadline,
-    formatEventDuration,
-    formatEventDates,
-    formatEventTimes,
-} from "@/service/format";
+import type { FullDeltaEvent } from "@/types/event";
+import { BodyShort, HStack, LinkCard, Skeleton, Tag, VStack } from "@navikt/ds-react";
+import { HourglassIcon, LocationPinIcon, PersonGroupIcon } from "@navikt/aksel-icons";
+import NextLink from "next/link";
+import type { ReactNode } from "react";
+import { formatDeadline } from "@/service/format";
+import { formatCardTimeRange } from "@/service/eventGrouping";
 import { countCapacityAttendees } from "@/service/eventCapacity";
 import { RecurringBadge } from "@/components/RecurringBadge";
 import { useOverviewPath } from "@/components/useOverviewPath";
 import { rememberOverviewReturn } from "@/components/overviewReturn";
-import { shouldHideEventCard } from "@/components/eventCardVisibility";
 import { useBrowserNow } from "@/components/useBrowserNow";
 
-export function EventCard({
-                              event,
-                              categories,
-                              showAll,
-                              tabname,
-                              userEmail,
-                              showOnlyRegistered,
-                           }: {
-    event: FullDeltaEvent;
-    categories: Category[];
-    showAll?: string[];
-    tabname?: string;
-    userEmail?: string;
-    showOnlyRegistered?: boolean;
-}) {
-    const now = useBrowserNow();
-    const attendeeCount = countCapacityAttendees(
-        event.participants,
-        event.hosts,
-        event.invited,
-        event.event.signupDeadline,
-        new Date(now ?? 0),
-    );
-    const isRegistered =
-        userEmail != null && event.participants.some((p) => p.email === userEmail);
-    const isUtløpt =
-        now !== null &&
-        !!event.event.signupDeadline &&
-        new Date(event.event.signupDeadline).getTime() < now;
-    const returnTo = useOverviewPath();
+const FEW_SEATS_LEFT = 9;
 
-    const shouldHide = shouldHideEventCard({
-        tabname,
-        categories: event.categories,
-        signupDeadlineExpired: isUtløpt,
-        showPast: showAll?.includes("10") ?? false,
-        showOnlyRegistered,
-    });
+/** Stores the overview scroll position and return target before opening an event. */
+export function useOverviewNavigation(href: string) {
+  const returnTo = useOverviewPath();
+  return () => {
+    sessionStorage.setItem(`event-overview-scroll:${returnTo}`, `${window.scrollY}`);
+    rememberOverviewReturn(href, returnTo);
+  };
+}
 
-    if (shouldHide) return null;
-    if (now === null && event.event.signupDeadline && tabname === "alle" && !showOnlyRegistered) {
-        return <Skeleton variant="rounded" className="h-72 w-full" />;
-    }
-    const href = `/event/${event.event.id}`;
+export function CardRow({ icon, children }: { icon: ReactNode; children: ReactNode }) {
+  return (
+    <HStack as="span" gap="space-8" align="center" wrap={false}>
+      <span aria-hidden className="flex shrink-0 text-ax-text-neutral-subtle">{icon}</span>
+      <HStack as="span" gap="space-8" align="center" className="min-w-0">{children}</HStack>
+    </HStack>
+  );
+}
 
-    const handleNavigation = () => {
-        sessionStorage.setItem(`event-overview-scroll:${returnTo}`, `${window.scrollY}`);
-        rememberOverviewReturn(href, returnTo);
-    };
+/** Top row of an overview card. LinkCard has no header slot, so the image grid area hosts the time/tags row. */
+export function CardHeaderRow({ time, children }: { time: string; children?: ReactNode }) {
+  return (
+    <HStack gap="space-8" justify="space-between" align="center" marginBlock="space-0 space-8" className="[grid-area:image]">
+      <BodyShort as="span" size="small" weight="semibold" className="text-ax-text-accent">{time}</BodyShort>
+      {children && <HStack gap="space-4" wrap>{children}</HStack>}
+    </HStack>
+  );
+}
 
-    return (
-                <Link
-                    href={href}
-                    prefetch={false}
-                    onClick={handleNavigation}
-                    className="flex flex-col h-full p-4 border rounded-xl text-ax-text-neutral border-ax-neutral-400 transition-all hover:-translate-y-1 hover:scale-105 hover:text-ax-text-action hover:border-ax-border-accent no-underline event-card"
-                >
-                    <Heading level="2" size="small">
-                        {event.recurringSeries && (
-                            <ArrowCirclepathIcon
-                                title="Gjentakende arrangement"
-                                className="inline-block mr-1 align-text-bottom"
-                                fontSize="1.2em"
-                            />
-                        )}
-                        {event.event.title}
-                    </Heading>
-                    <div className="flex flex-col gap-2 h-full justify-between">
-                        <div>
-                            {now === null ? <Skeleton variant="text" className="w-full" /> :
-                            format(new Date(event.event.startTime), "MMMd") ===
-                            format(new Date(event.event.endTime), "MMMd") ? (
-                                <><Detail className="flex gap-1 items-center pb-1 pt-1 leading-normal">
-                                    <CalendarIcon title="dato"/>
-                                    {formatEventDates(event.event)}
-                                </Detail>
-                                    {formatEventDuration(event.event) !== "" && (
-                                        <Detail className="flex gap-1 items-center pb-1 leading-normal">
-                                            <ClockIcon title="tid"/>
-                                            {`${event.event.startTime.substring(11, 16)} – ${event.event.endTime.substring(
-                                                11,
-                                                16,
-                                            )}`}
-                                        </Detail>
-                                    )}</>) : (
-                                <><Detail className="flex gap-1 items-center pb-1 pt-1 leading-normal">
-                                    <CalendarIcon title="dato"/>
-                                    {formatEventTimes(event.event)}
-                                </Detail>
-                                    {formatEventDuration(event.event) !== "" && (
-                                        <Detail className="flex gap-1 items-center pb-1 leading-normal">
-                                            <ClockIcon aria-hidden/>
-                                            Varighet: {formatEventDuration(event.event)}
-                                        </Detail>
-                                    )}</>)}
-                            {event.event.location.length <= 50 && (
-                                <Detail className="leading-normal">
-              <span className="flex items-center gap-1 pb-1">
-                <LocationPinIcon title="lokasjon"/>
-                  {event.event.location}
-              </span>
-                                </Detail>
-                            )}
-                            {event.event.signupDeadline && (
-                                <Detail className="leading-normal">
-              <span className="flex items-center gap-1 pb-1">
-                <HourglassBottomFilledIcon title="timeglass"/>
-                Påmeldingsfrist:{" "}
-                  {now === null ? <Skeleton variant="text" className="w-full" /> : isUtløpt ? (
-                      <span className="text-white bg-ax-danger-700 rounded px-2">
-                    Utløpt
-                  </span>
-                  ) : (
-                      formatDeadline(event.event)
-                  )}
-              </span>
-                                </Detail>
-                            )}
-                            {event.event.participantLimit > 0 && (
-                                <>
-                                    <Detail className="leading-normal">
-                <span className="flex items-center gap-1 pb-1 leading-normal">
-                  <PersonCheckmarkIcon title="person"/>
-                    {now === null ? <Skeleton variant="text" className="w-full" /> : attendeeCount >= event.event.participantLimit ? (
-                        <span className="bg-ax-danger-700 text-white rounded px-2">
-                      Arrangementet er fullt
-                    </span>
-                    ) : (<>
-                        {event.event.participantLimit - attendeeCount > 9 ? (
-                            <>{attendeeCount} / {event.event.participantLimit} plasser</>):(<>Kun {event.event.participantLimit - attendeeCount} plasser igjen</>)}
-                    </>)}
+function Capacity({ event, now }: { event: FullDeltaEvent; now: number | null }) {
+  const limit = event.event.participantLimit;
+  if (limit === 0) {
+    const count = event.participants.length;
+    return <>{count} {count === 1 ? "deltaker" : "deltakere"}</>;
+  }
+  if (now === null && event.event.signupDeadline) return <Skeleton variant="text" width="8rem" />;
+  const attendees = countCapacityAttendees(event.participants, event.hosts, event.invited,
+    event.event.signupDeadline, new Date(now ?? 0));
+  const remaining = limit - attendees;
+  return <>
+    <span>{attendees} av {limit} plasser</span>
+    {remaining <= 0 ? <Tag size="xsmall" variant="moderate" data-color="warning">Fullt</Tag>
+      : remaining <= FEW_SEATS_LEFT && (
+        <Tag size="xsmall" variant="moderate" data-color="warning">
+          Kun {remaining} {remaining === 1 ? "plass" : "plasser"} igjen
+        </Tag>
+      )}
+    {event.event.waitlistEnabled && <Tag size="xsmall" variant="outline" data-color="info">Venteliste</Tag>}
+  </>;
+}
 
-                </span>
-                                    </Detail>
-                                </>
-                            )}
-                            {event.event.participantLimit === 0 && (
-                                <Detail className="leading-normal">
-                <span className="flex items-center gap-1 pb-1 leading-normal">
-                  <PersonCheckmarkIcon title="deltakere"/>
-                  {event.participants.length} {event.participants.length === 1 ? "deltaker" : "deltakere"}
-                </span>
-                                </Detail>
-                            )}
-                        </div>
-                        <div className="flex gap-2 flex-wrap items-end w-full">
-                            {event.recurringSeries && (
-                                <RecurringBadge frequency={event.recurringSeries.frequency} />
-                            )}
-                            {isRegistered && (
-                                <Tag variant="success" size="small">Påmeldt</Tag>
-                            )}
-                            {event.event.waitlistEnabled && event.event.participantLimit > 0 && (
-                                <Tag variant="outline" data-color="info" size="small">Venteliste</Tag>
-                            )}
-                            {categories.map((category) => (
-                                <Tag variant="neutral" size="small" key={category.id}>
-                                    {category.name}
-                                </Tag>
-                            ))}
-                        </div>
-                    </div>
-                </Link>
-    );
+export function EventCard({ event, userEmail }: { event: FullDeltaEvent; userEmail?: string }) {
+  const now = useBrowserNow();
+  const href = `/event/${event.event.id}`;
+  const handleNavigation = useOverviewNavigation(href);
+  const isRegistered = userEmail != null && event.participants.some(p => p.email === userEmail);
+  const isHost = userEmail != null && event.hosts.some(h => h.email === userEmail);
+  const deadline = event.event.signupDeadline;
+  const deadlineExpired = now !== null && !!deadline && new Date(deadline).getTime() < now;
+
+  return (
+    <LinkCard arrow={false} size="small" className="h-full">
+      <CardHeaderRow time={formatCardTimeRange(event.event)}>
+        {event.recurringSeries && <RecurringBadge frequency={event.recurringSeries.frequency} />}
+        {isHost && <Tag size="small" variant="moderate" data-color="meta-purple">Du arrangerer</Tag>}
+        {isRegistered && <Tag size="small" variant="moderate" data-color="success">Påmeldt</Tag>}
+      </CardHeaderRow>
+      <LinkCard.Title as="h3">
+        <LinkCard.Anchor asChild>
+          <NextLink href={href} prefetch={false} onClick={handleNavigation}>{event.event.title}</NextLink>
+        </LinkCard.Anchor>
+      </LinkCard.Title>
+      <LinkCard.Description>
+        <VStack as="span" gap="space-4">
+          {event.event.location && (
+            <CardRow icon={<LocationPinIcon />}><span className="line-clamp-2">{event.event.location}</span></CardRow>
+          )}
+          <CardRow icon={<PersonGroupIcon />}><Capacity event={event} now={now} /></CardRow>
+          {deadline && (
+            <CardRow icon={<HourglassIcon />}>
+              {now === null ? <Skeleton variant="text" width="10rem" />
+                : deadlineExpired ? <>Påmeldingsfrist: <Tag size="xsmall" variant="moderate" data-color="danger">Utløpt</Tag></>
+                : <>Påmeldingsfrist: {formatDeadline(event.event)}</>}
+            </CardRow>
+          )}
+        </VStack>
+      </LinkCard.Description>
+      {event.categories.length > 0 && (
+        <LinkCard.Footer>
+          {event.categories.map(category => (
+            <Tag key={category.id} size="small" variant="outline" data-color="neutral">{category.name}</Tag>
+          ))}
+        </LinkCard.Footer>
+      )}
+    </LinkCard>
+  );
 }

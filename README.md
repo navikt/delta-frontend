@@ -45,6 +45,12 @@ hook-avhengigheter og array-indekser som React-nøkler gir advarsler.
 Biome formaterer ikke koden og erstatter ikke alle reglene i `eslint-config-next`.
 `npm run build` bygger appen og kontrollerer TypeScript-typene.
 
+### Accessibility tests
+
+`npm run test:a11y` runs axe (WCAG 2.2 AA) with Playwright against `next dev` and a mock backend
+(`e2e/mock-backend.mjs`) on port 8080, so stop the real backend first. Run `npx playwright install chromium`
+once. Axe finds only part of the WCAG issues; also test manually with keyboard, screen reader and zoom.
+
 ## Administrasjon
 
 `/admin` er bare synlig og tilgjengelig for Delta-forvaltere. Frontenden og

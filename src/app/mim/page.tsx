@@ -15,25 +15,16 @@ export default async function Fagfestival({ searchParams }: { searchParams: Prom
   await checkToken("/fagfest");
 
   return (
-    <>
-      <div className="flex flex-col w-full colorful pb-10 -mb-4">
-        <div className="w-full relative z-20">
-          <CardWithBackground
-            title="Mangfold i mai"
-            titleColor="#021841"
-            className="bg-fagfestival"
-            newEvent
-          >
-            <FagfestivalEvents
-              searchParams={searchParams}
-              category="mim"
-              activeDays={["20", "21"]}
-              month="mai"
-              slug="mim"
-            />
-          </CardWithBackground>
-        </div>
-      </div>
-    </>
+    <CardWithBackground
+      title="Mangfold i mai"
+    >
+      <FagfestivalEvents
+        searchParams={searchParams}
+        category="mim"
+        activeDays={["20", "21"]}
+        month="mai"
+        slug="mim"
+      />
+    </CardWithBackground>
   );
 }

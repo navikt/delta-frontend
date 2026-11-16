@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { VStack } from "@navikt/ds-react";
 import { checkToken, getUser } from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
 import CategoryControls from "@/components/eventFiltersCategory";
@@ -33,13 +34,15 @@ export default async function Page({ params }: CategoryPageProps) {
   if (!category) return <section className="w-screen flex-grow flex justify-center items-center">404 - Kategorien finnes ikke</section>;
   return <main className="flex flex-grow">
     <CardWithBackground title={category.name.charAt(0).toUpperCase() + category.name.slice(1)}
-      newEvent home scrollToTopOnMount={false}>
-      <CategoryControls />
-      <ResultsBoundary key={category.id}>
-        <Suspense fallback={<EventResultsSkeleton />}>
-          <Results category={category} userEmail={user.email} returnTo={returnTo} />
-        </Suspense>
-      </ResultsBoundary>
+      backLink="/" backText="Alle arrangementer" scrollToTopOnMount={false} bare>
+      <VStack gap="space-24">
+        <CategoryControls />
+        <ResultsBoundary key={category.id}>
+          <Suspense fallback={<EventResultsSkeleton />}>
+            <Results category={category} userEmail={user.email} returnTo={returnTo} />
+          </Suspense>
+        </ResultsBoundary>
+      </VStack>
     </CardWithBackground>
   </main>;
 }

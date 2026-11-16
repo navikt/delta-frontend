@@ -16,7 +16,7 @@ const parseAsCategoryNames = createParser({
 }).withDefault([]);
 
 export const homeParsers = {
-  tab: parseAsStringEnum(["alle", "mine"]).withDefault("alle"),
+  tab: parseAsStringEnum(["alle", "mine", "ventelister"]).withDefault("alle"),
   categories: parseAsCategoryNames,
   showPast: parseAsLegacyBoolean,
   onlyRegistered: parseAsLegacyBoolean,
@@ -28,8 +28,22 @@ export const loadHomeState = createLoader(homeParsers);
 export type HomeState = Awaited<ReturnType<typeof loadHomeState>>;
 export type OverviewSearchParams = { [key: string]: string | string[] | undefined };
 
-export function homeTabUpdate(tab: "alle" | "mine", showPast: boolean) {
-  return { tab, showPast: tab === "mine" && showPast, onlyRegistered: false };
+export const HOME_VIEWS = ["alle", "pameldt", "ventelister", "mine"] as const;
+export type HomeView = typeof HOME_VIEWS[number];
+
+export function isHomeView(value: string): value is HomeView {
+  return (HOME_VIEWS as readonly string[]).includes(value);
+}
+
+// "Påmeldt" is the legacy onlyRegistered flag on the alle tab, so old ?onlyRegistered=1 links keep working.
+export function homeView(state: { tab: string; onlyRegistered: boolean }): HomeView {
+  if (state.onlyRegistered) return "pameldt";
+  return isHomeView(state.tab) ? state.tab : "alle";
+}
+
+export function homeTabUpdate(view: HomeView, showPast: boolean) {
+  if (view === "pameldt") return { tab: "alle" as const, showPast: false, onlyRegistered: true };
+  return { tab: view, showPast: view === "mine" && showPast, onlyRegistered: false };
 }
 
 export function festivalParsers(defaultTab: string, tabs: string[]) {

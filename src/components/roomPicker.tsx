@@ -1,6 +1,6 @@
 "use client";
 
-import { Alert, BodyShort, Button, Tag, UNSAFE_Combobox } from "@navikt/ds-react";
+import { BodyShort, Button, InlineMessage, LocalAlert, Tag, UNSAFE_Combobox } from "@navikt/ds-react";
 import { useEffect, useState } from "react";
 import { roomAvailabilityErrorMessage } from "@/api/roomAvailabilityProblem";
 import { getRoomAvailability, searchRooms } from "@/service/roomActions";
@@ -112,17 +112,19 @@ export default function RoomPicker({
         />
       </div>
       {searchError && (
-        <Alert variant="error" size="small">
-          {searchError}{" "}
-          <Button
-            type="button"
-            size="xsmall"
-            variant="tertiary"
-            onClick={() => setSearchAttempt((n) => n + 1)}
-          >
-            Prøv igjen
-          </Button>
-        </Alert>
+        <LocalAlert status="error" size="small">
+          <LocalAlert.Content>
+            {searchError}{" "}
+            <Button
+              type="button"
+              size="xsmall"
+              variant="tertiary"
+              onClick={() => setSearchAttempt((n) => n + 1)}
+            >
+              Prøv igjen
+            </Button>
+          </LocalAlert.Content>
+        </LocalAlert>
       )}
       {selectedRoom && selectedRoom.email !== skipAvailabilityFor && (
         <RoomAvailabilityStatus
@@ -223,9 +225,9 @@ function RoomAvailabilityStatus({
         ? roomAvailabilityErrorMessage(status)
         : "Kunne ikke hente ledighet for rommet.";
     return (
-      <Alert variant="warning" size="small">
-        {message} {retry}
-      </Alert>
+      <LocalAlert status="warning" size="small">
+        <LocalAlert.Content>{message} {retry}</LocalAlert.Content>
+      </LocalAlert>
     );
   }
 
@@ -233,20 +235,20 @@ function RoomAvailabilityStatus({
   if (/^0+$/.test(view)) {
     return (
       <div>
-        <Tag variant="success" size="small">Ledig i hele tidsrommet</Tag>
+        <Tag variant="moderate" data-color="success" size="small">Ledig i hele tidsrommet</Tag>
       </div>
     );
   }
   if (/[234]/.test(view)) {
     return (
-      <Alert variant="warning" size="small">
+      <InlineMessage status="warning" size="small">
         Rommet er opptatt i deler av tidsrommet. Bookingen blir trolig avslått – vurder et annet rom.
-      </Alert>
+      </InlineMessage>
     );
   }
   return (
-    <Alert variant="info" size="small">
+    <InlineMessage status="info" size="small">
       Rommet er foreløpig reservert i deler av tidsrommet.
-    </Alert>
+    </InlineMessage>
   );
 }

@@ -1,7 +1,7 @@
 import {checkToken} from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
-import Link from "next/link";
 import {Metadata} from "next";
+import {Link} from "@navikt/ds-react";
 
 export const metadata: Metadata = {
     title: "Personvern Δ Delta",
@@ -12,16 +12,16 @@ export default async function Privacy() {
         <CardWithBackground
             title="Personvernerærklæring"
             backLink="/"
+          backText="Arrangementer"
         >
             <div className="m-4 max-w-2xl font-serif">
                 <h2 className="pb-4 text-2xl">Personvern og sikkerhet på delta.nav.no</h2>
                 <p className="mb-4 leading-normal">Delta er en nettside NAV Arbeids- og velferdsdirektoratet. Denne
                     personvernerklæringen er knyttet til behandlingen av personopplysninger på dette nettstedet. For
                     utfyllende informasjon om hvordan NAV behandler personopplysninger, kan du lese mer i <Link
-                        href="https://www.nav.no/no/nav-og-samfunn/om-nav/personvern-i-arbeids-og-velferdsetaten"
-                        className="text-ax-brand-blue-600 underline hover:no-underline">NAVs generelle
+                        href="https://www.nav.no/no/nav-og-samfunn/om-nav/personvern-i-arbeids-og-velferdsetaten">NAVs generelle
                         personvernerklæring.</Link></p>
-                <Link className="mb-4 leading-normal text-ax-brand-blue-600 underline hover:no-underline"
+                <Link className="mb-4 leading-normal"
                       href="https://etterlevelse.intern.nav.no/dokumentasjon/935f99be-82b1-4833-b9d7-5ccdc2623025">For
                     detaljer se Deltas oppføring i Etterlevelse i NAV.</Link>
 
@@ -32,7 +32,7 @@ export default async function Privacy() {
                     kalenderinvitasjonen skal sendes til.
                     Delta ber om samtykke før personopplysninger lagres tilknyttet påmelding til et event.
                 </p>
-                <Link className="mb-4 leading-normal text-ax-brand-blue-600 underline hover:no-underline"
+                <Link className="mb-4 leading-normal"
                       href="https://behandlingskatalog.intern.nav.no/process/purpose/KOMPETANSEUTVIKLING/b2d74c2c-8d0b-4bdc-a21a-4ca9e265bc85">For
                     detaljer se Deltas oppføring i Behandlerkatalogen.</Link>
 
@@ -87,11 +87,9 @@ export default async function Privacy() {
                 <h2 className="pb-4 pt-4 text-2xl">Feil, mangler og forbedringsforslag</h2>
                 <p className="leading-normal">Hvis du opplever problemer eller har forslag til forbedringer hører vi
                     veldig gjerne fra deg! Feil og mangler kan rapporteres til <Link
-                        href="mailto:eilif.johansen@nav.no"
-                        className="text-ax-brand-blue-600 underline hover:no-underline">eilif.johansen@nav.no</Link>,
+                        href="mailto:eilif.johansen@nav.no">eilif.johansen@nav.no</Link>,
                     eller <Link
-                        href="https://nav-it.slack.com/archives/C05E0NJ6Z0C"
-                        className="text-ax-brand-blue-600 underline hover:no-underline">#delta på
+                        href="https://nav-it.slack.com/archives/C05E0NJ6Z0C">#delta på
                         Slack</Link>.</p>
             </div>
         </CardWithBackground>

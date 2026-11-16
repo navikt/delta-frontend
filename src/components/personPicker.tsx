@@ -1,6 +1,6 @@
 "use client";
 
-import { Alert, BodyShort, Button, UNSAFE_Combobox } from "@navikt/ds-react";
+import { BodyShort, Button, LocalAlert, UNSAFE_Combobox } from "@navikt/ds-react";
 import { useEffect, useState } from "react";
 import { searchPeople } from "@/service/eventInteractiveReads";
 import { DirectoryPerson } from "@/types/event";
@@ -103,17 +103,19 @@ export default function PersonPicker({
         <BodyShort size="small">Skriv minst to tegn for å søke.</BodyShort>
       )}
       {searchError && (
-        <Alert variant="error" size="small">
-          {searchError}{" "}
-          <Button
-            type="button"
-            size="xsmall"
-            variant="tertiary"
-            onClick={() => setAttempt((current) => current + 1)}
-          >
-            Prøv igjen
-          </Button>
-        </Alert>
+        <LocalAlert status="error" size="small">
+          <LocalAlert.Content>
+            {searchError}{" "}
+            <Button
+              type="button"
+              size="xsmall"
+              variant="tertiary"
+              onClick={() => setAttempt((current) => current + 1)}
+            >
+              Prøv igjen
+            </Button>
+          </LocalAlert.Content>
+        </LocalAlert>
       )}
       {isCurrent && !searchError && !searching && availableResults.length === 0 && (
         <BodyShort size="small">Ingen personer å vise.</BodyShort>

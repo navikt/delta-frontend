@@ -47,7 +47,7 @@ function LongSentences({ value }: Props) {
                             href="https://strainindex.wordpress.com/2012/04/30/longer-the-sentence-greater-the-strain/"
                         >
                             Nirmaldasan
-                            <ExternalLinkIcon />
+                            <ExternalLinkIcon aria-hidden />
                         </Link>
                     </BodyShort>
                     {longSentences.length > pageSize && (

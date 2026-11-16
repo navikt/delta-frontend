@@ -15,40 +15,31 @@ export default async function Fagfestival({ searchParams }: { searchParams: Prom
   await checkToken("/ips");
 
   return (
-    <>
-      <div className="flex flex-col w-full colorful pb-10 -mb-4">
-        <div className="w-full relative z-20">
-          <CardWithBackground
-            title="IPS-konferansen 2026: Open space workshop"
-            titleColor="#021841"
-            className="bg-fagfestival"
-            newEvent
-          >
-            <FagfestivalEvents
-              searchParams={searchParams}
-              category="ips"
-              activeDays={["4"]}
-              month="jun"
-              slug="ips"
-              showProgramOverviewCheckbox={false}
-              timeWindowTabs={[
-                {
-                  id: "bolk-1",
-                  label: "Bolk 1",
-                  startTime: "14:15",
-                  endTime: "15:00",
-                },
-                {
-                  id: "bolk-2",
-                  label: "Bolk 2",
-                  startTime: "15:30",
-                  endTime: "16:15",
-                },
-              ]}
-            />
-          </CardWithBackground>
-        </div>
-      </div>
-    </>
+    <CardWithBackground
+      title="IPS-konferansen 2026: Open space workshop"
+    >
+      <FagfestivalEvents
+        searchParams={searchParams}
+        category="ips"
+        activeDays={["4"]}
+        month="jun"
+        slug="ips"
+        showProgramOverviewCheckbox={false}
+        timeWindowTabs={[
+          {
+            id: "bolk-1",
+            label: "Bolk 1",
+            startTime: "14:15",
+            endTime: "15:00",
+          },
+          {
+            id: "bolk-2",
+            label: "Bolk 2",
+            startTime: "15:30",
+            endTime: "16:15",
+          },
+        ]}
+      />
+    </CardWithBackground>
   );
 }

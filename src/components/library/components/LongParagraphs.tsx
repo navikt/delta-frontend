@@ -57,7 +57,7 @@ function LongParagraphs({ value }: Props) {
                         Kilde:{' '}
                         <Link target="_blank" href="https://aksel.nav.no/artikkel/sprakarbeid?tema=innholdsarbeid">
                             Aksel
-                            <ExternalLinkIcon />
+                            <ExternalLinkIcon aria-hidden />
                         </Link>
                     </BodyShort>
                     {longParagraphs.length > pageSize && (

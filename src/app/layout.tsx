@@ -12,6 +12,7 @@ type RootLayoutProps = {
 };
 
 export const metadata: Metadata = {
+  title: "Delta Δ Nav",
   icons: [
     {
       rel: "icon",
@@ -43,7 +44,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
   const isProd = process.env.NEXT_PUBLIC_CLUSTER === "prod";
   const isMaintainer = await isDeltaMaintainer();
   return (
-    <html lang="no" className="min-h-screen">
+    <html lang="nb" className="min-h-screen">
       <head>
         {isProd && (
           <>
@@ -56,11 +57,12 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         )}
       </head>
       <body>
-        <div className="flex flex-col min-h-screen" style={{ background: "rgba(19,17,54)" }}>
+        <a href="#maincontent" className="delta-skip-link">Hopp til hovedinnhold</a>
+        <div className="flex flex-col min-h-screen">
           <div className="relative z-50">
             <Header isMaintainer={isMaintainer} />
           </div>
-          <main className="svelte-reugtu winter bg-ax-bg-neutral-soft flex-grow flex justify-center relative z-0">
+          <main id="maincontent" tabIndex={-1} className="bg-ax-bg-neutral-soft flex-1 flex justify-center relative z-0 focus:outline-none">
             <NuqsAdapter>{children}</NuqsAdapter>
           </main>
           <Footer />

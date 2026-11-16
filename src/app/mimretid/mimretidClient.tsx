@@ -1,7 +1,8 @@
 "use client";
 
-import { Pagination, Table } from "@navikt/ds-react";
-import Link from "next/link";
+import { BodyShort, Box, Heading, Link, Pagination, Table, ToggleGroup } from "@navikt/ds-react";
+import NextLink from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { UserWrappedStats } from "@/service/wrappedActions";
 
@@ -42,26 +43,23 @@ export default function MimretidClient({ stats, year, nowMs }: MimretidClientPro
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center gap-3">
-        <span className="text-sm text-ax-neutral-800">År:</span>
-        <YearLinks selectedYear={year} />
-      </div>
-      <div className="bg-ax-bg-neutral-soft border border-ax-neutral-300 rounded-lg px-4 py-3">
-        <p className="text-sm text-ax-neutral-800">Totalt antall arrangementer</p>
-        <p className="text-2xl font-ax-bold text-ax-neutral-1000">{count}</p>
-      </div>
+      <YearToggle selectedYear={year} />
+      <Box background="neutral-soft" borderColor="neutral-subtle" borderWidth="1" borderRadius="8" paddingInline="space-16" paddingBlock="space-12">
+        <BodyShort size="small" textColor="subtle">Totalt antall arrangementer</BodyShort>
+        <Heading as="p" size="medium">{count}</Heading>
+      </Box>
 
       {count === 0 ? (
-        <p className="text-ax-neutral-900">Ingen arrangementer funnet for {year}.</p>
+        <BodyShort>Ingen arrangementer funnet for {year}.</BodyShort>
       ) : (
-        <div className="bg-white rounded-xl p-6 shadow-sm border-2 border-ax-neutral-300 min-h-[600px] flex flex-col">
+        <Box background="raised" borderColor="neutral-subtle" borderWidth="1" borderRadius="12" padding="space-24" className="min-h-[600px] flex flex-col">
           <Table size="large" sort={sort} onSortChange={handleSort}>
+            <caption className="sr-only">Arrangementer i {year}</caption>
             <Table.Header>
               <Table.Row>
-                <Table.HeaderCell onClick={() => handleSort("date")} className="cursor-pointer select-none">
+                <Table.ColumnHeader sortKey="date" sortable>
                   Dato
-                  {sort.orderBy === "date" && <span className="ml-2">{sort.direction === "ascending" ? "↓" : "↑"}</span>}
-                </Table.HeaderCell>
+                </Table.ColumnHeader>
                 <Table.HeaderCell>Arrangement</Table.HeaderCell>
               </Table.Row>
             </Table.Header>
@@ -78,22 +76,21 @@ export default function MimretidClient({ stats, year, nowMs }: MimretidClientPro
                     <Table.DataCell className="whitespace-nowrap capitalize align-middle">{dateString}</Table.DataCell>
                     <Table.DataCell className="align-middle">
                       {event.isPublic ? (
-                        <Link href={`/event/${event.id}`} className="font-semibold text-indigo-700 hover:underline line-clamp-2">
-                          {event.title}
+                        <Link as={NextLink} href={`/event/${event.id}`} className="font-ax-bold">
+                          <span className="line-clamp-2">{event.title}</span>
                         </Link>
                       ) : (
-                        <span className="font-semibold line-clamp-2">{event.title}</span>
+                        <span className="font-ax-bold line-clamp-2">{event.title}</span>
                       )}
                     </Table.DataCell>
                   </Table.Row>
                 );
               })}
               {EMPTY_ROW_KEYS.slice(0, Math.max(0, rowsPerPage - displayedEvents.length)).map((key) => (
-                <Table.Row key={key} className="h-16">
-                  <Table.DataCell className="whitespace-nowrap capitalize" aria-hidden="true">
-                    &nbsp;
-                  </Table.DataCell>
-                  <Table.DataCell aria-hidden="true">&nbsp;</Table.DataCell>
+                // Filler rows keep the page height stable and are hidden from assistive tech.
+                <Table.Row key={key} className="h-16" aria-hidden="true">
+                  <Table.DataCell className="whitespace-nowrap capitalize">&nbsp;</Table.DataCell>
+                  <Table.DataCell>&nbsp;</Table.DataCell>
                 </Table.Row>
               ))}
             </Table.Body>
@@ -104,31 +101,27 @@ export default function MimretidClient({ stats, year, nowMs }: MimretidClientPro
               <Pagination page={page} onPageChange={setPage} count={totalPages} size="small" />
             </div>
           )}
-        </div>
+        </Box>
       )}
     </div>
   );
 }
 
-function YearLinks({ selectedYear }: { selectedYear: number }) {
+function YearToggle({ selectedYear }: { selectedYear: number }) {
+  const router = useRouter();
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: Math.max(1, currentYear - 2023 + 1) }, (_, i) => currentYear - i);
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <ToggleGroup
+      label="År:"
+      size="small"
+      value={String(selectedYear)}
+      onChange={(year) => router.push(`/mimretid?year=${year}`)}
+    >
       {years.map((year) => (
-        <Link
-          key={year}
-          href={`/mimretid?year=${year}`}
-          className={`px-3 py-1 rounded-full border text-sm ${
-            year === selectedYear
-              ? "bg-ax-meta-purple-700 text-white border-ax-meta-purple-700"
-              : "bg-white text-ax-neutral-900 border-ax-neutral-400 hover:bg-ax-bg-neutral-soft"
-          }`}
-        >
-          {year}
-        </Link>
+        <ToggleGroup.Item key={year} value={String(year)} label={year} />
       ))}
-    </div>
+    </ToggleGroup>
   );
 }

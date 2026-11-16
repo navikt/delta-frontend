@@ -1,10 +1,12 @@
 "use client";
 
-import { Alert, Button, Detail, Tag } from "@navikt/ds-react";
+import { CheckmarkIcon, ClockIcon, ExclamationmarkTriangleIcon } from "@navikt/aksel-icons";
+import { BodyShort, Button, HStack } from "@navikt/ds-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { retryCalendarSync } from "@/service/eventActions";
 import { CalendarSyncStatus as CalendarSyncState } from "@/types/event";
+import { OrganizerStatus } from "@/components/organizerBar";
 
 type CalendarSyncStatusProps = {
   eventId: string;
@@ -13,6 +15,7 @@ type CalendarSyncStatusProps = {
   isHost: boolean;
 };
 
+/** Calendar sync status for the organizer bar. */
 export default function CalendarSyncStatus({
   eventId,
   status: initialStatus,
@@ -38,43 +41,49 @@ export default function CalendarSyncStatus({
 
   if (!isHost || !status) return null;
 
+  const tag =
+    status === "SYNCED" ? (
+      <OrganizerStatus tone="success" icon={<CheckmarkIcon aria-hidden />}>Kalender oppdatert</OrganizerStatus>
+    ) : status === "PENDING" ? (
+      <OrganizerStatus tone="neutral" icon={<ClockIcon aria-hidden />}>Kalender oppdateres …</OrganizerStatus>
+    ) : (
+      <OrganizerStatus tone="danger" icon={<ExclamationmarkTriangleIcon aria-hidden />}>Kalender ikke oppdatert</OrganizerStatus>
+    );
+
+  // The status region stays mounted across polling so screen readers announce sync changes.
   return (
-    <div className="flex flex-col items-start gap-1">
-      <Detail>Bare synlig for arrangører</Detail>
-      {status === "SYNCED" ? (
-        <Tag variant="moderate" data-color="success" size="small">Kalenderen er oppdatert</Tag>
-      ) : status === "PENDING" ? (
-        <Alert variant="info" size="small">
-          Outlook-kalenderen oppdateres. Det kan ta litt tid før endringene vises.
-        </Alert>
-      ) : (
-        <Alert variant="error" size="small">
-          <div className="flex flex-col items-start gap-2">
-            <span>{error || "Outlook-kalenderen kunne ikke oppdateres."}</span>
-            <Button
-              type="button"
-              size="small"
-              variant="secondary"
-              loading={retrying}
-              onClick={async () => {
-                setRetrying(true);
-                setActionError(null);
-                const result = await retryCalendarSync(eventId);
-                if (result.ok) {
-                  setStatus(result.data.event.calendarSyncStatus);
-                  setError(result.data.calendarSyncError ?? null);
-                } else {
-                  setActionError(result.message);
-                }
-                setRetrying(false);
-              }}
-            >
-              Prøv synkronisering på nytt
-            </Button>
-            {actionError && <span role="alert">{actionError}</span>}
-          </div>
-        </Alert>
+    <HStack gap="space-8" align="center">
+      <div role="status">{tag}</div>
+      {status !== "SYNCED" && status !== "PENDING" && (
+        <>
+          <BodyShort size="small">{error || "Outlook-kalenderen kunne ikke oppdateres."}</BodyShort>
+          <Button
+            type="button"
+            size="small"
+            variant="tertiary"
+            loading={retrying}
+            onClick={async () => {
+              setRetrying(true);
+              setActionError(null);
+              const result = await retryCalendarSync(eventId);
+              if (result.ok) {
+                setStatus(result.data.event.calendarSyncStatus);
+                setError(result.data.calendarSyncError ?? null);
+              } else {
+                setActionError(result.message);
+              }
+              setRetrying(false);
+            }}
+          >
+            Prøv synkronisering på nytt
+          </Button>
+        </>
       )}
-    </div>
+      {actionError && (
+        <BodyShort size="small" textColor="default" data-color="danger" role="alert">
+          {actionError}
+        </BodyShort>
+      )}
+    </HStack>
   );
 }

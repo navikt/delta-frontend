@@ -10,9 +10,11 @@ import {
   Radio,
   RadioGroup,
   CheckboxGroup,
-  Alert,
+  InlineMessage,
+  LocalAlert,
   Label,
   BodyShort,
+  Box,
 } from "@navikt/ds-react";
 import { Dispatch, useState } from "react";
 import {
@@ -492,21 +494,14 @@ function InternalCreateEventForm({
             }
           }}
         />
-        <div
-          className={`aksel-form-field aksel-form-field--medium ${errors.startTime && "aksel-text-field--error"
-            }`}
-        >
-          <input
-            type="time"
-            className="aksel-text-field__input w-28"
-            {...register("startTime")}
-          />
-          {errors.startTime && (
-            <p className="aksel-error-message aksel-label">
-              {errors.startTime.message}
-            </p>
-          )}
-        </div>
+        <TextField
+          type="time"
+          label="Starttidspunkt"
+          hideLabel
+          className="w-28"
+          error={errors.startTime?.message}
+          {...register("startTime")}
+        />
       </div>
       <div className="flex flex-row flex-wrap justify-left gap-4 pb-0 items-end">
         <EventDatepicker
@@ -524,21 +519,14 @@ function InternalCreateEventForm({
               : undefined
           }
         />
-        <div
-          className={`aksel-form-field aksel-form-field--medium ${errors.endTime && "aksel-text-field--error"
-            }`}
-        >
-          <input
-            type="time"
-            className="aksel-text-field__input w-28"
-            {...register("endTime")}
-          />
-          {errors.endTime && (
-            <p className="aksel-error-message aksel-label">
-              {errors.endTime.message}
-            </p>
-          )}
-        </div>
+        <TextField
+          type="time"
+          label="Sluttidspunkt"
+          hideLabel
+          className="w-28"
+          error={errors.endTime?.message}
+          {...register("endTime")}
+        />
       </div>
 
       {richEvent.type !== EditTypeEnum.EDIT ? (
@@ -593,7 +581,7 @@ function InternalCreateEventForm({
           )}
 
           {showAlert && !(canToggleTeams && wantsTeams) && (
-            <Alert className="max-w-prose" variant="info">Vi anbefaler at du limer inn lenken til Teams/Zoom/etc. på bunnen av beskrivelsen til arrangementet.</Alert>
+            <InlineMessage className="max-w-prose" status="info">Vi anbefaler at du limer inn lenken til Teams/Zoom/etc. på bunnen av beskrivelsen til arrangementet.</InlineMessage>
           )}
 
           {canPickRoom && (
@@ -634,9 +622,9 @@ function InternalCreateEventForm({
                 <RoomStatusTag status={editEvent.roomStatus} />
               </div>
               {editEvent.roomStatus === "DECLINED" && (
-                <Alert variant="warning" size="small">
+                <InlineMessage status="warning" size="small">
                   Rommet avslo bookingen. Velg et annet rom under.
-                </Alert>
+                </InlineMessage>
               )}
             </div>
           )}
@@ -753,15 +741,15 @@ function InternalCreateEventForm({
           </Switch>
         </div>
         {showPreview ? (
-          <div className="border border-ax-neutral-400 rounded p-3 min-h-[8rem] bg-white">
+          <Box background="default" borderColor="neutral" borderWidth="1" borderRadius="4" padding="space-12" className="min-h-[8rem]">
             {dvalue ? (
               <MarkdownRenderer>{dvalue}</MarkdownRenderer>
             ) : (
-              <span className="text-ax-neutral-500 italic">
+              <BodyShort as="span" textColor="subtle" className="italic">
                 Ingen beskrivelse ennå
-              </span>
+              </BodyShort>
             )}
-          </div>
+          </Box>
         ) : (
           <Textarea
             label="Beskrivelse"
@@ -860,21 +848,14 @@ function InternalCreateEventForm({
               errors={errors}
               hideLabel={true}
             />
-            <div
-              className={`aksel-form-field aksel-form-field--medium ${errors.signupDeadlineDate && "aksel-text-field--error"
-                }`}
-            >
-              <input
-                type="time"
-                className="aksel-text-field__input w-28"
-                {...register("signupDeadlineTime")}
-              />
-              {errors.signupDeadlineTime && (
-                <p className="aksel-error-message aksel-label">
-                  {errors.signupDeadlineTime.message}
-                </p>
-              )}
-            </div>
+            <TextField
+              type="time"
+              label="Klokkeslett for påmeldingsfrist"
+              hideLabel
+              className="w-28"
+              error={errors.signupDeadlineTime?.message}
+              {...register("signupDeadlineTime")}
+            />
           </div>
         )}
       </div>
@@ -978,9 +959,9 @@ function InternalCreateEventForm({
         </BodyShort>
       )}
       {saveError && (
-        <Alert variant="error" className="max-w-prose" role="alert">
-          {saveError}
-        </Alert>
+        <LocalAlert status="error" className="max-w-prose" role="alert">
+          <LocalAlert.Content>{saveError}</LocalAlert.Content>
+        </LocalAlert>
       )}
       <div className="mt-6 mb-12 flex items-center gap-4">
         {/*              <Link

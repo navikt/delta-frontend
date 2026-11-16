@@ -28,28 +28,30 @@ export default function AdminPage({
         <div className="flex flex-col gap-10">
             <span className="w-full flex flex-row justify-end">
                 <span className="flex w-full ax-md:w-fit flex-col ax-md:flex-row gap-4">
-                    <Link
+                    <Button
+                        as={Link}
                         href={`/event/${event.id}/edit`}
-                        className="w-full h-fit aksel-button whitespace-nowrap" data-variant="primary"
+                        className="w-full h-fit whitespace-nowrap"
                     >
                         Rediger arrangement
-                    </Link>
-                    <Link
+                    </Button>
+                    <Button
+                        as={Link}
                         href={`/event/new?template=${event.id}`}
-                        className="w-full h-fit aksel-button whitespace-nowrap" data-variant="primary" data-color="neutral"
+                        data-color="neutral"
+                        className="w-full h-fit whitespace-nowrap"
                     >
                         Bruk som mal
-                    </Link>
+                    </Button>
                     <ExportParticipants participants={participants} />
                     <Button
                         type="submit"
-                        variant="danger"
-                        className="w-full h-fit font-ax-bold"
+                        data-color="danger"
+                        className="w-full h-fit"
+                        icon={<TrashIcon aria-hidden />}
                         onClick={() => setOpenConfirmation((x) => !x)}
                     >
-                        <span className="flex items-center gap-1">
-                            <TrashIcon /> Slett
-                        </span>
+                        Slett
                     </Button>
                 </span>
             </span>
@@ -75,31 +77,31 @@ export default function AdminPage({
                         Avbryt
                     </Button>
                     <Button
-                        variant="danger"
-                        className="w-fit h-fit font-ax-bold"
+                        data-color="danger"
+                        className="w-fit h-fit"
                         onClick={() => deleteAndRedirect(event?.id!!)}
                     >
                         Ja, jeg vil slette arrangementet
                     </Button>
                 </Modal.Footer>
             </Modal>
-            <h2 className="aksel-heading aksel-heading--medium -mt-4">Detaljer</h2>
+            <Heading level="2" size="medium" className="-mt-4">Detaljer</Heading>
             <span className="flex flex-row justify-start gap-2 items-center -mt-5">
-                <CalendarIcon aria-label="dato" />
+                <CalendarIcon aria-hidden />
                 {formatEventDates(event)}
             </span>
             <span className="flex flex-row justify-start gap-2 items-center -mt-8">
-                <ClockIcon aria-label="tid" />
+                <ClockIcon aria-hidden />
                 {`${event.startTime.substring(11, 16)} – ${event.endTime.substring(
                     11,
                     16,
                 )}`}
             </span>
             <span className="flex flex-row justify-start gap-2 items-center -mt-8">
-                <LocationPinIcon aria-label="sted" />
+                <LocationPinIcon aria-hidden />
                 {event.location}
             </span>
-            <h2 className="aksel-heading aksel-heading--medium mt-1">Deltakerliste</h2>
+            <Heading level="2" size="medium" className="mt-1">Deltakerliste</Heading>
             <form>
                 <Search
                     className="pt-0 -mt-4 -mb-2 ax-sm:w-64"

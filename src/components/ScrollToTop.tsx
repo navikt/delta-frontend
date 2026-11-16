@@ -1,35 +1,32 @@
 "use client";
-import { useEffect, useState } from "react";
+import { ArrowUpIcon } from "@navikt/aksel-icons";
 import { Button } from "@navikt/ds-react";
+import { useEffect, useState } from "react";
+
+const SCROLL_THRESHOLD = 300;
 
 function ScrollToTop() {
   const [showButton, setShowButton] = useState(false);
 
   useEffect(() => {
-    // The back-to-top button is hidden at the beginning
-    window.addEventListener("scroll", () => {
-      if (window.pageYOffset > 300) {
-        setShowButton(true);
-      } else {
-        setShowButton(false);
-      }
-    });
+    const onScroll = () => setShowButton(window.scrollY > SCROLL_THRESHOLD);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
+
+  if (!showButton) return null;
 
   return (
-    <>
-      {showButton && (
-        <Button onClick={scrollToTop} id="språkhjelp-back-to-top">
-          &#8679; Til toppen
-        </Button>
-      )}
-    </>
+    <Button
+      variant="primary"
+      size="small"
+      icon={<ArrowUpIcon aria-hidden />}
+      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      className="fixed bottom-6 right-6 z-40 shadow-ax-dialog"
+    >
+      Til toppen
+    </Button>
   );
 }
 

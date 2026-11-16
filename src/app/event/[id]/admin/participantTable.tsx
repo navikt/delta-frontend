@@ -4,7 +4,6 @@ import { User } from "@/types/user";
 import {
   BodyLong,
   Button,
-  Heading,
   Link,
   Modal,
   Table,
@@ -112,7 +111,7 @@ function ExpandedTable({
               <></>
             ) : hosts.some((host) => host.email === email) ? (
               <Button
-                variant="danger"
+                data-color="danger"
                 size="small"
                 onClick={async () => {
                   await changeParticipant(event.id, {
@@ -142,7 +141,7 @@ function ExpandedTable({
                   Gjør til med-arrangør
                 </Button>
                 <Button
-                  variant="danger"
+                  data-color="danger"
                   size="small"
                   onClick={() => toggleConfirmation(email)}
                 >
@@ -164,12 +163,9 @@ function ExpandedTable({
         <Modal
           open={openConfirmationFor === email}
           onClose={() => toggleConfirmation(email)}
-          aria-label={`Fjern deltaker ${name} fra arrangementet`}
+          header={{ heading: `Meld av ${name} fra ${event?.title}?` }}
         >
           <Modal.Body>
-            <Heading spacing level="1" size="large" id="modal-heading">
-              {`Meld av ${name} fra ${event?.title}?`}
-            </Heading>
             <BodyLong spacing>
               Er du sikker på at du vil melde {name} av arrangementet? Husk å si
               ifra til vedkommende, for de varsles ikke når du melder de av her.
@@ -180,7 +176,7 @@ function ExpandedTable({
                 Avbryt
               </Button>
               <Button
-                variant="danger"
+                data-color="danger"
                 className="w-fit h-fit font-ax-bold"
                 onClick={async () => {
                   await removeUser(event.id, email);
@@ -239,7 +235,7 @@ function FullTable({
               <></>
             ) : hosts.some((host) => host.email === email) ? (
               <Button
-                variant="danger"
+                data-color="danger"
                 size="small"
                 onClick={async () => {
                   await changeParticipant(event.id, {
@@ -269,7 +265,7 @@ function FullTable({
                   Gjør til arrangør
                 </Button>
                 <Button
-                  variant="danger"
+                  data-color="danger"
                   size="small"
                   onClick={() => toggleConfirmation(email)}
                 >
@@ -282,12 +278,9 @@ function FullTable({
         <Modal
           open={openConfirmationFor === email}
           onClose={() => toggleConfirmation(email)}
-          aria-label={`Fjern deltaker ${name} fra arrangementet`}
+          header={{ heading: `Meld av ${name} fra ${event?.title}?` }}
         >
           <Modal.Body>
-            <Heading spacing level="1" size="large" id="modal-heading">
-              {`Meld av ${name} fra ${event?.title}?`}
-            </Heading>
             <BodyLong spacing>
               Er du sikker på at du vil melde {name} av arrangementet? Husk å si
               ifra til vedkommende, for de varsles ikke når du melder de av her.
@@ -298,7 +291,7 @@ function FullTable({
                 Avbryt
               </Button>
               <Button
-                variant="danger"
+                data-color="danger"
                 className="w-fit h-fit font-ax-bold"
                 onClick={async () => {
                   await removeUser(event.id, email);

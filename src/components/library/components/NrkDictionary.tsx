@@ -39,7 +39,7 @@ function NrkDictionary({ value }: Props) {
                         Kilde:{' '}
                         <Link target="_blank" href={ord.lenke}>
                             {ord.kilde}
-                            <ExternalLinkIcon />
+                            <ExternalLinkIcon aria-hidden />
                         </Link>
                     </BodyShort>
                 ))}

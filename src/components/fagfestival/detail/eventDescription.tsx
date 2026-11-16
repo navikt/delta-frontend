@@ -1,33 +1,33 @@
+"use client";
+
 import {FullDeltaEvent, DeltaParticipant} from "@/types/event";
 import {User} from "@/types/user";
 import {
-    ClockIcon,
     CalendarIcon,
-    PersonCheckmarkIcon,
-    PersonCircleIcon,
-    HourglassBottomFilledIcon,
+    HourglassIcon,
     LocationPinIcon,
+    PadlockLockedIcon,
+    PersonIcon,
 } from "@navikt/aksel-icons";
 import {useMemo, useRef, useState} from "react";
-import {Link, Modal, Search, Button} from "@navikt/ds-react";
+import {BodyShort, Button, Heading, Link, Modal, Search, VStack} from "@navikt/ds-react";
+import NextLink from "next/link";
 import Participant from "./participant";
 import type { FestivalConfig } from "../festivals";
 import { countCapacityAttendees, InvitationCapacity } from "@/service/eventCapacity";
-import {
-    formatEventDates,
-    formatEventTimes,
-    formatDeadline,
-    formatEventDuration,
-    formatEventTimeRangeOrComingSoon,
-} from "@/service/format";
+import { formatDeadline } from "@/service/format";
+import { formatEventDateParts } from "@/service/eventDetailsFormat";
+import { DetailsCard, Divider, InfoRow, InfoRows, ParticipantsSummary } from "@/components/eventDetailsParts";
+
+const displayName = (participant: DeltaParticipant) => participant.name.split(", ").reverse().join(" ");
 
 type EventDescriptionProps = FullDeltaEvent & {
     contact: FestivalConfig["contact"];
-    className?: string;
-    displayTime: boolean;
     user: User;
     invitationCapacity: InvitationCapacity;
 };
+
+/** Festival info card: time, place, deadline, festival contact and participants. */
 export default function EventDescription({
      contact,
      event,
@@ -35,8 +35,6 @@ export default function EventDescription({
      hosts,
      invitationCapacity,
      user,
-     className,
-     displayTime,
  }: EventDescriptionProps) {
     const [openParticipantList, setOpenParticipantList] = useState(false);
     const [searchInput, setSearchInput] = useState("");
@@ -64,6 +62,8 @@ export default function EventDescription({
     }, [hosts, participants, searchInput]);
 
     const ref = useRef<HTMLDialogElement>(null);
+    const isHost = hosts.some((h) => h.email === user.email);
+    const {date, time} = formatEventDateParts(event);
 
     function convertTextToLinks(text: string) {
         const urlRegex = /(https?:\/\/\S+)/g;
@@ -86,6 +86,7 @@ export default function EventDescription({
                         rel="noopener noreferrer"
                     >
                         {url}
+                        <span className="sr-only"> (åpnes i ny fane)</span>
                     </Link>
                 );
             }
@@ -94,128 +95,87 @@ export default function EventDescription({
     }
 
     return (
-        <div className={className || ""}>
-            <div>
-                {displayTime ? (
-                    <span className="flex flex-row justify-start gap-2 items-center pb-1 pt-1">
-            <CalendarIcon aria-label="dato"/>
-                        {formatEventDates(event)}
-            </span>
-                ) : (
-                    <span className="flex flex-row justify-start gap-2 items-center pb-1 pt-1">
-            <CalendarIcon aria-label="dato"/>
-                        {formatEventTimes(event)}
-            </span>
-                )}
-            </div>
-            <div>
-                {displayTime ? (
-                    <span className="flex flex-row justify-start gap-2 items-center pb-1">
-          <ClockIcon aria-label="tid"/>
-                        {formatEventTimeRangeOrComingSoon(event)}
-          </span>
-                ) : (
-                    <span className="flex flex-row justify-start gap-2 items-center pb-1">
-          <ClockIcon aria-hidden/>
-                Varighet: {formatEventDuration(event)}
-          </span>
-                )}
-            </div>
-            <div>
-                {event.location && (
-                    <span className="flex flex-row justify-start gap-2 items-center pb-1">
-            <LocationPinIcon aria-label="sted"/>
-                        {convertTextToLinks(event.location)}
-          </span>
-                )}
-            </div>
-            {!event.public && (
-                <div>
-                    <span className="flex flex-row justify-start items-center pb-1 pl-1 text-ax-neutral-700">
-                        • Privat arrangement
-                    </span>
-                </div>
-            )}
-            {event.signupDeadline && (
-                <div>
-                    <label className="flex items-center gap-2">
-                        <HourglassBottomFilledIcon aria-hidden/>
-                        Påmeldingsfrist:
-                    </label>
-                    <span className="flex ml-[0.2rem] pl-6 gap-2 text-ax-danger-700">
-            {formatDeadline(event)}{" "}
-          </span>
-                </div>
-            )}
-            <div className="pb-1">
-                <label className="flex items-center gap-2">
-                    <PersonCircleIcon aria-hidden/>
-                    Arrangeres av:
-                </label>
-                <ul className="list-none p-0 m-0">
-                    {contact.kind === "hosts" ? hosts.map((host) => (
-                        <li className="flex ml-[0.2rem] pl-6 gap-2" key={host.email}>
-                            <Link data-umami-event="kontaker arrangør"
-                                title={`Send e-post til ${host.name.split(", ").reverse().join(" ")}`}
-                                href={`mailto:${host.email}`}
-                                className="leading-relaxed"
-                            >
-                                {host.name.split(", ").reverse().join(" ")}
-                            </Link>
-                        </li>
-                    )) : (
-                        <li className="flex ml-[0.2rem] pl-6 gap-2">
-                            {contact.kind === "committee" ? (
-                                <Link
-                                    title={`Send e-post til komiteen`}
-                                    href={`mailto:${contact.email}`}
-                                    className="leading-relaxed"
-                                >
-                                    {contact.label}
-                                </Link>
-                            ) : contact.label}
-                        </li>
+        <DetailsCard label="Praktisk informasjon">
+            <VStack gap="space-24">
+                <InfoRows>
+                    <InfoRow icon={<CalendarIcon aria-hidden/>}>
+                        <BodyShort weight="semibold">{date}</BodyShort>
+                        <BodyShort textColor="subtle">{time}</BodyShort>
+                    </InfoRow>
+                    {event.location && (
+                        <InfoRow icon={<LocationPinIcon aria-hidden/>}>
+                            <BodyShort weight="semibold">{convertTextToLinks(event.location)}</BodyShort>
+                        </InfoRow>
                     )}
-                </ul>
-            </div>
-            <span className="flex flex-row justify-start gap-2 items-center cursor-pointer">
-          <PersonCheckmarkIcon aria-hidden/>
-                {event.participantLimit === 0
-                    ? `${displayedAttendeeCount} deltakere`
-                    : `${displayedAttendeeCount} av ${event.participantLimit} plasser`}
-        </span>
-            <div className="flex flex-row ml-[0.3rem] pl-6">
-                {hosts.map((h) => h.email).includes(user.email) ? (<>
-                    <Link
-                        className="mb-4 aksel-button aksel-button--xsmall no-underline" data-variant="secondary"
-                        href={`/event/${event.id}/admin`}
-                    >
-                        Vis deltakere
-                    </Link>
-                </>) : (<>
-                    <Button
-                        variant="secondary"
-                        onClick={() => setOpenParticipantList(true)}
-                        className="mb-4"
-                        size="small"
-                    >
-                        Vis deltakere
-                    </Button>
-                </>)}
-            </div>
+                    {!event.public && (
+                        <InfoRow icon={<PadlockLockedIcon aria-hidden/>}>
+                            <BodyShort>Privat arrangement</BodyShort>
+                        </InfoRow>
+                    )}
+                    {event.signupDeadline && (
+                        <InfoRow icon={<HourglassIcon aria-hidden/>}>
+                            <BodyShort weight="semibold">Påmeldingsfrist</BodyShort>
+                            <BodyShort textColor="subtle">{formatDeadline(event)}</BodyShort>
+                        </InfoRow>
+                    )}
+                    <InfoRow icon={<PersonIcon aria-hidden/>}>
+                        <BodyShort textColor="subtle">Arrangeres av</BodyShort>
+                        <ul>
+                            {contact.kind === "hosts" ? hosts.map((host) => (
+                                <li key={host.email}>
+                                    <Link data-umami-event="kontaker arrangør"
+                                        title={`Send e-post til ${displayName(host)}`}
+                                        href={`mailto:${host.email}`}
+                                    >
+                                        {displayName(host)}
+                                    </Link>
+                                </li>
+                            )) : (
+                                <li>
+                                    {contact.kind === "committee" ? (
+                                        <Link
+                                            title={`Send e-post til komiteen`}
+                                            href={`mailto:${contact.email}`}
+                                        >
+                                            {contact.label}
+                                        </Link>
+                                    ) : contact.label}
+                                </li>
+                            )}
+                        </ul>
+                    </InfoRow>
+                </InfoRows>
+                <Divider/>
+                <ParticipantsSummary
+                    attendeeCount={displayedAttendeeCount}
+                    participantLimit={event.participantLimit}
+                    action={isHost ? (
+                        <Button as={NextLink} href={`/event/${event.id}/admin`} variant="secondary" size="small">
+                            Vis deltakere
+                        </Button>
+                    ) : (
+                        <Button
+                            variant="secondary"
+                            size="small"
+                            onClick={() => setOpenParticipantList(true)}
+                        >
+                            Vis deltakere
+                        </Button>
+                    )}
+                />
+            </VStack>
             <Modal
                 open={openParticipantList}
                 onClose={() => setOpenParticipantList(false)}
-                aria-labelledby="modal-heading"
+                aria-labelledby="participant-modal-heading"
                 ref={ref}
             >
                 <Modal.Header>
-                    <h1 className="aksel-heading aksel-heading--medium">
+                    <Heading level="1" size="medium" id="participant-modal-heading">
                         Deltakere
-                    </h1>
-                    <form>
+                    </Heading>
+                    <form role="search" onSubmit={(e) => e.preventDefault()} className="pt-4 pb-2">
                         <Search
-                            className="pt-4 pb-2"
                             label="Søk alle deltakere"
                             variant="simple"
                             size="small"
@@ -227,20 +187,18 @@ export default function EventDescription({
                     </form>
                 </Modal.Header>
                 <Modal.Body>
-                    <div className="flex flex-col gap-6">
-                        <ul className="flex flex-col gap-1 list-none p-0 m-0">
-                            {filterParticipants.map((p) => (
-                                <li className="pb-4" key={p.email}>
-                                    <Participant
-                                        {...p}
-                                        owner={hosts.some((h) => h.email === p.email)}
-                                    />
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+                    <VStack as="ul" gap="space-16">
+                        {filterParticipants.map((p) => (
+                            <li key={p.email}>
+                                <Participant
+                                    {...p}
+                                    owner={hosts.some((h) => h.email === p.email)}
+                                />
+                            </li>
+                        ))}
+                    </VStack>
                 </Modal.Body>
             </Modal>
-        </div>
+        </DetailsCard>
     );
 }

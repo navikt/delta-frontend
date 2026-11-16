@@ -1,6 +1,6 @@
 "use client";
 
-import { Select, Loader } from "@navikt/ds-react";
+import { BodyShort, Select, Loader } from "@navikt/ds-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
@@ -46,7 +46,7 @@ export default function YearSelector({
         {isPending && (
           <div className="flex items-center gap-2 mt-6">
             <Loader size="small" title="Laster statistikk..." />
-            <span className="text-sm text-ax-neutral-700">Laster...</span>
+            <BodyShort as="span" size="small" textColor="subtle">Laster...</BodyShort>
           </div>
         )}
       </div>

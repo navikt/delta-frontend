@@ -1,46 +1,45 @@
 "use client";
 import { ArrowLeftIcon } from "@navikt/aksel-icons";
-import { Heading } from "@navikt/ds-react";
-import Link from "next/link";
+import { BodyLong, Box, Heading, HStack, Link as AkselLink, Page, VStack } from "@navikt/ds-react";
+import NextLink from "next/link";
 import { useRouter } from "next/navigation";
-import { type MouseEvent, useEffect, useRef } from "react";
+import { type MouseEvent, type ReactNode, useEffect, useRef } from "react";
 import { claimCurrentOverviewReturn, readOverviewReturn } from "./overviewReturn";
 
 type CardWithBackgroundProps = {
   title?: string;
-  titleNode?: React.ReactNode;
-  subtitle?: string;
-  children: React.ReactNode;
-  home?: boolean;
-  newEvent?: boolean;
-  color?: "bg-ax-success-300" | "bg-ax-accent-300" | "bg-ax-danger-400" | "bg-violet-200";
+  /** Replaces the title heading, e.g. for a logo. Must contain the page's h1. */
+  titleNode?: ReactNode;
+  subtitle?: ReactNode;
+  /** Shown left of the title, e.g. a date badge. */
+  leading?: ReactNode;
+  /** Shown below the title, e.g. time and tags. */
+  meta?: ReactNode;
+  /** Right-aligned hero actions. Wrap below the title on narrow screens. */
+  actions?: ReactNode;
+  /** Organizer-only bar rendered above the hero, e.g. an OrganizerBar. */
+  organizerBar?: ReactNode;
+  children: ReactNode;
   backLink?: string;
   backText?: string;
   /** Return to the overview (filters and scroll) the user opened this page from, if known. */
   backToOverview?: boolean;
-  titleColor?: string;
-  className?: string;
   scrollToTopOnMount?: boolean;
-  compactHeader?: boolean;
+  /** Render children directly on the page background instead of inside a content card. */
+  bare?: boolean;
 };
-
-// ${props.color} ${props.className}
 
 export default function CardWithBackground(props: CardWithBackgroundProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const headerPaddingClass = props.compactHeader ? "pb-12" : "pb-24";
-  const headerLayoutClass =
-    "relative mt-28 mx-auto grid w-full place-items-center px-4 text-center ax-sm:max-w-[632px] ax-sm:px-6";
-  const titleTopClass = props.compactHeader ? "mt-2" : "mt-8";
+  const router = useRouter();
+  const { backToOverview, scrollToTopOnMount } = props;
 
   useEffect(() => {
-    if (props.scrollToTopOnMount && containerRef.current) {
+    if (scrollToTopOnMount && containerRef.current) {
       containerRef.current.scrollIntoView({ behavior: "instant" });
     }
-  }, [props.scrollToTopOnMount]);
+  }, [scrollToTopOnMount]);
 
-  const router = useRouter();
-  const { backToOverview } = props;
   useEffect(() => {
     if (backToOverview) claimCurrentOverviewReturn();
   }, [backToOverview]);
@@ -54,58 +53,46 @@ export default function CardWithBackground(props: CardWithBackgroundProps) {
     else router.push(target.path);
   };
 
+  const heading = props.titleNode ?? (props.title && (
+    <Heading level="1" size="xlarge" className="first-letter:uppercase">
+      {props.title}
+    </Heading>
+  ));
+
   return (
-    <div ref={containerRef} className={`w-full flex flex-col align-center items-center -mt-20`}>
-      <div className="w-full header-animated-bg relative max-w-[100vw] overflow-hidden animation-stop">
-        <div className={`z-20 ${headerPaddingClass}`}>
-          <div className={headerLayoutClass}>
-            {props.titleNode ? (
-              <>
-                <div className={`${titleTopClass} flex items-center justify-center`}>{props.titleNode}</div>
-                {props.subtitle && (
-                  <p className="text-lg mt-2" style={{ color: props.titleColor || "#100d29" }}>
-                    {props.subtitle}
-                  </p>
-                )}
-              </>
-            ) : (
-              props.title && (
-                <>
-                <Heading
-                  className={`first-letter:uppercase ${titleTopClass}`}
-                  style={{ color: props.titleColor || "#100d29" }}
-                  level="1"
-                  size="xlarge"
-                >
-                  {props.title}
-                </Heading>
-                {props.subtitle && (
-                  <p className="text-lg mt-2" style={{ color: props.titleColor || "#100d29" }}>
-                    {props.subtitle}
-                  </p>
-                )}
-                </>
-              )
+    <div ref={containerRef} className="w-full flex flex-col">
+      {props.organizerBar}
+      <Box as="section" background="accent-soft" borderColor="neutral-subtle" borderWidth="0 0 1 0" paddingBlock={{ xs: "space-24", md: "space-40" }}>
+        <Page.Block width="xl" gutters>
+          <VStack gap="space-16">
+            {props.backLink && props.backText && (
+              <AkselLink as={NextLink} href={props.backLink} onClick={handleBack} className="w-fit font-ax-bold">
+                {/* Thickens the outline icon to match the bold link text. */}
+                <ArrowLeftIcon aria-hidden stroke="currentColor" strokeWidth={0.75} />
+                {props.backText}
+              </AkselLink>
             )}
-          </div>
-        </div>
-      </div>
-      <div className="w-full px-2 ax-sm:px-12 flex items-center justify-center">
-        <div className="bg-white border-ax-neutral-300 border-2 w-full rounded-2xl relative top-[-2.5rem] flex flex-col px-4 py-5 h-fit max-w-[80rem]">
-          {props.backLink && props.backText && (
-            <span className="relative mb-2 top-[-4rem] w-0 h-0">
-              <Link
-                href={props.backLink}
-                onClick={handleBack}
-                className="flex items-center no-underline font-ax-bold border w-fit p-1 bg-ax-bg-neutral-soft rounded drop-shadow-sm text-sm hover:bg-ax-bg-neutral-moderate-hover hover:text-ax-text-neutral tracking-wide"
-              >
-                <ArrowLeftIcon aria-hidden /> {props.backText}
-              </Link>
-            </span>
-          )}
-          {props.children}
-        </div>
-      </div>
+            <HStack gap="space-24" justify="space-between" align="start" wrap>
+              <HStack gap="space-16" align="center" wrap={false} className="min-w-0">
+                {props.leading}
+                <VStack gap="space-8" className="min-w-0">
+                  {heading}
+                  {props.subtitle && <BodyLong size="large" textColor="subtle">{props.subtitle}</BodyLong>}
+                  {props.meta}
+                </VStack>
+              </HStack>
+              {props.actions && <HStack gap="space-8" wrap>{props.actions}</HStack>}
+            </HStack>
+          </VStack>
+        </Page.Block>
+      </Box>
+      <Page.Block width="xl" gutters className="py-6 ax-md:py-10">
+        {props.bare ? props.children : (
+          <Box background="raised" borderColor="neutral-subtle" borderWidth="1" borderRadius="12" padding={{ xs: "space-16", md: "space-24" }}>
+            {props.children}
+          </Box>
+        )}
+      </Page.Block>
     </div>
   );
 }

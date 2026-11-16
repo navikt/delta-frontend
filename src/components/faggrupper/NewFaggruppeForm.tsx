@@ -1,6 +1,6 @@
 "use client"
 import { useState } from 'react';
-import { Button } from '@navikt/ds-react';
+import { Button, ErrorMessage } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import { createFaggruppe } from '@/service/faggruppeActions';
 import { FAGGRUPPE_REQUEST_FAILED_MESSAGE } from '@/types/faggruppe';
@@ -35,7 +35,7 @@ export default function NewFaggruppeForm() {
         <form onSubmit={handleSubmit} className="space-y-4">
             <FaggruppeFormFields formData={formData} onChange={setFormData} />
 
-            {error && <p className="text-ax-danger-700">{error}</p>}
+            <div role="alert">{error && <ErrorMessage>{error}</ErrorMessage>}</div>
 
             <Button variant="primary" type="submit" loading={loading}>
                 Opprett faggruppe

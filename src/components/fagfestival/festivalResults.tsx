@@ -2,7 +2,6 @@
 
 import { useMemo } from "react";
 import { useQueryStates } from "nuqs";
-import Link from "next/link";
 import { festivalParsers } from "@/service/overviewState";
 import { festivalBrowserPlan, filterFestivalEvents, joinedFestivalEventIds, JOINED_TAB, type ResolvedFestival } from "@/service/festivalPolicy";
 import { eventDatasetKey, getFestivalEventQuery } from "@/service/eventListQuery";
@@ -10,9 +9,10 @@ import type { Category, FullDeltaEvent } from "@/types/event";
 import EventList from "./views/eventList";
 import EventProgramOverview from "./views/eventProgramOverview";
 import EventResultsSkeleton from "../eventResultsSkeleton";
+import { ResultsStatus, resultsStatusMessage } from "../overviewTransition";
 import { useOverviewScroll } from "../useOverviewScroll";
 import { useOverviewPath } from "../useOverviewPath";
-import { BodyShort } from "@navikt/ds-react";
+import { BodyShort, Link } from "@navikt/ds-react";
 import { useBrowserNow } from "../useBrowserNow";
 
 export default function FestivalResults({ events, festival: serverFestival, userEmail, datasetKey, category }: {
@@ -29,14 +29,16 @@ export default function FestivalResults({ events, festival: serverFestival, user
   const filteredEvents = ready ? filterFestivalEvents(events, festival, state) : [];
   const joinedEventIds = joinedFestivalEventIds(events, userEmail);
   useOverviewScroll(returnTo, ready);
-  if (!ready) return <EventResultsSkeleton />;
+  const status = <ResultsStatus message={resultsStatusMessage(ready, filteredEvents.length)} />;
+  if (!ready) return <div className="w-full">{status}<EventResultsSkeleton announce={false} /></div>;
   const ResultView = state.view === "program" ? EventProgramOverview : EventList;
-  return <div className="w-full p-4" aria-busy="false">
+  return <div className="w-full p-4">
+    {status}
     {state.tab === "25" && <div className="pb-10 prose"><BodyShort>
       Husk å melde deg på{" "}
-      <Link href="https://delta.nav.no/fagfest" className="text-ax-brand-blue-600 underline hover:no-underline">felles avslutning</Link>
+      <Link href="https://delta.nav.no/fagfest">felles avslutning</Link>
       {" "}og{" "}
-      <Link href="https://delta.nav.no/fagfest" className="text-ax-brand-blue-600 underline hover:no-underline">husfest etter fagfestival</Link>
+      <Link href="https://delta.nav.no/fagfest">husfest etter fagfestival</Link>
     </BodyShort></div>}
     <ResultView filteredEvents={filteredEvents} loading={false} returnTo={returnTo}
       joinedEventIds={joinedEventIds} slug={festival.slug} />

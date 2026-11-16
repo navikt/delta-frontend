@@ -99,7 +99,7 @@ const routes = [
     ([, id]) => ({ enabled: id === "e-full", count: 0, position: null, registered: false, open: id === "e-full" }),
   ],
   [/^\/admin\/event\/[\w-]+\/waitlist$/, () => []],
-  [/^\/user\/waitlist$/, () => [{ event: events()[2].event, position: 1, open: true }]],
+  [/^\/user\/waitlist$/, () => [{ event: events()[2].event, position: 1, open: true, hosts: events()[2].hosts }]],
   [/^\/api\/faggrupper$/, () => faggrupper],
   [/^\/api\/faggrupper\/([\w-]+)$/, ([, id]) => faggrupper.find((group) => group.id === id)],
   [/^\/api\/faggrupper\/[\w-]+\/eier$/, () => faggrupper[0].eiere],

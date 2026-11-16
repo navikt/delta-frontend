@@ -5,7 +5,7 @@ const WCAG_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 
 const pages = [
   { name: "forside", path: "/" },
-  { name: "forside, påmeldt", path: "/?tab=pameldt" },
+  { name: "forside, påmeldt", path: "/?onlyRegistered=1" },
   { name: "forside, ventelister", path: "/?tab=ventelister" },
   { name: "forside, mine", path: "/?tab=mine" },
   { name: "arrangement som arrangør", path: "/event/e-hosted" },

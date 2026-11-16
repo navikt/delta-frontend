@@ -108,7 +108,8 @@ export type WaitlistState = {
 };
 
 export type WaitlistEntry = { email: string; name: string; position: number };
-export type MyWaitlistEvent = { event: DeltaEvent; position: number; open: boolean };
+// hosts is optional until the backend that returns it is deployed.
+export type MyWaitlistEvent = { event: DeltaEvent; position: number; open: boolean; hosts?: DeltaParticipant[] };
 
 export enum EditTypeEnum {
   NEW,

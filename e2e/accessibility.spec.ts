@@ -54,6 +54,20 @@ for (const { name, path } of pages) {
   });
 }
 
+test("delingsknapper har samme blåfarge", async ({ page }) => {
+  await gotoSettled(page, "/event/e-hosted");
+  const copy = page.getByRole("button", { name: "Kopier lenke", exact: true });
+  const qr = page.getByRole("button", { name: "Vis QR-kode", exact: true });
+  await expect(copy).toBeVisible();
+  await expect(qr).toBeVisible();
+  const qrStyle = await qr.evaluate((button) => {
+    const style = getComputedStyle(button);
+    return { color: style.color, boxShadow: style.boxShadow };
+  });
+  await expect(copy).toHaveCSS("color", qrStyle.color);
+  await expect(copy).toHaveCSS("box-shadow", qrStyle.boxShadow);
+});
+
 test("påmeldingsmodal har ingen axe-brudd", async ({ page }) => {
   await gotoSettled(page, "/event/e-full");
   await page.getByRole("button", { name: /venteliste|bli med|meld/i }).first().click();

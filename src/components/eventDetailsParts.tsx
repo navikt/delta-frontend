@@ -197,6 +197,7 @@ export function DescriptionCard({
           </Heading>
           <HStack gap="space-8">
             <SecondaryCopyButton
+              data-color="accent"
               data-umami-event={trackEvents ? "kopierer eventlenke" : undefined}
               copyText={shareUrl}
               text="Kopier lenke"

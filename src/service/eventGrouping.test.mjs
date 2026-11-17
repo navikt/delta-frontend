@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { formatCardTimeRange, groupEventsByDay } from "./eventGrouping.ts";
+import { formatCardTimeRange, getEventTimeStatus, groupEventsByDay } from "./eventGrouping.ts";
 
 const item = (id, startTime) => ({ event: { id, startTime } });
 // Local-time constructor: Monday 16 November 2026, 09:00 in the runner's timezone.
@@ -59,4 +59,25 @@ test("card time ranges omit the date unless the event spans several days", () =>
   assert.equal(formatCardTimeRange({ startTime: "2026-11-16T14:00:00", endTime: "2026-11-16T16:00:00" }), "14:00 – 16:00");
   assert.equal(formatCardTimeRange({ startTime: "2026-11-16T09:00:00", endTime: "2026-11-18T15:30:00" }), "09:00 – 18. nov. 15:30");
   assert.equal(formatCardTimeRange({ startTime: "2026-11-16T00:00:00", endTime: "2026-11-16T00:01:00" }), "Kommer senere");
+});
+
+test("event status changes at the browser-local start and end, not the signup deadline", () => {
+  const event = { startTime: "2026-11-16T09:00:00", endTime: "2026-11-16T10:00:00", signupDeadline: "2026-11-15T12:00:00" };
+  assert.equal(getEventTimeStatus(event, new Date(2026, 10, 16, 8, 59, 59).getTime()), "upcoming");
+  assert.equal(getEventTimeStatus(event, now), "ongoing");
+  assert.equal(getEventTimeStatus(event, new Date(2026, 10, 16, 9, 59, 59).getTime()), "ongoing");
+  assert.equal(getEventTimeStatus(event, new Date(2026, 10, 16, 10).getTime()), "ended");
+  assert.equal(getEventTimeStatus(event, null), null);
+});
+
+test("multi-day events stay ongoing until their end and placeholder times have no status", () => {
+  assert.equal(getEventTimeStatus({
+    startTime: "2026-11-15T09:00:00", endTime: "2026-11-17T15:00:00",
+  }, now), "ongoing");
+  assert.equal(getEventTimeStatus({
+    startTime: "2026-11-16T00:00:00", endTime: "2026-11-16T00:01:00",
+  }, now), null);
+  assert.equal(getEventTimeStatus({
+    startTime: "2026-11-16T09:00:00+01:00", endTime: "2026-11-16T10:00:00+01:00",
+  }, Date.parse("2026-11-16T09:00:00Z")), "ended");
 });

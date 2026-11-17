@@ -47,6 +47,15 @@ export function groupEventsByDay<T extends { event: { startTime: string } }>(
   return descending ? result.reverse() : result;
 }
 
+export function getEventTimeStatus(event: { startTime: string; endTime: string }, now: number | null) {
+  if (now === null || (event.startTime.substring(11, 16) === "00:00" && event.endTime.substring(11, 16) === "00:01")) {
+    return null;
+  }
+  if (now >= new Date(event.endTime).getTime()) return "ended";
+  if (now >= new Date(event.startTime).getTime()) return "ongoing";
+  return "upcoming";
+}
+
 /** Time range for a card under a day heading; multi-day events also show the end date. */
 export function formatCardTimeRange(event: { startTime: string; endTime: string }) {
   const startTime = event.startTime.substring(11, 16);

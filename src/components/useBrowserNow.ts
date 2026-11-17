@@ -2,11 +2,34 @@
 
 import { useSyncExternalStore } from "react";
 
-const subscribe = () => () => {};
-const browserReady = () => true;
-const serverReady = () => false;
+let now: number | null = null;
+let interval: ReturnType<typeof setInterval> | undefined;
+const listeners = new Set<() => void>();
+
+function updateNow() {
+  now = Date.now();
+  for (const listener of listeners) listener();
+}
+
+function subscribe(listener: () => void) {
+  listeners.add(listener);
+  if (listeners.size === 1) {
+    updateNow();
+    interval = setInterval(updateNow, 30_000);
+    window.addEventListener("focus", updateNow);
+  }
+  return () => {
+    listeners.delete(listener);
+    if (listeners.size === 0) {
+      clearInterval(interval);
+      window.removeEventListener("focus", updateNow);
+    }
+  };
+}
+
+const browserNow = () => now;
+const serverNow = () => null;
 
 export function useBrowserNow() {
-  const ready = useSyncExternalStore(subscribe, browserReady, serverReady);
-  return ready ? Date.now() : null;
+  return useSyncExternalStore(subscribe, browserNow, serverNow);
 }

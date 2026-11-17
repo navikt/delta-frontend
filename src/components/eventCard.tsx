@@ -5,7 +5,7 @@ import { HourglassIcon, LocationPinIcon, PersonGroupIcon } from "@navikt/aksel-i
 import NextLink from "next/link";
 import type { ReactNode } from "react";
 import { formatDeadline } from "@/service/format";
-import { formatCardTimeRange } from "@/service/eventGrouping";
+import { formatCardTimeRange, getEventTimeStatus } from "@/service/eventGrouping";
 import { countCapacityAttendees } from "@/service/eventCapacity";
 import { isOptionFull, optionCapacityText } from "@/service/signupOptions";
 import { RecurringBadge } from "@/components/RecurringBadge";
@@ -34,22 +34,22 @@ export function CardRow({ icon, children }: { icon: ReactNode; children: ReactNo
 }
 
 /** Top row of an overview card. LinkCard has no header slot, so the image grid area hosts the time/tags row. */
-export function CardHeaderRow({ time, children }: { time: string; children?: ReactNode }) {
+export function CardHeaderRow({ time, ended = false, children }: { time: string; ended?: boolean; children?: ReactNode }) {
   return (
     <HStack gap="space-8" justify="space-between" align="center" marginBlock="space-0 space-8" className="[grid-area:image]">
-      <BodyShort as="span" size="small" weight="semibold" className="text-ax-text-accent">{time}</BodyShort>
+      <BodyShort as="span" size="small" weight="semibold" className={ended ? "text-ax-text-neutral-subtle" : "text-ax-text-accent"}>{time}</BodyShort>
       {children && <HStack gap="space-4" wrap>{children}</HStack>}
     </HStack>
   );
 }
 
-function Capacity({ event, now }: { event: FullDeltaEvent; now: number | null }) {
+function Capacity({ event, now, ended }: { event: FullDeltaEvent; now: number | null; ended: boolean }) {
   const options = event.event.signupOptions ?? [];
   if (options.length) {
     return <>
       <span>{options.map((option) => `${option.label}: ${optionCapacityText(option)}`).join(" · ")}</span>
-      {options.every(isOptionFull) && <Tag size="xsmall" variant="moderate" data-color="warning">Fullt</Tag>}
-      {options.some((option) => option.waitlistEnabled) && <Tag size="xsmall" variant="outline" data-color="info">Venteliste</Tag>}
+      {!ended && options.every(isOptionFull) && <Tag size="xsmall" variant="moderate" data-color="warning">Fullt</Tag>}
+      {!ended && options.some((option) => option.waitlistEnabled) && <Tag size="xsmall" variant="outline" data-color="info">Venteliste</Tag>}
     </>;
   }
   const limit = event.event.participantLimit;
@@ -63,13 +63,13 @@ function Capacity({ event, now }: { event: FullDeltaEvent; now: number | null })
   const remaining = limit - attendees;
   return <>
     <span>{attendees} av {limit} plasser</span>
-    {remaining <= 0 ? <Tag size="xsmall" variant="moderate" data-color="warning">Fullt</Tag>
+    {!ended && (remaining <= 0 ? <Tag size="xsmall" variant="moderate" data-color="warning">Fullt</Tag>
       : remaining <= FEW_SEATS_LEFT && (
         <Tag size="xsmall" variant="moderate" data-color="warning">
           Kun {remaining} {remaining === 1 ? "plass" : "plasser"} igjen
         </Tag>
-      )}
-    {event.event.waitlistEnabled && <Tag size="xsmall" variant="outline" data-color="info">Venteliste</Tag>}
+      ))}
+    {!ended && event.event.waitlistEnabled && <Tag size="xsmall" variant="outline" data-color="info">Venteliste</Tag>}
   </>;
 }
 
@@ -81,10 +81,14 @@ export function EventCard({ event, userEmail }: { event: FullDeltaEvent; userEma
   const isHost = userEmail != null && event.hosts.some(h => h.email === userEmail);
   const deadline = event.event.signupDeadline;
   const deadlineExpired = now !== null && !!deadline && new Date(deadline).getTime() < now;
+  const timeStatus = getEventTimeStatus(event.event, now);
+  const ended = timeStatus === "ended";
 
   return (
-    <LinkCard arrow={false} size="small" className="h-full">
-      <CardHeaderRow time={formatCardTimeRange(event.event)}>
+    <LinkCard arrow={false} size="small" className={ended ? "h-full bg-ax-bg-neutral-soft" : "h-full"}>
+      <CardHeaderRow time={formatCardTimeRange(event.event)} ended={ended}>
+        {ended && <Tag size="small" variant="moderate" data-color="neutral">Avsluttet</Tag>}
+        {timeStatus === "ongoing" && <Tag size="small" variant="moderate" data-color="info">Pågår nå</Tag>}
         {event.recurringSeries && <RecurringBadge frequency={event.recurringSeries.frequency} />}
         {isHost && <Tag size="small" variant="moderate" data-color="meta-purple">Du arrangerer</Tag>}
         {isRegistered && <Tag size="small" variant="moderate" data-color="success">Påmeldt</Tag>}
@@ -99,8 +103,8 @@ export function EventCard({ event, userEmail }: { event: FullDeltaEvent; userEma
           {event.event.location && (
             <CardRow icon={<LocationPinIcon />}><span className="line-clamp-2">{event.event.location}</span></CardRow>
           )}
-          <CardRow icon={<PersonGroupIcon />}><Capacity event={event} now={now} /></CardRow>
-          {deadline && (
+          <CardRow icon={<PersonGroupIcon />}><Capacity event={event} now={now} ended={ended} /></CardRow>
+          {deadline && !ended && (
             <CardRow icon={<HourglassIcon />}>
               {now === null ? <Skeleton variant="text" width="10rem" />
                 : deadlineExpired ? <>Påmeldingsfrist: <Tag size="xsmall" variant="moderate" data-color="danger">Utløpt</Tag></>

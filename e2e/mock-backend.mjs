@@ -77,7 +77,7 @@ const events = () => [
   ),
   fullEvent(
     "e-full",
-    { title: "Fullt arrangement med venteliste", participantLimit: 1, waitlistEnabled: true },
+    { title: "Fullt arrangement med venteliste", participantLimit: 1, waitlistEnabled: true, startTime: localIso(2, 12), endTime: localIso(2, 17) },
     { participants: [OTHER] },
   ),
   fullEvent(

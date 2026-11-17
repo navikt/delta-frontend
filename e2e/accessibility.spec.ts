@@ -1,5 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
+import { fromZonedTime } from "date-fns-tz";
 
 const WCAG_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 
@@ -53,6 +54,35 @@ for (const { name, path } of pages) {
     await expectNoViolations(page);
   });
 }
+
+test("arrangementskort skiller avsluttet, pågående og kommende uten å laste siden på nytt", async ({ page }) => {
+  const beforeStart = new Date();
+  beforeStart.setDate(beforeStart.getDate() + 2);
+  beforeStart.setHours(8, 59, 30, 0);
+  await page.clock.install({ time: fromZonedTime(beforeStart, "Europe/Oslo") });
+  await gotoSettled(page, "/?tab=mine");
+  const card = (name: string) => page.locator(".aksel-link-card").filter({
+    has: page.getByRole("link", { name, exact: true }),
+  });
+  const hosted = card("Arrangement jeg arrangerer");
+  const upcoming = card("Arrangement jeg er påmeldt");
+  const ongoing = card("Fullt arrangement med venteliste");
+  await expect(hosted.getByText("Pågår nå", { exact: true })).toHaveCount(0);
+  await expect(hosted.getByText("Avsluttet", { exact: true })).toHaveCount(0);
+  await page.clock.fastForward(30_000);
+  await expect(hosted.getByText("Pågår nå", { exact: true })).toBeVisible();
+  await page.clock.fastForward(6 * 60 * 60 * 1000);
+  await expect(hosted.getByText("Avsluttet", { exact: true })).toBeVisible();
+  await expect(hosted.getByText("Pågår nå", { exact: true })).toHaveCount(0);
+  await expect(hosted.getByText(/plasser igjen|Utløpt/)).toHaveCount(0);
+  await expect(ongoing.getByText("Pågår nå", { exact: true })).toBeVisible();
+  await expect(upcoming.getByText(/Avsluttet|Pågår nå/)).toHaveCount(0);
+  const upcomingBackground = await upcoming.evaluate((element) => getComputedStyle(element).backgroundColor);
+  expect(await hosted.evaluate((element) => getComputedStyle(element).backgroundColor)).not.toBe(upcomingBackground);
+  await expect(hosted.getByRole("link")).toBeEnabled();
+  await expectNoViolations(page);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
 
 test("delingsknapper har samme blåfarge", async ({ page }) => {
   await gotoSettled(page, "/event/e-hosted");

@@ -188,7 +188,7 @@ export function DescriptionCard({
           <Heading level="2" size="small">
             Om arrangementet
           </Heading>
-          <div className="max-w-2xl break-words">{children}</div>
+          <div className="max-w-2xl break-words [&_p]:whitespace-pre-line">{children}</div>
         </VStack>
         <Divider />
         <VStack gap="space-12">

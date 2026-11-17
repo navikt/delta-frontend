@@ -1,6 +1,6 @@
 import "server-only";
 import { cache } from "react";
-import { checkToken, getDeltaBackendAccessToken, isDeltaMaintainer } from "@/auth/token";
+import { checkToken, getDeltaBackendAccessToken } from "@/auth/token";
 import { getApi } from "@/api/instance";
 import { backendUrl } from "@/api/backendConfig";
 import type { Category, FullDeltaEvent } from "@/types/event";
@@ -39,9 +39,3 @@ export const getEvent = cache(async (id: string, returnTo = `/event/${id}`): Pro
     throw new ApiError("arrangementet", status);
   }
 });
-
-export async function fetchAllEventsForAdmin(): Promise<FullDeltaEvent[]> {
-  await checkToken("/admin");
-  if (!(await isDeltaMaintainer())) notFound();
-  return getEvents({}, "/admin");
-}

@@ -7,7 +7,9 @@ const fmt = "EEEE do MMMM, HH:mm";
 const fmtShort = "EEEE do MMMM";
 const fmtDate = "do MMMM yyyy";
 
-export const formatEventTimes = (event: DeltaEvent): string => {
+export const formatEventTimes = (
+  event: Pick<DeltaEvent, "startTime" | "endTime">,
+): string => {
   const start = new Date(event.startTime);
   const end = new Date(event.endTime);
 

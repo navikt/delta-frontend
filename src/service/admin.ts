@@ -2,8 +2,7 @@ import "server-only";
 
 import { getApi } from "@/api/instance";
 import { checkToken, isDeltaMaintainer } from "@/auth/token";
-import { fetchAllEventsForAdmin } from "@/service/eventQueries";
-import type { FullDeltaEvent, InviteMode } from "@/types/event";
+import type { DeltaEvent, InviteMode } from "@/types/event";
 import { notFound } from "next/navigation";
 
 type AdminStatistics = {
@@ -13,6 +12,7 @@ type AdminStatistics = {
     total: number;
     upcomingOrOngoing: number;
   }[];
+  publicLegacyEvents: Pick<DeltaEvent, "id" | "title" | "startTime" | "endTime">[];
 };
 
 export async function getAdminStatistics(): Promise<AdminStatistics> {
@@ -26,13 +26,6 @@ export async function getAdminStatistics(): Promise<AdminStatistics> {
     console.error("Failed to fetch admin statistics:", error);
     throw error;
   }
-}
-
-export async function getAdminSharedCalendarEvents(): Promise<FullDeltaEvent[]> {
-  const events = await fetchAllEventsForAdmin();
-  return events.filter(
-    ({ event }) => event.public && event.inviteMode === "SHARED",
-  );
 }
 
 async function checkAdminAccess(): Promise<void> {

@@ -1,8 +1,5 @@
 import CardWithBackground from "@/components/cardWithBackground";
-import {
-  getAdminSharedCalendarEvents,
-  getAdminStatistics,
-} from "@/service/admin";
+import { getAdminStatistics } from "@/service/admin";
 import { formatEventTimes } from "@/service/format";
 import type { InviteMode } from "@/types/event";
 import AdminEventLink from "@/app/admin/adminEventLink";
@@ -24,16 +21,7 @@ const labels: Record<InviteMode, string> = {
 };
 
 export default async function AdminPage() {
-  const [statistics, sharedCalendarEvents] = await Promise.all([
-    getAdminStatistics(),
-    getAdminSharedCalendarEvents(),
-  ]);
-  const publicSharedCalendarEvents = sharedCalendarEvents
-    .sort(
-      (a, b) =>
-        new Date(a.event.startTime).getTime() -
-        new Date(b.event.startTime).getTime(),
-    );
+  const statistics = await getAdminStatistics();
 
   return (
     <CardWithBackground title="Administrasjon">
@@ -73,13 +61,13 @@ export default async function AdminPage() {
           i en gjentakende serie telles som ett arrangement. Kommende og pågående
           arrangementer har en sluttid som er senere enn tidspunktet tallene ble hentet.
         </BodyLong>
-        <section aria-labelledby="shared-calendar-events">
-          <Heading id="shared-calendar-events" level="2" size="medium" spacing>
-            Offentlige arrangementer med felles kalenderinvitasjon
+        <section aria-labelledby="legacy-calendar-events">
+          <Heading id="legacy-calendar-events" level="2" size="medium" spacing>
+            Offentlige arrangementer med eldre kalendermodell
           </Heading>
-          {publicSharedCalendarEvents.length > 0 ? (
+          {statistics.publicLegacyEvents.length > 0 ? (
             <ul className="list-disc space-y-2 pl-6">
-              {publicSharedCalendarEvents.map(({ event }) => (
+              {statistics.publicLegacyEvents.map((event) => (
                 <li key={event.id}>
                   <AdminEventLink
                     href={`/event/${event.id}`}
@@ -92,7 +80,7 @@ export default async function AdminPage() {
             </ul>
           ) : (
             <BodyLong>
-              Ingen offentlige arrangementer bruker denne kalendermodellen ennå.
+              Ingen offentlige arrangementer bruker den eldre kalendermodellen.
             </BodyLong>
           )}
         </section>

@@ -6,6 +6,7 @@ import { Metadata } from "next";
 import Script from 'next/script';
 import { isDeltaMaintainer } from "@/auth/token";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import ThemeProvider, { ThemeScript } from "@/components/ThemeProvider";
 
 type RootLayoutProps = {
   children: React.ReactNode;
@@ -44,8 +45,9 @@ export default async function RootLayout({ children }: RootLayoutProps) {
   const isProd = process.env.NEXT_PUBLIC_CLUSTER === "prod";
   const isMaintainer = await isDeltaMaintainer();
   return (
-    <html lang="nb" className="min-h-screen">
+    <html lang="nb" className="min-h-screen" suppressHydrationWarning>
       <head>
+        <ThemeScript />
         {isProd && (
           <>
             <Script id="umami" strategy="afterInteractive" data-domains="delta.nav.no" data-opt-out-filters="uuid" defer src="https://cdn.nav.no/team-researchops/sporing/sporing.js"
@@ -57,8 +59,8 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         )}
       </head>
       <body>
-        <a href="#maincontent" className="delta-skip-link">Hopp til hovedinnhold</a>
-        <div className="flex flex-col min-h-screen">
+        <ThemeProvider>
+          <a href="#maincontent" className="delta-skip-link">Hopp til hovedinnhold</a>
           <div className="relative z-50">
             <Header isMaintainer={isMaintainer} />
           </div>
@@ -67,7 +69,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
           </main>
           <Footer />
           <ScrollToTop />
-        </div>
+        </ThemeProvider>
       </body>
     </html>
   );

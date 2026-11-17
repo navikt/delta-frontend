@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, useTransition } from "react";
+import { createContext, useContext, useEffect, useState, useTransition, type Dispatch, type SetStateAction } from "react";
 
 const LOADING_MESSAGE = "Laster arrangementer …";
 
@@ -10,6 +10,8 @@ type OverviewTransitionValue = {
   /** Number of events in the "Alle" tab, reported by the results once known. */
   allCount: number | null;
   setAllCount: (count: number) => void;
+  availableCategoryNames: string[] | null;
+  setAvailableCategoryNames: Dispatch<SetStateAction<string[] | null>>;
   setResultsMessage: (message: string) => void;
 };
 
@@ -18,9 +20,12 @@ const TransitionContext = createContext<OverviewTransitionValue | null>(null);
 export function OverviewTransition({ children }: { children: React.ReactNode }) {
   const [pending, startTransition] = useTransition();
   const [allCount, setAllCount] = useState<number | null>(null);
+  const [availableCategoryNames, setAvailableCategoryNames] = useState<string[] | null>(null);
   const [resultsMessage, setResultsMessage] = useState("");
   // Results remount under a new Suspense key when filters change, so the live region lives here.
-  return <TransitionContext.Provider value={{ pending, startTransition, allCount, setAllCount, setResultsMessage }}>
+  return <TransitionContext.Provider value={{
+    pending, startTransition, allCount, setAllCount, availableCategoryNames, setAvailableCategoryNames, setResultsMessage,
+  }}>
     <p role="status" className="sr-only">{pending ? LOADING_MESSAGE : resultsMessage}</p>
     {children}
   </TransitionContext.Provider>;

@@ -1,7 +1,7 @@
 "use client";
 import type { ReactNode } from "react";
 import type { FullDeltaEvent } from "@/types/event";
-import { BodyShort, Box, HGrid, Heading, HStack, VStack } from "@navikt/ds-react";
+import { BodyShort, Box, HGrid, Heading, HStack, Tag, VStack } from "@navikt/ds-react";
 import { EventCard } from "@/components/eventCard";
 import { EVENT_GRID_COLUMNS } from "@/components/eventResultsSkeleton";
 import { groupEventsByDay } from "@/service/eventGrouping";
@@ -10,12 +10,13 @@ type DayGroupsProps<T> = {
   items: T[];
   now: number;
   descending?: boolean;
+  showFagtorsdag?: boolean;
   renderItem: (item: T) => ReactNode;
 };
 
 /** Renders items under browser-local day headings. Only render after hydration (`now` known). */
 export function EventDayGroups<T extends { event: { id: string; startTime: string } }>({
-  items, now, descending = false, renderItem,
+  items, now, descending = false, showFagtorsdag = false, renderItem,
 }: DayGroupsProps<T>) {
   return (
     <VStack gap="space-32">
@@ -24,10 +25,13 @@ export function EventDayGroups<T extends { event: { id: string; startTime: strin
           <HStack gap="space-8" align="baseline" wrap>
             <Heading level="2" size="small">{group.label}</Heading>
             <BodyShort textColor="subtle">{group.dateLabel}</BodyShort>
+            {showFagtorsdag && group.isFagtorsdag && (
+              <Tag size="small" variant="moderate" data-color="info">Fagtorsdag</Tag>
+            )}
           </HStack>
           {/* role="list" keeps list semantics in Safari/VoiceOver when list-style is removed. */}
           <HGrid as="ul" role="list" gap="space-16" columns={EVENT_GRID_COLUMNS}>
-            {group.events.map(item => <li key={item.event.id} className="flex">{renderItem(item)}</li>)}
+            {group.events.map(item => <li key={item.event.id} className="flex min-w-0 flex-col">{renderItem(item)}</li>)}
           </HGrid>
         </VStack>
       ))}
@@ -43,14 +47,15 @@ export function EmptyEventList({ children }: { children: ReactNode }) {
   );
 }
 
-export default function EventList({ fullEvents, now, userEmail, descending, emptyMessage }: {
+export default function EventList({ fullEvents, now, userEmail, descending, showFagtorsdag, emptyMessage }: {
   fullEvents: FullDeltaEvent[];
   now: number;
   userEmail?: string;
   descending?: boolean;
+  showFagtorsdag?: boolean;
   emptyMessage: ReactNode;
 }) {
   if (!fullEvents.length) return <EmptyEventList>{emptyMessage}</EmptyEventList>;
-  return <EventDayGroups items={fullEvents} now={now} descending={descending}
+  return <EventDayGroups items={fullEvents} now={now} descending={descending} showFagtorsdag={showFagtorsdag}
     renderItem={fullEvent => <EventCard event={fullEvent} userEmail={userEmail} />} />;
 }

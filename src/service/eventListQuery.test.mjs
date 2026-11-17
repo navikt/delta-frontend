@@ -92,6 +92,18 @@ test("server home policy hides IPS only in normal alle and retains raw joined ev
   assert.deepEqual(filterActiveJoinedEvents(events, now), [events[0]]);
 });
 
+test("home hides Markedsuka regardless of casing or other tags but preserves mine and joined events", () => {
+  const events = [
+    { event: { id: "markedsuka" }, categories: [{ name: "markedsuka" }] },
+    { event: { id: "mixed" }, categories: [{ name: "kompetanse" }, { name: "Markedsuka" }] },
+    { event: { id: "ordinary" }, categories: [{ name: "kompetanse" }] },
+    { event: { id: "untagged" }, categories: [] },
+  ];
+  assert.deepEqual(filterHomeOverview(events, { tab: "alle", onlyRegistered: false }), events.slice(2));
+  assert.deepEqual(filterHomeOverview(events, { tab: "mine", onlyRegistered: false }), events);
+  assert.deepEqual(filterHomeOverview(events, { tab: "alle", onlyRegistered: true }), events);
+});
+
 test("festival public and joined reads keep the fixed category and future flag without home's override", () => {
   const category = { id: 12, name: "mim" };
   assert.deepEqual(getFestivalEventQuery(category, false), {

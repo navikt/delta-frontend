@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { createSerializer } from "nuqs/server";
-import { homeParsers, loadHomeState, homeTabUpdate, homeView } from "./overviewState.ts";
+import { homeParsers, loadHomeState, homeTabUpdate, homeView, toggleHomeQuickFilter } from "./overviewState.ts";
 
 test("actual nuqs parsers preserve legacy links and canonical category writes", () => {
   const state = loadHomeState("?tab=mine&showPast=1&onlyRegistered=1&categories=%20sosialt%20,bl%C3%A5,sosialt&time=past");
@@ -24,6 +24,15 @@ test("home tab resets are atomic and preserve unrelated parameters", () => {
   const serialize = createSerializer(homeParsers);
   assert.equal(serialize("?tab=mine&showPast=1&onlyRegistered=1&search=hello&extra=ok",
     homeTabUpdate("alle", true)), "?search=hello&extra=ok");
+});
+
+test("Fagtorsdag combines with event types while type switches preserve it and custom categories", () => {
+  assert.deepEqual(toggleHomeQuickFilter(["kompetanse"], "fagtorsdag"), ["fagtorsdag", "kompetanse"]);
+  assert.deepEqual(toggleHomeQuickFilter(["fagtorsdag", "kompetanse", "universell utforming"], "sosialt"),
+    ["fagtorsdag", "sosialt", "universell utforming"]);
+  assert.deepEqual(toggleHomeQuickFilter(["fagtorsdag", "sosialt"], "sosialt"), ["fagtorsdag"]);
+  assert.deepEqual(toggleHomeQuickFilter(["fagtorsdag", "kompetanse"], "fagtorsdag"), ["kompetanse"]);
+  assert.deepEqual(toggleHomeQuickFilter(["fagtorsdag"], "bedriftidrettslaget"), ["bedriftidrettslaget", "fagtorsdag"]);
 });
 
 test("tab row maps Påmeldt to the legacy onlyRegistered flag and Ventelister to its own tab", () => {

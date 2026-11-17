@@ -26,6 +26,24 @@ test("adds the year only when it differs from now", () => {
   assert.equal(group.dateLabel, "4. januar 2027");
 });
 
+test("Fagtorsdag alternates Thursdays from 26 November across years and daylight saving changes", () => {
+  const dates = [
+    ["2026-11-12", true],
+    ["2026-11-25", false],
+    ["2026-11-26", true],
+    ["2026-11-27", false],
+    ["2026-12-03", false],
+    ["2026-12-10", true],
+    ["2026-12-17", false],
+    ["2026-12-24", true],
+    ["2027-01-07", true],
+    ["2027-03-18", true],
+    ["2027-04-01", true],
+  ];
+  const groups = groupEventsByDay(dates.map(([date]) => item(date, `${date}T10:00:00`)), now);
+  assert.deepEqual(groups.map(group => [group.key, group.isFagtorsdag]), dates);
+});
+
 test("descending order puts the most recent past day first", () => {
   const groups = groupEventsByDay([
     item("old", "2026-10-01T10:00:00"),

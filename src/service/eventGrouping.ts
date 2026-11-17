@@ -1,10 +1,11 @@
-import { addDays, format, isSameDay } from "date-fns";
+import { addDays, differenceInCalendarDays, format, isSameDay } from "date-fns";
 import { nb } from "date-fns/locale";
 
 export type EventDayGroup<T> = {
   key: string;
   label: string;
   dateLabel: string;
+  isFagtorsdag: boolean;
   events: T[];
 };
 
@@ -38,6 +39,7 @@ export function groupEventsByDay<T extends { event: { startTime: string } }>(
       key,
       label: relative ?? capitalize(format(start, "EEEE", { locale: nb })),
       dateLabel: format(start, `${relative ? "EEEE " : ""}d. MMMM${year}`, { locale: nb }),
+      isFagtorsdag: differenceInCalendarDays(start, new Date(2026, 10, 26)) % 14 === 0,
       events: [item],
     });
   }

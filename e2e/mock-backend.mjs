@@ -8,6 +8,8 @@ const categories = [
   { id: 1, name: "kompetanse" },
   { id: 2, name: "sosialt" },
   { id: 3, name: "bedriftidrettslaget" },
+  { id: 4, name: "fagtorsdag" },
+  { id: 5, name: "universell utforming" },
 ];
 
 const DESCRIPTION = `Velkommen til en fagdag om tilgjengelighet.
@@ -66,7 +68,7 @@ const events = () => [
       roomStatus: "ACCEPTED",
       calendarSyncStatus: "FAILED",
     },
-    { hosts: [ME], participants: [OTHER] },
+    { hosts: [ME], participants: [OTHER], eventCategories: [categories[0], categories[3], categories[4]] },
   ),
   fullEvent(
     "e-joined",

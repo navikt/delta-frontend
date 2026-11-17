@@ -9,7 +9,7 @@ import { filterActiveJoinedEvents, filterHomeCategories, homeDatasetKey } from "
 import { matchesEventSearch } from "@/service/eventSearch";
 import EventList, { EmptyEventList, EventDayGroups } from "./eventList";
 import EventResultsSkeleton from "./eventResultsSkeleton";
-import { shouldHideEventCard } from "./eventCardVisibility";
+import { getHomeCategoryNames, shouldHideEventCard } from "./eventCardVisibility";
 import { WaitlistEventCard } from "./waitlistEventCard";
 import { useOverviewScroll } from "./useOverviewScroll";
 import { useOverviewPath } from "./useOverviewPath";
@@ -58,12 +58,20 @@ export default function OverviewResults({
   useEffect(() => {
     if (allCount !== null) setAllCount?.(allCount);
   }, [allCount, setAllCount]);
+  const setAvailableCategoryNames = overview?.setAvailableCategoryNames;
+  useEffect(() => {
+    if (!ready || view !== "alle" || now === null) return;
+    const names = getHomeCategoryNames(events, now);
+    setAvailableCategoryNames?.(previous =>
+      previous?.length === names.length && previous.every((name, index) => name === names[index]) ? previous : names);
+  }, [ready, view, now, events, setAvailableCategoryNames]);
   useOverviewScroll(path, ready);
 
   return <div className="w-full">
     <ResultsStatus message={resultsStatusMessage(ready, visible.length)} />
     {ready && now !== null ? (
       <EventList fullEvents={visible} now={now} descending={showPast}
+        showFagtorsdag={!fixedCategory}
         userEmail={fixedCategory ? undefined : userEmail}
         emptyMessage={emptyMessage(view, state.search, showPast)} />
     ) : <EventResultsSkeleton announce={false} />}
@@ -89,7 +97,7 @@ export function WaitlistResults({ entries, datasetKey, categories }: {
       Du blir automatisk påmeldt hvis du får plass før fristen. Du kan forlate ventelisten på arrangementssiden.
     </BodyShort>
     {visible.length ? (
-      <EventDayGroups items={visible} now={now} renderItem={entry => <WaitlistEventCard entry={entry} />} />
+      <EventDayGroups items={visible} now={now} showFagtorsdag renderItem={entry => <WaitlistEventCard entry={entry} />} />
     ) : (
       <EmptyEventList>{state.search.trim() ? `Fant ingen arrangementer som passer «${state.search.trim()}».`
         : "Du står ikke på noen ventelister for kommende arrangementer."}</EmptyEventList>

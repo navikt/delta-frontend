@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.5.15/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.6.6/schema.json",
   "vcs": {
     "enabled": true,
     "clientKind": "git",
@@ -34,5 +34,17 @@
       "react": "recommended",
       "next": "recommended"
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": ["public/sporing.js", "src/components/waitlist.test.mjs"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noComponentHookFactories": "off"
+          }
+        }
+      }
+    }
+  ]
 }

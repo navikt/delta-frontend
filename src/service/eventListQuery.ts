@@ -31,7 +31,7 @@ export function filterHomeOverview(
   state: { tab: string; onlyRegistered: boolean },
 ) {
   if (state.onlyRegistered || state.tab === "mine") return events;
-  return events.filter(item => !item.categories.some(category => category.name.toLowerCase() === "ips"));
+  return events.filter(item => !item.categories.some(category => ["ips", "markedsuka"].includes(category.name.toLowerCase())));
 }
 
 // The backend ANDs category filters, so selecting categories only narrows the already-loaded list.

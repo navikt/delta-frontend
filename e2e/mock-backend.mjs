@@ -52,6 +52,11 @@ function fullEvent(id, overrides, { participants = [], hosts = [OTHER], eventCat
   };
 }
 
+const SIGNUP_OPTIONS = [
+  { id: "o-physical", label: "Fysisk", participantLimit: 30, waitlistEnabled: true, allocatedSeats: 1, waitlistCount: 0 },
+  { id: "o-digital", label: "Digitalt", participantLimit: 0, waitlistEnabled: false, allocatedSeats: 0, waitlistCount: 0 },
+];
+
 const events = () => [
   fullEvent(
     "e-hosted",
@@ -75,6 +80,16 @@ const events = () => [
     { title: "Fullt arrangement med venteliste", participantLimit: 1, waitlistEnabled: true },
     { participants: [OTHER] },
   ),
+  fullEvent(
+    "e-options",
+    { title: "Arrangement med påmeldingsalternativer", inviteMode: "SHARED", signupOptions: SIGNUP_OPTIONS },
+    { participants: [{ ...OTHER, signupOptionId: "o-physical" }] },
+  ),
+  fullEvent(
+    "e-options-hosted",
+    { title: "Alternativer jeg arrangerer", inviteMode: "SHARED", signupOptions: SIGNUP_OPTIONS },
+    { hosts: [ME], participants: [{ ...OTHER, signupOptionId: "o-physical" }] },
+  ),
 ];
 
 const faggrupper = [
@@ -93,7 +108,7 @@ const faggrupper = [
 
 const routes = [
   [/^\/category$/, () => categories],
-  [/^\/features$/, () => ({ roomBooking: true, teamsMeeting: true, sharedCalendar: true, peopleSearch: true })],
+  [/^\/features$/, () => ({ roomBooking: true, teamsMeeting: true, sharedCalendar: true, peopleSearch: true, signupOptions: true })],
   [/^\/event$/, () => events()],
   [/^\/event\/([\w-]+)$/, ([, id]) => events().find((item) => item.event.id === id)],
   [

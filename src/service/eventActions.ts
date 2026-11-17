@@ -9,6 +9,7 @@ import {
   EditScope,
   FullDeltaEvent,
   InviteeRequest,
+  SignupOptionRequest,
 } from "@/types/event";
 import { ActionResult } from "@/types/room";
 import { formatInTimeZone } from "date-fns-tz";
@@ -111,6 +112,21 @@ export async function changeParticipant(
     await api.post(`/admin/event/${encodeURIComponent(eventId)}/participant`, changeDeltaParticipant);
   } catch (error) {
     handleApiError(error);
+  }
+}
+
+/** Like [changeParticipant], but returns backend refusals (for example a full signup option) as messages. */
+export async function changeParticipantChecked(
+  eventId: string,
+  change: ChangeDeltaParticipant,
+): Promise<ActionResult<null>> {
+  try {
+    validateEventId(eventId);
+    const api = await getApi();
+    await api.post(`/admin/event/${encodeURIComponent(eventId)}/participant`, change);
+    return { ok: true, data: null };
+  } catch (error) {
+    return toSharedCalendarActionError(error, "Kunne ikke endre deltakeren.");
   }
 }
 
@@ -218,11 +234,12 @@ function toSharedCalendarActionError(
 export async function createEvent(
   formData: CreateEventSchema,
   invitees?: InviteeRequest[],
+  signupOptions?: SignupOptionRequest[],
 ): Promise<ActionResult<FullDeltaEvent>> {
   try {
     const api = await getApi();
 
-    const event = createDeltaEventFromFormData(formData, invitees);
+    const event = createDeltaEventFromFormData(formData, invitees, signupOptions);
     const response = await api.put<FullDeltaEvent>("/admin/event", event);
 
     return { ok: true, data: response.data };
@@ -236,12 +253,13 @@ export async function updateEvent(
   eventId: string,
   editScope?: EditScope,
   invitees?: InviteeRequest[],
+  signupOptions?: SignupOptionRequest[],
 ): Promise<ActionResult<FullDeltaEvent>> {
   try {
     validateEventId(eventId);
     const api = await getApi();
 
-    const event = createDeltaEventFromFormData(formData, invitees);
+    const event = createDeltaEventFromFormData(formData, invitees, signupOptions);
     if (editScope) {
       event.editScope = editScope;
     }
@@ -300,6 +318,7 @@ function formatBackendDateTime(date: Date, time: string): string {
 function createDeltaEventFromFormData(
   formData: CreateEventSchema,
   invitees?: InviteeRequest[],
+  signupOptions?: SignupOptionRequest[],
 ): CreateDeltaEvent {
   const start = formatBackendDateTime(formData.startDate, formData.startTime);
   const end = formatBackendDateTime(formData.endDate, formData.endTime);
@@ -334,17 +353,20 @@ function createDeltaEventFromFormData(
     description: formData.description,
     location: formData.location,
     public: formData.public,
+    // With signup options, capacity lives on each option and the event-level limit stays 0.
     participantLimit:
-      formData.hasParticipantLimit && formData.participantLimit
+      !signupOptions?.length && formData.hasParticipantLimit && formData.participantLimit
         ? parseInt(formData.participantLimit)
         : 0,
-    waitlistEnabled: formData.hasParticipantLimit && formData.waitlistEnabled === true,
+    waitlistEnabled: !signupOptions?.length && formData.hasParticipantLimit && formData.waitlistEnabled === true,
     startTime: start,
     endTime: end,
     signupDeadline: formData.hasSignupDeadline && !formData.isRecurring ? deadline : undefined,
     sendNotificationEmail: sendNotificationEmail,
     recurrence: recurrence,
     ...(invitees?.length ? { invitees } : {}),
+    // Omitted means "keep current"; an event that never had options stays a plain event.
+    ...(signupOptions?.length ? { signupOptions } : {}),
     // Room/Teams: the form only sets these when the feature is on and the value should change.
     // Omitted means "keep current" on update. Never sent for recurring events (backend 400).
     ...(!formData.isRecurring && formData.roomEmail && formData.roomName

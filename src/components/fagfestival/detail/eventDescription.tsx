@@ -17,7 +17,7 @@ import type { FestivalConfig } from "../festivals";
 import { countCapacityAttendees, InvitationCapacity } from "@/service/eventCapacity";
 import { formatDeadline } from "@/service/format";
 import { formatEventDateParts } from "@/service/eventDetailsFormat";
-import { DetailsCard, Divider, InfoRow, InfoRows, ParticipantsSummary } from "@/components/eventDetailsParts";
+import { DetailsCard, Divider, InfoRow, InfoRows, ParticipantsSummary, SignupOptionsSummary } from "@/components/eventDetailsParts";
 
 const displayName = (participant: DeltaParticipant) => participant.name.split(", ").reverse().join(" ");
 
@@ -94,6 +94,20 @@ export default function EventDescription({
         });
     }
 
+    const participantListAction = isHost ? (
+        <Button as={NextLink} href={`/event/${event.id}/admin`} variant="secondary" size="small">
+            Vis deltakere
+        </Button>
+    ) : (
+        <Button
+            variant="secondary"
+            size="small"
+            onClick={() => setOpenParticipantList(true)}
+        >
+            Vis deltakere
+        </Button>
+    );
+
     return (
         <DetailsCard label="Praktisk informasjon">
             <VStack gap="space-24">
@@ -146,23 +160,15 @@ export default function EventDescription({
                     </InfoRow>
                 </InfoRows>
                 <Divider/>
-                <ParticipantsSummary
-                    attendeeCount={displayedAttendeeCount}
-                    participantLimit={event.participantLimit}
-                    action={isHost ? (
-                        <Button as={NextLink} href={`/event/${event.id}/admin`} variant="secondary" size="small">
-                            Vis deltakere
-                        </Button>
-                    ) : (
-                        <Button
-                            variant="secondary"
-                            size="small"
-                            onClick={() => setOpenParticipantList(true)}
-                        >
-                            Vis deltakere
-                        </Button>
-                    )}
-                />
+                {event.signupOptions?.length ? (
+                    <SignupOptionsSummary options={event.signupOptions} action={participantListAction} />
+                ) : (
+                    <ParticipantsSummary
+                        attendeeCount={displayedAttendeeCount}
+                        participantLimit={event.participantLimit}
+                        action={participantListAction}
+                    />
+                )}
             </VStack>
             <Modal
                 open={openParticipantList}

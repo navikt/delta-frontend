@@ -7,6 +7,7 @@ import type { ReactNode } from "react";
 import { formatDeadline } from "@/service/format";
 import { formatCardTimeRange } from "@/service/eventGrouping";
 import { countCapacityAttendees } from "@/service/eventCapacity";
+import { isOptionFull, optionCapacityText } from "@/service/signupOptions";
 import { RecurringBadge } from "@/components/RecurringBadge";
 import { useOverviewPath } from "@/components/useOverviewPath";
 import { rememberOverviewReturn } from "@/components/overviewReturn";
@@ -43,6 +44,14 @@ export function CardHeaderRow({ time, children }: { time: string; children?: Rea
 }
 
 function Capacity({ event, now }: { event: FullDeltaEvent; now: number | null }) {
+  const options = event.event.signupOptions ?? [];
+  if (options.length) {
+    return <>
+      <span>{options.map((option) => `${option.label}: ${optionCapacityText(option)}`).join(" · ")}</span>
+      {options.every(isOptionFull) && <Tag size="xsmall" variant="moderate" data-color="warning">Fullt</Tag>}
+      {options.some((option) => option.waitlistEnabled) && <Tag size="xsmall" variant="outline" data-color="info">Venteliste</Tag>}
+    </>;
+  }
   const limit = event.event.participantLimit;
   if (limit === 0) {
     const count = event.participants.length;

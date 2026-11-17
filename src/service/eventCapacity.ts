@@ -3,6 +3,8 @@ import { DeltaParticipant, Invitation } from "@/types/event";
 export type InvitationCapacity = {
   reservedInvitations: number;
   hasOwnReservation: boolean;
+  /** The signup option of the caller's open invitation, on events with signup options. */
+  ownReservationOptionId?: string | null;
 };
 
 export function countCapacityAttendees(
@@ -55,6 +57,9 @@ export function getInvitationCapacity(
       participants.length -
       hosts.length,
     hasOwnReservation: hasReservedInvitation(email, invited, signupDeadline, now),
+    ownReservationOptionId: invited.find((invitation) =>
+      invitation.email.toLowerCase() === email.toLowerCase() && invitation.status === "INVITED",
+    )?.signupOptionId ?? null,
   };
 }
 

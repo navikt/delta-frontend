@@ -30,6 +30,8 @@ import { DescriptionCard, EventHeroMeta } from "@/components/eventDetailsParts";
 import { type FestivalConfig, getFestivalEventUrl } from "../festivals";
 import WaitlistControls from "@/components/waitlistControls";
 import RegistrationRefreshNotice from "@/components/registrationRefreshNotice";
+import { signupOptionRegistration, type SignupOptionOutcome } from "@/components/signupOptionRegistration";
+import { optionById } from "@/service/signupOptions";
 import type { WaitlistState } from "@/types/event";
 
 export default function EventDetails({
@@ -53,6 +55,8 @@ export default function EventDetails({
     const eventUrl = getFestivalEventUrl(festival, event.id, hostname);
     const [reactiveParticipants, setParticipants] = useState(participants);
     const [reactiveWaitlist, setWaitlist] = useState(waitlist);
+    const [reactiveOptions, setOptions] = useState(event.signupOptions ?? []);
+    const [showOptionSwitched, setOptionSwitched] = useState(false);
     const [registrationPending, startRegistration] = useTransition();
     const [registrationError, setRegistrationError] = useState("");
     const [registrationNeedsRefresh, setRegistrationNeedsRefresh] = useState(false);
@@ -62,6 +66,7 @@ export default function EventDetails({
         setParticipants(updated.participants);
         setInvitationCapacity(updated.invitationCapacity);
         setWaitlist(updated.waitlist);
+        setOptions(updated.signupOptions ?? []);
     };
     const [reactiveInvitationCapacity, setInvitationCapacity] = useState(invitationCapacity);
     const isHost = hosts.some((host) => host.email === user.email);
@@ -79,12 +84,17 @@ export default function EventDetails({
         event.signupDeadline,
     );
 
+    const optionEvent = reactiveOptions.length > 0;
+    const myOptionId = reactiveParticipants.find((p) => p.email === user.email)?.signupOptionId
+        ?? reactiveWaitlist?.signupOptionId;
+
     const [showRegistration, setRegistration] = useState(false);
     const [showUnregistration, setUnregistration] = useState(false);
     const [openConfirmation, setOpenConfirmation] = useState(false);
     const [openInterested, setOpenInterested] = useState(false);
 
     const showAlert = () => {
+        setOptionSwitched(false)
         setUnregistration(false)
         setRegistration(false)
         const setter = !isParticipant ? setRegistration : setUnregistration;
@@ -132,6 +142,26 @@ export default function EventDetails({
         </Button>
     );
 
+    const leaveButton = (
+        <Button
+            variant="primary"
+            data-color="danger"
+            onClick={() => setOpenConfirmation((x) => !x)}
+        >
+            Meld av
+        </Button>
+    );
+
+    const onSignupOptionDone = (
+        updated: Awaited<ReturnType<typeof getEventRegistrationState>> | null,
+        outcome: SignupOptionOutcome,
+    ) => {
+        setRegistrationError("");
+        if (outcome === "registered") showAlert();
+        setOptionSwitched(outcome === "switched");
+        updateRegistration(updated);
+    };
+
     /** Organizer actions, shown in the organizer bar above the hero. */
     const organizerActions = isHost && (
         <Button as={NextLink} href={`/event/${event.id}/admin`} variant="primary">
@@ -146,7 +176,8 @@ export default function EventDetails({
         }
         if (isHost) return {};
         if (!isParticipant && reactiveWaitlist?.position != null) {
-            return { actions: <WaitlistControls eventId={event.id} state={reactiveWaitlist} onUpdated={updateRegistration} /> };
+            return { actions: <WaitlistControls eventId={event.id} state={reactiveWaitlist} onUpdated={updateRegistration}
+                optionLabel={optionById(reactiveOptions, reactiveWaitlist.signupOptionId)?.label} /> };
         }
         if (hasEnded)
             return {
@@ -170,6 +201,21 @@ export default function EventDetails({
                 notice: <InlineMessage status="warning">Påmeldingsfristen er utløpt</InlineMessage>,
                 actions: meldInteresseButton,
             };
+        }
+        if (optionEvent) {
+            return signupOptionRegistration({
+                eventId: event.id,
+                options: reactiveOptions,
+                isParticipant,
+                myOptionId,
+                signupDeadline: event.signupDeadline,
+                reservedOptionId: hasInvitationReservation ? reactiveInvitationCapacity.ownReservationOptionId : null,
+                waitlist: reactiveWaitlist,
+                disabled: registrationNeedsRefresh,
+                leaveButton,
+                interestButton: meldInteresseButton,
+                onDone: onSignupOptionDone,
+            });
         }
         if (
             !isParticipant && !hasInvitationReservation && event.participantLimit > attendeeCount &&
@@ -203,7 +249,7 @@ export default function EventDetails({
         };
     })();
 
-    const hasNotices = showRegistration || showUnregistration || !!registration.notice;
+    const hasNotices = showRegistration || showUnregistration || showOptionSwitched || !!registration.notice;
 
     return (
         <CardWithBackground
@@ -237,6 +283,11 @@ export default function EventDetails({
                                 Påmelding registrert
                             </InlineMessage>
                         )}
+                        {showOptionSwitched && (
+                            <InlineMessage status="success" role="status">
+                                Endringen er lagret
+                            </InlineMessage>
+                        )}
                         {showUnregistration && (
                             <InlineMessage status="success" role="status">
                                 {hasEnded ? "Deltakelse slettet" : "Avmelding registrert"}
@@ -250,7 +301,7 @@ export default function EventDetails({
                         <EventDescription
                             contact={festival.contact}
                             user={user}
-                            event={event}
+                            event={{ ...event, signupOptions: reactiveOptions }}
                             participants={reactiveParticipants}
                             hosts={hosts}
                             invitationCapacity={reactiveInvitationCapacity}

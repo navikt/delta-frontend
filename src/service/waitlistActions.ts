@@ -39,26 +39,41 @@ async function registrationAfterMutation(eventId: string): Promise<RegistrationM
     : { ok: true, refreshRequired: true };
 }
 
-export async function changeWaitlist(eventId: string, leave: boolean): Promise<RegistrationMutationResult> {
+function selection(signupOptionId?: string) {
+  return signupOptionId ? { signupOptionId } : undefined;
+}
+
+export async function changeWaitlist(eventId: string, leave: boolean, signupOptionId?: string): Promise<RegistrationMutationResult> {
   await checkToken();
   try {
     const api = await getApi();
     const path = `/user/event/${encodeURIComponent(eventId)}/waitlist`;
-    await (leave ? api.delete(path) : api.post(path));
+    await (leave ? api.delete(path) : api.post(path, selection(signupOptionId)));
   } catch (error) {
     return actionError(error);
   }
   return registrationAfterMutation(eventId);
 }
 
-export async function changeEventRegistration(eventId: string, leave: boolean): Promise<RegistrationMutationResult> {
+export async function changeEventRegistration(eventId: string, leave: boolean, signupOptionId?: string): Promise<RegistrationMutationResult> {
   await checkToken();
   try {
     const api = await getApi();
     const path = `/user/event/${encodeURIComponent(eventId)}`;
-    await (leave ? api.delete(path) : api.post(path));
+    await (leave ? api.delete(path) : api.post(path, selection(signupOptionId)));
   } catch (error) {
     return actionError(error, "Kunne ikke endre påmeldingen. Prøv igjen.");
+  }
+  return registrationAfterMutation(eventId);
+}
+
+export async function switchSignupOption(eventId: string, signupOptionId: string): Promise<RegistrationMutationResult> {
+  await checkToken();
+  try {
+    const api = await getApi();
+    await api.post(`/user/event/${encodeURIComponent(eventId)}/signup-option`, { signupOptionId });
+  } catch (error) {
+    return actionError(error, "Kunne ikke bytte hvordan du deltar. Prøv igjen.");
   }
   return registrationAfterMutation(eventId);
 }

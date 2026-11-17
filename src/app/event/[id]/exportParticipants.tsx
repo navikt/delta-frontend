@@ -1,10 +1,11 @@
 "use client";
-import { DeltaParticipant } from "@/types/event";
+import { DeltaParticipant, SignupOption } from "@/types/event";
+import { optionById } from "@/service/signupOptions";
 import { ChevronDownIcon, EnvelopeClosedIcon, FileExcelIcon } from "@navikt/aksel-icons";
 import { Button, CopyButton, Dropdown, Link } from "@navikt/ds-react";
 import ExcelJS from "exceljs";
 
-type ExportParticipantsProps = { participants: DeltaParticipant[] };
+type ExportParticipantsProps = { participants: DeltaParticipant[]; signupOptions?: SignupOption[] };
 
 export default function ExportParticipants(
   participants: ExportParticipantsProps,
@@ -16,12 +17,14 @@ export default function ExportParticipants(
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Participants");
 
+    const options = participants.signupOptions ?? [];
     worksheet.columns = [
       { header: "Email", key: "email", width: 30 },
+      ...(options.length ? [{ header: "Deltar som", key: "option", width: 30 }] : []),
     ];
 
     participants.participants.forEach((p) => {
-      worksheet.addRow({ email: p.email });
+      worksheet.addRow({ email: p.email, option: optionById(options, p.signupOptionId)?.label ?? "" });
     });
 
     const buffer = await workbook.xlsx.writeBuffer();

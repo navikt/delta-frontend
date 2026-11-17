@@ -10,6 +10,7 @@ import WaitlistManager from "@/components/waitlistManager";
 import OrganizerBar from "@/components/organizerBar";
 import CalendarSyncStatus from "@/components/calendarSyncStatus";
 import { RoomStatusRow } from "@/components/roomStatusTag";
+import { usesWaitlist } from "@/service/signupOptions";
 
 export const metadata: Metadata = {
   title: "Administrer arrangement Δ Delta",
@@ -26,7 +27,8 @@ export default async function ParticipantsPage({
   const [fullEvent, user, features] = await Promise.all([getEvent(id), getUser(), getFeatures()]);
 
   if (fullEvent.hosts.some((host) => host.email === user.email)) {
-    const waitlistEntries = fullEvent.event.waitlistEnabled ? await getWaitlistEntries(id) : [];
+    const showWaitlist = usesWaitlist(fullEvent.event);
+    const waitlistEntries = showWaitlist ? await getWaitlistEntries(id) : [];
     const { event } = fullEvent;
     const showCalendarStatus = event.inviteMode === "SHARED" && !!event.calendarSyncStatus;
     const showRoomStatus = features.roomBooking && !!event.roomName && !!event.roomStatus;
@@ -56,8 +58,8 @@ export default async function ParticipantsPage({
           user={user}
           peopleSearchEnabled={features.peopleSearch}
         />
-        {fullEvent.event.waitlistEnabled && <WaitlistManager key={JSON.stringify(waitlistEntries)} eventId={id}
-          initialEntries={waitlistEntries} />}
+        {showWaitlist && <WaitlistManager key={JSON.stringify(waitlistEntries)} eventId={id}
+          initialEntries={waitlistEntries} options={event.signupOptions} />}
       </CardWithBackground>
     );
   } else {

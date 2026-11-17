@@ -13,6 +13,11 @@ function loadComponent(name, mocks) {
 const noopComponent = () => null;
 const capacity = loadComponent("../../../service/eventCapacity.ts", {});
 const formatting = loadComponent("../../../service/format.ts", {});
+const signupOptions = await import("../../../service/signupOptions.ts");
+const optionRegistration = loadComponent("../../signupOptionRegistration.tsx", {
+  "@/service/waitlistActions": {},
+  "@/service/signupOptions": signupOptions,
+});
 const commonMocks = {
   "@/service/waitlistQueries": {},
   "@/service/waitlistActions": {},
@@ -20,6 +25,8 @@ const commonMocks = {
   "../festivals": { festivals, ...await import("../festivals.ts") },
   "@/service/eventCapacity": capacity,
   "@/service/format": formatting,
+  "@/service/signupOptions": signupOptions,
+  "@/components/signupOptionRegistration": optionRegistration,
 };
 const participant = loadComponent("./participant.tsx", {}).default;
 const organizerBar = loadComponent("../../organizerBar.tsx", {});
@@ -39,6 +46,7 @@ const detailsParts = loadComponent("../../eventDetailsParts.tsx", {
   "@/components/SecondaryCopyButton": copyButton,
   "@/components/RecurringBadge": { RecurringBadge: noopComponent },
   "@/service/eventDetailsFormat": detailsFormat,
+  "@/service/signupOptions": signupOptions,
   "next-qrcode": { useQRCode: () => ({ Canvas: noopComponent }) },
 });
 const partsMocks = { "@/service/eventDetailsFormat": detailsFormat, "@/components/eventDetailsParts": detailsParts };
@@ -242,7 +250,7 @@ test("shared server page authenticates before scoped reads and preserves capacit
       ["read", fixture.event.id, `/${festival.slug}/fixture-event`],
     ]);
     assert.equal(element.props.festival, festival);
-    assert.deepEqual(element.props.invitationCapacity, { reservedInvitations: 1, hasOwnReservation: false });
+    assert.deepEqual(element.props.invitationCapacity, { reservedInvitations: 1, hasOwnReservation: false, ownReservationOptionId: null });
     assert.equal(element.props.calendarSyncError, null);
     currentUser = { ...user, email: "HOST@fixture" };
     const hostElement = await page.default(props);
@@ -264,5 +272,30 @@ test("metadata handles sanitized API errors but preserves auth and not-found con
   for (const message of ["NEXT_REDIRECT", "NEXT_HTTP_ERROR_FALLBACK;404", "Unexpected error"]) {
     failure = new Error(message);
     await assert.rejects(page.generateFestivalMetadata(festivals.mim, props), (error) => error === failure);
+  }
+});
+
+test("signup option events show per-option capacity and let people join, switch or register interest", () => {
+  const option = (id, label, participantLimit, allocatedSeats, waitlistEnabled = false) =>
+    ({ id, label, participantLimit, allocatedSeats, waitlistEnabled, waitlistCount: 0 });
+  const options = [option("physical", "Fysisk", 2, 1), option("digital", "Digitalt", 0, 4)];
+  const event = { ...fixture.event, inviteMode: "SHARED", signupOptions: options };
+  const participants = [{ name: "Person, Joined", email: "joined@fixture", signupOptionId: "physical" }];
+  for (const Detail of [details, ordinaryDetails]) {
+    const render = (overrides) => renderToStaticMarkup(createElement(Detail, {
+      ...fixture, festival: festivals.fagfest, user, event, participants,
+      invitationCapacity: { reservedInvitations: 0, hasOwnReservation: false }, ...overrides,
+    }));
+    const visitor = render({});
+    assert.match(visitor, />Bli med<\/span><\/button>/);
+    assert.match(visitor, /Fysisk/);
+    assert.match(visitor, /1 av 2 plasser/);
+    const joined = render({ user: { ...user, email: "joined@fixture" } });
+    assert.match(joined, /Du deltar: Fysisk/);
+    assert.match(joined, /Bytt hvordan du deltar/);
+    assert.match(joined, />Meld av<\/span><\/button>/);
+    const full = render({ event: { ...event, signupOptions: [option("physical", "Fysisk", 1, 1), option("digital", "Digitalt", 1, 1)] } });
+    assert.match(full, /Arrangementet er fullt/);
+    assert.match(full, /Meld interesse/);
   }
 });

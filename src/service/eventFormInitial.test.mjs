@@ -36,3 +36,13 @@ test("duplicating an event preserves wait-list configuration without copying que
   assert.equal(initial.richEvent.event.waitlistEnabled, true);
   assert.equal("waitlist" in initial.richEvent, false);
 });
+
+test("duplicating an option event copies the option definitions without their registrations", () => {
+  const option = { id: "physical", label: "Fysisk", participantLimit: 30, waitlistEnabled: true,
+    allocatedSeats: 12, waitlistCount: 3 };
+  const initial = initializeEventForm({ mode: "template", source: {
+    ...source, event: { ...source.event, participantLimit: 0, signupOptions: [option] },
+  } });
+  assert.deepEqual(initial.richEvent.event.signupOptions,
+    [{ ...option, allocatedSeats: 0, waitlistCount: 0 }]);
+});

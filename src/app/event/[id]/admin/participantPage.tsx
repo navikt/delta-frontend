@@ -47,7 +47,7 @@ export default function ParticipantPage({
           >
             Bruk som mal
           </Button>*/}
-            <ExportParticipants participants={participants}/>
+            <ExportParticipants participants={participants} signupOptions={event.signupOptions}/>
             {/*          <Button
               type="button"
               data-color="danger"

@@ -14,6 +14,7 @@ export async function getFeatures(): Promise<Features> {
       teamsMeeting: response.data?.teamsMeeting === true,
       sharedCalendar: response.data?.sharedCalendar === true,
       peopleSearch: response.data?.peopleSearch === true,
+      signupOptions: response.data?.signupOptions === true,
     };
   } catch (error) {
     console.error("Failed to fetch features", { status: error instanceof AxiosError ? error.status : undefined });

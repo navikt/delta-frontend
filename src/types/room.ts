@@ -3,6 +3,7 @@ export type Features = {
   teamsMeeting: boolean;
   sharedCalendar: boolean;
   peopleSearch: boolean;
+  signupOptions: boolean;
 };
 
 export const NO_FEATURES: Features = {
@@ -10,6 +11,7 @@ export const NO_FEATURES: Features = {
   teamsMeeting: false,
   sharedCalendar: false,
   peopleSearch: false,
+  signupOptions: false,
 };
 
 export type RoomInfo = {

@@ -69,6 +69,32 @@ test("valg av påmeldingsalternativ har ingen axe-brudd", async ({ page }) => {
   await expectNoViolations(page);
 });
 
+test("signup summaries group each count with its option and separate capacity bars", async ({ page }) => {
+  await gotoSettled(page, "/event/e-options");
+  const options = page.getByRole("list", { name: "Påmeldte per alternativ" });
+  const physical = options.getByRole("listitem").filter({ hasText: "Fysisk" });
+  const digital = options.getByRole("listitem").filter({ hasText: "Digitalt" });
+  const physicalSummary = physical.getByText("Fysisk · 1 av 30 plasser", { exact: true });
+  await expect(physicalSummary).toBeVisible();
+  await expect(digital.getByText("Digitalt · 0 påmeldt", { exact: true })).toBeVisible();
+  const bar = physical.getByRole("progressbar", { name: "Fysisk: 1 av 30 plasser fylt" });
+  await expect(bar).toBeVisible();
+  await expect(digital.getByRole("progressbar")).toHaveCount(0);
+
+  const summaryBounds = await physicalSummary.boundingBox();
+  const barBounds = await bar.boundingBox();
+  const physicalBounds = await physical.boundingBox();
+  const digitalBounds = await digital.boundingBox();
+  if (!summaryBounds || !barBounds || !physicalBounds || !digitalBounds) {
+    throw new Error("Signup summary elements must have visible bounds");
+  }
+  const withinOptionGap = barBounds.y - (summaryBounds.y + summaryBounds.height);
+  const betweenOptionsGap = digitalBounds.y - (physicalBounds.y + physicalBounds.height);
+  expect(withinOptionGap).toBeGreaterThanOrEqual(0);
+  expect(betweenOptionsGap).toBeGreaterThan(withinOptionGap);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+
 test("påmeldingsalternativer i skjemaet har ingen axe-brudd", async ({ page }) => {
   await gotoSettled(page, "/event/new");
   await page.getByRole("checkbox", { name: "La deltakerne velge hvordan de deltar" }).check();

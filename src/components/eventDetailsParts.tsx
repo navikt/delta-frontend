@@ -88,15 +88,14 @@ export function SignupOptionsSummary({ options, action }: { options: SignupOptio
   return (
     <VStack gap="space-12">
       <BodyShort weight="semibold">Påmeldte</BodyShort>
-      <VStack as="ul" gap="space-12" aria-label="Påmeldte per alternativ">
+      <VStack as="ul" gap="space-24" aria-label="Påmeldte per alternativ">
         {options.map((option) => {
           const status = seatStatusLabel(getSeatStatus(option.allocatedSeats, option.participantLimit));
           return (
-            <VStack as="li" key={option.id} gap="space-4">
-              <HStack gap="space-8" justify="space-between" align="baseline" wrap>
-                <BodyShort>{option.label}</BodyShort>
-                <BodyShort>{optionCapacityText(option)}</BodyShort>
-              </HStack>
+            <VStack as="li" key={option.id} gap="space-8">
+              <BodyShort>
+                <b>{option.label}</b> · {optionCapacityText(option)}
+              </BodyShort>
               {option.participantLimit > 0 && (
                 <ProgressBar
                   size="small"

@@ -15,7 +15,7 @@ type CardWithBackgroundProps = {
   leading?: ReactNode;
   /** Shown below the title, e.g. time and tags. */
   meta?: ReactNode;
-  /** Right-aligned hero actions. Wrap below the title on narrow screens. */
+  /** Left-aligned hero actions below the title and metadata. */
   actions?: ReactNode;
   /** Organizer-only bar rendered above the hero, e.g. an OrganizerBar. */
   organizerBar?: ReactNode;
@@ -72,17 +72,15 @@ export default function CardWithBackground(props: CardWithBackgroundProps) {
                 {props.backText}
               </AkselLink>
             )}
-            <HStack gap="space-24" justify="space-between" align="start" wrap>
-              <HStack gap="space-16" align="center" wrap={false} className="min-w-0">
-                {props.leading}
-                <VStack gap="space-8" className="min-w-0">
-                  {heading}
-                  {props.subtitle && <BodyLong size="large" textColor="subtle">{props.subtitle}</BodyLong>}
-                  {props.meta}
-                </VStack>
-              </HStack>
-              {props.actions && <HStack gap="space-8" wrap>{props.actions}</HStack>}
+            <HStack gap="space-16" align="center" wrap={false} className="min-w-0">
+              {props.leading}
+              <VStack gap="space-8" className="min-w-0">
+                {heading}
+                {props.subtitle && <BodyLong size="large" textColor="subtle">{props.subtitle}</BodyLong>}
+                {props.meta}
+              </VStack>
             </HStack>
+            {props.actions && <HStack gap="space-8" wrap>{props.actions}</HStack>}
           </VStack>
         </Page.Block>
       </Box>

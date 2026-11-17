@@ -98,6 +98,29 @@ test("delingsknapper har samme blåfarge", async ({ page }) => {
   await expect(copy).toHaveCSS("box-shadow", qrStyle.boxShadow);
 });
 
+for (const { id, action } of [
+  { id: "e-options", action: "Bli med" },
+  { id: "e-long-title", action: "Bli med" },
+  { id: "e-joined", action: "Meld av" },
+]) {
+  test(`${action} står under tittel og metadata på ${id}`, async ({ page }) => {
+    await gotoSettled(page, `/event/${id}`);
+    const hero = page.locator("section").filter({ has: page.getByRole("heading", { level: 1 }) });
+    const button = hero.getByRole("button", { name: action, exact: true });
+    const buttonBounds = await button.boundingBox();
+    const categoriesBounds = await hero.getByRole("list", { name: "Kategorier" }).boundingBox();
+    const backBounds = await hero.getByRole("link", { name: "Alle arrangementer" }).boundingBox();
+    if (!buttonBounds || !categoriesBounds || !backBounds) {
+      throw new Error("Hero action, categories and back link must have visible bounds");
+    }
+    expect(buttonBounds.y - (categoriesBounds.y + categoriesBounds.height)).toBeGreaterThanOrEqual(16);
+    expect(buttonBounds.x).toBeCloseTo(backBounds.x, 0);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await button.click();
+    await expect(page.getByRole("dialog")).toBeVisible();
+  });
+}
+
 test("påmeldingsmodal har ingen axe-brudd", async ({ page }) => {
   await gotoSettled(page, "/event/e-full");
   await page.getByRole("button", { name: /venteliste|bli med|meld/i }).first().click();
@@ -110,6 +133,7 @@ test("valg av påmeldingsalternativ har ingen axe-brudd", async ({ page }) => {
   await page.getByRole("button", { name: "Bli med" }).click();
   const dialog = page.getByRole("dialog");
   await expect(dialog.getByRole("radiogroup", { name: "Hvordan vil du delta?" })).toBeVisible();
+  await expect(dialog).toHaveCSS("opacity", "1");
   await expectNoViolations(page);
 });
 

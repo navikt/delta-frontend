@@ -90,6 +90,10 @@ const events = () => [
     { title: "Alternativer jeg arrangerer", inviteMode: "SHARED", signupOptions: SIGNUP_OPTIONS },
     { hosts: [ME], participants: [{ ...OTHER, signupOptionId: "o-physical" }] },
   ),
+  fullEvent(
+    "e-long-title",
+    { title: "Opplæring for Arbeid og Velferd – grunnleggende personvern og trygg behandling av personopplysninger i Nav" },
+  ),
 ];
 
 const faggrupper = [

@@ -63,7 +63,7 @@ export default async function AdminPage() {
         </BodyLong>
         <section aria-labelledby="legacy-calendar-events">
           <Heading id="legacy-calendar-events" level="2" size="medium" spacing>
-            Offentlige arrangementer med eldre kalendermodell
+            Kommende offentlige arrangementer med eldre kalendermodell
           </Heading>
           {statistics.publicLegacyEvents.length > 0 ? (
             <ul className="list-disc space-y-2 pl-6">
@@ -80,7 +80,7 @@ export default async function AdminPage() {
             </ul>
           ) : (
             <BodyLong>
-              Ingen offentlige arrangementer bruker den eldre kalendermodellen.
+              Ingen kommende offentlige arrangementer bruker den eldre kalendermodellen.
             </BodyLong>
           )}
         </section>

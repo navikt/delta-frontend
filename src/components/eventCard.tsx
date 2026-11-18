@@ -85,7 +85,7 @@ export function EventCard({ event, userEmail }: { event: FullDeltaEvent; userEma
   const ended = timeStatus === "ended";
 
   return (
-    <LinkCard arrow={false} size="small" className={ended ? "h-full bg-ax-bg-neutral-soft" : "h-full"}>
+    <LinkCard arrow={false} size="small" className="h-full">
       <CardHeaderRow time={formatCardTimeRange(event.event)} ended={ended}>
         {ended && <Tag size="small" variant="moderate" data-color="neutral">Avsluttet</Tag>}
         {timeStatus === "ongoing" && <Tag size="small" variant="moderate" data-color="info">Pågår nå</Tag>}

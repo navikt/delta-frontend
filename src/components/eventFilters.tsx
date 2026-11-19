@@ -118,7 +118,6 @@ export default function EventFilters({ categories }: { categories: Category[] })
           </HGrid>
           {(view === "mine" || view === "pameldt") && (
             <Switch size="small" checked={state.showPast}
-              description={view === "pameldt" ? "Tidligere arrangementer fra inneværende år." : undefined}
               onChange={event => updateServerState({ showPast: event.target.checked })}>
               Vis tidligere
             </Switch>

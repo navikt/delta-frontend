@@ -58,12 +58,15 @@ for (const { name, path } of pages) {
 test("Påmeldt kan vise tidligere påmeldinger og beholder søk og URL-valg", async ({ page }) => {
   await gotoSettled(page, "/?onlyRegistered=1&search=Arrangement+jeg+er+påmeldt&extra=keep");
   const upcoming = page.getByRole("link", { name: "Arrangement jeg er påmeldt", exact: true });
-  const history = page.getByRole("checkbox", { name: /^Vis tidligere/ });
+  const history = page.getByRole("checkbox", { name: "Vis tidligere", exact: true });
+  const mimretid = page.getByRole("link", { name: "Se påmeldinger fra tidligere år i Mimretid", exact: true });
   await expect(upcoming).toBeVisible();
+  await expect(mimretid).toHaveCount(0);
   await history.check();
   await expect(page).toHaveURL(/showPast=1/);
   await expect(page.getByText("Fant ingen arrangementer som passer «Arrangement jeg er påmeldt».", { exact: true })).toBeVisible();
   await expect(upcoming).toHaveCount(0);
+  await expect(mimretid).toHaveAttribute("href", "/mimretid");
   expect(new URL(page.url()).searchParams.get("onlyRegistered")).toBe("1");
   expect(new URL(page.url()).searchParams.get("extra")).toBe("keep");
   await expect(page.getByRole("searchbox")).toHaveValue("Arrangement jeg er påmeldt");
@@ -71,9 +74,11 @@ test("Påmeldt kan vise tidligere påmeldinger og beholder søk og URL-valg", as
   await expect(page.getByText("Du har ingen tidligere påmeldinger i år.", { exact: true })).toBeVisible();
   await page.reload();
   await expect(history).toBeChecked();
+  await expect(mimretid).toBeVisible();
   await expectNoViolations(page);
   await history.uncheck();
   await expect(upcoming).toBeVisible();
+  await expect(mimretid).toHaveCount(0);
 });
 
 test("arrangementskort skiller avsluttet, pågående og kommende uten å laste siden på nytt", async ({ page }) => {

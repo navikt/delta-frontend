@@ -3,7 +3,8 @@
 import { useEffect } from "react";
 import type { Category, FullDeltaEvent, MyWaitlistEvent } from "@/types/event";
 import { useQueryStates } from "nuqs";
-import { BodyShort, VStack } from "@navikt/ds-react";
+import { BodyShort, Link, VStack } from "@navikt/ds-react";
+import NextLink from "next/link";
 import { homeParsers, homeView } from "@/service/overviewState";
 import { filterActiveJoinedEvents, filterPastJoinedEvents, filterHomeCategories, homeDatasetKey } from "@/service/eventListQuery";
 import { matchesEventSearch } from "@/service/eventSearch";
@@ -72,10 +73,17 @@ export default function OverviewResults({
   return <div className="w-full">
     <ResultsStatus message={resultsStatusMessage(ready, visible.length)} />
     {ready && now !== null ? (
-      <EventList fullEvents={visible} now={now} descending={showPast}
-        showFagtorsdag={!fixedCategory}
-        userEmail={fixedCategory ? undefined : userEmail}
-        emptyMessage={emptyMessage(view, state.search, showPast)} />
+      <VStack gap="space-24">
+        <EventList fullEvents={visible} now={now} descending={showPast}
+          showFagtorsdag={!fixedCategory}
+          userEmail={fixedCategory ? undefined : userEmail}
+          emptyMessage={emptyMessage(view, state.search, showPast)} />
+        {view === "pameldt" && showPast && (
+          <BodyShort>
+            <Link as={NextLink} href="/mimretid">Se påmeldinger fra tidligere år i Mimretid</Link>
+          </BodyShort>
+        )}
+      </VStack>
     ) : <EventResultsSkeleton announce={false} />}
   </div>;
 }

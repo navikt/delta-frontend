@@ -5,7 +5,7 @@ import type { Category, FullDeltaEvent, MyWaitlistEvent } from "@/types/event";
 import { useQueryStates } from "nuqs";
 import { BodyShort, VStack } from "@navikt/ds-react";
 import { homeParsers, homeView } from "@/service/overviewState";
-import { filterActiveJoinedEvents, filterHomeCategories, homeDatasetKey } from "@/service/eventListQuery";
+import { filterActiveJoinedEvents, filterPastJoinedEvents, filterHomeCategories, homeDatasetKey } from "@/service/eventListQuery";
 import { matchesEventSearch } from "@/service/eventSearch";
 import EventList, { EmptyEventList, EventDayGroups } from "./eventList";
 import EventResultsSkeleton from "./eventResultsSkeleton";
@@ -19,7 +19,8 @@ import { ResultsStatus, resultsStatusMessage, useOptionalOverviewTransition } fr
 function emptyMessage(view: string, search: string, showPast: boolean) {
   if (search.trim()) return `Fant ingen arrangementer som passer «${search.trim()}».`;
   switch (view) {
-    case "pameldt": return "Du er ikke påmeldt noen kommende arrangementer.";
+    case "pameldt": return showPast ? "Du har ingen tidligere påmeldinger i år."
+      : "Du er ikke påmeldt noen kommende arrangementer.";
     case "mine": return showPast ? "Du har ikke arrangert noen tidligere arrangementer."
       : "Du har ingen kommende arrangementer som arrangør.";
     case "category": return "Det er ingen kommende arrangementer i denne kategorien.";
@@ -38,9 +39,10 @@ export default function OverviewResults({
   const overview = useOptionalOverviewTransition();
   const view = fixedCategory ? "category" : homeView(state);
   const ready = (fixedCategory || datasetKey === homeDatasetKey(state, categories)) && now !== null;
-  const showPast = view === "mine" && state.showPast;
+  const showPast = (view === "mine" || view === "pameldt") && state.showPast;
 
-  const loaded = view === "pameldt" ? filterActiveJoinedEvents(events, now ?? 0)
+  const loaded = view === "pameldt"
+    ? (showPast ? filterPastJoinedEvents(events, now ?? 0) : filterActiveJoinedEvents(events, now ?? 0))
     : view === "alle" ? filterHomeCategories(events, state, categories)
     : events;
   const visible = now === null ? [] : loaded

@@ -101,3 +101,14 @@ export function filterActiveJoinedEvents(
     (event) => new Date(event.event.endTime).getTime() > now,
   );
 }
+
+export function filterPastJoinedEvents(
+  events: FullDeltaEvent[],
+  now = Date.now(),
+): FullDeltaEvent[] {
+  const year = new Date(now).getFullYear();
+  return events.filter(
+    ({ event }) => new Date(event.startTime).getFullYear() === year
+      && new Date(event.endTime).getTime() <= now,
+  );
+}

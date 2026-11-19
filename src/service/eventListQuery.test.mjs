@@ -3,6 +3,7 @@ import { test } from "node:test";
 import { spawnSync } from "node:child_process";
 import {
   filterActiveJoinedEvents,
+  filterPastJoinedEvents,
   getEventListQuery,
   getHomeEventQuery,
   filterHomeCategories,
@@ -52,6 +53,27 @@ test("filters joined events that have already ended", () => {
   ];
 
   assert.deepEqual(filterActiveJoinedEvents(events, now), [events[0]]);
+});
+
+test("joined history includes only finished events starting in the current year", () => {
+  const now = new Date("2026-10-12T10:00:00.000Z").getTime();
+  const events = [
+    { event: { startTime: "2026-01-01T10:00:00Z", endTime: "2026-01-01T11:00:00Z" } },
+    { event: { startTime: "2026-10-12T09:00:00Z", endTime: "2026-10-12T10:00:00Z" } },
+    { event: { startTime: "2026-10-12T09:00:00Z", endTime: "2026-10-12T11:00:00Z" } },
+    { event: { startTime: "2026-10-13T09:00:00Z", endTime: "2026-10-13T11:00:00Z" } },
+    { event: { startTime: "2025-12-31T10:00:00Z", endTime: "2026-01-01T01:00:00Z" } },
+    { event: { startTime: "2025-10-12T09:00:00Z", endTime: "2025-10-12T11:00:00Z" } },
+  ];
+  assert.deepEqual(filterPastJoinedEvents(events, now), events.slice(0, 2));
+  assert.deepEqual(filterActiveJoinedEvents(events, now), events.slice(2, 4));
+});
+
+test("joined history stays on the loaded dataset while host history navigates", () => {
+  const state = { tab: "alle", categories: [], showPast: false, onlyRegistered: true };
+  assert.equal(homeDatasetKey({ ...state, showPast: true }, []), homeDatasetKey(state, []));
+  const hosted = { ...state, tab: "mine", onlyRegistered: false };
+  assert.notEqual(homeDatasetKey({ ...hosted, showPast: true }, []), homeDatasetKey(hosted, []));
 });
 
 test("home resolves known category names, ignores legacy time and uses mine history only for mine", () => {
@@ -139,6 +161,29 @@ test("joined LocalDateTime visibility retains each caller's local timezone inter
   };
   assert.deepEqual(runInZone("Asia/Tokyo"), []);
   assert.deepEqual(runInZone("America/Los_Angeles"), ["local-9am"]);
+});
+
+test("joined history uses the browser-local year and end time around New Year", () => {
+  const moduleUrl = new URL("./eventListQuery.ts", import.meta.url).href;
+  const script = `
+    import { filterPastJoinedEvents } from ${JSON.stringify(moduleUrl)};
+    const events = [
+      { event: { id: "last-year", startTime: "2025-12-31T09:00:00", endTime: "2025-12-31T10:00:00" } },
+      { event: { id: "this-year", startTime: "2026-01-01T00:00:00", endTime: "2026-01-01T01:00:00" } },
+    ];
+    process.stdout.write(JSON.stringify(
+      filterPastJoinedEvents(events, Date.parse("2026-01-01T00:00:00Z")).map(item => item.event.id)
+    ));
+  `;
+  const runInZone = zone => {
+    const result = spawnSync(process.execPath, ["--input-type=module", "-e", script], {
+      env: { ...process.env, TZ: zone }, encoding: "utf8",
+    });
+    assert.equal(result.status, 0, result.stderr);
+    return JSON.parse(result.stdout);
+  };
+  assert.deepEqual(runInZone("Asia/Tokyo"), ["this-year"]);
+  assert.deepEqual(runInZone("America/Los_Angeles"), ["last-year"]);
 });
 
 test("category selection filters the loaded list with the backend's AND semantics", () => {

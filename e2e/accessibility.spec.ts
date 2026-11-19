@@ -55,6 +55,27 @@ for (const { name, path } of pages) {
   });
 }
 
+test("Påmeldt kan vise tidligere påmeldinger og beholder søk og URL-valg", async ({ page }) => {
+  await gotoSettled(page, "/?onlyRegistered=1&search=Arrangement+jeg+er+påmeldt&extra=keep");
+  const upcoming = page.getByRole("link", { name: "Arrangement jeg er påmeldt", exact: true });
+  const history = page.getByRole("checkbox", { name: /^Vis tidligere/ });
+  await expect(upcoming).toBeVisible();
+  await history.check();
+  await expect(page).toHaveURL(/showPast=1/);
+  await expect(page.getByText("Fant ingen arrangementer som passer «Arrangement jeg er påmeldt».", { exact: true })).toBeVisible();
+  await expect(upcoming).toHaveCount(0);
+  expect(new URL(page.url()).searchParams.get("onlyRegistered")).toBe("1");
+  expect(new URL(page.url()).searchParams.get("extra")).toBe("keep");
+  await expect(page.getByRole("searchbox")).toHaveValue("Arrangement jeg er påmeldt");
+  await page.getByRole("searchbox").fill("");
+  await expect(page.getByText("Du har ingen tidligere påmeldinger i år.", { exact: true })).toBeVisible();
+  await page.reload();
+  await expect(history).toBeChecked();
+  await expectNoViolations(page);
+  await history.uncheck();
+  await expect(upcoming).toBeVisible();
+});
+
 test("arrangementskort skiller avsluttet, pågående og kommende uten å laste siden på nytt", async ({ page }) => {
   const beforeStart = new Date();
   beforeStart.setDate(beforeStart.getDate() + 2);

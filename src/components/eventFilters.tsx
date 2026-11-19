@@ -21,9 +21,17 @@ const QUICK_FILTER_NAMES = QUICK_FILTERS.map(filter => filter.name);
 
 export default function EventFilters({ categories }: { categories: Category[] }) {
   const [state, setState] = useQueryStates(homeParsers, { history: "replace", scroll: false });
-  const { pending, startTransition, allCount, availableCategoryNames } = useOverviewTransition();
+  const { pending, startTransition, allCount, availableCategoryNames, history } = useOverviewTransition();
   const view = homeView(state);
   const searchRef = useRef<HTMLDivElement>(null);
+  const historyCounts = history?.datasetKey === homeDatasetKey(state, categories) && history.search === state.search
+    ? history : null;
+  const historyYear = state.year ?? historyCounts?.currentYear;
+  const historyYears = historyCounts ? [...historyCounts.years] : [];
+  if (state.year !== null && !historyYears.some(item => item.year === state.year)) {
+    historyYears.push({ year: state.year, count: 0 });
+    historyYears.sort((a, b) => b.year - a.year);
+  }
 
   const selectedCategories = categories.filter(category =>
     state.categories.includes(category.name) && !QUICK_FILTER_NAMES.includes(category.name));
@@ -121,6 +129,21 @@ export default function EventFilters({ categories }: { categories: Category[] })
               onChange={event => updateServerState({ showPast: event.target.checked })}>
               Vis tidligere
             </Switch>
+          )}
+          {(view === "mine" || view === "pameldt") && state.showPast && historyCounts && (
+            <Fieldset legend="År" size="small">
+              <ViewToggle label="År" value={String(historyYear)} controls={OVERVIEW_RESULTS_ID}
+                onChange={value => updateServerState({ year: Number(value) })}
+                options={historyYears.map(({ year, count }) => ({
+                  value: String(year),
+                  text: `${year} (${count})`,
+                  label: <>
+                    {year}
+                    <Badge count={count} maxCount={999} data-color="neutral" className="ml-2" />
+                    <span className="sr-only"> arrangementer</span>
+                  </>,
+                }))} />
+            </Fieldset>
           )}
         </VStack>
       </Box>

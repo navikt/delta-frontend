@@ -4,6 +4,13 @@ import { createContext, useContext, useEffect, useState, useTransition, type Dis
 
 const LOADING_MESSAGE = "Laster arrangementer …";
 
+type OverviewHistory = {
+  datasetKey: string;
+  search: string;
+  currentYear: number;
+  years: { year: number; count: number }[];
+};
+
 type OverviewTransitionValue = {
   pending: boolean;
   startTransition: ReturnType<typeof useTransition>[1];
@@ -12,6 +19,8 @@ type OverviewTransitionValue = {
   setAllCount: (count: number) => void;
   availableCategoryNames: string[] | null;
   setAvailableCategoryNames: Dispatch<SetStateAction<string[] | null>>;
+  history: OverviewHistory | null;
+  setHistory: Dispatch<SetStateAction<OverviewHistory | null>>;
   setResultsMessage: (message: string) => void;
 };
 
@@ -21,10 +30,12 @@ export function OverviewTransition({ children }: { children: React.ReactNode }) 
   const [pending, startTransition] = useTransition();
   const [allCount, setAllCount] = useState<number | null>(null);
   const [availableCategoryNames, setAvailableCategoryNames] = useState<string[] | null>(null);
+  const [history, setHistory] = useState<OverviewHistory | null>(null);
   const [resultsMessage, setResultsMessage] = useState("");
   // Results remount under a new Suspense key when filters change, so the live region lives here.
   return <TransitionContext.Provider value={{
-    pending, startTransition, allCount, setAllCount, availableCategoryNames, setAvailableCategoryNames, setResultsMessage,
+    pending, startTransition, allCount, setAllCount, availableCategoryNames, setAvailableCategoryNames,
+    history, setHistory, setResultsMessage,
   }}>
     <p role="status" className="sr-only">{pending ? LOADING_MESSAGE : resultsMessage}</p>
     {children}

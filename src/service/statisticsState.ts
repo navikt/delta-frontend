@@ -1,11 +1,6 @@
-import { createLoader, createParser, parseAsInteger } from "nuqs/server";
+import { createLoader } from "nuqs/server";
+import { parseAsYear } from "./yearState.ts";
 
-export const statisticsYearParser = createParser({
-  parse(value) {
-    const year = parseAsInteger.parse(value);
-    return year !== null && year >= 2000 && year <= 2100 ? year : null;
-  },
-  serialize: String,
-});
+export const statisticsYearParser = parseAsYear;
 
 export const loadStatisticsState = createLoader({ year: statisticsYearParser });

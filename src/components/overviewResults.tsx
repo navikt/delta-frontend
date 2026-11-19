@@ -3,10 +3,9 @@
 import { useEffect } from "react";
 import type { Category, FullDeltaEvent, MyWaitlistEvent } from "@/types/event";
 import { useQueryStates } from "nuqs";
-import { BodyShort, Link, VStack } from "@navikt/ds-react";
-import NextLink from "next/link";
+import { BodyShort, VStack } from "@navikt/ds-react";
 import { homeParsers, homeView } from "@/service/overviewState";
-import { filterActiveJoinedEvents, filterPastJoinedEvents, filterHomeCategories, homeDatasetKey } from "@/service/eventListQuery";
+import { filterActiveJoinedEvents, filterHomeCategories, getEventHistory, homeDatasetKey } from "@/service/eventListQuery";
 import { matchesEventSearch } from "@/service/eventSearch";
 import EventList, { EmptyEventList, EventDayGroups } from "./eventList";
 import EventResultsSkeleton from "./eventResultsSkeleton";
@@ -17,12 +16,12 @@ import { useOverviewPath } from "./useOverviewPath";
 import { useBrowserNow } from "./useBrowserNow";
 import { ResultsStatus, resultsStatusMessage, useOptionalOverviewTransition } from "./overviewTransition";
 
-function emptyMessage(view: string, search: string, showPast: boolean) {
+function emptyMessage(view: string, search: string, historyYear: number | null) {
   if (search.trim()) return `Fant ingen arrangementer som passer «${search.trim()}».`;
   switch (view) {
-    case "pameldt": return showPast ? "Du har ingen tidligere påmeldinger i år."
+    case "pameldt": return historyYear !== null ? `Du har ingen tidligere påmeldinger i ${historyYear}.`
       : "Du er ikke påmeldt noen kommende arrangementer.";
-    case "mine": return showPast ? "Du har ikke arrangert noen tidligere arrangementer."
+    case "mine": return historyYear !== null ? `Du har ikke arrangert noen tidligere arrangementer i ${historyYear}.`
       : "Du har ingen kommende arrangementer som arrangør.";
     case "category": return "Det er ingen kommende arrangementer i denne kategorien.";
     default: return "Det er ingen kommende arrangementer akkurat nå.";
@@ -42,11 +41,11 @@ export default function OverviewResults({
   const ready = (fixedCategory || datasetKey === homeDatasetKey(state, categories)) && now !== null;
   const showPast = (view === "mine" || view === "pameldt") && state.showPast;
 
-  const loaded = view === "pameldt"
-    ? (showPast ? filterPastJoinedEvents(events, now ?? 0) : filterActiveJoinedEvents(events, now ?? 0))
+  const loaded = view === "pameldt" && !showPast
+    ? filterActiveJoinedEvents(events, now ?? 0)
     : view === "alle" ? filterHomeCategories(events, state, categories)
     : events;
-  const visible = now === null ? [] : loaded
+  const searched = now === null ? [] : loaded
     .filter(item => matchesEventSearch(item, state.search))
     .filter(item => !shouldHideEventCard({
       tabname: fixedCategory ? undefined : state.tab,
@@ -55,6 +54,16 @@ export default function OverviewResults({
       showPast,
       showOnlyRegistered: view === "pameldt",
     }));
+  const history = showPast && now !== null ? getEventHistory(searched, now, state.year) : null;
+  const visible = history?.events ?? searched;
+  const setHistory = overview?.setHistory;
+  useEffect(() => {
+    if (!ready || !history) return;
+    setHistory?.(previous => previous?.datasetKey === datasetKey && previous.search === state.search
+      && previous.currentYear === history.currentYear && previous.years.length === history.years.length
+      && previous.years.every((item, index) => item.year === history.years[index].year && item.count === history.years[index].count)
+      ? previous : { datasetKey, search: state.search, currentYear: history.currentYear, years: history.years });
+  }, [ready, history, datasetKey, state.search, setHistory]);
 
   const setAllCount = overview?.setAllCount;
   const allCount = ready && view === "alle" ? visible.length : null;
@@ -73,17 +82,10 @@ export default function OverviewResults({
   return <div className="w-full">
     <ResultsStatus message={resultsStatusMessage(ready, visible.length)} />
     {ready && now !== null ? (
-      <VStack gap="space-24">
-        <EventList fullEvents={visible} now={now} descending={showPast}
-          showFagtorsdag={!fixedCategory}
-          userEmail={fixedCategory ? undefined : userEmail}
-          emptyMessage={emptyMessage(view, state.search, showPast)} />
-        {view === "pameldt" && showPast && (
-          <BodyShort>
-            <Link as={NextLink} href="/mimretid">Se påmeldinger fra tidligere år i Mimretid</Link>
-          </BodyShort>
-        )}
-      </VStack>
+      <EventList fullEvents={visible} now={now} descending={showPast}
+        showFagtorsdag={!fixedCategory}
+        userEmail={fixedCategory ? undefined : userEmail}
+        emptyMessage={emptyMessage(view, state.search, history?.year ?? null)} />
     ) : <EventResultsSkeleton announce={false} />}
   </div>;
 }

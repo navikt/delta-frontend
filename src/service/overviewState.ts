@@ -1,4 +1,5 @@
 import { createLoader, createParser, parseAsString, parseAsStringEnum } from "nuqs/server";
+import { parseAsYear } from "./yearState.ts";
 
 export const parseAsLegacyBoolean = createParser({
   parse: value => value === "1" ? true : value === "0" ? false : null,
@@ -29,6 +30,7 @@ export const homeParsers = {
   showPast: parseAsLegacyBoolean,
   onlyRegistered: parseAsLegacyBoolean,
   search: parseAsString.withDefault(""),
+  year: parseAsYear,
   time: parseAsStringEnum(["past", "future"]).withDefault("future"),
 };
 

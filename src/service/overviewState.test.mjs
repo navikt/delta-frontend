@@ -26,6 +26,22 @@ test("home tab resets are atomic and preserve unrelated parameters", () => {
     homeTabUpdate("alle", true)), "?search=hello&extra=ok");
 });
 
+test("history year deep links round-trip without losing legacy flags, search or unrelated parameters", () => {
+  const serialize = createSerializer(homeParsers);
+  const url = serialize("?onlyRegistered=1&showPast=1&search=hello&extra=keep", { year: 2025 });
+  assert.equal(url, "?onlyRegistered=1&showPast=1&search=hello&extra=keep&year=2025");
+  const state = loadHomeState(url);
+  assert.equal(state.year, 2025);
+  assert.equal(state.showPast, true);
+  assert.equal(state.onlyRegistered, true);
+  assert.equal(state.search, "hello");
+  assert.equal(serialize(url, homeTabUpdate("mine", true)),
+    "?showPast=1&search=hello&extra=keep&year=2025&tab=mine");
+  for (const query of ["", "?year=nope", "?year=1999", "?year=2101"]) {
+    assert.equal(loadHomeState(query).year, null);
+  }
+});
+
 test("Fagtorsdag combines with event types while type switches preserve it and custom categories", () => {
   assert.deepEqual(toggleHomeQuickFilter(["kompetanse"], "fagtorsdag"), ["fagtorsdag", "kompetanse"]);
   assert.deepEqual(toggleHomeQuickFilter(["fagtorsdag", "kompetanse", "universell utforming"], "sosialt"),

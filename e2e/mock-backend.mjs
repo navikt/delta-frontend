@@ -138,10 +138,16 @@ const faggrupper = [
 const routes = [
   [/^\/category$/, () => categories],
   [/^\/features$/, () => ({ roomBooking: true, teamsMeeting: true, sharedCalendar: true, peopleSearch: true, signupOptions: true })],
-  [/^\/event$/, (_match, params) => [
-    ...events(),
-    ...(params.get("onlyJoined") === "true" || params.size === 0 ? historicalEvents() : []),
-  ]],
+  [/^\/event$/, (_match, params) => {
+    if (params.get("onlyMine") === "true" && params.get("onlyPast") === "true") {
+      const history = historicalEvents();
+      return [...history.slice(0, 3), history.at(-1)].map(item => ({ ...item, hosts: [ME] }));
+    }
+    return [
+      ...events(),
+      ...(params.get("onlyJoined") === "true" || params.size === 0 ? historicalEvents() : []),
+    ];
+  }],
   [/^\/event\/([\w-]+)$/, ([, id]) => events().find((item) => item.event.id === id)],
   [
     /^\/user\/event\/([\w-]+)\/waitlist$/,

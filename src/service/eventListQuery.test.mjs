@@ -4,6 +4,7 @@ import { spawnSync } from "node:child_process";
 import {
   filterActiveJoinedEvents,
   filterPastJoinedEvents,
+  getEventHistory,
   getEventListQuery,
   getHomeEventQuery,
   filterHomeCategories,
@@ -74,6 +75,31 @@ test("joined history stays on the loaded dataset while host history navigates", 
   assert.equal(homeDatasetKey({ ...state, showPast: true }, []), homeDatasetKey(state, []));
   const hosted = { ...state, tab: "mine", onlyRegistered: false };
   assert.notEqual(homeDatasetKey({ ...hosted, showPast: true }, []), homeDatasetKey(hosted, []));
+  for (const history of [{ ...state, showPast: true }, { ...hosted, showPast: true }]) {
+    assert.equal(homeDatasetKey({ ...history, year: 2025 }, []), homeDatasetKey({ ...history, year: 2024 }, []));
+  }
+});
+
+test("history selects a year while counting every finished year, including older loaded history", () => {
+  const now = Date.parse("2026-10-12T10:00:00Z");
+  const events = [
+    { event: { startTime: "2026-10-12T09:00:00Z", endTime: "2026-10-12T10:00:00Z" } },
+    { event: { startTime: "2025-12-31T09:00:00Z", endTime: "2026-01-01T10:00:00Z" } },
+    { event: { startTime: "2025-06-01T09:00:00Z", endTime: "2025-06-01T10:00:00Z" } },
+    { event: { startTime: "2022-06-01T09:00:00Z", endTime: "2022-06-01T10:00:00Z" } },
+    { event: { startTime: "2026-10-12T09:00:00Z", endTime: "2026-10-12T11:00:00Z" } },
+  ];
+  const history = getEventHistory(events, now, 2025);
+  assert.deepEqual(history.events, events.slice(1, 3));
+  assert.deepEqual(history.years, [
+    { year: 2026, count: 1 }, { year: 2025, count: 2 },
+    { year: 2024, count: 0 }, { year: 2023, count: 0 }, { year: 2022, count: 1 },
+  ]);
+  assert.deepEqual(getEventHistory(events, now).events, [events[0]]);
+  assert.deepEqual(getEventHistory(events, now, 2021).events, []);
+  assert.deepEqual(getEventHistory([], now, 2025).years, [
+    { year: 2026, count: 0 }, { year: 2025, count: 0 }, { year: 2024, count: 0 }, { year: 2023, count: 0 },
+  ]);
 });
 
 test("home resolves known category names, ignores legacy time and uses mine history only for mine", () => {

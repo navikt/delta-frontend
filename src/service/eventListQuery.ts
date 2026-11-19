@@ -105,10 +105,32 @@ export function filterActiveJoinedEvents(
 export function filterPastJoinedEvents(
   events: FullDeltaEvent[],
   now = Date.now(),
+  year: number | null = null,
 ): FullDeltaEvent[] {
-  const year = new Date(now).getFullYear();
-  return events.filter(
-    ({ event }) => new Date(event.startTime).getFullYear() === year
-      && new Date(event.endTime).getTime() <= now,
-  );
+  return getEventHistory(events, now, year).events;
+}
+
+export function getEventHistory(
+  events: FullDeltaEvent[],
+  now: number,
+  year: number | null = null,
+) {
+  const currentYear = new Date(now).getFullYear();
+  const selectedYear = year ?? currentYear;
+  const past = events.filter(({ event }) => new Date(event.endTime).getTime() <= now);
+  const counts = new Map<number, number>();
+  for (const { event } of past) {
+    const eventYear = new Date(event.startTime).getFullYear();
+    if (Number.isFinite(eventYear)) counts.set(eventYear, (counts.get(eventYear) ?? 0) + 1);
+  }
+  const years = [...new Set([
+    ...Array.from({ length: Math.max(1, currentYear - 2023 + 1) }, (_, index) => currentYear - index),
+    ...counts.keys(),
+  ])].sort((a, b) => b - a).map(value => ({ year: value, count: counts.get(value) ?? 0 }));
+  return {
+    currentYear,
+    year: selectedYear,
+    years,
+    events: past.filter(({ event }) => new Date(event.startTime).getFullYear() === selectedYear),
+  };
 }

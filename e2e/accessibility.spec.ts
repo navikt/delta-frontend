@@ -9,6 +9,8 @@ const pages = [
   { name: "forside, påmeldt", path: "/?onlyRegistered=1" },
   { name: "forside, ventelister", path: "/?tab=ventelister" },
   { name: "forside, mine", path: "/?tab=mine" },
+  { name: "forside, tidligere påmeldt", path: "/?onlyRegistered=1&showPast=1" },
+  { name: "forside, tidligere arrangør", path: "/?tab=mine&showPast=1" },
   { name: "mimretid", path: `/mimretid?year=${new Date().getFullYear() - 1}` },
   { name: "statistikk", path: "/statistikk" },
   { name: "arrangement som arrangør", path: "/event/e-hosted" },
@@ -61,6 +63,7 @@ test("Påmeldt kan vise tidligere påmeldinger og beholder søk og URL-valg", as
   await gotoSettled(page, "/?onlyRegistered=1&search=Arrangement+jeg+er+påmeldt&extra=keep");
   const upcoming = page.getByRole("link", { name: "Arrangement jeg er påmeldt", exact: true });
   const history = page.getByRole("checkbox", { name: "Vis tidligere", exact: true });
+  const years = page.getByRole("group", { name: "År", exact: true });
   const mimretid = page.getByRole("link", { name: "Se påmeldinger fra tidligere år i Mimretid", exact: true });
   await expect(upcoming).toBeVisible();
   await expect(mimretid).toHaveCount(0);
@@ -68,20 +71,76 @@ test("Påmeldt kan vise tidligere påmeldinger og beholder søk og URL-valg", as
   await expect(page).toHaveURL(/showPast=1/);
   await expect(page.getByText("Fant ingen arrangementer som passer «Arrangement jeg er påmeldt».", { exact: true })).toBeVisible();
   await expect(upcoming).toHaveCount(0);
-  await expect(mimretid).toHaveAttribute("href", "/mimretid");
+  await expect(mimretid).toHaveCount(0);
+  await expect(years).toBeVisible();
   expect(new URL(page.url()).searchParams.get("onlyRegistered")).toBe("1");
   expect(new URL(page.url()).searchParams.get("extra")).toBe("keep");
   await expect(page.getByRole("searchbox")).toHaveValue("Arrangement jeg er påmeldt");
   await page.getByRole("searchbox").fill("");
-  await expect(page.getByText("Du har ingen tidligere påmeldinger i år.", { exact: true })).toBeVisible();
+  await expect(page.getByText(`Du har ingen tidligere påmeldinger i ${new Date().getFullYear()}.`, { exact: true })).toBeVisible();
   await page.reload();
   await expect(history).toBeChecked();
-  await expect(mimretid).toBeVisible();
+  await expect(years).toBeVisible();
   await expectNoViolations(page);
   await history.uncheck();
   await expect(upcoming).toBeVisible();
   await expect(mimretid).toHaveCount(0);
+  await expect(years).toHaveCount(0);
 });
+
+for (const mode of [
+  { name: "Påmeldt", query: "onlyRegistered=1", count: 12, filteredCount: 1 },
+  { name: "Jeg arrangerer", query: "tab=mine", count: 3, filteredCount: 0 },
+]) {
+  test(`${mode.name} viser år med antall og filtrerer historikken lokalt`, async ({ page }) => {
+    const year = new Date().getFullYear();
+    const errors: string[] = [];
+    page.on("pageerror", error => errors.push(error.message));
+    await gotoSettled(page, `/?${mode.query}&showPast=1&extra=keep`);
+    const years = page.getByRole("group", { name: "År", exact: true });
+    const select = years.getByRole("combobox", { name: "År", exact: true });
+    const mobile = await select.isVisible();
+    const expectCount = async (value: number, count: number) => {
+      if (mobile) {
+        await expect(select.getByRole("option", { name: `${value} (${count})`, exact: true })).toHaveCount(1);
+      } else {
+        await expect(years.getByRole("radio", { name: new RegExp(`^${value}\\s*${count}\\s+arrangementer$`) })).toBeVisible();
+      }
+    };
+    const chooseYear = async (value: number) => {
+      if (mobile) await select.selectOption(String(value));
+      else await years.getByRole("radio", { name: new RegExp(`^${value}`) }).click();
+      await expect(page).toHaveURL(url => url.searchParams.get("year") === String(value));
+    };
+    await expectCount(year, 0);
+    await expectCount(year - 1, mode.count);
+    await expectCount(year - 2, 1);
+    const requests: string[] = [];
+    page.on("request", request => {
+      if (new URL(request.url()).pathname === "/") requests.push(request.url());
+    });
+    await chooseYear(year - 1);
+    await expect(page.getByRole("link", { name: "Historisk arrangement 1", exact: true })).toBeVisible();
+    await expect(page.getByRole("link", { name: /^Historisk arrangement \d+$/ })).toHaveCount(mode.count);
+    await page.getByRole("searchbox").fill("11");
+    await expectCount(year - 1, mode.filteredCount);
+    await expectCount(year - 2, 0);
+    await expect(page.getByRole("link", { name: /^Historisk arrangement \d+$/ })).toHaveCount(mode.filteredCount);
+    await page.getByRole("searchbox").fill("");
+    await expectCount(year - 1, mode.count);
+    await chooseYear(year - 2);
+    await expect(page.getByRole("link", { name: "Privat historisk tittel", exact: true })).toBeVisible();
+    await expect(page.getByRole("link", { name: /^Historisk arrangement \d+$/ })).toHaveCount(0);
+    expect(new URL(page.url()).searchParams.get("extra")).toBe("keep");
+    expect(requests).toEqual([]);
+    expect(errors).toEqual([]);
+    await expectNoViolations(page);
+    await page.reload();
+    await expect(page.getByRole("link", { name: "Privat historisk tittel", exact: true })).toBeVisible();
+    await expectCount(year - 1, mode.count);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  });
+}
 
 test("Mimretid bytter år lokalt, nullstiller siden og støtter tilbakeknappen", async ({ page }) => {
   const year = new Date().getFullYear();

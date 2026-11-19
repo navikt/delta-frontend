@@ -2,26 +2,52 @@
 
 import { BodyShort, Box, Heading, Link, Pagination, Table, ToggleGroup } from "@navikt/ds-react";
 import NextLink from "next/link";
-import { useRouter } from "next/navigation";
+import { parseAsInteger, useQueryState } from "nuqs";
 import { useState } from "react";
-import type { UserWrappedStats } from "@/service/wrappedActions";
 
 const EMPTY_ROW_KEYS = Array.from({ length: 10 }, (_, index) => `empty-${index}`);
 
+type MimretidEvent = {
+  id: string;
+  title: string;
+  date: string;
+  isPublic: boolean;
+};
+
 type MimretidClientProps = {
-  stats: UserWrappedStats;
-  year: number;
+  events: MimretidEvent[];
+  currentYear: number;
   nowMs: number;
 };
 
-export default function MimretidClient({ stats, year, nowMs }: MimretidClientProps) {
+export default function MimretidClient({ events, currentYear, nowMs }: MimretidClientProps) {
+  const [queryYear, setYear] = useQueryState("year", parseAsInteger.withDefault(currentYear)
+    .withOptions({ shallow: true, history: "push", scroll: false }));
+  const year = queryYear >= 2000 && queryYear <= 2100 ? queryYear : currentYear;
+
+  return (
+    <div className="space-y-6">
+      <YearToggle selectedYear={year} currentYear={currentYear} onChange={value => void setYear(Number(value))} />
+      <MimretidEvents key={year} events={events} year={year} nowMs={nowMs} />
+    </div>
+  );
+}
+
+function MimretidEvents({ events: allEvents, year, nowMs }: {
+  events: MimretidEvent[];
+  year: number;
+  nowMs: number;
+}) {
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState<{ orderBy: string; direction: "ascending" | "descending" }>({
     orderBy: "date",
     direction: "ascending",
   });
   const rowsPerPage = 10;
-  const events = (stats.attendedEvents || []).filter((event) => new Date(event.date).getTime() <= nowMs);
+  const events = allEvents.filter((event) => {
+    const date = new Date(event.date);
+    return date.getFullYear() === year && date.getTime() <= nowMs;
+  });
   const count = events.length;
   const totalPages = Math.ceil(count / rowsPerPage);
 
@@ -42,8 +68,7 @@ export default function MimretidClient({ stats, year, nowMs }: MimretidClientPro
   };
 
   return (
-    <div className="space-y-6">
-      <YearToggle selectedYear={year} />
+    <>
       <Box background="neutral-soft" borderColor="neutral-subtle" borderWidth="1" borderRadius="8" paddingInline="space-16" paddingBlock="space-12">
         <BodyShort size="small" textColor="subtle">Totalt antall arrangementer</BodyShort>
         <Heading as="p" size="medium">{count}</Heading>
@@ -76,7 +101,7 @@ export default function MimretidClient({ stats, year, nowMs }: MimretidClientPro
                     <Table.DataCell className="whitespace-nowrap capitalize align-middle">{dateString}</Table.DataCell>
                     <Table.DataCell className="align-middle">
                       {event.isPublic ? (
-                        <Link as={NextLink} href={`/event/${event.id}`} className="font-ax-bold">
+                        <Link as={NextLink} href={`/event/${event.id}`} prefetch={false} className="font-ax-bold">
                           <span className="line-clamp-2">{event.title}</span>
                         </Link>
                       ) : (
@@ -103,13 +128,15 @@ export default function MimretidClient({ stats, year, nowMs }: MimretidClientPro
           )}
         </Box>
       )}
-    </div>
+    </>
   );
 }
 
-function YearToggle({ selectedYear }: { selectedYear: number }) {
-  const router = useRouter();
-  const currentYear = new Date().getFullYear();
+function YearToggle({ selectedYear, currentYear, onChange }: {
+  selectedYear: number;
+  currentYear: number;
+  onChange: (year: string) => void;
+}) {
   const years = Array.from({ length: Math.max(1, currentYear - 2023 + 1) }, (_, i) => currentYear - i);
 
   return (
@@ -117,7 +144,7 @@ function YearToggle({ selectedYear }: { selectedYear: number }) {
       label="År:"
       size="small"
       value={String(selectedYear)}
-      onChange={(year) => router.push(`/mimretid?year=${year}`)}
+      onChange={onChange}
     >
       {years.map((year) => (
         <ToggleGroup.Item key={year} value={String(year)} label={year} />

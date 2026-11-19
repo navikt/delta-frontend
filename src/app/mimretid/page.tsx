@@ -1,41 +1,29 @@
 import { checkToken } from "@/auth/token";
 import CardWithBackground from "@/components/cardWithBackground";
-import { getUserWrappedStats } from "@/service/wrappedActions";
-import { Metadata } from "next";
+import { getEvents } from "@/service/eventQueries";
+import type { Metadata } from "next";
 import MimretidClient from "./mimretidClient";
-import { BodyShort } from "@navikt/ds-react";
 
 export const metadata: Metadata = {
   title: "Mimretid - Delta Δ Nav",
   description: "Historiske arrangementer du har deltatt på.",
 };
 
-export default async function MimretidPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ year?: string }>;
-}) {
+export default async function MimretidPage() {
   await checkToken("/mimretid");
 
-  const params = await searchParams;
-  const currentYear = new Date().getFullYear();
-  const queryYear = params.year ? parseInt(params.year, 10) : currentYear;
-  const selectedYear = Number.isNaN(queryYear) || queryYear < 2000 || queryYear > 2100 ? currentYear : queryYear;
-  const nowMs = new Date().getTime();
-
-  const stats = await getUserWrappedStats(selectedYear);
-
-  if (!stats) {
-    return (
-      <CardWithBackground title="Mimretid" subtitle="Vi klarte ikke å hente dataene dine akkurat nå.">
-        <BodyShort>Prøv igjen senere.</BodyShort>
-      </CardWithBackground>
-    );
-  }
+  const events = await getEvents({ onlyJoined: true }, "/mimretid");
+  const nowMs = Date.now();
+  const summaries = events.map(({ event }) => ({
+    id: event.id,
+    title: event.public ? event.title : "Privat arrangement",
+    date: event.startTime,
+    isPublic: event.public,
+  }));
 
   return (
     <CardWithBackground title="Mimretid" subtitle="Historiske arrangementer du har deltatt på">
-      <MimretidClient stats={stats} year={selectedYear} nowMs={nowMs} />
+      <MimretidClient events={summaries} currentYear={new Date(nowMs).getFullYear()} nowMs={nowMs} />
     </CardWithBackground>
   );
 }

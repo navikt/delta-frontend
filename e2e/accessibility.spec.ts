@@ -9,6 +9,7 @@ const pages = [
   { name: "forside, påmeldt", path: "/?onlyRegistered=1" },
   { name: "forside, ventelister", path: "/?tab=ventelister" },
   { name: "forside, mine", path: "/?tab=mine" },
+  { name: "mimretid", path: `/mimretid?year=${new Date().getFullYear() - 1}` },
   { name: "arrangement som arrangør", path: "/event/e-hosted" },
   { name: "arrangement som deltaker", path: "/event/e-joined" },
   { name: "arrangement med venteliste", path: "/event/e-full" },
@@ -79,6 +80,34 @@ test("Påmeldt kan vise tidligere påmeldinger og beholder søk og URL-valg", as
   await history.uncheck();
   await expect(upcoming).toBeVisible();
   await expect(mimretid).toHaveCount(0);
+});
+
+test("Mimretid bytter år lokalt, nullstiller siden og støtter tilbakeknappen", async ({ page }) => {
+  const year = new Date().getFullYear();
+  const errors: string[] = [];
+  page.on("pageerror", error => errors.push(error.message));
+  await gotoSettled(page, `/mimretid?year=${year - 1}&extra=keep`);
+  const table = page.getByRole("table");
+  await expect(table.getByRole("link", { name: "Historisk arrangement 1", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "2", exact: true }).click();
+  await expect(table.getByRole("link", { name: "Historisk arrangement 11", exact: true })).toBeVisible();
+  const requests: string[] = [];
+  page.on("request", request => {
+    if (new URL(request.url()).pathname === "/mimretid") requests.push(request.url());
+  });
+  await page.getByRole("radio", { name: String(year - 2), exact: true }).click();
+  await expect(table.getByText("Privat arrangement", { exact: true })).toBeVisible();
+  await expect(table.getByRole("link")).toHaveCount(0);
+  await expect(page.getByText("Privat historisk tittel", { exact: true })).toHaveCount(0);
+  await expect(page).toHaveURL(url => url.searchParams.get("year") === String(year - 2));
+  expect(new URL(page.url()).searchParams.get("extra")).toBe("keep");
+  await page.goBack();
+  await expect(table.getByRole("link", { name: "Historisk arrangement 1", exact: true })).toBeVisible();
+  await expect(table.getByRole("link", { name: "Historisk arrangement 11", exact: true })).toHaveCount(0);
+  await page.getByRole("radio", { name: String(year), exact: true }).click();
+  await expect(page.getByText(`Ingen arrangementer funnet for ${year}.`, { exact: true })).toBeVisible();
+  expect(requests).toEqual([]);
+  expect(errors).toEqual([]);
 });
 
 test("arrangementskort skiller avsluttet, pågående og kommende uten å laste siden på nytt", async ({ page }) => {

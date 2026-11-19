@@ -96,6 +96,31 @@ const events = () => [
   ),
 ];
 
+const historicalEvents = () => {
+  const year = new Date().getFullYear();
+  return [
+    ...Array.from({ length: 12 }, (_, index) => fullEvent(
+      `e-history-${index + 1}`,
+      {
+        title: `Historisk arrangement ${index + 1}`,
+        startTime: `${year - 1}-06-${String(index + 1).padStart(2, "0")}T09:00:00`,
+        endTime: `${year - 1}-06-${String(index + 1).padStart(2, "0")}T11:00:00`,
+      },
+      { participants: [ME] },
+    )),
+    fullEvent(
+      "e-history-private",
+      {
+        title: "Privat historisk tittel",
+        public: false,
+        startTime: `${year - 2}-06-01T09:00:00`,
+        endTime: `${year - 2}-06-01T11:00:00`,
+      },
+      { participants: [ME] },
+    ),
+  ];
+};
+
 const faggrupper = [
   {
     id: "f1",
@@ -113,7 +138,10 @@ const faggrupper = [
 const routes = [
   [/^\/category$/, () => categories],
   [/^\/features$/, () => ({ roomBooking: true, teamsMeeting: true, sharedCalendar: true, peopleSearch: true, signupOptions: true })],
-  [/^\/event$/, () => events()],
+  [/^\/event$/, (_match, params) => [
+    ...events(),
+    ...(params.get("onlyJoined") === "true" ? historicalEvents() : []),
+  ]],
   [/^\/event\/([\w-]+)$/, ([, id]) => events().find((item) => item.event.id === id)],
   [
     /^\/user\/event\/([\w-]+)\/waitlist$/,
@@ -127,9 +155,9 @@ const routes = [
 ];
 
 createServer((request, response) => {
-  const { pathname } = new URL(request.url ?? "/", `http://localhost:${PORT}`);
+  const { pathname, searchParams } = new URL(request.url ?? "/", `http://localhost:${PORT}`);
   const route = request.method === "GET" && routes.find(([pattern]) => pattern.test(pathname));
-  const body = route ? route[1](pathname.match(route[0])) : undefined;
+  const body = route ? route[1](pathname.match(route[0]), searchParams) : undefined;
   if (body === undefined) {
     console.warn(`[mock-backend] 404 ${request.method} ${pathname}`);
     response.writeHead(404, { "Content-Type": "application/json" }).end(JSON.stringify({ title: "Not found" }));

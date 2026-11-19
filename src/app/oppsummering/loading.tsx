@@ -1,4 +1,4 @@
-import SimulatedProgressBar from "@/components/SimulatedProgressBar";
+import { Loader } from "@navikt/ds-react";
 
 export default function WrappedLoading() {
     return (
@@ -11,11 +11,11 @@ export default function WrappedLoading() {
                     Klargjør din oppsummering...
                 </h1>
                 <p className="text-xl text-white/90 mb-8">
-                    Dette tar ca. 10 sekunder.
+                    Henter arrangementene dine.
                 </p>
 
                 <div className="bg-ax-bg-raised text-ax-text-neutral rounded-xl p-6 shadow-lg">
-                    <SimulatedProgressBar seconds={15} label="Laster statistikk" />
+                    <Loader size="2xlarge" title="Laster oppsummering" />
                 </div>
             </div>
         </div>

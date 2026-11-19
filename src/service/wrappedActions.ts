@@ -2,14 +2,12 @@ import "server-only";
 
 import { getEvents } from "./eventQueries";
 import { getUser } from "@/auth/token";
-import { FullDeltaEvent } from "@/types/event";
 import { unstable_rethrow } from "next/navigation";
 
 export type UserWrappedStats = {
     userName: string;
     userFirstName: string;
     totalEventsAttended: number;
-    percentileRank: number;
     favoriteCategory: { name: string; count: number; emoji: string } | null;
     attendanceBreakdown: { fysisk: number; digitalt: number; hybrid: number };
     firstEventOfYear: { title: string; date: string; id: string } | null;
@@ -64,7 +62,6 @@ export async function getUserWrappedStats(year?: number): Promise<UserWrappedSta
                 userName: `${user.firstName} ${user.lastName}`,
                 userFirstName: user.firstName,
                 totalEventsAttended: 0,
-                percentileRank: 100,
                 favoriteCategory: null,
                 attendanceBreakdown: { fysisk: 0, digitalt: 0, hybrid: 0 },
                 firstEventOfYear: null,
@@ -168,29 +165,6 @@ export async function getUserWrappedStats(year?: number): Promise<UserWrappedSta
             id: biggestEventData.event.public ? biggestEventData.event.id : '',
         } : null;
 
-        // Calculate percentile (get all events to compare)
-        const allEventsEver = await getEvents({});
-        const eventsThisYearAll = allEventsEver.filter(event => {
-            const eventDate = new Date(event.event.startTime);
-            return eventDate.getFullYear() === selectedYear;
-        });
-
-        // Count participation per person
-        const participationCount = new Map<string, number>();
-        eventsThisYearAll.forEach(event => {
-            event.participants.forEach(p => {
-                participationCount.set(p.email, (participationCount.get(p.email) || 0) + 1);
-            });
-        });
-
-        // Calculate percentile
-        const userCount = userEventsThisYear.length;
-        const allCounts = Array.from(participationCount.values());
-        const peopleWithLessEvents = allCounts.filter(c => c < userCount).length;
-        const percentileRank = allCounts.length > 0
-            ? Math.round((peopleWithLessEvents / allCounts.length) * 100)
-            : 50;
-
         // Estimate total hours (assume average 2 hours per event)
         const totalHoursSpent = userEventsThisYear.reduce((total, event) => {
             const start = new Date(event.event.startTime);
@@ -205,7 +179,6 @@ export async function getUserWrappedStats(year?: number): Promise<UserWrappedSta
             eventsHosted,
             favoriteCategory: favoriteCategory?.name || null,
             attendanceBreakdown: attendanceCount,
-            percentileRank,
             uniquePeople: uniquePeople.size,
             monthlyActivity,
             biggestEvent,
@@ -217,7 +190,6 @@ export async function getUserWrappedStats(year?: number): Promise<UserWrappedSta
             userName: `${user.firstName} ${user.lastName}`,
             userFirstName: user.firstName,
             totalEventsAttended: userEventsThisYear.length,
-            percentileRank,
             favoriteCategory,
             attendanceBreakdown: attendanceCount,
             firstEventOfYear,
@@ -257,7 +229,6 @@ function generateFunFacts(data: {
     eventsHosted: number;
     favoriteCategory: string | null;
     attendanceBreakdown: { fysisk: number; digitalt: number; hybrid: number };
-    percentileRank: number;
     uniquePeople: number;
     monthlyActivity: number[];
     biggestEvent: { title: string; participants: number } | null;
@@ -265,13 +236,6 @@ function generateFunFacts(data: {
     firstEventOfYear: { title: string; date: string } | null;
 }): string[] {
     const facts: string[] = [];
-
-    // Percentile fact - REMOVED per user request
-    // if (data.percentileRank >= 90) {
-    //     facts.push(`Du er blant topp ${100 - data.percentileRank}% av alle deltakere! 🏆`);
-    // } else if (data.percentileRank >= 75) {
-    //     facts.push(`Du er mer aktiv enn ${data.percentileRank}% av brukerne! 🌟`);
-    // }
 
     // Hosting fact
     if (data.eventsHosted > 0) {

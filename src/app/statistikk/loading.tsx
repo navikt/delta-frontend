@@ -1,14 +1,12 @@
 import CardWithBackground from "@/components/cardWithBackground";
-import SimulatedProgressBar from "@/components/SimulatedProgressBar";
+import { Loader } from "@navikt/ds-react";
 
 export default function Loading() {
   return (
     <CardWithBackground title="Delta">
       <div className="flex flex-col items-center justify-center py-20 space-y-4 w-full max-w-xl mx-auto">
-        <div className="w-3/4">
-          <SimulatedProgressBar seconds={15} label="Laster statistikk" />
-        </div>
-        <p className="text-lg">Laster statistikk, dette tar ca. 10 sekunder...</p>
+        <Loader size="2xlarge" title="Laster statistikk" />
+        <p className="text-lg">Henter statistikk.</p>
       </div>
     </CardWithBackground>
   );

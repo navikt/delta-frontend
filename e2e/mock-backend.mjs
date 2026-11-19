@@ -140,7 +140,7 @@ const routes = [
   [/^\/features$/, () => ({ roomBooking: true, teamsMeeting: true, sharedCalendar: true, peopleSearch: true, signupOptions: true })],
   [/^\/event$/, (_match, params) => [
     ...events(),
-    ...(params.get("onlyJoined") === "true" ? historicalEvents() : []),
+    ...(params.get("onlyJoined") === "true" || params.size === 0 ? historicalEvents() : []),
   ]],
   [/^\/event\/([\w-]+)$/, ([, id]) => events().find((item) => item.event.id === id)],
   [

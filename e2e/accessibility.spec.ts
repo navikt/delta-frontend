@@ -10,6 +10,7 @@ const pages = [
   { name: "forside, ventelister", path: "/?tab=ventelister" },
   { name: "forside, mine", path: "/?tab=mine" },
   { name: "mimretid", path: `/mimretid?year=${new Date().getFullYear() - 1}` },
+  { name: "statistikk", path: "/statistikk" },
   { name: "arrangement som arrangør", path: "/event/e-hosted" },
   { name: "arrangement som deltaker", path: "/event/e-joined" },
   { name: "arrangement med venteliste", path: "/event/e-full" },
@@ -108,6 +109,48 @@ test("Mimretid bytter år lokalt, nullstiller siden og støtter tilbakeknappen",
   await expect(page.getByText(`Ingen arrangementer funnet for ${year}.`, { exact: true })).toBeVisible();
   expect(requests).toEqual([]);
   expect(errors).toEqual([]);
+});
+
+test("Statistikk bytter år lokalt med riktige detaljer og støtter tilbakeknappen", async ({ page }) => {
+  const year = new Date().getFullYear();
+  const errors: string[] = [];
+  page.on("pageerror", error => errors.push(error.message));
+  await gotoSettled(page, `/statistikk?year=${year - 1}&extra=keep`);
+  const selector = page.getByRole("combobox", { name: "Velg år" });
+  await expect(page.getByRole("heading", { name: `Statistikk ${year - 1}`, exact: true })).toBeVisible();
+  const requests: string[] = [];
+  page.on("request", request => {
+    if (new URL(request.url()).pathname === "/statistikk") requests.push(request.url());
+  });
+  await selector.selectOption(String(year));
+  await expect(page.getByRole("heading", { name: `Statistikk ${year}`, exact: true })).toBeVisible();
+  await expect(page).toHaveURL(url => !url.searchParams.has("year"));
+  await expect(page).toHaveTitle(`Statistikk ${year} - Delta Δ Nav`);
+  await page.getByRole("button", { name: "Klikk for detaljer →", exact: true }).click();
+  const dialog = page.getByRole("dialog");
+  await expect(dialog.getByRole("link", { name: "Arrangement jeg arrangerer", exact: true })).toBeVisible();
+  await page.keyboard.press("Escape");
+  await page.goBack();
+  await expect(selector).toHaveValue(String(year - 1));
+  await expect(dialog).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: `Statistikk ${year - 1}`, exact: true })).toBeVisible();
+  expect(new URL(page.url()).searchParams.get("extra")).toBe("keep");
+  await page.getByRole("button", { name: "Klikk for detaljer →", exact: true }).click();
+  await expect(dialog.getByRole("link", { name: "Historisk arrangement 12", exact: true })).toBeVisible();
+  await expect(dialog.getByRole("link", { name: "Arrangement jeg arrangerer", exact: true })).toHaveCount(0);
+  expect(requests).toEqual([]);
+  expect(errors).toEqual([]);
+  await page.keyboard.press("Escape");
+  await page.reload();
+  await expect(selector).toHaveValue(String(year - 1));
+});
+
+test("Statistikk støtter tomme år uten ugyldige prosentverdier", async ({ page }) => {
+  await gotoSettled(page, "/statistikk?year=2023");
+  await expect(page.getByRole("heading", { name: "Statistikk 2023", exact: true })).toBeVisible();
+  await expect(page.getByRole("combobox", { name: "Velg år" })).toHaveValue("2023");
+  await expect(page.getByText(/NaN|Infinity/)).toHaveCount(0);
+  await expect(page.getByText("arrangementer (0%)", { exact: true })).toHaveCount(2);
 });
 
 test("arrangementskort skiller avsluttet, pågående og kommende uten å laste siden på nytt", async ({ page }) => {

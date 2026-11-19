@@ -133,7 +133,7 @@ test("arrangementskort skiller avsluttet, pågående og kommende uten å laste s
   await expect(ongoing.getByText("Pågår nå", { exact: true })).toBeVisible();
   await expect(upcoming.getByText(/Avsluttet|Pågår nå/)).toHaveCount(0);
   const upcomingBackground = await upcoming.evaluate((element) => getComputedStyle(element).backgroundColor);
-  expect(await hosted.evaluate((element) => getComputedStyle(element).backgroundColor)).not.toBe(upcomingBackground);
+  await expect(hosted).toHaveCSS("background-color", upcomingBackground);
   await expect(hosted.getByRole("link")).toBeEnabled();
   await expectNoViolations(page);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);

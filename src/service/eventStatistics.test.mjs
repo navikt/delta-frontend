@@ -1,8 +1,9 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import { registerHooks } from "node:module";
 import { test } from "node:test";
 import { createSerializer } from "nuqs/server";
-import { calculateEventStatistics } from "./eventStatistics.ts";
+import { calculateEventStatistics, calculateEventStatisticsByYear } from "./eventStatistics.ts";
 import { loadStatisticsState, statisticsYearParser } from "./statisticsState.ts";
 
 const user = { firstName: "Test", lastName: "Bruker", email: "fixture@localhost" };
@@ -27,8 +28,9 @@ const events = [
 
 test("yearly summaries preserve cross-year organiser history, aggregates and private titles", () => {
   const now = new Date("2026-07-01T12:00:00Z");
-  const previous = calculateEventStatistics(events, 2025, now);
-  const current = calculateEventStatistics(events, 2026, now);
+  const summaries = calculateEventStatisticsByYear(events, [2024, 2025, 2026], now);
+  const previous = summaries[2025];
+  const current = summaries[2026];
   assert.equal(previous.totalEvents, 4);
   assert.equal(previous.totalEventsThisYear, 1);
   assert.equal(previous.newOrganizersCount, 0);
@@ -48,11 +50,74 @@ test("yearly summaries preserve cross-year organiser history, aggregates and pri
     [...item.participants, ...item.hosts].map(person => person.email))]) {
     assert.equal(serialized.includes(hidden), false);
   }
-  const empty = calculateEventStatistics(events, 2024, now);
+  const empty = summaries[2024];
   assert.equal(empty.totalEventsThisYear, 0);
   assert.equal(empty.totalParticipants, 0);
   assert.equal(empty.newOrganizersCount, 0);
   assert.deepEqual(empty.allEventsThisYear, []);
+});
+
+test("batch summaries preserve category membership, duplicate categories and unsorted host history", () => {
+  const categorized = event("categories", 2026, [participant, other], [newHost], false);
+  categorized.categories = [
+    { id: 1, name: " Kompetanse " },
+    { id: 2, name: " FYSISK " },
+    { id: 3, name: "fysisk" },
+    { id: 4, name: "Fagtorsdag" },
+  ];
+  const dataset = [
+    categorized,
+    event("future", 2027, [], [newHost, returningHost]),
+    event("earlier", 2023, [], [returningHost]),
+    event("invalid-date", "invalid", [participant], [newHost]),
+  ];
+  const now = new Date("2026-07-01T12:00:00Z");
+  const summaries = calculateEventStatisticsByYear(dataset, [2027, 2026, 2024], now);
+  const stats = summaries[2026];
+  assert.equal(stats.totalEvents, 4);
+  assert.equal(stats.totalEventsThisYear, 1);
+  assert.equal(stats.newOrganizersCount, 1);
+  assert.equal(summaries[2027].newOrganizersCount, 0);
+  assert.equal(summaries[2024].totalEventsThisYear, 0);
+  assert.deepEqual(stats.attendanceTypeStats.map(({ type, count, totalParticipants, uniqueParticipants }) =>
+    ({ type, count, totalParticipants, uniqueParticipants })), [
+    { type: "Fysisk", count: 2, totalParticipants: 4, uniqueParticipants: 2 },
+    { type: "Digitalt", count: 0, totalParticipants: 0, uniqueParticipants: 0 },
+    { type: "Hybrid", count: 0, totalParticipants: 0, uniqueParticipants: 0 },
+  ]);
+  assert.deepEqual(stats.attendanceTypeStats[0].events, [
+    stats.allEventsThisYear[0], stats.allEventsThisYear[0],
+  ]);
+  assert.deepEqual(stats.arrangementTypeStats[0], {
+    type: "Fagtorsdag", count: 1, totalParticipants: 2, uniqueParticipants: 2,
+    events: [{ id: "categories", title: "Privat arrangement", startTime: "2026-06-01T10:00:00",
+      participants: 2, isPublic: false }],
+  });
+  for (const year of [2024, 2026, 2027]) {
+    assert.deepEqual(summaries[year], calculateEventStatistics(dataset, year, now));
+  }
+});
+
+test("production RSC payload sends shared event details once across category views", () => {
+  const fixture = event("wire-fixture", 2026, [participant], [newHost]);
+  fixture.categories = [
+    { id: 1, name: "kompetanse" },
+    { id: 2, name: "fysisk" },
+    { id: 3, name: "fagtorsdag" },
+  ];
+  const output = execFileSync(process.execPath, [
+    "--conditions=react-server", "--input-type=module", "-e", `
+      import { createRequire } from "node:module";
+      import { calculateEventStatisticsByYear } from ${JSON.stringify(new URL("./eventStatistics.ts", import.meta.url).href)};
+      const require = createRequire(${JSON.stringify(import.meta.url)});
+      const { renderToReadableStream } = require("next/dist/compiled/react-server-dom-webpack/server.node");
+      const statsByYear = calculateEventStatisticsByYear(${JSON.stringify([fixture])}, [2026]);
+      const stream = await renderToReadableStream({ statsByYear }, {});
+      for await (const chunk of stream) process.stdout.write(chunk);
+    `,
+  ], { encoding: "utf8", env: { ...process.env, NODE_ENV: "production" }, stdio: ["pipe", "pipe", "pipe"] });
+  assert.equal(output.match(/"id":"wire-fixture"/g)?.length, 2,
+    "only the shared event details and the distinct most-popular-event summary should be serialized");
 });
 
 test("statistics loads one dataset for all years and Oppsummering reads only joined events", async (t) => {

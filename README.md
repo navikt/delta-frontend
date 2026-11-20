@@ -49,6 +49,11 @@ Biome formaterer ikke koden og erstatter ikke alle reglene i `eslint-config-next
 hentes først når «Vis tidligere» aktiveres, eller når URL-en har `showPast=1`.
 Årvalg og søk filtrerer den hentede historikken lokalt.
 
+`/statistikk` henter hele den tilgjengelige arrangementshistorikken én gang per
+sidelasting. Historikken grupperes etter år, og arrangørenes første år beregnes
+én gang før årsoversiktene lages. Kategori-, oppmøte- og arrangementstypeoversikter
+gjenbruker de samme arrangementsdetaljene. Årvalg skjer lokalt uten nye spørringer.
+
 ### Accessibility tests
 
 `npm run test:a11y` runs axe (WCAG 2.2 AA) with Playwright against `next dev` and a mock backend

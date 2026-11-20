@@ -325,6 +325,49 @@ test("signup summaries group each count with its option and separate capacity ba
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
 
+for (const state of [
+  { name: "uten avkryssing", checked: false, public: true },
+  { name: "som kladd / privat", checked: true, public: false },
+  { name: "etter å fjerne avkryssingen", checked: false, public: true, toggle: true },
+]) {
+  test(`nytt arrangement publiseres riktig ${state.name}`, async ({ page }) => {
+    await gotoSettled(page, "/event/new");
+    const privateEvent = page.getByRole("checkbox", { name: "Kladd / privat arrangement", exact: true });
+    await expect(privateEvent).not.toBeChecked();
+    await expect(privateEvent).toHaveAccessibleDescription(
+      "Når dette er valgt, vises ikke arrangementet på forsiden til Delta, men kan deles via en direkte lenke.",
+    );
+    if (state.checked || state.toggle) await privateEvent.check();
+    if (state.toggle) await privateEvent.uncheck();
+
+    await page.getByRole("textbox", { name: "Tittel" }).fill("Test av synlighet");
+    const date = new Date();
+    date.setDate(date.getDate() + 7);
+    const dateText = `${String(date.getDate()).padStart(2, "0")}.${String(date.getMonth() + 1).padStart(2, "0")}.${date.getFullYear()}`;
+    await page.locator("#startDate").fill(dateText);
+    await page.locator("#startDate").press("Tab");
+    await page.locator("#endDate").fill(dateText);
+    await page.locator("#endDate").press("Tab");
+    await page.getByLabel("Starttidspunkt").fill("10:00");
+    await page.getByLabel("Sluttidspunkt").fill("11:00");
+    await page.getByRole("radio", { name: "Digitalt", exact: true }).check();
+    await page.getByRole("radio", { name: "Zoom", exact: true }).check();
+    await page.getByRole("textbox", { name: "Beskrivelse", exact: true }).fill("Test av offentlig og privat arrangement.");
+
+    await page.route("**/event/new", async route => {
+      if (route.request().method() === "POST") await route.abort();
+      else await route.continue();
+    });
+    const submission = page.waitForRequest(request =>
+      request.method() === "POST" && !!request.headers()["next-action"],
+    );
+    await page.getByRole("button", { name: "Opprett", exact: true }).click();
+    const request = await submission;
+    const [formValues] = JSON.parse(request.postData() ?? "null");
+    expect(formValues.public).toBe(state.public);
+  });
+}
+
 test("påmeldingsalternativer i skjemaet har ingen axe-brudd", async ({ page }) => {
   await gotoSettled(page, "/event/new");
   await page.getByRole("checkbox", { name: "La deltakerne velge hvordan de deltar" }).check();

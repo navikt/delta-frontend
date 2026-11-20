@@ -25,7 +25,7 @@ import {
   updateEvent,
 } from "@/service/eventActions";
 import { z } from "zod";
-import { useForm, useWatch } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import EventDatepicker from "../app/event/new/eventDatepicker";
 import {
@@ -859,9 +859,20 @@ function InternalCreateEventForm({
           }
         </div>
       </div>
-      <Checkbox {...register("public")}>
-        Publiser arrangementet på forsiden til Delta
-      </Checkbox>
+      <Controller
+        name="public"
+        control={control}
+        render={({ field: { value, onChange, ...field } }) => (
+          <Checkbox
+            {...field}
+            checked={!value}
+            onChange={(event) => onChange(!event.target.checked)}
+            description="Når dette er valgt, vises ikke arrangementet på forsiden til Delta, men kan deles via en direkte lenke."
+          >
+            Kladd / privat arrangement
+          </Checkbox>
+        )}
+      />
       {canUseSignupOptions && (
         <div className="flex flex-col gap-4 max-w-2xl">
           <Checkbox

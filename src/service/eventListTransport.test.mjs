@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { fetchEventList, normalizeEventListQuery, ApiError } from "./eventListTransport.ts";
+import { getHomeEventQuery } from "./eventListQuery.ts";
 
 test("event queries distinguish an empty success from backend and network failures", async () => {
   const originalFetch = globalThis.fetch;
@@ -21,6 +22,29 @@ test("event queries distinguish an empty success from backend and network failur
   } finally {
     globalThis.fetch = originalFetch;
     console.error = originalError;
+  }
+});
+
+test("home joined requests defer the unrestricted history query until Vis tidligere is enabled", async () => {
+  const originalFetch = globalThis.fetch;
+  const requests = [];
+  try {
+    globalThis.fetch = async (url, options) => {
+      requests.push(url);
+      assert.equal(options.cache, "no-store");
+      assert.equal(options.headers.Authorization, "Bearer fixture-token");
+      return Response.json([]);
+    };
+    const state = { tab: "mine", categories: [], onlyRegistered: true, showPast: false };
+    await fetchEventList("http://fixture", normalizeEventListQuery(getHomeEventQuery(state, [])), "fixture-token");
+    assert.deepEqual(requests, ["http://fixture/event?onlyFuture=true&onlyJoined=true"]);
+    await fetchEventList("http://fixture", normalizeEventListQuery(getHomeEventQuery({ ...state, showPast: true }, [])), "fixture-token");
+    assert.deepEqual(requests, [
+      "http://fixture/event?onlyFuture=true&onlyJoined=true",
+      "http://fixture/event?onlyJoined=true",
+    ]);
+  } finally {
+    globalThis.fetch = originalFetch;
   }
 });
 

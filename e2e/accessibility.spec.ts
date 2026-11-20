@@ -67,7 +67,12 @@ test("Påmeldt kan vise tidligere påmeldinger og beholder søk og URL-valg", as
   const mimretid = page.getByRole("link", { name: "Se påmeldinger fra tidligere år i Mimretid", exact: true });
   await expect(upcoming).toBeVisible();
   await expect(mimretid).toHaveCount(0);
+  const historyNavigation = page.waitForRequest(request => {
+    const url = new URL(request.url());
+    return url.pathname === "/" && url.searchParams.get("showPast") === "1";
+  });
   await history.check();
+  await historyNavigation;
   await expect(page).toHaveURL(/showPast=1/);
   await expect(page.getByText("Fant ingen arrangementer som passer «Arrangement jeg er påmeldt».", { exact: true })).toBeVisible();
   await expect(upcoming).toHaveCount(0);

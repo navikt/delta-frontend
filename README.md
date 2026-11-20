@@ -45,6 +45,10 @@ hook-avhengigheter og array-indekser som React-nøkler gir advarsler.
 Biome formaterer ikke koden og erstatter ikke alle reglene i `eslint-config-next`.
 `npm run build` bygger appen og kontrollerer TypeScript-typene.
 
+«Påmeldt» henter kommende arrangementer ved sidelasting. Hele påmeldingshistorikken
+hentes først når «Vis tidligere» aktiveres, eller når URL-en har `showPast=1`.
+Årvalg og søk filtrerer den hentede historikken lokalt.
+
 ### Accessibility tests
 
 `npm run test:a11y` runs axe (WCAG 2.2 AA) with Playwright against `next dev` and a mock backend

@@ -70,13 +70,21 @@ test("joined history includes only finished events starting in the current year"
   assert.deepEqual(filterActiveJoinedEvents(events, now), events.slice(2, 4));
 });
 
-test("joined history stays on the loaded dataset while host history navigates", () => {
+test("joined and host history navigate, while history years stay on the loaded dataset", () => {
   const state = { tab: "alle", categories: [], showPast: false, onlyRegistered: true };
-  assert.equal(homeDatasetKey({ ...state, showPast: true }, []), homeDatasetKey(state, []));
+  assert.notEqual(homeDatasetKey({ ...state, showPast: true }, []), homeDatasetKey(state, []));
   const hosted = { ...state, tab: "mine", onlyRegistered: false };
   assert.notEqual(homeDatasetKey({ ...hosted, showPast: true }, []), homeDatasetKey(hosted, []));
   for (const history of [{ ...state, showPast: true }, { ...hosted, showPast: true }]) {
     assert.equal(homeDatasetKey({ ...history, year: 2025 }, []), homeDatasetKey({ ...history, year: 2024 }, []));
+  }
+});
+
+test("home loads upcoming joined events until history is explicitly requested, regardless of legacy tab", () => {
+  const state = { tab: "alle", categories: ["sosialt"], showPast: false, onlyRegistered: true };
+  for (const tab of ["alle", "mine", "ventelister"]) {
+    assert.deepEqual(getHomeEventQuery({ ...state, tab }, []), { onlyJoined: true, onlyFuture: true });
+    assert.deepEqual(getHomeEventQuery({ ...state, tab, showPast: true }, []), { onlyJoined: true });
   }
 });
 

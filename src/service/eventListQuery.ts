@@ -50,6 +50,9 @@ export function getHomeEventQuery(
   state: { tab: string; categories: string[]; showPast: boolean; onlyRegistered: boolean },
   _catalog: Category[],
 ) {
+  if (state.onlyRegistered) {
+    return state.showPast ? { onlyJoined: true } : { onlyJoined: true, onlyFuture: true };
+  }
   return getEventListQuery({
     categories: [],
     onlyFuture: state.tab === "alle" || !state.showPast,

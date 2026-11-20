@@ -19,12 +19,12 @@ const QUICK_FILTERS = [
 ];
 const QUICK_FILTER_NAMES = QUICK_FILTERS.map(filter => filter.name);
 
-export default function EventFilters({ categories }: { categories: Category[] }) {
+export default function EventFilters({ categories, categoryScope }: { categories: Category[]; categoryScope?: Category }) {
   const [state, setState] = useQueryStates(homeParsers, { history: "replace", scroll: false });
   const { pending, startTransition, allCount, availableCategoryNames, history } = useOverviewTransition();
   const view = homeView(state);
   const searchRef = useRef<HTMLDivElement>(null);
-  const historyCounts = history?.datasetKey === homeDatasetKey(state, categories) && history.search === state.search
+  const historyCounts = history?.datasetKey === homeDatasetKey(state, categories, categoryScope) && history.search === state.search
     ? history : null;
   const historyYear = state.year ?? historyCounts?.currentYear;
   const historyYears = historyCounts ? [...historyCounts.years] : [];
@@ -34,16 +34,16 @@ export default function EventFilters({ categories }: { categories: Category[] })
   }
 
   const selectedCategories = categories.filter(category =>
-    state.categories.includes(category.name) && !QUICK_FILTER_NAMES.includes(category.name));
+    category.id !== categoryScope?.id && state.categories.includes(category.name) && !QUICK_FILTER_NAMES.includes(category.name));
   const visibleOptions = availableCategoryNames ?? [];
   const categorySuggestions = state.search.trim() ? visibleOptions.filter(name =>
-    !QUICK_FILTER_NAMES.includes(name) && !state.categories.includes(name) &&
+    name !== categoryScope?.name && !QUICK_FILTER_NAMES.includes(name) && !state.categories.includes(name) &&
     name.toLocaleLowerCase("nb-NO").includes(state.search.trim().toLocaleLowerCase("nb-NO"))) : [];
   const visibleQuickFilters = QUICK_FILTERS.filter(filter =>
-    visibleOptions.includes(filter.name) || state.categories.includes(filter.name));
+    filter.name !== categoryScope?.name && (visibleOptions.includes(filter.name) || state.categories.includes(filter.name)));
   const updateServerState = (updates: Partial<typeof state>) => {
     const next = { ...state, ...updates };
-    const changesDataset = homeDatasetKey(state, categories) !== homeDatasetKey(next, categories);
+    const changesDataset = homeDatasetKey(state, categories, categoryScope) !== homeDatasetKey(next, categories, categoryScope);
     void setState(updates, { shallow: !changesDataset, ...(changesDataset ? { startTransition } : {}) });
   };
   const toggleQuickFilter = (name: string) => updateServerState({
@@ -78,11 +78,11 @@ export default function EventFilters({ categories }: { categories: Category[] })
         <VStack gap="space-16">
           <HGrid gap="space-24" align="start" columns={{
             xs: "minmax(0, 1fr)",
-            lg: view === "alle" ? "minmax(16rem, 24rem) minmax(0, 1fr)" : "minmax(0, 24rem)",
+            lg: view === "alle" && !categoryScope ? "minmax(16rem, 24rem) minmax(0, 1fr)" : "minmax(0, 24rem)",
           }}>
             <VStack gap="space-8">
               <Search ref={searchRef}
-                label={view === "alle" ? "Søk etter tittel, sted, arrangør eller kategorier" : "Søk etter tittel, sted eller arrangør"}
+                label={view === "alle" && !categoryScope ? "Søk etter tittel, sted, arrangør eller kategorier" : "Søk etter tittel, sted eller arrangør"}
                 hideLabel={false} variant="simple" size="small" value={state.search}
                 onChange={search => void setState({ search }, { shallow: true })}
                 onClear={() => void setState({ search: "" }, { shallow: true })} />
@@ -109,7 +109,7 @@ export default function EventFilters({ categories }: { categories: Category[] })
                 </VStack>
               )}
             </VStack>
-            {view === "alle" && (
+            {view === "alle" && !categoryScope && (
               <Fieldset legend="Type arrangement" size="small">
                 <HStack gap="space-8" align="center" wrap>
                   {visibleQuickFilters.length > 0 && <Chips size="small">

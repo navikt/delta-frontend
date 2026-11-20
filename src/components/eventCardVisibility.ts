@@ -1,8 +1,8 @@
 import type { Category, FullDeltaEvent } from "@/types/event";
 import { filterHomeOverview } from "../service/eventListQuery.ts";
 
-export function getHomeCategoryNames(events: FullDeltaEvent[], now: number): string[] {
-  const eligible = filterHomeOverview(events, { tab: "alle", onlyRegistered: false })
+export function getHomeCategoryNames(events: FullDeltaEvent[], now: number, categoryScope?: Category): string[] {
+  const eligible = (categoryScope ? events : filterHomeOverview(events, { tab: "alle", onlyRegistered: false }))
     .filter(item => !shouldHideEventCard({
       tabname: "alle",
       categories: item.categories,

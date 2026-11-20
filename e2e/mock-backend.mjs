@@ -143,10 +143,13 @@ const routes = [
       const history = historicalEvents();
       return [...history.slice(0, 3), history.at(-1)].map(item => ({ ...item, hosts: [ME] }));
     }
+    const categoryIds = (params.get("categories") ?? "").split(",").filter(Boolean).map(Number);
     return [
       ...events(),
       ...((params.get("onlyJoined") === "true" && params.get("onlyFuture") !== "true") || params.size === 0 ? historicalEvents() : []),
-    ];
+    ].filter(item => categoryIds.every(id => item.categories.some(category => category.id === id))
+      && (params.get("onlyMine") !== "true" || item.hosts.some(host => host.email === ME.email))
+      && (params.get("onlyJoined") !== "true" || item.participants.some(participant => participant.email === ME.email)));
   }],
   [/^\/event\/([\w-]+)$/, ([, id]) => events().find((item) => item.event.id === id)],
   [

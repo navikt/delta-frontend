@@ -51,12 +51,11 @@ test("literal detail routes and metadata select the same shared festival configu
   }
 });
 
-test("legacy fagtorsdag redirects remain temporary and do not affect the category", async () => {
+test("legacy fagtorsdag event links redirect without overriding the short category route", async () => {
   const require = createRequire(import.meta.url);
   const config = require("../../../next.config.js");
   const redirects = await config.redirects();
   assert.deepEqual(redirects.filter(({ source }) => source.startsWith("/fagtorsdag")), [
     { source: "/fagtorsdag/:id", destination: "/event/:id", permanent: false },
-    { source: "/fagtorsdag", destination: "/?categories=fagtorsdag", permanent: false },
   ]);
 });

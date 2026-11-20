@@ -10,11 +10,6 @@ const nextConfig = {
         permanent: false,
       },
       {
-        source: '/fagtorsdag',
-        destination: '/?categories=fagtorsdag',
-        permanent: false,
-      },
-      {
         source: '/psykiskhelse',
         destination: '/event/1b9783d3-c8d6-4131-ac01-46c3dab3f9ea',
         permanent: true,

@@ -13,6 +13,7 @@ import {
   getFixedCategoryQuery,
   getFestivalEventQuery,
   categoryNameCandidates,
+  findCategoryByName,
   homeDatasetKey,
 } from "./eventListQuery.ts";
 
@@ -148,16 +149,18 @@ test("server home policy hides IPS only in normal alle and retains raw joined ev
   assert.deepEqual(filterActiveJoinedEvents(events, now), [events[0]]);
 });
 
-test("home hides Markedsuka regardless of casing or other tags but preserves mine and joined events", () => {
-  const events = [
-    { event: { id: "markedsuka" }, categories: [{ name: "markedsuka" }] },
-    { event: { id: "mixed" }, categories: [{ name: "kompetanse" }, { name: "Markedsuka" }] },
-    { event: { id: "ordinary" }, categories: [{ name: "kompetanse" }] },
-    { event: { id: "untagged" }, categories: [] },
-  ];
-  assert.deepEqual(filterHomeOverview(events, { tab: "alle", onlyRegistered: false }), events.slice(2));
-  assert.deepEqual(filterHomeOverview(events, { tab: "mine", onlyRegistered: false }), events);
-  assert.deepEqual(filterHomeOverview(events, { tab: "alle", onlyRegistered: true }), events);
+test("home hides Markedsuka and Utdeling regardless of casing or other tags but preserves mine and joined events", () => {
+  for (const name of ["markedsuka", "utdeling"]) {
+    const events = [
+      { event: { id: name }, categories: [{ name }] },
+      { event: { id: "mixed" }, categories: [{ name: "kompetanse" }, { name: name.toUpperCase() }] },
+      { event: { id: "ordinary" }, categories: [{ name: "kompetanse" }] },
+      { event: { id: "untagged" }, categories: [] },
+    ];
+    assert.deepEqual(filterHomeOverview(events, { tab: "alle", onlyRegistered: false }), events.slice(2));
+    assert.deepEqual(filterHomeOverview(events, { tab: "mine", onlyRegistered: false }), events);
+    assert.deepEqual(filterHomeOverview(events, { tab: "alle", onlyRegistered: true }), events);
+  }
 });
 
 test("festival public and joined reads keep the fixed category and future flag without home's override", () => {
@@ -175,6 +178,33 @@ test("fixed category lookup keeps encoded and plus/space legacy name candidates"
   assert.deepEqual(categoryNameCandidates("statistikkens+dag"), ["statistikkens+dag", "statistikkens dag"]);
   assert.deepEqual(categoryNameCandidates("bl%C3%A5%20dag"), ["bl%C3%A5%20dag", "blå dag"]);
   assert.deepEqual(categoryNameCandidates("bad%link"), ["bad%link"]);
+});
+
+test("short category names match case-insensitively without changing legacy exact matches", () => {
+  const yoga = { id: 1, name: "Yoga" };
+  const legacy = { id: 2, name: "statistikkens dag" };
+  const uppercase = { id: 3, name: "YOGA" };
+  assert.equal(findCategoryByName([yoga, legacy], "yoga"), yoga);
+  assert.equal(findCategoryByName([yoga, legacy], "statistikkens+dag"), legacy);
+  assert.equal(findCategoryByName([yoga, uppercase], "YOGA"), uppercase);
+  assert.equal(findCategoryByName([yoga], "unknown"), undefined);
+});
+
+test("category-scoped home retains its category across all views and history", () => {
+  const category = { id: 42, name: "Yoga" };
+  const base = { tab: "alle", categories: [], showPast: false, onlyRegistered: false };
+  for (const state of [base, { ...base, tab: "mine" }, { ...base, tab: "mine", showPast: true },
+    { ...base, onlyRegistered: true }, { ...base, onlyRegistered: true, showPast: true }]) {
+    assert.deepEqual(getHomeEventQuery(state, [], category).categories, [category]);
+    assert.notEqual(homeDatasetKey(state, [], category), homeDatasetKey(state, []));
+    assert.equal(homeDatasetKey({ ...state, search: "local", categories: ["other"] }, [], category),
+      homeDatasetKey(state, [], category));
+  }
+  assert.deepEqual(getHomeEventQuery({ ...base, tab: "mine", showPast: true }, [], category), {
+    categories: [category], onlyFuture: false, onlyPast: true, onlyMine: true,
+  });
+  assert.notEqual(homeDatasetKey({ ...base, tab: "ventelister" }, [], category),
+    homeDatasetKey({ ...base, tab: "ventelister" }, []));
 });
 
 test("joined LocalDateTime visibility retains each caller's local timezone interpretation", () => {

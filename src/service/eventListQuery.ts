@@ -18,6 +18,14 @@ export function categoryNameCandidates(id: string) {
   return [...new Set([id, decoded, id.replace(/\+/g, " "), decoded.replace(/\+/g, " ")])];
 }
 
+export function findCategoryByName(categories: Category[], id: string) {
+  const names = categoryNameCandidates(id);
+  const exact = categories.find(category => names.includes(category.name));
+  if (exact) return exact;
+  const normalized = names.map(name => name.toLocaleLowerCase("nb-NO"));
+  return categories.find(category => normalized.includes(category.name.toLocaleLowerCase("nb-NO")));
+}
+
 export function getFixedCategoryQuery(category: Category) {
   return { categories: [category], onlyFuture: true };
 }
@@ -31,7 +39,7 @@ export function filterHomeOverview(
   state: { tab: string; onlyRegistered: boolean },
 ) {
   if (state.onlyRegistered || state.tab === "mine") return events;
-  return events.filter(item => !item.categories.some(category => ["ips", "markedsuka"].includes(category.name.toLowerCase())));
+  return events.filter(item => !item.categories.some(category => ["ips", "markedsuka", "utdeling"].includes(category.name.toLowerCase())));
 }
 
 // The backend ANDs category filters, so selecting categories only narrows the already-loaded list.
@@ -49,12 +57,14 @@ export function filterHomeCategories(
 export function getHomeEventQuery(
   state: { tab: string; categories: string[]; showPast: boolean; onlyRegistered: boolean },
   _catalog: Category[],
+  categoryScope?: Category,
 ) {
   if (state.onlyRegistered) {
-    return state.showPast ? { onlyJoined: true } : { onlyJoined: true, onlyFuture: true };
+    return { onlyJoined: true, ...(!state.showPast ? { onlyFuture: true } : {}),
+      ...(categoryScope ? { categories: [categoryScope] } : {}) };
   }
   return getEventListQuery({
-    categories: [],
+    categories: categoryScope ? [categoryScope] : [],
     onlyFuture: state.tab === "alle" || !state.showPast,
     onlyPast: state.tab === "mine" && state.showPast,
     onlyMine: state.tab === "mine",
@@ -77,9 +87,12 @@ export function eventDatasetKey(
 export function homeDatasetKey(
   state: { tab: string; categories: string[]; showPast: boolean; onlyRegistered: boolean },
   catalog: Category[],
+  categoryScope?: Category,
 ) {
-  if (!state.onlyRegistered && state.tab === "ventelister") return eventDatasetKey("waitlists", {});
-  return eventDatasetKey("home", getHomeEventQuery(state, catalog));
+  if (!state.onlyRegistered && state.tab === "ventelister") {
+    return eventDatasetKey("waitlists", { categories: categoryScope ? [categoryScope] : [] });
+  }
+  return eventDatasetKey(categoryScope ? "category-home" : "home", getHomeEventQuery(state, catalog, categoryScope));
 }
 
 export function getEventListQuery({

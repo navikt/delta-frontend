@@ -14,6 +14,7 @@ test("home category choices only include tags on eligible events, not hidden or 
     event(["kompetanse", "fagtorsdag"], "2026-11-17T10:00:00Z"),
     event(["IPS", "ips-only"]),
     event(["Markedsuka", "marketing-only"]),
+    event(["Utdeling", "giveaway-only"]),
     event(["fagdag_utvikling_og_data", "hidden-only"]),
     event(["expired-only"], "2026-11-16T08:00:00Z"),
     event([]),
@@ -21,6 +22,12 @@ test("home category choices only include tags on eligible events, not hidden or 
   assert.deepEqual(getHomeCategoryNames(events, Date.parse("2026-11-16T09:00:00Z")),
     ["fagtorsdag", "kompetanse", "sosialt"]);
   assert.deepEqual(getHomeCategoryNames([], Date.now()), []);
+});
+
+test("Utdeling stays visible in its category-scoped overview", () => {
+  const category = { id: 42, name: "Utdeling" };
+  const events = [{ event: {}, categories: [category] }];
+  assert.deepEqual(getHomeCategoryNames(events, Date.now(), category), ["Utdeling"]);
 });
 
 test("does not hide joined events when signup has closed", () => {

@@ -29,16 +29,16 @@ function emptyMessage(view: string, search: string, historyYear: number | null) 
 }
 
 export default function OverviewResults({
-  events, categories, userEmail, datasetKey, fixedCategory = false,
+  events, categories, userEmail, datasetKey, fixedCategory = false, categoryScope,
 }: {
-  events: FullDeltaEvent[]; categories: Category[]; userEmail: string; datasetKey: string; fixedCategory?: boolean;
+  events: FullDeltaEvent[]; categories: Category[]; userEmail: string; datasetKey: string; fixedCategory?: boolean; categoryScope?: Category;
 }) {
   const [state] = useQueryStates(homeParsers);
   const path = useOverviewPath();
   const now = useBrowserNow();
   const overview = useOptionalOverviewTransition();
   const view = fixedCategory ? "category" : homeView(state);
-  const ready = (fixedCategory || datasetKey === homeDatasetKey(state, categories)) && now !== null;
+  const ready = (fixedCategory || datasetKey === homeDatasetKey(state, categories, categoryScope)) && now !== null;
   const showPast = (view === "mine" || view === "pameldt") && state.showPast;
 
   const loaded = view === "pameldt" && !showPast
@@ -73,10 +73,10 @@ export default function OverviewResults({
   const setAvailableCategoryNames = overview?.setAvailableCategoryNames;
   useEffect(() => {
     if (!ready || view !== "alle" || now === null) return;
-    const names = getHomeCategoryNames(events, now);
+    const names = getHomeCategoryNames(events, now, categoryScope);
     setAvailableCategoryNames?.(previous =>
       previous?.length === names.length && previous.every((name, index) => name === names[index]) ? previous : names);
-  }, [ready, view, now, events, setAvailableCategoryNames]);
+  }, [ready, view, now, events, categoryScope, setAvailableCategoryNames]);
   useOverviewScroll(path, ready);
 
   return <div className="w-full">
@@ -90,13 +90,13 @@ export default function OverviewResults({
   </div>;
 }
 
-export function WaitlistResults({ entries, datasetKey, categories }: {
-  entries: MyWaitlistEvent[]; datasetKey: string; categories: Category[];
+export function WaitlistResults({ entries, datasetKey, categories, categoryScope }: {
+  entries: MyWaitlistEvent[]; datasetKey: string; categories: Category[]; categoryScope?: Category;
 }) {
   const [state] = useQueryStates(homeParsers);
   const path = useOverviewPath();
   const now = useBrowserNow();
-  const ready = datasetKey === homeDatasetKey(state, categories) && now !== null;
+  const ready = datasetKey === homeDatasetKey(state, categories, categoryScope) && now !== null;
   useOverviewScroll(path, ready);
 
   const visible = ready ? entries.filter(entry => matchesEventSearch(entry, state.search)) : [];

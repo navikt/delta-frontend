@@ -222,13 +222,16 @@ test("arrangementskort skiller avsluttet, pågående og kommende uten å laste s
   beforeStart.setDate(beforeStart.getDate() + 2);
   beforeStart.setHours(8, 59, 30, 0);
   await page.clock.install({ time: fromZonedTime(beforeStart, "Europe/Oslo") });
-  await gotoSettled(page, "/?tab=mine");
+  await gotoSettled(page, "/?tab=alle");
   const card = (name: string) => page.locator(".aksel-link-card").filter({
     has: page.getByRole("link", { name, exact: true }),
   });
   const hosted = card("Arrangement jeg arrangerer");
   const upcoming = card("Arrangement jeg er påmeldt");
   const ongoing = card("Fullt arrangement med venteliste");
+  await expect(hosted).toBeVisible();
+  await expect(upcoming).toBeVisible();
+  await expect(ongoing).toBeVisible();
   await expect(hosted.getByText("Pågår nå", { exact: true })).toHaveCount(0);
   await expect(hosted.getByText("Avsluttet", { exact: true })).toHaveCount(0);
   await page.clock.fastForward(30_000);
@@ -551,7 +554,7 @@ for (const theme of ["light", "dark"] as const) {
     const table = page.getByRole("table");
     await table.scrollIntoViewIfNeeded();
     await expect(table.getByRole("columnheader", { name: /Dato/ })).toBeVisible();
-    await expect(table.getByRole("link", { name: "Arrangement jeg arrangerer", exact: true })).toBeVisible();
+    await expect(table.getByRole("link", { name: "Arrangement jeg er påmeldt", exact: true })).toBeVisible();
     await expectNoViolations(page, "main table");
   });
 }
